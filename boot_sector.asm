@@ -1,12 +1,18 @@
-mov ah, 0x0e ; tty mode
-mov al, 'H'
+nmov ah, 0x0e ; tty mode
+mov al, 'F'
 int 0x10
-mov al, 'e'
+mov al, 'u'
 int 0x10
-mov al, 'l'
+mov al, 'c'
 int 0x10
-int 0x10 ; 'l' is still on al, remember?
+mov al, 'k'
+int 0x10
+mov al, ' '
+int 0x10
 mov al, 'o'
+int 0x10
+mov al, 'f'
+int 0x10
 int 0x10
 
 jmp $ ; jump to current address = infinite loop
