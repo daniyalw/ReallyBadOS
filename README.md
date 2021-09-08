@@ -1,13 +1,11 @@
 # FirstOS
 An operating system.
 
-NOTE: I have no clue how to build the kernel, and I can't figure out how to run `C` functions in Assembly. Forgive me, I added the kernel but I will do my best to add it to the OS.
-
 ## Building
 ### macOS
 You need `qemu` and `nasm` installed.
-Run:
-`nasm -f bin boot_sector.asm -o boot_sector.bin`
-`qemu-system-x86_64 boot_sector.bin` or `qemu boot_sector.bin`
+After cloning or downloading the source, navigate to the `run` folder in the terminal.
+Then run: `qemu-system-x86_64 -fda kernel.bin`
+Or if just `qemu` is in your PATH: `qemu -fda kernel.bin`
 
 The OS will load.
