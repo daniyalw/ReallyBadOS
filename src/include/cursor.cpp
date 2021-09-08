@@ -31,3 +31,8 @@ unsigned short get_cursor_pos()
    pos |= ((unsigned char )inb(0x3D5)) << 8;
    return pos;
 }
+
+void set_cursor_pos(int cursor_pos)
+{
+	// TODO: set cursor position
+}
