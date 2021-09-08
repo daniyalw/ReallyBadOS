@@ -12,7 +12,7 @@ int printf(char * mystring)
             i += 80;
         }
         else {
-            vidmem[i] = white | mystring[last];
+            vidmem[i] = bg | mystring[last];
         }
         i++;
         last++;
@@ -20,6 +20,16 @@ int printf(char * mystring)
     }
 
     update_cursor();
+
+    return 0;
+}
+
+int print(char * mystring, int loc, int bg)
+{
+    short *vidmem = (short *) 0xb8000;
+
+    for (int x = 0; x < len(mystring); x++)
+        vidmem[loc+x] = bg | mystring[x];
 
     return 0;
 }
