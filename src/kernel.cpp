@@ -4,6 +4,7 @@ int white = 0x0F00;
 int blue = 0x1F00;
 int green = 0x2a00;
 int color = 0x0F00;
+char * printed;
 
 #include "include/outb.h"
 #include "include/outb.cpp"

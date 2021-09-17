@@ -6,9 +6,23 @@ int printf(char * mystring)
     int last = 0;
     int white = 0x0F00;
     int limit = 80 * 25;
+    char * copydata;
+    int z = 0;
 
     while (mystring[last] != '\0')
     {
+        if (last > limit)
+        {
+            while (printed[z] != '\0')
+            {
+                if (z > 80)
+                    copydata += printed[z];
+
+                z++;
+            }
+            clear();
+            printf(copydata);
+        }
         if (mystring[last] == '\n') {
             printed += '\n';
             y += 1;
