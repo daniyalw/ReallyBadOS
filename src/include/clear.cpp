@@ -12,7 +12,8 @@ int clear()
         last++;
     }
 
-    i = 0;
+    x = 0;
+    y = 0;
 
     return 0;
 }

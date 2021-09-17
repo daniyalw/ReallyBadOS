@@ -1,9 +1,9 @@
-int i = 0;
+int x = 0;
+int y = 0;
 int white = 0x0F00;
 int blue = 0x1F00;
 int green = 0x2a00;
-int fg = 0;
-int bg = 0x2000;
+int color = 0x0F00;
 
 #include "include/outb.h"
 #include "include/outb.cpp"
@@ -12,7 +12,6 @@ int bg = 0x2000;
 #include "include/string.h"
 #include "include/string.cpp"
 #include "include/stdio.h"
-#include "include/ui.cpp"
 
 enum vga_color {
 	VGA_COLOR_BLACK = 0,
@@ -33,17 +32,16 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
+void putpixel(int pos_x, int pos_y, unsigned char VGA_COLOR) // still doesn't work
+{
+    unsigned char* location = (unsigned char*)0x0A0000 + 320 * pos_y + pos_x;
+    *location = VGA_COLOR;
+}
 
 extern "C" void kmain()
 {
-    int x;
-    clear();
-    initialize_ui();
-    char * mystring = "This is the GUI!";
-    x = (80-len(mystring))/2;
-    print(mystring, x, bg);
-    i = 22 * 80;
-    char * taskbar_menu = "This is the taskbar.";
-    x = (80-len(taskbar_menu))/2;
-    print(taskbar_menu, i+x, 0x1F00);
+	clear();
+	disable_cursor();
+	printf("Hello!\n");
+	printf("Hi!");
 }

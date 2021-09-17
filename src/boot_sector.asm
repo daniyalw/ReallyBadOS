@@ -1,7 +1,11 @@
+mov ah, 0
+mov al, 13h
+int 10h
 section .boot
 bits 16
 global boot
 boot:
+	int 0x10
 	mov ax, 0x2401
 	int 0x15
 
@@ -61,8 +65,7 @@ copy_target:
 bits 32
 	hello: db "Booting...",0
 boot2:
-	mov esi,hello
-	mov ebx,0xb8000
+
 .loop:
 	lodsb
 	or al,al
@@ -72,6 +75,9 @@ boot2:
 	add ebx,2
 	jmp .loop
 halt:
+	mov edi,0x0A0000
+	mov al,0x0F      ; the color of the pixel
+mov [edi],al
 	mov esp,kernel_stack_top
 	extern kmain
 	call kmain
