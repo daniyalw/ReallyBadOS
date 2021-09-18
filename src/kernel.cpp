@@ -55,5 +55,5 @@ extern "C" void kmain()
 {
 	disable_cursor();
 	//INTPutpixel(100, 100, 255);
-	printf("CeneOS by Daniyal Warraich, 2021");
+	printf("CeneOS by Daniyal Warraich");
 }
