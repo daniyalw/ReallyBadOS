@@ -1,6 +1,5 @@
-mov ah, 0
-mov al, 13h
-int 10h
+mov ax,19 ; set video mode
+int 16  
 section .boot
 bits 16
 global boot
@@ -73,6 +72,7 @@ boot2:
 	or eax,0x0F00
 	mov word [ebx], ax
 	add ebx,2
+
 	jmp .loop
 halt:
 	mov edi,0x0A0000

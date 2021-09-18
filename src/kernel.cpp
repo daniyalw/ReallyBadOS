@@ -33,6 +33,18 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
+// DOESN'T WORK
+void INTPutpixel(int x, int y, unsigned char Col) {
+	int _CX, _DX;
+	unsigned char _AH, _BX, _AL;
+    _AH = 0x0C;
+    _AL = Col;
+    _CX = x;
+    _DX = y;
+    _BX = 0x01;
+    outb(0x10, 0x10);
+  }
+
 void putpixel(int pos_x, int pos_y, unsigned char VGA_COLOR) // still doesn't work
 {
     unsigned char* location = (unsigned char*)0x0A0000 + 320 * pos_y + pos_x;
@@ -41,7 +53,7 @@ void putpixel(int pos_x, int pos_y, unsigned char VGA_COLOR) // still doesn't wo
 
 extern "C" void kmain()
 {
-	clear();
 	disable_cursor();
-	printf("Hello!\nHi!");
+	//INTPutpixel(100, 100, 255);
+	printf("CeneOS by Daniyal Warraich, 2021");
 }
