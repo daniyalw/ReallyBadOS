@@ -22,6 +22,9 @@ int printf(char * mystring)
             }
             clear();
             printf(copydata);
+            copydata = (char *)' ';
+            printed = copydata;
+            z = 0;
         }
         if (mystring[last] == '\n') {
             printed += '\n';
