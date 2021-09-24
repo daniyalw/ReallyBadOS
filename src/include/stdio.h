@@ -1,4 +1,8 @@
 #include "clear.h"
 #include "clear.cpp"
+#include "string.h"
+#include "string.cpp"
 #include "printf.h"
 #include "printf.cpp"
+#include "panic.h"
+#include "panic.cpp"

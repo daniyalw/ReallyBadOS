@@ -1,5 +1,3 @@
-mov ax,19 ; set video mode
-int 16  
 section .boot
 bits 16
 global boot
@@ -32,6 +30,9 @@ boot:
 	mov fs, ax
 	mov gs, ax
 	mov ss, ax
+	mov ah, 0
+    mov al, 13h
+    int 10h
 	jmp CODE_SEG:boot2
 gdt_start:
 	dq 0x0
@@ -75,9 +76,6 @@ boot2:
 
 	jmp .loop
 halt:
-	mov edi,0x0A0000
-	mov al,0x0F      ; the color of the pixel
-mov [edi],al
 	mov esp,kernel_stack_top
 	extern kmain
 	call kmain

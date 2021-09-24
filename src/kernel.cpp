@@ -1,18 +1,22 @@
+// define variables
 int x = 0;
 int y = 0;
 int white = 0x0F00;
 int blue = 0x1F00;
 int green = 0x2a00;
 int color = 0x0F00;
+int panic_color = 0x1F00;
+int graphics_mode = 0xa000;
 char * printed;
 
+// import files
 #include "include/outb.h"
 #include "include/outb.cpp"
 #include "include/cursor.h"
 #include "include/cursor.cpp"
-#include "include/string.h"
-#include "include/string.cpp"
 #include "include/stdio.h"
+#include "include/system.h"
+#include "include/system.cpp"
 
 enum vga_color {
 	VGA_COLOR_BLACK = 0,
@@ -33,27 +37,20 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
-// DOESN'T WORK
-void INTPutpixel(int x, int y, unsigned char Col) {
-	int _CX, _DX;
-	unsigned char _AH, _BX, _AL;
-    _AH = 0x0C;
-    _AL = Col;
-    _CX = x;
-    _DX = y;
-    _BX = 0x01;
-    outb(0x10, 0x10);
-  }
-
-void putpixel(int pos_x, int pos_y, unsigned char VGA_COLOR) // still doesn't work
+void putpixel(int pos_x, int pos_y, unsigned char VGA_COLOR)
 {
-    unsigned char* location = (unsigned char*)0x0A0000 + 320 * pos_y + pos_x;
+    unsigned char* location = (unsigned char*)0xA0000 + 320 * pos_y + pos_x;
     *location = VGA_COLOR;
 }
 
 extern "C" void kmain()
 {
 	disable_cursor();
-	//INTPutpixel(100, 100, 255);
-	printf("CeneOS by Daniyal Warraich");
+	printf(platform);
+	printf(" by ");
+	printf(author);
+	printf("\n");
+	system("echo a");
+	panic("Memory allocation error.", "Option 1\nOption 2");
+
 }
