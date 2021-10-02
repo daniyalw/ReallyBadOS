@@ -1,5 +1,5 @@
 int len(char * mychar);
-bool startswith(char * mainchar, char * start);
+int startswith(char * mainchar, char * start);
 /*
 class string
 {

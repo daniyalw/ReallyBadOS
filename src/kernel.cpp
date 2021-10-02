@@ -8,49 +8,48 @@ int color = 0x0F00;
 int panic_color = 0x1F00;
 int graphics_mode = 0xa000;
 char * printed;
+int custom_cursor = 0;
+int cursor_x;
+int cursor_y;
+int _win = 0;
+int width = 320;
+int height = 200;
+int taskbar_y = 180;
+unsigned char light_green = 50;
+unsigned char light_blue = 3;
 
 // import files
 #include "include/outb.h"
 #include "include/outb.cpp"
-#include "include/cursor.h"
-#include "include/cursor.cpp"
-#include "include/stdio.h"
-#include "include/system.h"
-#include "include/system.cpp"
+#include "include/putpixel.cpp"
+#include "include/inb.h"
+#include "include/inb.cpp"
+//#include "include/cursor.h"
+//#include "include/cursor.cpp"
+//#include "include/stdio.h"
+//#include "include/system.h"
+//#include "include/system.cpp"
+#include "GUI/gui.h"
 
 enum vga_color {
-	VGA_COLOR_BLACK = 0,
-	VGA_COLOR_BLUE = 1,
-	VGA_COLOR_GREEN = 2,
-	VGA_COLOR_CYAN = 3,
-	VGA_COLOR_RED = 4,
-	VGA_COLOR_MAGENTA = 5,
-	VGA_COLOR_BROWN = 6,
-	VGA_COLOR_LIGHT_GREY = 7,
-	VGA_COLOR_DARK_GREY = 8,
-	VGA_COLOR_LIGHT_BLUE = 9,
-	VGA_COLOR_LIGHT_GREEN = 10,
-	VGA_COLOR_LIGHT_CYAN = 11,
-	VGA_COLOR_LIGHT_RED = 12,
-	VGA_COLOR_LIGHT_MAGENTA = 13,
-	VGA_COLOR_LIGHT_BROWN = 14,
-	VGA_COLOR_WHITE = 15,
+	BLACK = 0,
+	ORANGE = 65,
+	LIGHT_GREEN = 50,
+	LIGHT_BLUE = 100,
+	WHITE = 255
 };
-
-void putpixel(int pos_x, int pos_y, unsigned char VGA_COLOR)
-{
-    unsigned char* location = (unsigned char*)0xA0000 + 320 * pos_y + pos_x;
-    *location = VGA_COLOR;
-}
 
 extern "C" void kmain()
 {
-	disable_cursor();
-	printf(platform);
-	printf(" by ");
-	printf(author);
-	printf("\n");
-	system("echo a");
-	panic("Memory allocation error.", "Option 1\nOption 2");
+
+	Desktop desktop = Desktop();
+	desktop.cursor._x = 100;
+	desktop.cursor._y = 150;
+	desktop.reset();
+
+	Window win = Window(100, 100);
+	Widget widget = Widget(win, 5, 5);
+	win.draw();
+	widget.draw();
 
 }

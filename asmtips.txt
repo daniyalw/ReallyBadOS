@@ -1,0 +1,14 @@
+Assembly tips:
+
+    - Change QEMU resolution
+    ```
+    mov ax, 0x4F02
+	mov bx, 0x4118
+	int 0x10
+    ```
+
+    - Go into graphics mode
+    ```
+    mov ax, 13h
+	int 10h
+    ```

@@ -11,15 +11,15 @@ int len(char * mychar)
     return length;
 }
 
-bool startswith(char * mainchar, char * start)
+int startswith(char * mainchar, char * start)
 {
     int clength = len(start);
     int length = len(mainchar);
 
     if (length < clength)
-        return false;
+        return 1;
 
-    bool _continue = true;
+    bool _continue = 0;
 
     for (int z = 0; z < length; z++)
     {
@@ -28,7 +28,7 @@ bool startswith(char * mainchar, char * start)
 
         if (mainchar[z] != start[z]) // doesn't work
         {
-            _continue = false;
+            _continue = 1;
             break;
         }
     }
@@ -61,17 +61,10 @@ char * first(char * word)
     return newword;
 }
 
-char * append(char * first, char * second)
+void append(char * first, char * second)
 {
-    char * word;
-
-    for (int z = 0; z < len(first); z++)
-        word += first[z];
-
     for (int z = 0; z < len(second); z++)
-        word += second[z];
-
-    return word;
+        first += second[z];
 }
 
 /*
@@ -97,9 +90,9 @@ int string::startswith(char * start)
     int length = len(words);
 
     if (length < clength)
-        return false;
+        return 1;
 
-    bool _continue = true;
+    bool _continue = 0;
 
     for (int z = 0; z < length; z++)
     {
@@ -108,7 +101,7 @@ int string::startswith(char * start)
 
         if (mainchar[z] != start[z]) // doesn't work
         {
-            _continue = false;
+            _continue = 1;
             break;
         }
     }

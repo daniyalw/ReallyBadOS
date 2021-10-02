@@ -9,6 +9,11 @@ boot:
 	mov ax, 0x3
 	int 0x10
 
+	mov ax, 13h
+	int 10h
+
+
+
 	mov [disk],dl
 
 	mov ah, 0x2    ;read sectors
@@ -30,9 +35,6 @@ boot:
 	mov fs, ax
 	mov gs, ax
 	mov ss, ax
-	mov ah, 0
-    mov al, 13h
-    int 10h
 	jmp CODE_SEG:boot2
 gdt_start:
 	dq 0x0

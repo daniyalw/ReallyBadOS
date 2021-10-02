@@ -23,7 +23,7 @@ int printf(char * mystring)
             clear();
             printf(copydata);
             copydata = (char *)' ';
-            printed = copydata;
+            printed = (char *)' ';
             z = 0;
         }
         if (mystring[last] == '\n') {
@@ -45,7 +45,7 @@ int printf(char * mystring)
     return 0;
 }
 
-int print(char * mystring, int loc, int bg)
+int print(char mystring, int loc, int bg)
 {
     short *vidmem = (short *) 0xb8000;
 
