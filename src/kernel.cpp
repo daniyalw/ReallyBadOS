@@ -8,7 +8,7 @@ int color = 0x0F00;
 int panic_color = 0x1F00;
 int graphics_mode = 0xa000;
 char * printed;
-int custom_cursor = 0;
+int custom_cursor = 1;
 int cursor_x;
 int cursor_y;
 int _win = 0;
@@ -22,14 +22,15 @@ unsigned char light_blue = 3;
 #include "include/outb.h"
 #include "include/outb.cpp"
 #include "include/putpixel.cpp"
-#include "include/inb.h"
 #include "include/inb.cpp"
-//#include "include/cursor.h"
-//#include "include/cursor.cpp"
+#include "drivers/keyboard.cpp"
+#include "drivers/mouse.cpp"
+#include "include/string.cpp"
+#include "include/cursor.cpp"
 //#include "include/stdio.h"
 //#include "include/system.h"
 //#include "include/system.cpp"
-#include "GUI/gui.h"
+//#include "GUI/gui.h"
 
 enum vga_color {
 	BLACK = 0,
@@ -39,9 +40,11 @@ enum vga_color {
 	WHITE = 255
 };
 
+
 extern "C" void kmain()
 {
-
+	// TESTING GUI
+	/*
 	Desktop desktop = Desktop();
 	desktop.cursor._x = 100;
 	desktop.cursor._y = 150;
@@ -51,5 +54,56 @@ extern "C" void kmain()
 	Widget widget = Widget(win, 5, 5);
 	win.draw();
 	widget.draw();
+	*/
 
+	// TESTING KEYBOARD
+	/*
+	short *vidmem = (short *) 0xb8000;
+	int b = 0;
+	int z = 2;
+	char * empty = " ";
+	unsigned char scancode;
+
+	while (true)
+	{
+		scancode = scan_code();
+
+		if (scancode != 0)
+		{
+			if (z % 2 == 0)
+			{
+				get_key(scancode);
+				vidmem[b] = white | returned[0];
+				b++;
+			}
+			z++;
+		}
+	}
+	*/
+
+	// TESTING MOUSE
+	short *vidmem = (short *) 0xb8000;
+	int b = 0;
+	char oldx;
+	int c = panic_color;
+	char oldy;
+	vidmem[0] = panic_color | " "[0];
+	mouse_install();
+	while (true)
+	{
+		mouse_handler();
+		if (oldx == mouse_x)
+		{
+			if (oldy != mouse_y)
+			{
+				vidmem[2] = c | mouse_x;
+				vidmem[3] = c | mouse_y;
+			}
+		}
+		else
+		{
+			vidmem[2] = c | mouse_x;
+			vidmem[3] = c | mouse_y;
+		}
+	}
 }

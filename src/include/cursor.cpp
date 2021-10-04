@@ -1,6 +1,4 @@
 #include "cursor.h"
-#include "inb.h"
-#include "inb.cpp"
 
 void update_cursor()
 {

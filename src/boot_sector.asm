@@ -9,9 +9,6 @@ boot:
 	mov ax, 0x3
 	int 0x10
 
-	mov ax, 13h
-	int 10h
-
 
 
 	mov [disk],dl
