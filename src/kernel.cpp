@@ -8,11 +8,11 @@ int color = 0x0F00;
 int panic_color = 0x1F00;
 int graphics_mode = 0xa000;
 char * printed;
-int custom_cursor = 1;
+int custom_cursor = 0;
 int cursor_x;
 int cursor_y;
 int _win = 0;
-int width = 320;
+int width = 640;
 int height = 200;
 int taskbar_y = 180;
 unsigned char light_green = 50;
@@ -21,11 +21,16 @@ unsigned char light_blue = 3;
 // import files
 #include "include/outb.h"
 #include "include/outb.cpp"
-#include "include/putpixel.cpp"
 #include "include/inb.cpp"
-#include "drivers/keyboard.cpp"
+#include "include/outw.cpp"
+
+//#include "include/putpixel.cpp"
+
+//#include "drivers/keyboard.cpp"
 #include "drivers/mouse.cpp"
+
 #include "include/string.cpp"
+//#include "include/shutdown.cpp"
 #include "include/cursor.cpp"
 //#include "include/stdio.h"
 //#include "include/system.h"
@@ -82,12 +87,8 @@ extern "C" void kmain()
 	*/
 
 	// TESTING MOUSE
-	short *vidmem = (short *) 0xb8000;
-	int b = 0;
 	char oldx;
-	int c = panic_color;
 	char oldy;
-	vidmem[0] = panic_color | " "[0];
 	mouse_install();
 	while (true)
 	{
@@ -96,14 +97,13 @@ extern "C" void kmain()
 		{
 			if (oldy != mouse_y)
 			{
-				vidmem[2] = c | mouse_x;
-				vidmem[3] = c | mouse_y;
+				set_cursor(mouse_y, mouse_x);
 			}
 		}
 		else
 		{
-			vidmem[2] = c | mouse_x;
-			vidmem[3] = c | mouse_y;
+			set_cursor(mouse_y, mouse_x);
 		}
 	}
+
 }

@@ -12,3 +12,29 @@ Assembly tips:
     mov ax, 13h
 	int 10h
     ```
+
+    - VESA mode
+    ```
+    push bx
+
+    mov di, 0xc000
+    mov eax, 0x32454256
+    mov dword [di], eax
+    mov ax, 0x4F00
+    int 0x10
+
+    mov bx, (0xc000 + 16)
+    mov fs, [bx]
+    mov bx, (0xc000 + 14)
+    mov si, [bx]
+
+    pop bx
+    add si, bx
+
+    mov ax, 0x4F02
+    mov bx, fs:[si]
+    or bx, 0x4000
+    mov di, 0
+    int 0x10
+    ```
+    `fs:[si]` can be replaced with the VESA mode of your choice

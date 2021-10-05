@@ -4,27 +4,6 @@ char mouse_x=0;         //signed char
 char mouse_y=0;         //signed char
 
 //Mouse functions
-void mouse_handler() //struct regs *a_r (not used but just there)
-{
-  switch(mouse_cycle)
-  {
-    case 0:
-      mouse_byte[0]=inb(0x60);
-      mouse_cycle++;
-      break;
-    case 1:
-      mouse_byte[1]=inb(0x60);
-      mouse_cycle++;
-      break;
-    case 2:
-      mouse_byte[1]=inb(0x60);
-      mouse_x=mouse_byte[0];
-      mouse_y=mouse_byte[1];
-      mouse_cycle=0;
-      break;
-  }
-}
-
 void mouse_wait(unsigned char a_type) //unsigned char
 {
   unsigned int _time_out=100000; //unsigned int
@@ -69,6 +48,36 @@ unsigned char mouse_read()
   //Get's response from mouse
   mouse_wait(0);
   return inb(0x60);
+}
+
+void mouse_handler() //struct regs *a_r (not used but just there)
+{
+  unsigned char d;
+  unsigned char state;
+  signed char rel_x;
+  signed char rel_y;
+  switch(mouse_cycle)
+  {
+    case 0:
+      mouse_byte[0]=inb(0x60);
+      mouse_cycle++;
+      break;
+    case 1:
+      mouse_byte[1]=inb(0x60);
+      mouse_cycle++;
+      break;
+    case 2:
+      mouse_byte[1]=inb(0x60);
+      state = mouse_byte[0];
+      d = mouse_byte[1];
+      rel_x = d - ((state << 4) & 0x100);
+      d = mouse_byte[2];
+      rel_y = d - ((state << 3) & 0x100);
+      mouse_cycle=0;
+      mouse_x = mouse_x + rel_x;
+      mouse_y = mouse_y - rel_y;
+      break;
+  }
 }
 
 void mouse_install()
