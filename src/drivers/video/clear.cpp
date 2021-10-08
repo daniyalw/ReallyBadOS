@@ -12,8 +12,8 @@ int clear()
         last++;
     }
 
-    x = 0;
-    y = 0;
+    video_x = 0;
+    video_y = 0;
 
     return 0;
 }

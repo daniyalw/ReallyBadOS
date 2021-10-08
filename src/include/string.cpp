@@ -1,5 +1,3 @@
-#include "string.h"
-
 int len(char * mychar)
 {
     /* get length of `mychar` */

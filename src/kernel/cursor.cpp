@@ -4,7 +4,7 @@ void update_cursor()
 {
 	if (custom_cursor == 0)
 	{
-		unsigned short cursor_loc = y * 80 + x;
+		unsigned short cursor_loc = cursor_y * 80 + cursor_x;
 
 	    // cursor LOW port to vga INDEX register
 	    outb(0x3D4, 0x0F);

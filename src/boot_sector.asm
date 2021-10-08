@@ -9,6 +9,7 @@ boot:
 	mov ax, 0x3
 	int 0x10
 
+
 	mov [disk],dl
 
 	mov ah, 0x2    ;read sectors
@@ -73,11 +74,14 @@ boot2:
 
 	jmp .loop
 halt:
+	bits 32
 	mov esp,kernel_stack_top
 	extern kmain
 	call kmain
 	cli
 	hlt
+
+
 
 section .bss
 align 4
