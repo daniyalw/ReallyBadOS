@@ -31,7 +31,6 @@ int height = 200;
 */
 #include "include/printf.cpp"
 
-
 extern "C" void kmain()
 {
 }
