@@ -21,6 +21,15 @@ void itoa(int n, char str[]) {
     if (sign < 0) str[i++] = '-';
     str[i] = '\0';
 }
+void atoi(char * str, int out) {
+	int length = len(str);
+	int i;
+	int pow = 1;
+	for (i = length; i > 0; --i) {
+		out += (str[i-1] - 48) * pow;
+		pow *= 10;
+	}
+}
 
 string::string(char * str)
 {

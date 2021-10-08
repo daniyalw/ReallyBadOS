@@ -34,5 +34,4 @@ int height = 200;
 
 extern "C" void kmain()
 {
-	printf("Hello, world!");
 }
