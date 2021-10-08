@@ -1,85 +1,59 @@
-int len(char * mychar)
+#include "string.h"
+
+int len(char * words)
 {
-    /* get length of `mychar` */
     int length = 0;
 
-    while (mychar[length] != '\0')
+    while (words[length] != '\0')
         length++;
 
     return length;
 }
 
-int startswith(char * mainchar, char * start)
-{
-    int clength = len(start);
-    int length = len(mainchar);
+void itoa(int n, char str[]) {
+    int i, sign;
+    if ((sign = n) < 0) n = -n;
+    i = 0;
+    do {
+        str[i++] = n % 10 + '0';
+    } while ((n /= 10) > 0);
 
-    if (length < clength)
-        return 1;
-
-    bool _continue = 0;
-
-    for (int z = 0; z < length; z++)
-    {
-        if (z > clength)
-            break;
-
-        if (mainchar[z] != start[z]) // doesn't work
-        {
-            _continue = 1;
-            break;
-        }
-    }
-
-    return _continue;
+    if (sign < 0) str[i++] = '-';
+    str[i] = '\0';
 }
 
-char * first(char * word)
+string::string(char * str)
 {
-    int l;
-    int done = 1;
-    char * newword;
+    words = str;
+    length = 0;
 
-    for (int z = 0; z < len(word); z++)
-    {
-        if (word[z] == ' ')
-        {
-            if (done == 1)
-            {
-                l = z;
-                done = 0;
-                break;
-            }
-        }
-    }
-
-    for (int y = 0; y < l; y++)
-        newword += word[y];
-
-    return newword;
-}
-
-void append(char * first, char * second)
-{
-    for (int z = 0; z < len(second); z++)
-        first += second[z];
-}
-
-/*
-
-string::string(char * w)
-{
-    words = *w;
-}
-
-int string::length()
-{
-    int length = 0;
-
-    while (mychar[length] != '\0')
+    while (words[length] != '\0')
         length++;
+}
 
+void string::set(char * str)
+{
+    words = str;
+    length = 0;
+
+    while (words[length] != '\0')
+        length++;
+}
+
+int string::size()
+{
     return length;
+}
+
+char * string::get()
+{
+    return words;
+}
+
+void string::append(char * other)
+{
+    for (int z = 0; z < len(other); z++)
+        words += other[z];
 }
 
 int string::startswith(char * start)
@@ -90,14 +64,14 @@ int string::startswith(char * start)
     if (length < clength)
         return 1;
 
-    bool _continue = 0;
+    int _continue = 0;
 
     for (int z = 0; z < length; z++)
     {
         if (z > clength)
             break;
 
-        if (mainchar[z] != start[z]) // doesn't work
+        if (words[z] != start[z]) // doesn't work
         {
             _continue = 1;
             break;
@@ -106,5 +80,3 @@ int string::startswith(char * start)
 
     return _continue;
 }
-
-*/
