@@ -11,7 +11,6 @@ int height = 200;
 // import files
 #include "kernel/stdint.h"
 #include "kernel/system.h"
-#include "kernel/outb.h"
 #include "kernel/outb.cpp"
 #include "kernel/inb.cpp"
 #include "kernel/outw.cpp"
