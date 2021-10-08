@@ -1,10 +1,9 @@
-#include "printf.h"
-
 int printf(char * mystring)
 {
     short *vidmem = (short *) 0xb8000;
     int last = 0;
     int white = 0x0F00;
+    int color = 0x0F00;
     int limit = 80 * 25;
     char * copydata;
     int z = 0;
@@ -41,16 +40,6 @@ int printf(char * mystring)
     }
 
     update_cursor();
-
-    return 0;
-}
-
-int print(char mystring, int loc, int bg)
-{
-    short *vidmem = (short *) 0xb8000;
-
-    for (int x = 0; video_x < len(mystring); x++)
-        vidmem[loc+x] = color | mystring[x];
 
     return 0;
 }

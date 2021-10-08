@@ -17,6 +17,7 @@ int height = 200;
 #include "kernel/outw.cpp"
 #include "kernel/cursor.cpp"
 #include "kernel/shutdown.cpp"
+
 #include "kernel/putpixel.cpp"
 
 #include "include/string.cpp"
@@ -24,16 +25,15 @@ int height = 200;
 // drivers
 // very bad code ahead
 #include "drivers/video/clear.cpp"
+// uncomment next include lines if you need them; otherwise os will not compile
+/*
 #include "drivers/keyboard.cpp"
 #include "drivers/mouse.cpp"
-
-
+*/
 #include "include/printf.cpp"
+
 
 extern "C" void kmain()
 {
-	short * loc = (short *)0xb8000;
-	// get century
-	outb(0x70, 0x09);
-	unsigned char h = inb(0x71);
+	printf(platform);
 }

@@ -1,5 +1,3 @@
-#include "clear.h"
-
 int clear()
 {
     short *vidmem = (short *) 0xb8000;
