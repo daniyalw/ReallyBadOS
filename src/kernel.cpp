@@ -27,12 +27,12 @@ int height = 200;
 // uncomment next include lines if you need them; otherwise os will not compile
 /*
 #include "drivers/keyboard.cpp"
-*/
 #include "drivers/mouse.cpp"
-
+*/
 #include "include/printf.cpp"
 
 
 extern "C" void kmain()
 {
+	printf("Hello, world!");
 }
