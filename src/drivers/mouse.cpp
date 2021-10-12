@@ -50,8 +50,9 @@ unsigned char mouse_read()
   return inb(0x60);
 }
 
-void mouse_handler() //struct regs *a_r (not used but just there)
+int mouse_handler() //struct regs *a_r (not used but just there)
 {
+  int r = 0;
   switch(mouse_cycle)
   {
     case 0:
@@ -64,11 +65,18 @@ void mouse_handler() //struct regs *a_r (not used but just there)
       break;
     case 2:
       mouse_byte[2]=inb(0x60);
-      mouse_x=mouse_byte[1];
-      mouse_y=mouse_byte[2];
+      unsigned char state = mouse_byte[0];
+      unsigned char d = mouse_byte[1];
+      signed char rel_x = d - ((state << 4) & 0x100);
+      d = mouse_byte[2];
+      signed char rel_y = d - ((state << 5) & 0x100);
+      mouse_x+=rel_x;
+      mouse_y-=rel_y;
       mouse_cycle=0;
+      r = 1;
       break;
   }
+  return r;
 }
 
 void mouse_install()

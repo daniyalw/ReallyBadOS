@@ -9,17 +9,52 @@ int len(char * words)
 
     return length;
 }
+char * rIntToAscii(int num, char * result){
+    if( num == 0 ) return result;
+    else{
+         result=rIntToAscii( num/10, result );
+         *result = '0'+num%10;
+        return result+1;
+    }
+}
 
-void itoa(int n, char str[]) {
-    int i, sign;
-    if ((sign = n) < 0) n = -n;
-    i = 0;
-    do {
-        str[i++] = n % 10 + '0';
-    } while ((n /= 10) > 0);
+void itoa(int num,char *output){
+  if (num==0){
+    *output++='0';
+    *output='\0';
+  }
+    else
+    {
+      if(num<0){
+        *output++='-';
+        num=-num;
+      }
+      *rIntToAscii(num, output) = '\0';
+    }
+}
 
-    if (sign < 0) str[i++] = '-';
-    str[i] = '\0';
+char * rIntToAscii(uint8_t num, char * result){
+    if( num == 0 ) return result;
+    else{
+         result=rIntToAscii( num/10, result );
+         *result = '0'+num%10;
+        return result+1;
+    }
+}
+
+void itoa(uint8_t num,char *output){
+  if (num==0){
+    *output++='0';
+    *output='\0';
+  }
+    else
+    {
+      if(num<0){
+        *output++='-';
+        num=-num;
+      }
+      *rIntToAscii(num, output) = '\0';
+    }
 }
 void atoi(char * str, int out) {
 	int length = len(str);
@@ -35,9 +70,6 @@ string::string(char * str)
 {
     words = str;
     length = 0;
-
-    while (words[length] != '\0')
-        length++;
 }
 
 void string::set(char * str)
@@ -63,29 +95,26 @@ void string::append(char * other)
 {
     for (int z = 0; z < len(other); z++)
         words += other[z];
+
+    length += len(other);
 }
 
 int string::startswith(char * start)
 {
-    int clength = len(start);
-    int length = len(words);
+    int cl = len(start);
 
-    if (length < clength)
+    if (cl > length)
+    {
         return 1;
-
-    int _continue = 0;
+    }
 
     for (int z = 0; z < length; z++)
     {
-        if (z > clength)
-            break;
-
-        if (words[z] != start[z]) // doesn't work
+        if (words[z] != start[z])
         {
-            _continue = 1;
-            break;
+            return 1;
         }
     }
 
-    return _continue;
+    return 0;
 }

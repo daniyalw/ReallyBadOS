@@ -9,7 +9,6 @@ boot:
 	mov ax, 0x3
 	int 0x10
 
-
 	mov [disk],dl
 
 	mov ah, 0x2    ;read sectors
@@ -60,7 +59,7 @@ DATA_SEG equ gdt_data - gdt_start
 times 510 - ($-$$) db 0
 dw 0xaa55
 copy_target:
-bits 32
+bits 64
 	hello: db "Booting...",0
 boot2:
 
@@ -74,7 +73,7 @@ boot2:
 
 	jmp .loop
 halt:
-	bits 32
+	bits 64
 	mov esp,kernel_stack_top
 	extern kmain
 	call kmain

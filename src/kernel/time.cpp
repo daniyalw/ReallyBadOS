@@ -5,6 +5,6 @@ static inline void io_wait()
 
 void sleep(int sec)
 {
-    for (int z = 0; z < (5000000 * sec); z++)
+    for (int z = 0; z < (10000000 * sec - 5); z++)
         io_wait();
 }
