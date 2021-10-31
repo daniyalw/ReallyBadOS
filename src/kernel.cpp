@@ -33,7 +33,6 @@ int cy = 0;
 #include "drivers/keyboard/keyboard.cpp"
 #include "drivers/mouse/mouse.cpp"
 #include "sys/timer.cpp"
-#include "sys/syscall.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {

@@ -29,29 +29,13 @@ iso:
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o main.iso isodir
 
+# graphics
 test:
 	i686-elf-as -o built/loader.o src/boot/loader.s
 	nasm -f elf32 -o built/gdt.o src/sys/descriptors/gdt.asm
 	nasm -f elf32 src/sys/interrupts/exception_handler.asm -o built/int.o
 	i686-elf-g++ -m32 -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra  built/loader.o src/kernel.cpp built/gdt.o built/int.o -o built/main.elf -T src/linker.ld
 	cp built/main.elf isodir/boot/main.elf
-	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o main.iso isodir
-	qemu-system-x86_64 -cdrom main.iso -soundhw pcspk
-
-t:
-	nasm -f elf32 src/boot/boot.asm -o built/loader.o
-	echo Built bootloader...
-	nasm -f elf32 src/sys/interrupts/exception_handler.asm -o built/int.o
-	echo Built IDT...
-	i686-elf-g++ -m32 -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra src/kernel.cpp built/int.o built/loader.o -o built/main.elf -T src/linker.ld
-
-	qemu-system-x86_64 -kernel built/main.elf -soundhw pcspk
-
-e:
-	i686-elf-as src/boot/loader.s -o built/loader.o
-	i686-elf-g++ -m32 -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra  src/kernel.cpp built/loader.o -o built/main.elf -T src/linker.ld
-	cp built/main.elf isodir/boot/main.bin
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o main.iso isodir
 	qemu-system-x86_64 -cdrom main.iso -soundhw pcspk
