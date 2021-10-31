@@ -1,124 +1,58 @@
-// define variables
-char * printed;
-int custom_cursor = 0;
-int cursor_x;
-int cursor_y;
-int video_x;
-int video_y;
-int width = 640;
-int height = 200;
-
-// import files
-#include "kernel/stdint.h"
-#include "kernel/system.h"
-#include "kernel/outb.cpp"
-#include "kernel/inb.cpp"
-#include "kernel/outw.cpp"
-#include "kernel/memory.cpp"
-//#include "kernel/cursor.cpp"
-#include "kernel/shutdown.cpp"
-//#include "kernel/time.cpp"
-//#include "kernel/rtc.cpp"
-
-//#include "kernel/putpixel.cpp"
-
-#include "include/string.cpp"
-
-// drivers
-// very bad code ahead
-//#include "drivers/video/clear.cpp"
-// uncomment next include lines if you need them; otherwise os will not compile
-
-#include "drivers/keyboard.cpp"
 /*
-#include "drivers/mouse.cpp"
+ Current bugs:
+    - General Protection Fault thrown after some time every time
+ */
 
-#include "include/printf.cpp"
-*/
+int text_x = 0;
+int text_y = 0;
+int cx = 0;
+int cy = 0;
 
-extern "C" void kmain()
-{
+#include <cpuid.h>
+#include "include/stdint.h"
+#include "sys/multiboot.h"
+#include "sys/io.cpp"
+#include "drivers/mouse/cursor.cpp"
+#include "drivers/keyboard/keyboard.h"
+#include "include/string.h"
+#include "include/string.cpp"
+#include "include/memory.cpp"
+#include "drivers/video/video.h"
+#include "drivers/video/video.cpp"
+#include "sys/descriptors/gdt.cpp"
+#include "sys/interrupts/idt.cpp"
+#include "sys/interrupts/isr.cpp"
+#include "sys/interrupts/interrupts.cpp"
+#include "drivers/video/graphics.h"
+#include "boot/boot.cpp"
+#include "sys/cpu/info.cpp"
+#include "sys/shutdown/shutdown.cpp"
+#include "drivers/video/graphics.cpp"
+#include "drivers/sound/sound.cpp"
+#include "shell/rc.cpp"
+#include "drivers/keyboard/keyboard.cpp"
+#include "drivers/mouse/mouse.cpp"
+#include "sys/timer.cpp"
+#include "sys/syscall.cpp"
 
-	unsigned char k;
-	string letter = string("");
-	short * vidmem = (short *)0xb8000;
-	int color = 0x0F00;
-	int x = 0;
-	int y = 0;
-	string last = string("");
-	string buffer = string("");
-	int b = 0;
-	int err = 0;
-	char * error;
-	char * buffsize;
+extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
+    if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
 
-	vidmem[0] = color | '>';
-	x++;
+        return; // stop any more kernel code running since it's not multiboot
+    }
 
-	while (true)
-	{
-		k = scanf();
-		if (k != 0)
-		{
-			get_key(k);
-			letter.set(returned);
-			if (returned == "\n")
-			{
-				y++;
-				x = 0;
-				if (buffer.startswith("shutdown") == 0)
-				{
-					shutdown();
-				}
-				else if (buffer.startswith("echo") == 0)
-				{
-					for (int z = 4; z < len(buffer.get()); z++)
-					{
-						vidmem[y*80+x] = color | buffer.get()[z-4];
-						x++;
-					}
-					y++;
-					vidmem[y*80+x] = color | '>';
-					x++;
-				}
-				else if (buffer.get() == "")
-				{
-					y++;
-					x = 0;
-					vidmem[y*80+x] = color | '>';
-					x++;
-				}
-				else
-				{
-					y++;
-					x = 0;
-					for (int z = 0; z < len("Error"); z++)
-					{
-						vidmem[x+y*80] = color | "Error"[z];
-						x++;
-					}
-					b = 0;
-					y++;
-					x = 0;
-					vidmem[y*80+x] = color | '>';
-					x++;
-					err++;
-
-				}
-				buffer.set("");
-			}
-			else if (returned != "")
-			{
-				vidmem[y*80+x] = color | letter.get()[0];
-				x++;
-				if (x > 80)
-				{
-					x = 0;
-					y++;
-				}
-				buffer.append(returned);
-			}
-		}
-	}
-
+    // for graphics
+    /*
+    framebuffer_addr = (void*)mbd->framebuffer_addr;
+    pitch = mbd->framebuffer_pitch;
+    width = (uint32_t)mbd->framebuffer_width;
+    height = (uint32_t)mbd->framebuffer_height;
+    bpp = mbd->framebuffer_bpp;
+    */
+    printf_centered("Terminal", 0);
+    printf("\n");
+    printf("> ");
+    init_descriptor_tables();
+    isr_install();
+    init_keyboard();
 }

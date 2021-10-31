@@ -1,18 +1,57 @@
-all:
-	nasm -f elf32 src/boot_sector.asm -o run/boot.o
-	i686-elf-g++ src/kernel.cpp run/boot.o -o run/ceneos-x86_64.bin -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra -T src/linker.ld
-	qemu-system-i386  run/ceneos-x86_64.bin
-
-r:
-	qemu-system-i386  run/ceneos-x86_64.bin
+boot = boot/boot.asm
 
 build:
-	nasm -f elf32 src/boot_sector.asm -o run/boot.o
-	i686-elf-g++ src/kernel.cpp run/boot.o -o run/ceneos-x86_64.bin -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra -T src/linker.ld
+	nasm -f elf32 -o built/loader.o src/${boot}
+	i686-elf-g++ -m32 -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra  src/kernel.cpp built/loader.o -o built/main.elf -T src/linker.ld
 
-length:
-	python3 check_src_lines.py
+r:
+	qemu-system-x86_64 -cdrom main.iso
+
+all:
+	nasm -f elf32 -o built/loader.o src/${boot}
+	nasm -f elf32 -o built/gdt.o src/sys/descriptors/gdt.asm
+	nasm -f elf32 src/sys/interrupts/exception_handler.asm -o built/int.o
+	i686-elf-as src/test.asm -o built/test.o
+	i686-elf-g++ -m32 -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra  built/loader.o src/kernel.cpp built/test.o built/gdt.o built/int.o -o built/main.elf -T src/linker.ld
+	cp built/main.elf isodir/boot/main.elf
+	cp grub.cfg isodir/boot/grub/grub.cfg
+	grub-mkrescue -o main.iso isodir
+	qemu-system-x86_64 -cdrom main.iso -soundhw pcspk -m 40M
 
 clean:
-	rm run/boot.o
-	rm run/ceneos-x86_64.bin
+	rm built/*
+	rm isodir/*.bin
+	rm isodir/*.cfg
+	rm main.iso
+
+iso:
+	cp built/main.elf isodir/boot/main.bin
+	cp grub.cfg isodir/boot/grub/grub.cfg
+	grub-mkrescue -o main.iso isodir
+
+test:
+	i686-elf-as -o built/loader.o src/boot/loader.s
+	nasm -f elf32 -o built/gdt.o src/sys/descriptors/gdt.asm
+	nasm -f elf32 src/sys/interrupts/exception_handler.asm -o built/int.o
+	i686-elf-g++ -m32 -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra  built/loader.o src/kernel.cpp built/gdt.o built/int.o -o built/main.elf -T src/linker.ld
+	cp built/main.elf isodir/boot/main.elf
+	cp grub.cfg isodir/boot/grub/grub.cfg
+	grub-mkrescue -o main.iso isodir
+	qemu-system-x86_64 -cdrom main.iso -soundhw pcspk
+
+t:
+	nasm -f elf32 src/boot/boot.asm -o built/loader.o
+	echo Built bootloader...
+	nasm -f elf32 src/sys/interrupts/exception_handler.asm -o built/int.o
+	echo Built IDT...
+	i686-elf-g++ -m32 -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra src/kernel.cpp built/int.o built/loader.o -o built/main.elf -T src/linker.ld
+
+	qemu-system-x86_64 -kernel built/main.elf -soundhw pcspk
+
+e:
+	i686-elf-as src/boot/loader.s -o built/loader.o
+	i686-elf-g++ -m32 -nostdlib -ffreestanding -std=c++11 -mno-red-zone -fno-exceptions -nostdlib -fno-rtti -Wall -Wextra  src/kernel.cpp built/loader.o -o built/main.elf -T src/linker.ld
+	cp built/main.elf isodir/boot/main.bin
+	cp grub.cfg isodir/boot/grub/grub.cfg
+	grub-mkrescue -o main.iso isodir
+	qemu-system-x86_64 -cdrom main.iso -soundhw pcspk
