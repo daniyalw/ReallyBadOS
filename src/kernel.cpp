@@ -1,7 +1,3 @@
-/*
- Current bugs:
-    - General Protection Fault thrown after some time every time
- */
 
 int text_x = 0;
 int text_y = 0;

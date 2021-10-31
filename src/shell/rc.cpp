@@ -6,6 +6,9 @@ void rc(char * b)
         - shutdown
         - cls
         - clear
+        - help
+        - copyright
+        - cpuinfo
     */
     if (startswith(b, "echo")) {
 
@@ -22,6 +25,27 @@ void rc(char * b)
 
         printf("CeneOS 1.0, Daniyal Warraich 2021");
 
+    } else if (startswith(b, "cpuinfo")) {
+
+        unsigned short mem = get_available_memory();
+        int mb;
+        char * m;
+        mb = get_mb(mem);
+        itoa(mb, m);
+        printf("Approximate Memory: ");
+        printf(m);
+        char * cpuname = get_cpu_name();
+        printf(" MB\nCPU name: ");
+        printf(cpuname);
+        char * vendor = get_vendor();
+        printf("\nVendor: ");
+        printf(vendor);
+        int model = get_model();
+        printf("\nModel: ");
+        char * mdl;
+        itoa(model, mdl);
+        printf(mdl);
+
     } else if (startswith(b, "shutdown")) {
 
         shutdown();
@@ -33,7 +57,7 @@ void rc(char * b)
 
     } else {
 
-        if (strcheckempty(b)) {
+        if (strisempty(b)) {
             text_y--;
             return;
         }

@@ -192,7 +192,7 @@ char * strip(char * s)
     }
 }
 
-bool strcheckempty(char * s)
+bool strisempty(char * s)
 {
     for (int z = 0; z < len(s); z++)
         if (s[z] != ' ')
