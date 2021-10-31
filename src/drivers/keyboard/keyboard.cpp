@@ -75,6 +75,12 @@ void get_key(unsigned char code)
             key = "]";
         else if (code == 0x9C)
             key = "\n";
+        else if (code == 0xBA)
+            shifted = 1;
+        else if (code == 0x2A)
+            shifted = 1;
+        else if (code == 0x36)
+            shifted = 1;
         else if (code == 0x9E)
             key = "a";
         else if (code == 0x9F)
@@ -124,6 +130,117 @@ void get_key(unsigned char code)
         else
             key = "";
     }
+    else
+    {
+        if (code == 0x82)
+            key = "!";
+        else if (code == 0x83)
+            key = "@";
+        else if (code == 0x84)
+            key = "#";
+        else if (code == 0x85)
+            key = "$";
+        else if (code == 0x86)
+            key = "%";
+        else if (code == 0x87)
+            key = "^";
+        else if (code == 0x88)
+            key = "&";
+        else if (code == 0x89)
+            key = "*";
+        else if (code == 0x8A)
+            key = "(";
+        else if (code == 0x8B)
+            key = ")";
+        else if (code == 0x8C)
+            key = "_";
+        else if (code == 0x8D)
+            key = "+";
+        else if (code == 0x8E)
+            key = "\b";
+        else if (code == 0x8F)
+            key = "\t";
+        else if (code == 0x90)
+            key = "Q";
+        else if (code == 0x91)
+            key = "W";
+        else if (code == 0x92)
+            key = "E";
+        else if (code == 0x93)
+            key = "R";
+        else if (code == 0x94)
+            key = "T";
+        else if (code == 0x95)
+            key = "Y";
+        else if (code == 0x96)
+            key = "U";
+        else if (code == 0x97)
+            key = "I";
+        else if (code == 0x98)
+            key = "O";
+        else if (code == 0x99)
+            key = "P";
+        else if (code == 0x9A)
+            key = "{";
+        else if (code == 0x9B)
+            key = "}";
+        else if (code == 0x9C)
+            key = "\n";
+        else if (code == 0xBA)
+            shifted = 0;
+        else if (code == 0xAA)
+            shifted = 0;
+        else if (code == 0xB6)
+            shifted = 0;
+        else if (code == 0x9E)
+            key = "A";
+        else if (code == 0x9F)
+            key = "S";
+        else if (code == 0xA0)
+            key = "D";
+        else if (code == 0xA1)
+            key = "F";
+        else if (code == 0xA2)
+            key = "G";
+        else if (code == 0xA3)
+            key = "H";
+        else if (code == 0xA4)
+            key = "J";
+        else if (code == 0xA5)
+            key = "K";
+        else if (code == 0xA6)
+            key = "L";
+        else if (code == 0xA7)
+            key = ":";
+        else if (code == 0xA8)
+            key = "\"";
+        else if (code == 0xA8)
+            key = "\n";
+        else if (code == 0xAC)
+            key = "Z";
+        else if (code == 0xAD)
+            key = "X";
+        else if (code == 0xAE)
+            key = "C";
+        else if (code == 0xAF)
+            key = "V";
+        else if (code == 0xB0)
+            key = "B";
+        else if (code == 0xB1)
+            key = "N";
+        else if (code == 0xB2)
+            key = "M";
+        else if (code == 0xB3)
+            key = "<";
+        else if (code == 0xB4)
+            key = ">";
+        else if (code == 0xb5)
+            key = "?";
+        else if (code == 0xB9)
+            key = " ";
+        else
+            key = "";
+    }
 
     if (key != "") {
         if (key == "\n")
@@ -151,6 +268,7 @@ void get_key(unsigned char code)
                     bf--;
                 }
             }
+
         }
     }
 }
