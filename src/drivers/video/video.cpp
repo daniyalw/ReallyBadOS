@@ -73,15 +73,7 @@ void printf(char *format, ...)
             text_y++;
             scroll();
         }
-        else if (c == '\b')
-        {
-            if (text_x > 2)
-            {
-                text_x--;
-                putchar(' ');
-                text_x--;
-            }
-        }
+
         else
         {
             putchar(c);

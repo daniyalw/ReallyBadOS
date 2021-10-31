@@ -33,6 +33,7 @@ int cy = 0;
 #include "drivers/keyboard/keyboard.cpp"
 #include "drivers/mouse/mouse.cpp"
 #include "sys/timer.cpp"
+#include "sys/time.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -48,6 +49,7 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     height = (uint32_t)mbd->framebuffer_height;
     bpp = mbd->framebuffer_bpp;
     */
+
     printf_centered("Terminal", 0);
     printf("\n");
     printf("> ");

@@ -15,7 +15,7 @@ all:
 	cp built/main.elf isodir/boot/main.elf
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o main.iso isodir
-	qemu-system-x86_64 -cdrom main.iso -soundhw pcspk
+	qemu-system-x86_64 -cdrom main.iso -soundhw pcspk -rtc base=localtime
 
 clean:
 	rm built/*

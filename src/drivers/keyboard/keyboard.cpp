@@ -251,9 +251,9 @@ void get_key(unsigned char code)
             bf = 0;
             printf("\n\n> ");
         } else {
-            printf(key);
             if (key != "\b")
             {
+                printf(key);
                 for (int z = 0; z < len(key); z++)
                 {
                     buff[z+bf] = key[z];
@@ -262,10 +262,14 @@ void get_key(unsigned char code)
             }
             else
             {
-                if (text_x > 1)
+                if (text_x > 2)
                 {
                     buff[bf] = ' ';
                     bf--;
+                    text_x--;
+                    putchar(' ');
+                    text_x--;
+                    set_cursor(text_y, text_x);
                 }
             }
 
