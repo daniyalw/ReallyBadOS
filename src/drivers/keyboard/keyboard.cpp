@@ -1,6 +1,6 @@
 void get_key(unsigned char code);
 
-static void scanf(registers_t regs)
+static void scan_key(registers_t regs)
 {
     current_key = inb(0x60);
     get_key(current_key);
@@ -74,13 +74,24 @@ void get_key(unsigned char code)
         else if (code == 0x9B)
             key = "]";
         else if (code == 0x9C)
+        {
             key = "\n";
+        }
         else if (code == 0xBA)
+        {
+            key = "";
             shifted = 1;
+        }
         else if (code == 0x2A)
+        {
             shifted = 1;
+            key = "";
+        }
         else if (code == 0x36)
+        {
             shifted = 1;
+            key = "";
+        }
         else if (code == 0x9E)
             key = "a";
         else if (code == 0x9F)
@@ -187,11 +198,20 @@ void get_key(unsigned char code)
         else if (code == 0x9C)
             key = "\n";
         else if (code == 0xBA)
+        {
             shifted = 0;
+            key = "";
+        }
         else if (code == 0xAA)
+        {
             shifted = 0;
+            key = "";
+        }
         else if (code == 0xB6)
+        {
             shifted = 0;
+            key = "";
+        }
         else if (code == 0x9E)
             key = "A";
         else if (code == 0x9F)
@@ -234,7 +254,7 @@ void get_key(unsigned char code)
             key = "<";
         else if (code == 0xB4)
             key = ">";
-        else if (code == 0xb5)
+        else if (code == 0xB5)
             key = "?";
         else if (code == 0xB9)
             key = " ";
@@ -279,5 +299,5 @@ void get_key(unsigned char code)
 
 
 void init_keyboard() {
-   register_interrupt_handler(IRQ1, scanf);
+   register_interrupt_handler(IRQ1, scan_key);
 }

@@ -48,12 +48,13 @@ void rc(char * b)
 
     } else if (startswith(b, "shutdown")) {
 
+        disable_interrupts();
         shutdown();
 
     } else if (startswith(b, "cls") || startswith(b, "clear")) {
 
         clear();
-        text_y = -1;
+        text_y = -2;
 
     } else {
 

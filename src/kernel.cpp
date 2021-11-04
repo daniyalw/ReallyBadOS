@@ -5,9 +5,12 @@ int cx = 0;
 int cy = 0;
 
 #include <cpuid.h>
+//#include "sys/panic.cpp"
 #include "include/stdint.h"
+#include "sys/time/timer.h"
 #include "sys/multiboot.h"
 #include "sys/io.cpp"
+#include "sys/cpu/info.cpp"
 #include "drivers/mouse/cursor.cpp"
 #include "drivers/keyboard/keyboard.h"
 #include "include/string.h"
@@ -21,19 +24,18 @@ int cy = 0;
 #include "sys/interrupts/interrupts.cpp"
 #include "drivers/video/graphics.h"
 #include "boot/boot.cpp"
-#include "sys/cpu/info.cpp"
 #include "sys/shutdown/shutdown.cpp"
 #include "drivers/video/graphics.cpp"
 #include "drivers/sound/sound.cpp"
-#include "shell/rc.cpp"
+#include "shell/runcommand.cpp"
 #include "drivers/keyboard/keyboard.cpp"
 #include "drivers/mouse/mouse.cpp"
-#include "sys/timer.cpp"
-#include "sys/time.cpp"
+#include "sys/time/timer.cpp"
+#include "sys/time/time.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
-
+        printf("Invalid magic number.");
         return; // stop any more kernel code running since it's not multiboot
     }
 
@@ -45,11 +47,8 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     height = (uint32_t)mbd->framebuffer_height;
     bpp = mbd->framebuffer_bpp;
     */
-
-    printf_centered("Terminal", 0);
-    printf("\n");
-    printf("> ");
     init_descriptor_tables();
     isr_install();
     init_keyboard();
+
 }

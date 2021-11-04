@@ -1,17 +1,15 @@
-u32 tick = 0;
-
 static void timer_callback(registers_t regs) {
     tick++;
-    clear();
-    printf("Tick: ");
+    ctick++;
 
-    char tick_ascii[256];
-    itoa(tick, tick_ascii);
-    printf(tick_ascii);
-    printf("\n");
+    if (ctick == hz) {
+        ctick = 0;
+        seconds++;
+    }
 }
 
 void init_timer(u32 freq) {
+    hz = freq;
     /* Install the function we just wrote */
     register_interrupt_handler(IRQ0, timer_callback);
 
@@ -23,4 +21,17 @@ void init_timer(u32 freq) {
     outb(0x43, 0x36); /* Command port */
     outb(0x40, low);
     outb(0x40, high);
+}
+
+void timer_wait(int ticks)
+{
+    unsigned long eticks;
+
+    eticks = tick + ticks;
+    while(tick < eticks);
+}
+
+void sleep(int secs)
+{
+    timer_wait(secs * hz);
 }

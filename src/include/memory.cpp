@@ -7,6 +7,13 @@ void memcpy(u8 *source, u8 *dest, int nb) {
     }
 }
 
+void memcpy(char *source, char *dest, int nb) {
+    int i;
+    for (i = 0; i < nb; i++) {
+        *(dest + i) = *(source + i);
+    }
+}
+
 void memset(u8 *dest, u8 val, u32 len) {
     u8 *temp = (u8 *)dest;
 
@@ -17,6 +24,7 @@ void memset(u8 *dest, u8 val, u32 len) {
 }
 
 u32 malloc(u32 size, int align, u32 *phys_addr) {
+
     /* Pages are aligned to 4K, or 0x1000 */
     if (align == 1 && (free_mem_addr & 0xFFFFF000)) {
         free_mem_addr &= 0xFFFFF000;

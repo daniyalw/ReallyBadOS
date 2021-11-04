@@ -14,6 +14,37 @@ void SetPixel(int x, int y, int color)
     where[2] = (color >> 16) & 255;  // RED
 }
 
+void draw_line_up(int x, int y, int l, int c)
+{
+    for (int z = y; z < y - l; z++)
+        SetPixel(x, z, c);
+}
+
+void draw_line_down(int x, int y, int l, int c)
+{
+    for (int z = y; z < y + l; z++)
+        SetPixel(x, z, c);
+}
+
+void draw_line_right(int x, int y, int l, int c)
+{
+    for (int z = x; z < x + l; z++)
+        SetPixel(z, y, c);
+}
+
+void draw_line_left(int x, int y, int l, int c)
+{
+    for (int z = x; z < x - l; z++)
+        SetPixel(z, y, c);
+}
+
+void draw_rect(int x, int y, int w, int h, int c)
+{
+    for (int z = x; z < x + w; z++)
+        for (int b = y; b < y + h; b++)
+            SetPixel(z, b, c);
+}
+
 void draw_empty_rect(int x, int y, int w, int h, int c)
 {
     for (int z = x; z < x + w; z++)
