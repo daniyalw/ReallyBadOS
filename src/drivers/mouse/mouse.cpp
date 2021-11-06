@@ -47,11 +47,39 @@ unsigned char mouse_read()
   return inb(0x60);
 }
 
-static void mouse_handler(registers_t regs) //struct regs *a_r (not used but just there)
+static int cursor[13][9] = {
+    {2, 0, 0, 0, 0, 0, 0, 0, 0},
+    {2, 2, 0, 0, 0, 0, 0, 0, 0},
+    {2, 1, 2, 0, 0, 0, 0, 0, 0},
+    {2, 1, 1, 2, 0, 0, 0, 0, 0},
+    {2, 1, 1, 1, 2, 0, 0, 0, 0},
+    {2, 1, 1, 1, 1, 2, 0, 0, 0},
+    {2, 1, 1, 1, 1, 1, 2, 0, 0},
+    {2, 1, 1, 1, 1, 1, 1, 2, 0},
+    {2, 1, 1, 1, 1, 1, 2, 2, 2},
+    {2, 1, 2, 2, 2, 1, 2, 0, 0},
+    {2, 2, 0, 0, 0, 2, 1, 2, 0},
+    {2, 0, 0, 0, 0, 0, 2, 2, 2},
+    {0, 0, 0, 0, 0, 0, 0, 2, 0},
+};
+
+void draw_cursor(int x, int y)
+{
+    for (int yy = 0; yy < 13; yy++)
+    {
+        for (int xx = 0; xx < 8; xx++)
+        {
+            if (cursor[yy][xx] == 1)
+                SetPixel(x+xx, y+yy, 0xFFFFFF);
+            else if (cursor[yy][xx] == 2)
+                SetPixel(x+xx, y+yy, 0);
+        }
+    }
+}
+
+static void mouse_handler(registers_t regs)
 {
   int r = 0;
-  unsigned char state, d;
-  signed char relx, rely;
 
   switch(mouse_cycle)
   {
@@ -65,8 +93,19 @@ static void mouse_handler(registers_t regs) //struct regs *a_r (not used but jus
       break;
     case 2:
       mouse_byte[2]=mouse_read();
-      mouse_x+=mouse_byte[1];
-      mouse_y-=mouse_byte[2];
+      oldx = mouse_x;
+      oldy = mouse_y;
+      mouse_x+=(int)mouse_byte[1];
+      mouse_y-=(int)mouse_byte[2];
+      if (mouse_x && (mouse_byte[0] & (1 << 4)))
+      {
+          mouse_x -= 0x100;
+      }
+
+      if (mouse_y && (mouse_byte[0] & (1 << 5)))
+      {
+          mouse_y += 0x100;
+      }
       mouse_cycle=0;
       r = 1;
       break;
@@ -74,25 +113,23 @@ static void mouse_handler(registers_t regs) //struct regs *a_r (not used but jus
         return;
   }
 
-  if (mouse_x > 80) {
-      mouse_x = 80;
+  if (mouse_x > 1024) {
+      mouse_x = 1024;
   } else if (mouse_x < 0) {
       mouse_x = 0;
   }
 
-  if (mouse_y > 25) {
-      mouse_y = 25;
+  if (mouse_y > 768) {
+      mouse_y = 768;
   } else if (mouse_y < 0) {
       mouse_y = 0;
   }
-  
-  clear();
-  short * v = (short *)0xb8000;
-  int c = 0x0F00;
+draw_rect(oldx, oldy, 20, 20, 0x9999);
+draw_cursor(mouse_x, mouse_y);
 
-  v[mouse_y * 80 + mouse_x] = c | 'X';
-
-
+if (mouse_byte[0] & 1) {
+    draw_rect(mouse_x+20, mouse_x+20, 5, 5, 0);
+}
 }
 
 void mouse_install()

@@ -11,9 +11,7 @@
 .long CHECKSUM
 .long 0, 0, 0, 0, 0 # skip flags
 .long 0 # graphics mode
-.long 1024 # width
-.long 768 # height
-.long 32 # bpp
+.long 0, 0, 0
 
 .section .text
 .global _start

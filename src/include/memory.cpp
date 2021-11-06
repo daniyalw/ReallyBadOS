@@ -38,6 +38,10 @@ u32 malloc(u32 size, int align, u32 *phys_addr) {
     return ret;
 }
 
+u32 malloc(u32 size) {
+    return malloc(size, 10, (u32 *)1);
+}
+
 int get_mb(int kibibyte) {
     int megabit = kibibyte * 0.008192;
     int megabyte = megabit/8;

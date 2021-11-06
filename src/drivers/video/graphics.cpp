@@ -62,9 +62,14 @@ void draw_empty_rect(int x, int y, int w, int h, int c)
     SetPixel(x+w, y+h, c);
 }
 
-void clearVideo()
+void clear_screen()
 {
     for (int z = 0; z < width; z++)
         for (int b = 0; b < height; b++)
             SetPixel(z, b, 0);
+}
+
+void center_printf(char * string, int y, int width)
+{
+    g_printf(string, width/2 - (len(string) * 4), y);
 }

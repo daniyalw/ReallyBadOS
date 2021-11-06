@@ -201,11 +201,28 @@ bool strisempty(char * s)
     return true;
 }
 
-void hextoa(uint8_t in, char * out)
+char * toupper(char * data)
 {
-    char index[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'}; //We use this to convert the number 0-15 into a character.
-    out[0] = '0';
-    out[1] = 'x';
-    out[2] = index[(in & 0xF0) >> 4];
-    out[3] = index[(in & 0x0F) >> 0];
+    char upper_letters[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+    char lower_letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
+    for (int z = 0; z < len(data); z++) {
+        for (int b = 0; z < 26; b++) {
+            if (data[z] == lower_letters[b]) {
+                data[z] = upper_letters[b];
+                break;
+            }
+        }
+    }
+
+    return data;
+}
+
+char * strchr(char * s, int c) {
+    while (*s != (char) c) {
+        if (!*s++) {
+            return NULL;
+        }
+    }
+    return s;
 }
