@@ -1,3 +1,4 @@
+#pragma once
 #include "gdt.h"
 
 void init_descriptor_tables()

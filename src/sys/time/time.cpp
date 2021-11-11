@@ -1,3 +1,5 @@
+#pragma once
+
 int s = 0;
 
 static void handle_time_int(registers_t regs)
@@ -88,7 +90,8 @@ void read_rtc() {
             last_wkday = weekday;
             last_century = century;
 
-            while (get_update_in_progress_flag());           // Make sure an update isn't in progress
+            while (get_update_in_progress_flag());
+
             second = get_RTC_register(0x00);
             minute = get_RTC_register(0x02);
             hour = get_RTC_register(0x04);
@@ -97,7 +100,7 @@ void read_rtc() {
             weekday = get_RTC_register(0x06);
             year = get_RTC_register(0x09);
 
-            if(century_register != 0) {
+            if (century_register != 0) {
                   century = get_RTC_register(century_register);
             }
 
@@ -106,8 +109,6 @@ void read_rtc() {
                (last_century != century) );
 
       registerB = get_RTC_register(0x0B);
-
-      // Convert BCD to binary values if necessary
 
       if (!(registerB & 0x04)) {
             second = (second & 0x0F) + ((second / 16) * 10);
@@ -121,14 +122,6 @@ void read_rtc() {
                   century = (century & 0x0F) + ((century / 16) * 10);
             }
       }
-
-      // Convert 12 hour clock to 24 hour clock if necessary
-      /*
-      if (!(registerB & 0x02) && (hour & 0x80)) {
-            hour = ((hour & 0x7F) + 12) % 24;
-      }
-      */
-      // Calculate the full (4-digit) year
 
       if(century_register != 0) {
             year += century * 100;

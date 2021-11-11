@@ -1,3 +1,4 @@
+#pragma once
 #include "string.h"
 
 char * rIntToAscii(int num, char * result) {
@@ -162,7 +163,7 @@ bool startswith(char * words, char * start)
 
 char * strcpy(char * d, char * s) // destination, source
 {
-    while (*d++ = *s++);
+    while ((*d++ = *s++));
     return d;
 }
 
@@ -178,6 +179,27 @@ void clears(char d[128])
         d[z] = ' ';
 }
 
+char * split(char * string, char key)
+{
+    char buffer[len(string)];
+    int buffer_size = 0;
+    for (int z = 0; z < len(string); z++)
+    {
+        if (string[z] == key)
+        {
+            for (int b = 0; b < len(string); b++)
+                buffer[b] = ' ';
+        }
+        else
+        {
+            buffer[buffer_size] = string[z];
+            buffer_size++;
+        }
+    }
+
+    return buffer;
+}
+
 char * strip(char * s)
 {
     char * r;
@@ -190,6 +212,8 @@ char * strip(char * s)
             rs++;
         }
     }
+
+    return r;
 }
 
 bool strisempty(char * s)

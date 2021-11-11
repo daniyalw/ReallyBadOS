@@ -1,4 +1,6 @@
-#include "mouse.h"
+#include "../../sys/io.cpp"
+#include "../../include/colors.cpp"
+#include "../../sys/shutdown/shutdown.cpp"
 
 //Mouse functions
 void mouse_wait(unsigned char a_type) //unsigned char
@@ -47,39 +49,45 @@ unsigned char mouse_read()
   return inb(0x60);
 }
 
-static int cursor[13][9] = {
-    {2, 0, 0, 0, 0, 0, 0, 0, 0},
-    {2, 2, 0, 0, 0, 0, 0, 0, 0},
-    {2, 1, 2, 0, 0, 0, 0, 0, 0},
-    {2, 1, 1, 2, 0, 0, 0, 0, 0},
-    {2, 1, 1, 1, 2, 0, 0, 0, 0},
-    {2, 1, 1, 1, 1, 2, 0, 0, 0},
-    {2, 1, 1, 1, 1, 1, 2, 0, 0},
-    {2, 1, 1, 1, 1, 1, 1, 2, 0},
-    {2, 1, 1, 1, 1, 1, 2, 2, 2},
-    {2, 1, 2, 2, 2, 1, 2, 0, 0},
-    {2, 2, 0, 0, 0, 2, 1, 2, 0},
-    {2, 0, 0, 0, 0, 0, 2, 2, 2},
-    {0, 0, 0, 0, 0, 0, 0, 2, 0},
-};
-
-void draw_cursor(int x, int y)
+void draw_cursor(int x, int y, bool right_c)
 {
-    for (int yy = 0; yy < 13; yy++)
+    int bx = x;
+    int by = y;
+    int color;
+
+    if (right_c)
     {
-        for (int xx = 0; xx < 8; xx++)
+        // display menu options here
+    }
+
+    for (int z = 0; z < cursor_height; z++)
+    {
+        for (int b = 0; b < cursor_width; b++)
         {
-            if (cursor[yy][xx] == 1)
-                SetPixel(x+xx, y+yy, 0xFFFFFF);
-            else if (cursor[yy][xx] == 2)
-                SetPixel(x+xx, y+yy, 0);
+            color = cursor_map[z][b];
+            if (color == 0)
+                color = back_buffer[by*1024+bx];
+            else if (color == 1)
+                color = cursor_inner;
+            else if (color == 2)
+                color = cursor_outer;
+            uint8_t * where = (uint8_t*)(by * pitch + (bx * (bpp/8)) + (uint32_t)framebuffer_addr);
+            where[0] = color & 255;
+            where[1] = (color >> 8) & 255;
+            where[2] = (color >> 16) & 255;
+            bx++;
         }
+        bx -= 12;
+        by++;
     }
 }
 
 static void mouse_handler(registers_t regs)
 {
   int r = 0;
+  int mx = 0;
+  int my = 0;
+  bool left, right, middle;
 
   switch(mouse_cycle)
   {
@@ -97,6 +105,7 @@ static void mouse_handler(registers_t regs)
       oldy = mouse_y;
       mouse_x+=(int)mouse_byte[1];
       mouse_y-=(int)mouse_byte[2];
+
       if (mouse_x && (mouse_byte[0] & (1 << 4)))
       {
           mouse_x -= 0x100;
@@ -106,6 +115,7 @@ static void mouse_handler(registers_t regs)
       {
           mouse_y += 0x100;
       }
+
       mouse_cycle=0;
       r = 1;
       break;
@@ -113,23 +123,56 @@ static void mouse_handler(registers_t regs)
         return;
   }
 
-  if (mouse_x > 1024) {
-      mouse_x = 1024;
-  } else if (mouse_x < 0) {
-      mouse_x = 0;
-  }
+    if (mouse_x > width) {
+        mouse_x = width;
+    } else if (mouse_x < 0) {
+        mouse_x = 0;
+    }
 
-  if (mouse_y > 768) {
-      mouse_y = 768;
-  } else if (mouse_y < 0) {
-      mouse_y = 0;
-  }
-draw_rect(oldx, oldy, 20, 20, 0x9999);
-draw_cursor(mouse_x, mouse_y);
+    if (mouse_y > height) {
+        mouse_y = height;
+    } else if (mouse_y < 0) {
+        mouse_y = 0;
+    }
 
-if (mouse_byte[0] & 1) {
-    draw_rect(mouse_x+20, mouse_x+20, 5, 5, 0);
-}
+    int col;
+    for (int z = 0; z < cursor_height; z++)
+        for (int b = 0; b < cursor_width; b++)
+        {
+            col = back_buffer[(oldy+z)*width+(oldx+b)];
+            uint8_t * where = (uint8_t*)((oldy+z) * pitch + ((oldx+b) * (bpp/8)) + (uint32_t)framebuffer_addr);
+            where[0] = col & 255;              // BLUE
+            where[1] = (col >> 8) & 255;   // GREEN
+            where[2] = (col >> 16) & 255;  // RED
+        }
+
+
+
+    // left click
+    if (mouse_byte[0] & 1) {
+        left = true;
+        // check if power off button was clicked
+        if ((mouse_x+mouse_y*width) >= 0) {
+            if ((mouse_x+mouse_y*width) <= (20*width)+20) {
+                shutdown_os();
+            }
+        }
+    }
+
+    // right click
+    if ((mouse_byte[0] >> 1) & 1) {
+        right = true;
+    }
+
+    // middle click
+    if ((mouse_byte[0] >> 2) & 1) {
+        middle = true;
+    }
+    draw_cursor(mouse_x, mouse_y, right);
+    right = false;
+    left = false;
+    middle = false;
+
 }
 
 void mouse_install()

@@ -1,3 +1,5 @@
+#include "../../include/string.h"
+
 void get_key(unsigned char code);
 
 static void scan_key(registers_t regs)

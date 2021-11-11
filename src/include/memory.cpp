@@ -1,3 +1,5 @@
+#pragma once
+
 #include "memory.h"
 
 void memcpy(u8 *source, u8 *dest, int nb) {

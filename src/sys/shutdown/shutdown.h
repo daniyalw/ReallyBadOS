@@ -1,1 +1,3 @@
-void shutdown();
+#pragma once
+
+void shutdown_os();

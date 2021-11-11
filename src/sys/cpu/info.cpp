@@ -1,3 +1,6 @@
+#pragma once
+#include "../io.cpp"
+
 static int get_model()
 {
     int ebx, unused;

@@ -1,3 +1,6 @@
+#pragma once
+#include "cursor.h"
+
 void update_cursor(int cursor_x, int cursor_y)
 {
 	unsigned short cursor_loc = cursor_y * 80 + cursor_x;

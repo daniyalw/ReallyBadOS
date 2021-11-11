@@ -1,3 +1,5 @@
+#pragma once
+
 static void play_sound(uint32_t nFrequence) {
    uint32_t Div;
    uint8_t tmp;

@@ -1,3 +1,6 @@
+#pragma once
+#include "../../include/string.h"
+
 static uint8_t font8x8_basic[128][8] = {
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // U+0020 (space)
     {0x18, 0x3C, 0x3C, 0x18, 0x18, 0x00, 0x18, 0x00}, // U+0021 (!)
@@ -235,6 +238,29 @@ void g_printf(char * string, int x, int y)
 }
 
 void font_draw(char cp, int x, int y)
+{
+    if (cp > 0x7f)
+        return;
+
+    for (int yy = 0; yy < 9; yy++)
+    {
+        for (int xx = 0; xx < 9; xx++)
+        {
+            bool set = xx != 8 && yy != 8 && (font8x8_basic[cp][yy] & (1 << xx));
+
+            if (set)
+            {
+                SetPixel(x + xx, y + yy, fg);
+            }
+            else
+            {
+                SetPixel(x + xx, y + yy, bg);
+            }
+        }
+    }
+}
+
+void font_draw(char cp, int x, int y, int fg, int bg)
 {
     if (cp > 0x7f)
         return;

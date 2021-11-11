@@ -1,14 +1,18 @@
+// MOUSE NOT WORKING
+
 int text_x = 0;
 int text_y = 0;
 int cx = 0;
 int cy = 0;
+int back_buffer[1024*768];
 
 #include <cpuid.h>
-//#include "sys/panic.cpp"
 #include "include/stdint.h"
 #include "sys/time/timer.h"
 #include "sys/multiboot.h"
 #include "sys/io.cpp"
+#include "sys/shutdown/shutdown.cpp"
+#include "drivers/mouse/mouse.h"
 #include "sys/cpu/info.cpp"
 #include "drivers/mouse/cursor.cpp"
 #include "drivers/keyboard/keyboard.h"
@@ -22,7 +26,6 @@ int cy = 0;
 #include "sys/interrupts/isr.cpp"
 #include "sys/interrupts/interrupts.cpp"
 #include "drivers/video/graphics.h"
-#include "sys/shutdown/shutdown.cpp"
 #include "drivers/sound/sound.cpp"
 #include "shell/runcommand.cpp"
 #include "drivers/video/font.cpp"
@@ -31,7 +34,9 @@ int cy = 0;
 #include "drivers/mouse/mouse.cpp"
 #include "sys/time/timer.cpp"
 #include "sys/time/time.cpp"
-//#include "drivers/video/render.cpp"
+#include "include/colors.cpp"
+#include "fs/fs.cpp"
+#include "include/list.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -41,7 +46,7 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
 
     // for graphics
-
+    /*
     framebuffer_addr = (void*)mbd->framebuffer_addr;
     pitch = mbd->framebuffer_pitch;
     width = (uint32_t)mbd->framebuffer_width;
@@ -52,10 +57,11 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
         for (int b = 0; b < width; b++)
             SetPixel(b, z, 0x9999);
 
+    create_shutdown_button();
+
     init_descriptor_tables();
     isr_install();
-
+    init_keyboard();
     mouse_install();
-
-    while (true);
+    */
 }

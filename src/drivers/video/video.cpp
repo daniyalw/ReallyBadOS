@@ -1,4 +1,7 @@
+#pragma once
 #include "video.h"
+#include "../mouse/cursor.cpp"
+
 
 void clear() {
     short * vidmem = (short *)0xb8000;
@@ -71,7 +74,9 @@ void printf(char *format, ...)
         {
             text_x = 0;
             text_y++;
-            scroll();
+
+            if (scroll_on)
+                scroll();
         }
 
         else

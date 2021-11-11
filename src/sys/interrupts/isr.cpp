@@ -1,42 +1,45 @@
+#pragma once
+#include "../../include/string.cpp"
+#include "../../drivers/video/video.cpp"
+#include "idt.h"
+#include "idt.cpp"
 #include "isr.h"
 
 isr_t interrupt_handlers[256];
 
-/* Can't do this with a loop because we need the address
- * of the function names */
 void isr_install() {
-    set_idt_gate(0, (u32)isr0);
-    set_idt_gate(1, (u32)isr1);
-    set_idt_gate(2, (u32)isr2);
-    set_idt_gate(3, (u32)isr3);
-    set_idt_gate(4, (u32)isr4);
-    set_idt_gate(5, (u32)isr5);
-    set_idt_gate(6, (u32)isr6);
-    set_idt_gate(7, (u32)isr7);
-    set_idt_gate(8, (u32)isr8);
-    set_idt_gate(9, (u32)isr9);
-    set_idt_gate(10, (u32)isr10);
-    set_idt_gate(11, (u32)isr11);
-    set_idt_gate(12, (u32)isr12);
-    set_idt_gate(13, (u32)isr13);
-    set_idt_gate(14, (u32)isr14);
-    set_idt_gate(15, (u32)isr15);
-    set_idt_gate(16, (u32)isr16);
-    set_idt_gate(17, (u32)isr17);
-    set_idt_gate(18, (u32)isr18);
-    set_idt_gate(19, (u32)isr19);
-    set_idt_gate(20, (u32)isr20);
-    set_idt_gate(21, (u32)isr21);
-    set_idt_gate(22, (u32)isr22);
-    set_idt_gate(23, (u32)isr23);
-    set_idt_gate(24, (u32)isr24);
-    set_idt_gate(25, (u32)isr25);
-    set_idt_gate(26, (u32)isr26);
-    set_idt_gate(27, (u32)isr27);
-    set_idt_gate(28, (u32)isr28);
-    set_idt_gate(29, (u32)isr29);
-    set_idt_gate(30, (u32)isr30);
-    set_idt_gate(31, (u32)isr31);
+    idt_set(0, (u32)isr0);
+    idt_set(1, (u32)isr1);
+    idt_set(2, (u32)isr2);
+    idt_set(3, (u32)isr3);
+    idt_set(4, (u32)isr4);
+    idt_set(5, (u32)isr5);
+    idt_set(6, (u32)isr6);
+    idt_set(7, (u32)isr7);
+    idt_set(8, (u32)isr8);
+    idt_set(9, (u32)isr9);
+    idt_set(10, (u32)isr10);
+    idt_set(11, (u32)isr11);
+    idt_set(12, (u32)isr12);
+    idt_set(13, (u32)isr13);
+    idt_set(14, (u32)isr14);
+    idt_set(15, (u32)isr15);
+    idt_set(16, (u32)isr16);
+    idt_set(17, (u32)isr17);
+    idt_set(18, (u32)isr18);
+    idt_set(19, (u32)isr19);
+    idt_set(20, (u32)isr20);
+    idt_set(21, (u32)isr21);
+    idt_set(22, (u32)isr22);
+    idt_set(23, (u32)isr23);
+    idt_set(24, (u32)isr24);
+    idt_set(25, (u32)isr25);
+    idt_set(26, (u32)isr26);
+    idt_set(27, (u32)isr27);
+    idt_set(28, (u32)isr28);
+    idt_set(29, (u32)isr29);
+    idt_set(30, (u32)isr30);
+    idt_set(31, (u32)isr31);
 
     // Remap the PIC
     outb(0x20, 0x11);
@@ -51,22 +54,22 @@ void isr_install() {
     outb(0xA1, 0x0);
 
     // Install the IRQs
-    set_idt_gate(32, (u32)irq0);
-    set_idt_gate(33, (u32)irq1);
-    set_idt_gate(34, (u32)irq2);
-    set_idt_gate(35, (u32)irq3);
-    set_idt_gate(36, (u32)irq4);
-    set_idt_gate(37, (u32)irq5);
-    set_idt_gate(38, (u32)irq6);
-    set_idt_gate(39, (u32)irq7);
-    set_idt_gate(40, (u32)irq8);
-    set_idt_gate(41, (u32)irq9);
-    set_idt_gate(42, (u32)irq10);
-    set_idt_gate(43, (u32)irq11);
-    set_idt_gate(44, (u32)irq12);
-    set_idt_gate(45, (u32)irq13);
-    set_idt_gate(46, (u32)irq14);
-    set_idt_gate(47, (u32)irq15);
+    idt_set(32, (u32)irq0);
+    idt_set(33, (u32)irq1);
+    idt_set(34, (u32)irq2);
+    idt_set(35, (u32)irq3);
+    idt_set(36, (u32)irq4);
+    idt_set(37, (u32)irq5);
+    idt_set(38, (u32)irq6);
+    idt_set(39, (u32)irq7);
+    idt_set(40, (u32)irq8);
+    idt_set(41, (u32)irq9);
+    idt_set(42, (u32)irq10);
+    idt_set(43, (u32)irq11);
+    idt_set(44, (u32)irq12);
+    idt_set(45, (u32)irq13);
+    idt_set(46, (u32)irq14);
+    idt_set(47, (u32)irq15);
 
     set_idt(); // Load with ASM
 }

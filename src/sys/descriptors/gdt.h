@@ -1,3 +1,5 @@
+#pragma once
+
 typedef struct
 {
    u16 limit_low;           // The lower 16 bits of the limit.

@@ -1,26 +1,17 @@
-#define KERNEL_CS 0x08
+#pragma once
 
-/* How every interrupt gate (handler) is defined */
 typedef struct {
-    u16 low_offset; /* Lower 16 bits of handler function address */
-    u16 sel; /* Kernel segment selector */
-    u8 always0;
-    /* First byte
-     * Bit 7: "Interrupt is present"
-     * Bits 6-5: Privilege level of caller (0=kernel..3=user)
-     * Bit 4: Set to 0 for interrupt gates
-     * Bits 3-0: bits 1110 = decimal 14 = "32 bit interrupt gate" */
-    u8 flags;
-    u16 high_offset; /* Higher 16 bits of handler function address */
+    uint16 l_offset;
+    uint16 sel;
+    uint8 always_zero;
+    uint8 flags;
+    uint16 h_offset;
 } __attribute__((packed)) idt_gate_t ;
 
-/* A pointer to the array of interrupt handlers.
- * Assembly instruction 'lidt' will read it */
 typedef struct {
-    u16 limit;
-    u32 base;
+    uint16 limit;
+    uint32 base;
 } __attribute__((packed)) idt_register_t;
 
-#define IDT_ENTRIES 256
-idt_gate_t idt[IDT_ENTRIES];
-idt_register_t idt_reg;
+idt_gate_t idt[256];
+idt_register_t idt_register;

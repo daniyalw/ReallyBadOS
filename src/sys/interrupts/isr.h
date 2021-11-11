@@ -1,3 +1,4 @@
+#pragma once
 
 // this is needed in C++
 extern "C" {

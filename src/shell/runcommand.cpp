@@ -1,9 +1,15 @@
+#pragma once
+#include "../include/string.cpp"
+#include "../drivers/video/video.cpp"
+#include "../sys/shutdown/shutdown.cpp"
+#include "../fs/fs.cpp"
+
 void rc(char * b)
 {
     /*
     Commands:
         - echo
-        - shutdown
+        - shutdown_os
         - cls
         - clear
         - help
@@ -19,7 +25,7 @@ void rc(char * b)
     } else if (startswith(b, "help")) {
 
         printf("CeneOS 1.0, Daniyal Warraich\n");
-        printf("Available commands:\n    - echo\n    - shutdown\n    - clear");
+        printf("Available commands:\n    - echo\n    - shutdown_os\n    - clear");
 
     } else if (startswith(b, "copyright")) {
 
@@ -49,12 +55,19 @@ void rc(char * b)
     } else if (startswith(b, "shutdown")) {
 
         disable_interrupts();
-        shutdown();
+        shutdown_os();
 
     } else if (startswith(b, "cls") || startswith(b, "clear")) {
 
         clear();
         text_y = -2;
+
+    } else if (startswith(b, "mk")) {
+
+        char n[10];
+
+        create_file(n, "");
+        printf("Successfully created file %s!", n);
 
     } else {
 

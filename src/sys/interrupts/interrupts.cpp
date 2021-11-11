@@ -1,3 +1,6 @@
+#pragma once
+#include "../io.cpp"
+
 static inline bool are_interrupts_enabled()
 {
     unsigned long flags;

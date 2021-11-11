@@ -1,3 +1,7 @@
+#pragma once
+#include "../io.cpp"
+#include "../interrupts/isr.cpp"
+
 static void timer_callback(registers_t regs) {
     tick++;
     ctick++;

@@ -1,3 +1,5 @@
+#pragma once
+
 int shifted = 0;
 char * returned;
 unsigned char current_key;
