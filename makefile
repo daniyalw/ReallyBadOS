@@ -15,7 +15,7 @@ all:
 	cp built/main.o isodir/boot/main.o
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o ceneos-x86_64.iso isodir
-	qemu-system-x86_64 -cdrom ceneos-x86_64.iso -soundhw pcspk
+	qemu-system-x86_64 -cdrom ceneos-x86_64.iso -soundhw pcspk -rtc base=localtime
 
 clean:
 	rm *.iso

@@ -1,14 +1,3 @@
-#include "../../include/colors.cpp"
-
-typedef struct {
-    bool left_click;
-    bool middle_click;
-    bool right_click;
-    int moved_x;
-    int moved_y;
-    int x;
-    int y;
-} mouse_event;
 
 
 unsigned char mouse_cycle=0;     //unsigned char

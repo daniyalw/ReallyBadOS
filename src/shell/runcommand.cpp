@@ -1,7 +1,7 @@
 #pragma once
 #include "../include/string.cpp"
 #include "../drivers/video/video.cpp"
-#include "../sys/shutdown/shutdown.cpp"
+#include "../sys/power/shutdown.cpp"
 #include "../fs/fs.cpp"
 
 void rc(char * b)

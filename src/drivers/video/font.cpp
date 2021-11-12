@@ -201,6 +201,8 @@ static char font_ascii[129] = {
 static int fg = 0xffffff;
 static int bg = 0x000000;
 
+void font_draw(char cp, int x, int y, int fg, int bg);
+
 void font_draw(char cp, int x, int y);
 
 void font_set_fg(int color) {
@@ -223,6 +225,32 @@ void g_putchar(char ch, int x, int y)
         }
 
     font_draw(no, x, y);
+}
+
+void g_putchar(char ch, int x, int y, int fg, int bg)
+{
+    char no;
+
+    for (int z = 0; z < 128; z++)
+        if (font_ascii[z] == ch)
+        {
+            no = (char)z;
+            break;
+        }
+
+    font_draw(no, x, y, fg, bg);
+}
+
+void g_printf(char * string, int x, int y, int fg, int bg)
+{
+    int xx = x;
+    int yy = y;
+
+    for (int z = 0; z < len(string); z++)
+    {
+        g_putchar(string[z], xx, yy, fg, bg);
+        xx += 9;
+    }
 }
 
 void g_printf(char * string, int x, int y)

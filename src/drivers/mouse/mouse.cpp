@@ -1,6 +1,4 @@
-#include "../../sys/io.cpp"
 #include "../../include/colors.cpp"
-#include "../../sys/shutdown/shutdown.cpp"
 
 //Mouse functions
 void mouse_wait(unsigned char a_type) //unsigned char
@@ -151,12 +149,11 @@ static void mouse_handler(registers_t regs)
     // left click
     if (mouse_byte[0] & 1) {
         left = true;
+
         // check if power off button was clicked
-        if ((mouse_x+mouse_y*width) >= 0) {
-            if ((mouse_x+mouse_y*width) <= (20*width)+20) {
-                shutdown_os();
-            }
-        }
+        if (mouse_x < 20 && mouse_y < 20)
+            shutdown_os();
+
     }
 
     // right click
@@ -168,11 +165,10 @@ static void mouse_handler(registers_t regs)
     if ((mouse_byte[0] >> 2) & 1) {
         middle = true;
     }
-    draw_cursor(mouse_x, mouse_y, right);
     right = false;
     left = false;
     middle = false;
-
+    draw_cursor(mouse_x, mouse_y, right);
 }
 
 void mouse_install()

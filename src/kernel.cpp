@@ -11,15 +11,19 @@ int back_buffer[1024*768];
 #include "sys/time/timer.h"
 #include "sys/multiboot.h"
 #include "sys/io.cpp"
-#include "sys/shutdown/shutdown.cpp"
+#include "sys/time/timer.h"
+#include "include/string.h"
+#include "include/memory.h"
+#include "drivers/video/video.h"
+#include "sys/acpi/acpi.cpp"
+#include "sys/power/shutdown.cpp"
+#include "sys/power/reboot.cpp"
 #include "drivers/mouse/mouse.h"
 #include "sys/cpu/info.cpp"
 #include "drivers/mouse/cursor.cpp"
 #include "drivers/keyboard/keyboard.h"
-#include "include/string.h"
 #include "include/string.cpp"
 #include "include/memory.cpp"
-#include "drivers/video/video.h"
 #include "drivers/video/video.cpp"
 #include "sys/descriptors/gdt.cpp"
 #include "sys/interrupts/idt.cpp"
@@ -37,6 +41,9 @@ int back_buffer[1024*768];
 #include "include/colors.cpp"
 #include "fs/fs.cpp"
 #include "include/list.cpp"
+#include "gui/window.cpp"
+#include "gui/canvas.cpp"
+#include "gui/label.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -44,24 +51,42 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
         return; // stop any more kernel code running since it's not multiboot
     }
 
-
     // for graphics
-    /*
     framebuffer_addr = (void*)mbd->framebuffer_addr;
     pitch = mbd->framebuffer_pitch;
     width = (uint32_t)mbd->framebuffer_width;
     height = (uint32_t)mbd->framebuffer_height;
     bpp = mbd->framebuffer_bpp;
 
+    // background
     for (int z = 0; z < height; z++)
         for (int b = 0; b < width; b++)
             SetPixel(b, z, 0x9999);
 
+    // display shutdown button on top left
     create_shutdown_button();
 
+    // initialize ACPI
+    initAcpi();
+
+    // GDT enable
     init_descriptor_tables();
+    // IDT & interrupts enable
     isr_install();
+    // mouse & keyboard
     init_keyboard();
     mouse_install();
-    */
+
+    // initialize gui
+    init_gui();
+
+    // basic gui
+    Window window = Window();
+    window.draw();
+
+    Label label = Label(window, "Hello!", 3, 0, rgb(255, 0, 0));
+    label.draw();
+
+    // if while loop wasn't here than interrupts would shut off
+    while (true);
 }
