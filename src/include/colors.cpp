@@ -12,13 +12,14 @@ colors_t get_colors(int color)
 
 int mix(int color1, int color2)
 {
-    colors_t c1, c2, c3;
+    colors_t c1, c2;
     int r, g, b;
-    int c;
     c1 = get_colors(color1);
     c2 = get_colors(color2);
-    c = rgb(c1.red-c2.red, c1.green-c2.green, c1.blue-c2.blue);
-    return rgb(r, g, b);
+    r = (c1.red + c2.red)/2;
+    g = (c1.green + c2.green)/2;
+    b = (c1.blue + c2.blue)/2;
+    return get_color(r, g, b);
 }
 
 int get_color(int red, int green, int blue)
