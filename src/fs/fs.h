@@ -1,27 +1,32 @@
 #pragma once
 
-#define R0 0
-#define R1 1
-#define R2 2
-#define R3 3
+#define P0 0
+#define P1 1
+#define P2 2
+#define P3 3
 
-typedef struct {
+struct File {
     char * name;
-    char * contents;
+    char * data;
     int id;
-    int permission_level;
-} file_t;
+    int permission;
+};
 
-file_t * files[128];
-int file_count = 0;
+struct Filesystem {
+    File * files;
+    int file_number;
+};
 
-void fs_init();
-file_t * create_file(char * name, char * data);
-file_t * kcreate_file(char * name, char * data);
-void rename_file(char * name);
-void kdelete_file(char * name);
-void krename_file(char * name);
-file_t * kopen_file(char * name);
-void save_file(file_t * file);
-file_t * get_file_from_name(char * name);
-void delete_file(char * name);
+Filesystem fs;
+
+File open_file(char * fname);
+File kopen_file(char * fname);
+void write_file(char * fname, char * newdata);
+void kwrite_file(char * fname, char * newdata);
+void create_file(char * fname, char * fdata);
+void kcreate_file(char * fname, char * fdata);
+void krename_file(char * fname, char * newname);
+void rename_file(char * fname, char * newname);
+void kappend_file(char * fname, char * newdata);
+void append_file(char * fname, char * newdata);
+void log(char * data);

@@ -16,6 +16,20 @@ void memcpy(char *source, char *dest, int nb) {
     }
 }
 
+void memcpy(u8 *source, char *dest, int nb) {
+    int i;
+    for (i = 0; i < nb; i++) {
+        *(dest + i) = *(source + i);
+    }
+}
+
+void memcpy(char *source, u8 *dest, int nb) {
+    int i;
+    for (i = 0; i < nb; i++) {
+        *(dest + i) = *(source + i);
+    }
+}
+
 void memset(u8 *dest, u8 val, u32 len) {
     u8 *temp = (u8 *)dest;
 

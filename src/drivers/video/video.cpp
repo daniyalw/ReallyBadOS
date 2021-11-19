@@ -135,7 +135,7 @@ void printf(char *format, ...)
             }
         }
     }
-    set_cursor(text_y, text_x);
+    set_hardware_cursor(text_y, text_x);
 }
 
 void printf_centered(char * s, int line_no)

@@ -1,7 +1,5 @@
 #pragma once
 
-int s = 0;
-
 static void handle_time_int(registers_t regs)
 {
     s++;
@@ -24,60 +22,41 @@ void enable_time()
     enable_interrupts();
 }
 
-#define CURRENT_YEAR        2021                            // Change this each year!
-
-int century_register = 0x00;                                // Set by ACPI table parsing code if possible
-
-unsigned char second;
-unsigned char minute;
-unsigned char hour;
-unsigned char day;
-unsigned char month;
-unsigned int year;
-unsigned char weekday;
-char * weekdays[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-char * months[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-
-enum {
-      cmos_address = 0x70,
-      cmos_data    = 0x71
-};
-
 int get_update_in_progress_flag() {
       outb(cmos_address, 0x0A);
       return (inb(cmos_data) & 0x80);
 }
 
-unsigned char get_RTC_register(int reg) {
+int get_RTC_register(int reg) {
       outb(cmos_address, reg);
       return inb(cmos_data);
 }
 
 void read_rtc() {
-      unsigned char century;
-      unsigned char last_second;
-      unsigned char last_minute;
-      unsigned char last_hour;
-      unsigned char last_day;
-      unsigned char last_month;
-      unsigned char last_year;
-      unsigned char last_century;
-      unsigned char registerB;
-      unsigned char last_wkday;
+      int century;
+      int last_second;
+      int last_minute;
+      int last_hour;
+      int last_day;
+      int last_month;
+      int last_year;
+      int last_century;
+      int registerB;
+      int last_wkday;
 
       // Note: This uses the "read registers until you get the same values twice in a row" technique
       //       to avoid getting dodgy/inconsistent values due to RTC updates
 
       while (get_update_in_progress_flag());                // Make sure an update isn't in progress
-      second = get_RTC_register(0x00);
-      minute = get_RTC_register(0x02);
-      hour = get_RTC_register(0x04);
-      day = get_RTC_register(0x07);
-      weekday = get_RTC_register(0x06);
-      month = get_RTC_register(0x08);
-      year = get_RTC_register(0x09);
+      second = (int)get_RTC_register(0x00);
+      minute = (int)get_RTC_register(0x02);
+      hour = (int)get_RTC_register(0x04);
+      day = (int)get_RTC_register(0x07);
+      weekday = (int)get_RTC_register(0x06);
+      month = (int)get_RTC_register(0x08);
+      year = (int)get_RTC_register(0x09);
       if(century_register != 0) {
-            century = get_RTC_register(century_register);
+            century = (int)get_RTC_register(century_register);
       }
 
       do {
@@ -92,23 +71,23 @@ void read_rtc() {
 
             while (get_update_in_progress_flag());
 
-            second = get_RTC_register(0x00);
-            minute = get_RTC_register(0x02);
-            hour = get_RTC_register(0x04);
-            day = get_RTC_register(0x07);
-            month = get_RTC_register(0x08);
-            weekday = get_RTC_register(0x06);
-            year = get_RTC_register(0x09);
+            second = (int)get_RTC_register(0x00);
+            minute = (int)get_RTC_register(0x02);
+            hour = (int)get_RTC_register(0x04);
+            day = (int)get_RTC_register(0x07);
+            month = (int)get_RTC_register(0x08);
+            weekday = (int)get_RTC_register(0x06);
+            year = (int)get_RTC_register(0x09);
 
             if (century_register != 0) {
-                  century = get_RTC_register(century_register);
+                  century = (int)get_RTC_register(century_register);
             }
 
       } while( (last_second != second) || (last_minute != minute) || (last_hour != hour) ||
                (last_day != day) || (last_month != month) || (last_year != year) ||
                (last_century != century) );
 
-      registerB = get_RTC_register(0x0B);
+      registerB = (int)get_RTC_register(0x0B);
 
       if (!(registerB & 0x04)) {
             second = (second & 0x0F) + ((second / 16) * 10);
@@ -129,4 +108,5 @@ void read_rtc() {
             year += (CURRENT_YEAR / 100) * 100;
             if(year < CURRENT_YEAR) year += 100;
       }
+    seconds = second;
 }

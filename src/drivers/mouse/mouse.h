@@ -1,4 +1,4 @@
-
+#pragma once
 
 unsigned char mouse_cycle=0;     //unsigned char
 unsigned char mouse_byte[3];    //signed char
@@ -9,6 +9,8 @@ int oldy = 0;
 bool right_clicked = false;
 bool left_clicked = false;
 bool middle_clicked = false;
+int menux = 0, menuy = 0;
+int movedx = 0, movedy = 0;
 
 void mouse_install();
 int mouse_handler();
@@ -19,8 +21,8 @@ void mouse_wait(unsigned char a_type);
 
 int cursor_height = 19;
 int cursor_width = 12;
-int cursor_inner = 0;
-int cursor_outer = 0xffffff;
+int cursor_inner = 0xffffff;
+int cursor_outer = 0;
 int cursor_map[19][12] =
 {
     {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},

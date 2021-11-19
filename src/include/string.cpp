@@ -169,7 +169,7 @@ char * strcpy(char * d, char * s) // destination, source
 
 char * strcat(char * d, char * s)
 {
-    strcat(d + len(d), s);
+    strcpy(d + len(d), s);
     return d;
 }
 
@@ -236,6 +236,21 @@ char * toupper(char * data)
                 data[z] = upper_letters[b];
                 break;
             }
+        }
+    }
+
+    return data;
+}
+
+char toupper(char data)
+{
+    char upper_letters[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+    char lower_letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
+    for (int b = 0; b < 26; b++) {
+        if (data == lower_letters[b]) {
+            data = upper_letters[b];
+            break;
         }
     }
 

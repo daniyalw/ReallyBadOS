@@ -1,118 +1,175 @@
 #pragma once
-#include "../include/string.cpp"
 #include "fs.h"
 
-file_t * create_file(char * name, char * data)
+File open_file(char * fname)
 {
-	for (int z = 0; z < file_count; z++)
-		if (files[z]->name == name)
-			// here the name is the same so return
-			return 0;
+    // loop through files
+    for (int z = 0; z < sizeof(fs.files); z++)
+    {
+        if ((fs.files[z].name == fname) && (fs.files[z].permission == P3))
+        {
+            return fs.files[z];
+        }
+    }
 
-	file_t * file;
-	file->name = name;
-	file->id = file_count;
-	file_count++;
-	file->permission_level = R3;
-	file->contents = data;
-	save_file(file);
-	return file;
+    // in case there's no file like what is being requested
+    File f;
+    f.name = "NULL";
+    f.data = "NULL";
+    f.id = 0;
+    f.permission = P3;
+    return f;
 }
 
-file_t * kcreate_file(char * name, char * data)
+File kopen_file(char * fname)
 {
-	for (int z = 0; z < file_count; z++)
-		if (files[z]->name == name)
-			// here the name is the same so return
-			return 0;
+    // loop through files
+    for (int z = 0; z < sizeof(fs.files); z++)
+    {
+        if (fs.files[z].name == fname)
+        {
+            return fs.files[z];
+        }
+    }
 
-	file_t * file;
-	file->name = name;
-	file->id = file_count;
-	file_count++;
-	file->permission_level = R0;
-	file->contents = data;
-	save_file(file);
-	return file;
+    // in case there's no file like what is being requested
+    File f;
+    f.name = "NULL";
+    f.data = "NULL";
+    f.id = 0;
+    f.permission = P3;
+    return f;
 }
 
-void rename_file(char * name)
+void write_file(char * fname, char * newdata)
 {
-	file_t * file = get_file_from_name(name);
+    // check if there is file with same name
+    File f = open_file(fname);
 
-	if (file->permission_level < 3)
-		return;
-		
-	file->name = name;
+    // there is file by same name
+    if (f.name != "NULL")
+    {
+        if (f.permission == P3)
+        {
+            f.data = newdata;
+            fs.files[f.id] = f;
+        }
+    }
+    // we simply create a new file if there is no file
+    else
+    {
+        create_file(fname, newdata);
+    }
 }
 
-void krename_file(char * name)
+void kwrite_file(char * fname, char * newdata)
 {
-	file_t * file = get_file_from_name(name);
+    // check if there is file with same name
+    File f = open_file(fname);
 
-	file->name = name;
+    // there is file by same name
+    if (f.name != "NULL")
+    {
+        f.data = newdata;
+        fs.files[f.id] = f;
+    }
+    // we simply create a new file if there is no file
+    else
+    {
+        create_file(fname, newdata);
+    }
 }
 
-void save_file(file_t * file)
+void create_file(char * fname, char * fdata)
 {
-	files[file->id] = file;
+    // check if there is a file by the same name
+    File f = open_file(fname);
+
+    // if there is, return
+    if (f.name != "NULL")
+        return;
+
+    // by here it is determined there is no such file
+    f.name = fname;
+    f.data = fdata;
+    f.id = fs.file_number;
+    f.permission = P3;
+    fs.files[fs.file_number] = f;
+    fs.file_number++;
 }
 
-file_t * get_file_from_name(char * name)
+void kcreate_file(char * fname, char * fdata)
 {
-	file_t * file;
+    // check if there is a file by the same name
+    File f = open_file(fname);
 
-	for (int z = 0; z < file_count; z++)
-	{
-		if (files[z]->name == name)
-			return files[z];
-	}
+    // if there is, return
+    if (f.name != "NULL")
+        return;
+
+    // by here it is determined there is no such file
+    f.name = fname;
+    f.data = fdata;
+    f.id = fs.file_number;
+    f.permission = P0;
+    fs.files[fs.file_number] = f;
+    fs.file_number++;
 }
 
-file_t * open_file(char * name)
+void rename_file(char * fname, char * newname)
 {
-	file_t * file = get_file_from_name(name);
+    File f = open_file(fname);
 
-	if (file->permission_level < 3)
-	{
-		file_t * f;
-		f->name = "NULL";
-		f->contents = "NULL";
-		f->id = 1000000;
-		f->permission_level = 3;
-		return f;
-	}
+    if (f.name == "NULL" || f.permission != P3)
+        return;
 
-	return file;
+    f.name = newname;
+
+    fs.files[f.id] = f;
 }
 
-file_t * kopen_file(char * name)
+void krename_file(char * fname, char * newname)
 {
-	file_t * file = get_file_from_name(name);
-	return file;
+    File f = open_file(fname);
+
+    if (f.name == "NULL")
+        return;
+
+    f.name = newname;
+
+    fs.files[f.id] = f;
 }
 
-void delete_file(char * name)
+void kappend_file(char * fname, char * newdata)
 {
-	file_t * file = get_file_from_name(name);
+    File f = open_file(fname);
 
-	if (file->permission_level < 3)
-	{
-		return;
-	}
+    if (f.name == "NULL")
+        return;
 
-	files[file->id] = 0;
+    char * nd = append(f.data, newdata);
+    write_file(fname, nd);
 }
 
-void kdelete_file(char * name)
+void append_file(char * fname, char * newdata)
 {
-	file_t * file = get_file_from_name(name);
+    File f = open_file(fname);
 
-	files[file->id] = 0;
+    if (f.name == "NULL" || f.permission != P3)
+        return;
+
+    char *nd = append(f.data, newdata);
+    int nd_size = 0;
+
+    write_file(fname, nd);
 }
 
-void fs_init()
+void log(char * data)
 {
-	for (int z = 0; z < 128; z++)
-		files[z] = 0;
+    kwrite_file(".log", data);
+}
+
+void log_start()
+{
+    kcreate_file(".log", "");
 }

@@ -26,7 +26,7 @@ typedef unsigned int uintptr_t;
 #define true 1
 #define false 0
 
-#define NULL nullptr
+#define NULL 0
 
 #define low_16(address) (u16)((address) & 0xFFFF)
 #define high_16(address) (u16)(((address) >> 16) & 0xFFFF)

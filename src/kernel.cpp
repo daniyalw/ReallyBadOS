@@ -1,16 +1,18 @@
-// MOUSE NOT WORKING
+// FS NOT WORKING
 
 int text_x = 0;
 int text_y = 0;
 int cx = 0;
 int cy = 0;
-int back_buffer[1024*768];
+int back_buffer[1024*768]; // back buffer for gui
 
 #include <cpuid.h>
+//#include "sys/background.cpp"
 #include "include/stdint.h"
 #include "sys/time/timer.h"
 #include "sys/multiboot.h"
 #include "sys/io.cpp"
+#include "include/math.cpp"
 #include "sys/time/timer.h"
 #include "include/string.h"
 #include "include/memory.h"
@@ -19,6 +21,7 @@ int back_buffer[1024*768];
 #include "sys/power/shutdown.cpp"
 #include "sys/power/reboot.cpp"
 #include "drivers/mouse/mouse.h"
+#include "sys/time/time.h"
 #include "sys/cpu/info.cpp"
 #include "drivers/mouse/cursor.cpp"
 #include "drivers/keyboard/keyboard.h"
@@ -36,14 +39,12 @@ int back_buffer[1024*768];
 #include "drivers/video/graphics.cpp"
 #include "drivers/keyboard/keyboard.cpp"
 #include "drivers/mouse/mouse.cpp"
-#include "sys/time/timer.cpp"
 #include "sys/time/time.cpp"
+#include "sys/time/timer.cpp"
 #include "include/colors.cpp"
-#include "fs/fs.cpp"
 #include "include/list.cpp"
-#include "gui/window.cpp"
-#include "gui/canvas.cpp"
-#include "gui/label.cpp"
+#include "fs/fs.cpp"
+//#include "sys/background.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -52,19 +53,12 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     }
 
     // for graphics
+    /*
     framebuffer_addr = (void*)mbd->framebuffer_addr;
     pitch = mbd->framebuffer_pitch;
     width = (uint32_t)mbd->framebuffer_width;
     height = (uint32_t)mbd->framebuffer_height;
     bpp = mbd->framebuffer_bpp;
-
-    // background
-    for (int z = 0; z < height; z++)
-        for (int b = 0; b < width; b++)
-            SetPixel(b, z, 0x9999);
-
-    // display shutdown button on top left
-    create_shutdown_button();
 
     // initialize ACPI
     initAcpi();
@@ -77,16 +71,15 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     init_keyboard();
     mouse_install();
 
-    // initialize gui
-    init_gui();
+    init_timer(100);
+    */
+    initAcpi();
+    acpiEnable();
+    log_start();
 
-    // basic gui
-    Window window = Window();
-    window.draw();
+    // GDT enable
+    init_descriptor_tables();
+    // IDT & interrupts enable
+    isr_install();
 
-    Label label = Label(window, "Hello!", 3, 0, rgb(255, 0, 0));
-    label.draw();
-
-    // if while loop wasn't here than interrupts would shut off
-    while (true);
 }

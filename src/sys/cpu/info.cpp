@@ -35,6 +35,27 @@ char * get_cpu_name()
     return name;
 }
 
+bool sixtyfour_bit_arch()
+{
+    u32 eax, ebx, ecx, edx;
+    u32 largestExtendedFunc;
+    __cpuid__(0x80000000, &largestExtendedFunc, &ebx, &ecx, &edx);
+
+    // Extended Function 0x01 - Extended Feature Bits
+
+    if (largestExtendedFunc >= 0x80000001)
+    {
+        __cpuid__(0x80000001, &eax, &ebx, &ecx, &edx);
+
+        if (edx & ((1 << 29)))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 /* this may not be accurate */
 unsigned short get_available_memory()
 {

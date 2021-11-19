@@ -1,5 +1,6 @@
 #pragma once
 #include "../interrupts/isr.h"
+#include "time.h"
 #include "timer.h"
 #include "../io.cpp"
 
@@ -10,6 +11,21 @@ static void timer_callback(registers_t regs) {
     if (ctick == hz) {
         ctick = 0;
         seconds++;
+    }
+
+    if (seconds == 60) {
+        seconds = 0;
+        minute++;
+    }
+
+    if (minute == 60) {
+        minute = 0;
+        hour++;
+    }
+
+    if (hour > 12) {
+        hour -= 12;
+        pm_on = true;
     }
 }
 

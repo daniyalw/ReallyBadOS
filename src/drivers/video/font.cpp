@@ -204,6 +204,8 @@ static int bg = 0x000000;
 void font_draw(char cp, int x, int y, int fg, int bg);
 
 void font_draw(char cp, int x, int y);
+void font_draw_double(char cp, int x, int y, int fg, int bg);
+void font_draw_double(char cp, int x, int y);
 
 void font_set_fg(int color) {
     fg = color;
@@ -224,7 +226,7 @@ void g_putchar(char ch, int x, int y)
             break;
         }
 
-    font_draw(no, x, y);
+    font_draw_double(no, x, y);
 }
 
 void g_putchar(char ch, int x, int y, int fg, int bg)
@@ -238,7 +240,7 @@ void g_putchar(char ch, int x, int y, int fg, int bg)
             break;
         }
 
-    font_draw(no, x, y, fg, bg);
+    font_draw_double(no, x, y, fg, bg);
 }
 
 void g_printf(char * string, int x, int y, int fg, int bg)
@@ -298,6 +300,56 @@ void font_draw(char cp, int x, int y, int fg, int bg)
         for (int xx = 0; xx < 9; xx++)
         {
             bool set = xx != 8 && yy != 8 && (font8x8_basic[cp][yy] & (1 << xx));
+
+            if (set)
+            {
+                SetPixel(x + xx, y + yy, fg);
+            }
+            else
+            {
+                SetPixel(x + xx, y + yy, bg);
+            }
+        }
+    }
+}
+
+void font_draw_double(char cp, int x, int y, int fg, int bg)
+{
+    if (cp > 0x7f)
+        return;
+
+    int scale = 2;
+
+    for (int yy = 0; yy < 17; yy++)
+    {
+        for (int xx = 0; xx < 17; xx++)
+        {
+            bool set = xx != 16 && yy != 16 && (font8x8_basic[cp][yy/scale] & (1 << xx));
+
+            if (set)
+            {
+                SetPixel(x + xx, y + yy, fg);
+            }
+            else
+            {
+                SetPixel(x + xx, y + yy, bg);
+            }
+        }
+    }
+}
+
+void font_draw_double(char cp, int x, int y)
+{
+    if (cp > 0x7f)
+        return;
+
+    int scale = 2;
+
+    for (int yy = 0; yy < 17; yy++)
+    {
+        for (int xx = 0; xx < 17; xx++)
+        {
+            bool set = xx != 16 && yy != 16 && (font8x8_basic[cp][yy/scale] & (1 << xx));
 
             if (set)
             {

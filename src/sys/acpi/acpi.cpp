@@ -1,3 +1,6 @@
+#include "../../fs/fs.cpp"
+// from forum.osdev.org
+
 dword *SMI_CMD;
 byte ACPI_ENABLE;
 byte ACPI_DISABLE;
@@ -60,9 +63,9 @@ unsigned int *acpiCheckRSDPtr(unsigned int *ptr)
       if (check == 0) {
          /*
           if (desc->Revision == 0)
-            printf("acpi 1");
+            log("acpi 1");
          else
-            printf("acpi 2");
+            log("acpi 2");
          */
          return (unsigned int *) rsdp->RsdtAddress;
       }
@@ -118,6 +121,7 @@ int acpiCheckHeader(unsigned int *ptr, char *sig)
          check += *checkPtr;
          checkPtr++;
       }
+
       if (check == 0)
          return 0;
    }
@@ -151,18 +155,18 @@ int acpiEnable()
                sleep(10);
             }
          if (i<300) {
-            printf("enabled acpi.\n");
+            log("enabled acpi.\n");
             return 0;
          } else {
-            printf("couldn't enable acpi.\n");
+            log("couldn't enable acpi.\n");
             return -1;
          }
       } else {
-         printf("no known way to enable acpi.\n");
+         log("no known way to enable acpi.\n");
          return -1;
       }
    } else {
-      //printf("acpi was already enabled.\n");
+      //log("acpi was already enabled.\n");
       return 0;
    }
 }
@@ -230,20 +234,20 @@ int initAcpi()
 
                      return 0;
                   } else {
-                     printf("\\_S5 parse error.\n");
+                     log("\\_S5 parse error.\n");
                   }
                } else {
-                  printf("\\_S5 not present.\n");
+                  log("\\_S5 not present.\n");
                }
             } else {
-               printf("DSDT invalid.\n");
+               log("DSDT invalid.\n");
             }
          }
          ptr++;
       }
-      printf("no valid FACP present.\n");
+      log("no valid FACP present.\n");
    } else {
-      printf("no acpi.\n");
+      log("no acpi.\n");
    }
 
    return -1;

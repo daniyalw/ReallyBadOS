@@ -1,3 +1,4 @@
+#pragma once
 #include "../../include/colors.cpp"
 
 //Mouse functions
@@ -52,11 +53,6 @@ void draw_cursor(int x, int y, bool right_c)
     int bx = x;
     int by = y;
     int color;
-
-    if (right_c)
-    {
-        // display menu options here
-    }
 
     for (int z = 0; z < cursor_height; z++)
     {
@@ -121,7 +117,7 @@ static void mouse_handler(registers_t regs)
         return;
   }
 
-    if (mouse_x > width) {
+    if (mouse_x >= width) {
         mouse_x = width;
     } else if (mouse_x < 0) {
         mouse_x = 0;
@@ -165,10 +161,10 @@ static void mouse_handler(registers_t regs)
     if ((mouse_byte[0] >> 2) & 1) {
         middle = true;
     }
+    draw_cursor(mouse_x, mouse_y, right);
     right = false;
     left = false;
     middle = false;
-    draw_cursor(mouse_x, mouse_y, right);
 }
 
 void mouse_install()

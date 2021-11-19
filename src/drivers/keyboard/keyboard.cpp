@@ -1,9 +1,90 @@
 #include "../../include/string.h"
+#include "../../include/memory.cpp"
 
 void get_key(unsigned char code);
 
+bool keyboard_lock()
+{
+    if (!keyboard_locked)
+    {
+        keyboard_locked = true;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool keyboard_unlock()
+{
+    if (keyboard_locked)
+    {
+        keyboard_locked = false;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool is_keyboard_locked()
+{
+    return keyboard_locked;
+}
+
+int get_buffer_size()
+{
+    return buffer_size;
+}
+
+void edit_buffer_size(int change)
+{
+    buffer_size += change;
+}
+
+char _getch()
+{
+    int buffs = buffer_size;
+    keyboard_lock();
+
+    while (true)
+    {
+        if (!is_keyboard_locked())
+            return buffer[get_buffer_size()-1];
+    }
+
+    edit_buffer_size(1);
+}
+
+// doesn't work properly
+char * scanf(int size)
+{
+    char _b[size];
+    char k;
+    int s;
+
+    while (s < size)
+    {
+        k = _getch();
+
+
+        _b[s] = k;
+        s++;
+    }
+
+    char * _c;
+
+    memcpy(_b, _c, s);
+
+    return _c;
+}
+
 static void scan_key(registers_t regs)
 {
+    // we don't need a safety since this is only run
+    // when an interrupt is fired
     current_key = inb(0x60);
     get_key(current_key);
 
@@ -263,7 +344,12 @@ void get_key(unsigned char code)
         else
             key = "";
     }
-
+    if (key != "") {
+        buffer[buffer_size] = key[0];
+        buffer_size++;
+        keyboard_unlock();
+    }
+    /*
     if (key != "") {
         if (key == "\n")
         {
@@ -291,15 +377,22 @@ void get_key(unsigned char code)
                     text_x--;
                     putchar(' ');
                     text_x--;
-                    set_cursor(text_y, text_x);
+                    set_hardware_cursor(text_y, text_x);
                 }
             }
 
         }
     }
+    */
+
 }
 
 
 void init_keyboard() {
+    buffer[0] = 'H';
+    buffer[1] = 'C';
+    buffer[2] = 'F';
+    buffer_size += 3;
+    // register the interrupt
    register_interrupt_handler(IRQ1, scan_key);
 }

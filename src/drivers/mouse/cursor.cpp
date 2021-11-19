@@ -1,7 +1,7 @@
 #pragma once
 #include "cursor.h"
 
-void update_cursor(int cursor_x, int cursor_y)
+void update_hardware_cursor(int cursor_x, int cursor_y)
 {
 	unsigned short cursor_loc = cursor_y * 80 + cursor_x;
 
@@ -15,13 +15,13 @@ void update_cursor(int cursor_x, int cursor_y)
 
 // we don't need an enable function as it is enabled by default
 
-void disable_cursor()
+void disable_hardware_cursor()
 {
 	outb(0x3D4, 0x0A);
 	outb(0x3D5, 0x20);
 }
 
-unsigned short get_cursor_pos()
+unsigned short get_hardware_cursor_pos()
 {
 	unsigned short pos = 0;
 	outb(0x3D4, 0x0F);
@@ -32,7 +32,7 @@ unsigned short get_cursor_pos()
 	return pos;
 }
 
-void set_cursor(int _y, int _x)
+void set_hardware_cursor(int _y, int _x)
 {
 	unsigned short cursor_loc = _y * 80 + _x;
 	// cursor LOW port to vga INDEX register

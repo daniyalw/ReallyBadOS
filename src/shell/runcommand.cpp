@@ -2,7 +2,6 @@
 #include "../include/string.cpp"
 #include "../drivers/video/video.cpp"
 #include "../sys/power/shutdown.cpp"
-#include "../fs/fs.cpp"
 
 void rc(char * b)
 {
@@ -61,13 +60,6 @@ void rc(char * b)
 
         clear();
         text_y = -2;
-
-    } else if (startswith(b, "mk")) {
-
-        char n[10];
-
-        create_file(n, "");
-        printf("Successfully created file %s!", n);
 
     } else {
 
