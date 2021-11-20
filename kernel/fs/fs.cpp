@@ -1,5 +1,6 @@
 #pragma once
 #include "fs.h"
+#include "../sys/log/log.cpp"
 
 File send_null_file()
 {
@@ -286,6 +287,7 @@ void append_file(char * fname, char * newdata)
 
 void init_fs()
 {
+    system_log("File system initialized.\n");
     for (int z = 0; z < file_limit; z++)
     {
         fs.files[z].name = "NULL";

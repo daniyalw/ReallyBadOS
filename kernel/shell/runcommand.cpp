@@ -5,7 +5,7 @@
 #include "../sys/time/timer.h"
 #include "../fs/fs.h"
 #include "../sys/power/reboot.cpp"
-#include "../sys/log.h"
+#include "../sys/log/log.h"
 
 void rc(char * b)
 {

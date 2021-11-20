@@ -1,6 +1,6 @@
 #include "../../stdlib/string.h"
 #include "../../stdlib/memory.cpp"
-#include "../../kernel/sys/log.cpp"
+#include "../../kernel/sys/log/log.cpp"
 
 void get_key(unsigned char code);
 

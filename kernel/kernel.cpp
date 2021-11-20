@@ -6,6 +6,8 @@ int back_buffer[1024*768]; // back buffer for gui
 
 #include <cpuid.h>
 //#include "sys/background.cpp"
+#include "sys/log/log.h"
+#include "sys/panic/panic.h"
 #include "../stdlib/stdint.h"
 #include "sys/time/timer.h"
 #include "sys/multiboot.h"
@@ -26,6 +28,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../stdlib/string.cpp"
 #include "../stdlib/memory.cpp"
 #include "../drivers/video/video.cpp"
+#include "sys/log/log.cpp"
 #include "sys/descriptors/gdt.cpp"
 #include "sys/interrupts/idt.cpp"
 #include "sys/interrupts/isr.cpp"
@@ -42,8 +45,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../stdlib/colors.cpp"
 #include "../stdlib/list.cpp"
 #include "fs/fs.cpp"
-#include "sys/log.h"
-#include "sys/log.cpp"
+#include "sys/panic/panic.cpp"
 //#include "sys/background.cpp"
 
 
@@ -92,4 +94,8 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     printf_centered("Terminal", 0);
     printf("\n/> ");
     init_keyboard();
+
+    sleep(5);
+
+    panic("Test panic().", "kernel.cpp", 98);
 }

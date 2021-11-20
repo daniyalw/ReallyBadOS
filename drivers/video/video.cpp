@@ -31,6 +31,13 @@ void putchar(char text) {
     next_char();
 }
 
+void putchar(char text, int color) {
+    short * vidmem = (short *)0xb8000;
+
+    vidmem[text_x+text_y*80] = color | text;
+    next_char();
+}
+
 void print(char * text) {
     for (int z = 0; z < len(text); z++) {
         putchar(text[z]);
@@ -56,6 +63,92 @@ void scroll()
        }
        text_y = 24;
    }
+}
+
+void printf(int color, char *format, ...)
+{
+  char **arg = (char **) &format;
+  int c;
+  char buf[20];
+
+  arg++;
+
+  while ((c = *format++) != 0)
+    {
+      if (c != '%')
+      {
+        if (c == '\n')
+        {
+            text_x = 0;
+            text_y++;
+
+            if (scroll_on)
+                scroll();
+        }
+        else if (c == '\t')
+        {
+            for (int z = 0; z < 4; z++) next_char();
+
+            if (scroll_on)
+                scroll();
+        }
+        else
+        {
+            putchar(c, color);
+        }
+      }
+      else
+        {
+          char *p, *p2;
+          int pad0 = 0, pad = 0;
+
+          c = *format++;
+          if (c == '0')
+            {
+              pad0 = 1;
+              c = *format++;
+            }
+
+          if (c >= '0' && c <= '9')
+            {
+              pad = c - '0';
+              c = *format++;
+            }
+
+          switch (c)
+            {
+            case 'd':
+            case 'u':
+            case 'x':
+              itoa (buf, c, *((int *) arg++));
+              p = buf;
+              goto string;
+              break;
+
+            case 's':
+              p = *arg++;
+              if (! p)
+                p = "(null)";
+
+            string:
+              for (p2 = p; *p2; p2++);
+              for (; p2 < p + pad; p2++)
+              {
+                putchar (pad0 ? '0' : ' ', color);
+              }
+              while (*p)
+              {
+                putchar (*p++, color);
+              }
+              break;
+
+            default:
+              putchar (*((int *) arg++), color);
+              break;
+            }
+        }
+    }
+    set_hardware_cursor(text_y, text_x);
 }
 
 void printf(char *format, ...)

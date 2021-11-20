@@ -1,6 +1,6 @@
 #pragma once
 #include "gdt.h"
-#include "../log.cpp"
+#include "../log/log.cpp"
 
 void init_descriptor_tables()
 {

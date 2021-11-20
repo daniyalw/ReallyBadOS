@@ -1,7 +1,7 @@
 #include "../../../stdlib/string.cpp"
 #include "../../../drivers/video/video.cpp"
 #include "isr.h"
-#include "../log.cpp"
+#include "../log/log.cpp"
 
 isr_t interrupt_handlers[256];
 

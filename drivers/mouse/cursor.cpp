@@ -1,6 +1,6 @@
 #pragma once
 #include "cursor.h"
-#include "../../kernel/sys/log.cpp"
+#include "../../kernel/sys/log/log.cpp"
 
 void update_hardware_cursor(int cursor_x, int cursor_y)
 {
