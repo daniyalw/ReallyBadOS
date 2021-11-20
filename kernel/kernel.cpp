@@ -87,6 +87,6 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     init_fs();
 
     printf_centered("Terminal", 0);
-    printf("\n\t/> ");
+    printf("\n/> ");
     init_keyboard();
 }
