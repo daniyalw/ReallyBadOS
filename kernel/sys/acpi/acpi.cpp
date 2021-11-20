@@ -1,4 +1,5 @@
 #include "../../fs/fs.cpp"
+#include "../log.cpp"
 // from forum.osdev.org
 
 dword *SMI_CMD;
@@ -173,6 +174,7 @@ int acpiEnable()
 
 int initAcpi()
 {
+    system_log("Enabled ACPI.\n");
    unsigned int *ptr = acpiGetRSDPtr();
 
    // check if address is correct  ( if acpi is available on this pc )

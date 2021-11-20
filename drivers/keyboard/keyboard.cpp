@@ -1,5 +1,6 @@
 #include "../../stdlib/string.h"
 #include "../../stdlib/memory.cpp"
+#include "../../kernel/sys/log.cpp"
 
 void get_key(unsigned char code);
 
@@ -398,6 +399,7 @@ void get_key(unsigned char code)
 
 
 void init_keyboard() {
+    system_log("Enabled keyboard.\n");
     buffer[0] = 'H';
     buffer[1] = 'C';
     buffer[2] = 'F';

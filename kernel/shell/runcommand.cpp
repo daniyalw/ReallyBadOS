@@ -5,6 +5,7 @@
 #include "../sys/time/timer.h"
 #include "../fs/fs.h"
 #include "../sys/power/reboot.cpp"
+#include "../sys/log.h"
 
 void rc(char * b)
 {
@@ -63,6 +64,19 @@ void rc(char * b)
     } else if (startswith(b, "copyright")) {
 
         printf("CeneOS 1.0, Daniyal Warraich 2021");
+
+    } else if (startswith(b, "viewlog")) {
+
+        char nl[sys_log_size + 1];
+
+        for (int z = 0; z < sys_log_size; z++)
+        {
+            nl[z] = sys_log[z];
+        }
+
+        nl[sys_log_size] = '\0';
+
+        printf(nl);
 
     } else if (startswith(b, "cpuinfo")) {
 

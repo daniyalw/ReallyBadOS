@@ -1,10 +1,12 @@
 #include "../../../stdlib/string.cpp"
 #include "../../../drivers/video/video.cpp"
 #include "isr.h"
+#include "../log.cpp"
 
 isr_t interrupt_handlers[256];
 
 void isr_install() {
+    system_log("Enabled interrupts.\n");
     set_idt_gate(0, (u32)isr0);
     set_idt_gate(1, (u32)isr1);
     set_idt_gate(2, (u32)isr2);

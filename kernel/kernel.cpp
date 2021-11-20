@@ -42,6 +42,8 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../stdlib/colors.cpp"
 #include "../stdlib/list.cpp"
 #include "fs/fs.cpp"
+#include "sys/log.h"
+#include "sys/log.cpp"
 //#include "sys/background.cpp"
 
 
@@ -73,6 +75,7 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     init_timer(100);
     */
+    system_log("Entered kernel.\n");
     initAcpi();
     acpiEnable();
 

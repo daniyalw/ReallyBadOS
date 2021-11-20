@@ -1,5 +1,6 @@
 #pragma once
 #include "gdt.h"
+#include "../log.cpp"
 
 void init_descriptor_tables()
 {
@@ -9,6 +10,7 @@ void init_descriptor_tables()
 
 static void init_gdt()
 {
+    system_log("Enabled GDT.\n");
    gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
    gdt_ptr.base  = (u32)&gdt_entries;
 

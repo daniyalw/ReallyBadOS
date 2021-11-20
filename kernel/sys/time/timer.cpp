@@ -30,6 +30,7 @@ static void timer_callback(registers_t regs) {
 }
 
 void init_timer(u32 freq) {
+    system_log("Enabled timer.\n");
     hz = freq;
     /* Install the function we just wrote */
     register_interrupt_handler(IRQ0, timer_callback);

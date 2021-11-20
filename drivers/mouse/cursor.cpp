@@ -1,5 +1,6 @@
 #pragma once
 #include "cursor.h"
+#include "../../kernel/sys/log.cpp"
 
 void update_hardware_cursor(int cursor_x, int cursor_y)
 {
@@ -17,6 +18,7 @@ void update_hardware_cursor(int cursor_x, int cursor_y)
 
 void disable_hardware_cursor()
 {
+	system_log("Disabled hardware cursor.\n");
 	outb(0x3D4, 0x0A);
 	outb(0x3D5, 0x20);
 }

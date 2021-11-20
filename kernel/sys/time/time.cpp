@@ -33,6 +33,7 @@ int get_RTC_register(int reg) {
 }
 
 void read_rtc() {
+    system_log("Read RTC.\n");
       int century;
       int last_second;
       int last_minute;
