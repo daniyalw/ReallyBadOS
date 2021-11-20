@@ -4,19 +4,10 @@
 #include "../sys/power/shutdown.cpp"
 #include "../sys/time/timer.h"
 #include "../fs/fs.h"
+#include "../sys/power/reboot.cpp"
 
 void rc(char * b)
 {
-    /*
-    Commands:
-        - echo
-        - shutdown_os
-        - cls
-        - clear
-        - help
-        - copyright
-        - cpuinfo
-    */
     if (startswith(b, "echo")) {
 
         for (int z = 5; z < bf; z++) {
@@ -47,6 +38,10 @@ void rc(char * b)
                     printf("    %s\n", fs.files[z].name);
             }
         }
+
+    } else if (startswith(b, "reboot")) {
+
+        reboot();
 
     } else if (startswith(b, "mkfile")) {
 

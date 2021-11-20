@@ -1,3 +1,5 @@
+#pragma once
+
 void reboot()
 {
     asm("cli");
