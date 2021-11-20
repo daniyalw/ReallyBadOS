@@ -94,8 +94,4 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     printf_centered("Terminal", 0);
     printf("\n/> ");
     init_keyboard();
-
-    sleep(5);
-
-    panic("Test panic().", "kernel.cpp", 98);
 }

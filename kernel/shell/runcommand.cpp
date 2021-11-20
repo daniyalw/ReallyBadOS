@@ -18,7 +18,11 @@ void rc(char * b)
     } else if (startswith(b, "time")) {
 
         printf("Date: %s %s %d\n", weekdays[weekday-1], months[month-1], day);
-        printf("Time: %d:%d", hour, minute);
+        if (hour > 12) {
+            printf("Time: %d:%d PM", hour - 12, minute);
+        } else {
+            printf("Time: %d:%d AM", hour, minute);
+        }
 
     } else if (startswith(b, "help")) {
 
