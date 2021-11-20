@@ -78,7 +78,13 @@ void printf(char *format, ...)
             if (scroll_on)
                 scroll();
         }
+        else if (c == '\t')
+        {
+            for (int z = 0; z < 4; z++) next_char();
 
+            if (scroll_on)
+                scroll();
+        }
         else
         {
             putchar(c);
