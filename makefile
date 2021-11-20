@@ -1,7 +1,7 @@
 boot = boot/boot.asm
 
 r:
-	qemu-system-x86_64 -cdrom main.iso
+	qemu-system-x86_64 -cdrom ceneos-x86_64.iso
 
 all:
 	nasm -f elf32 -o built/loader.o ${boot}
