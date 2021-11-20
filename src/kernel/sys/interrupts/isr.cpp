@@ -1,5 +1,5 @@
-#include "../../include/string.cpp"
-#include "../../drivers/video/video.cpp"
+#include "../../../stdlib/string.cpp"
+#include "../../../drivers/video/video.cpp"
 #include "isr.h"
 
 isr_t interrupt_handlers[256];

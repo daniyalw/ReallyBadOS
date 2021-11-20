@@ -1,10 +1,29 @@
 #pragma once
 #include "fs.h"
 
+File send_null_file()
+{
+    File f;
+    f.name = "NULL";
+    f.data = "NULL";
+    return f;
+}
+
+bool is_not_null_file(char * fname)
+{
+    if (fname == "NULL" || fname == "" || fname == nullptr)
+        return false;
+
+    return true;
+}
+
 File open_file(char * fname)
 {
+    if (!is_not_null_file(fname))
+        return send_null_file();
+
     // loop through files
-    for (int z = 0; z < sizeof(fs.files); z++)
+    for (int z = 0; z < file_limit; z++)
     {
         if ((fs.files[z].name == fname) && (fs.files[z].permission == P3))
         {
@@ -23,8 +42,11 @@ File open_file(char * fname)
 
 File kopen_file(char * fname)
 {
+    if (!is_not_null_file(fname))
+        return send_null_file();
+
     // loop through files
-    for (int z = 0; z < sizeof(fs.files); z++)
+    for (int z = 0; z < file_limit; z++)
     {
         if (fs.files[z].name == fname)
         {
@@ -43,6 +65,9 @@ File kopen_file(char * fname)
 
 void write_file(char * fname, char * newdata)
 {
+    if (!is_not_null_file(fname))
+        return;
+
     // check if there is file with same name
     File f = open_file(fname);
 
@@ -64,8 +89,11 @@ void write_file(char * fname, char * newdata)
 
 void kwrite_file(char * fname, char * newdata)
 {
+    if (!is_not_null_file(fname))
+        return;
+
     // check if there is file with same name
-    File f = open_file(fname);
+    File f = kopen_file(fname);
 
     // there is file by same name
     if (f.name != "NULL")
@@ -80,8 +108,43 @@ void kwrite_file(char * fname, char * newdata)
     }
 }
 
+void delete_file(char * fname)
+{
+    if (!is_not_null_file(fname))
+        return;
+
+    File file = open_file(fname);
+
+    File f;
+    f.name = "NULL";
+
+    if (file.name != "NULL" && file.permission == P3)
+    {
+        fs.files[file.id] = f;
+    }
+}
+
+void kdelete_file(char * fname)
+{
+    if (!is_not_null_file(fname))
+        return;
+
+    File file = kopen_file(fname);
+
+    File f;
+    f.name = "NULL";
+
+    if (file.name != "NULL")
+    {
+        fs.files[file.id] = f;
+    }
+}
+
 void create_file(char * fname, char * fdata)
 {
+    if (!is_not_null_file(fname))
+        return;
+
     // check if there is a file by the same name
     File f = open_file(fname);
 
@@ -98,10 +161,34 @@ void create_file(char * fname, char * fdata)
     fs.file_number++;
 }
 
-void kcreate_file(char * fname, char * fdata)
+void create_file(char * fname)
 {
+    if (!is_not_null_file(fname))
+        return;
+
     // check if there is a file by the same name
     File f = open_file(fname);
+
+    // if there is, return
+    if (f.name != "NULL")
+        return;
+
+    // by here it is determined there is no such file
+    f.name = fname;
+    f.data = "";
+    f.id = fs.file_number;
+    f.permission = P3;
+    fs.files[fs.file_number] = f;
+    fs.file_number++;
+}
+
+void kcreate_file(char * fname, char * fdata)
+{
+    if (!is_not_null_file(fname))
+        return;
+
+    // check if there is a file by the same name
+    File f = kopen_file(fname);
 
     // if there is, return
     if (f.name != "NULL")
@@ -116,8 +203,32 @@ void kcreate_file(char * fname, char * fdata)
     fs.file_number++;
 }
 
+void kcreate_file(char * fname)
+{
+    if (!is_not_null_file(fname))
+        return;
+
+    // check if there is a file by the same name
+    File f = kopen_file(fname);
+
+    // if there is, return
+    if (f.name != "NULL")
+        return;
+
+    // by here it is determined there is no such file
+    f.name = fname;
+    f.data = "";
+    f.id = fs.file_number;
+    f.permission = P0;
+    fs.files[fs.file_number] = f;
+    fs.file_number++;
+}
+
 void rename_file(char * fname, char * newname)
 {
+    if (!is_not_null_file(fname))
+        return;
+
     File f = open_file(fname);
 
     if (f.name == "NULL" || f.permission != P3)
@@ -130,7 +241,10 @@ void rename_file(char * fname, char * newname)
 
 void krename_file(char * fname, char * newname)
 {
-    File f = open_file(fname);
+    if (!is_not_null_file(fname))
+        return;
+
+    File f = kopen_file(fname);
 
     if (f.name == "NULL")
         return;
@@ -142,7 +256,10 @@ void krename_file(char * fname, char * newname)
 
 void kappend_file(char * fname, char * newdata)
 {
-    File f = open_file(fname);
+    if (!is_not_null_file(fname))
+        return;
+
+    File f = kopen_file(fname);
 
     if (f.name == "NULL")
         return;
@@ -153,6 +270,9 @@ void kappend_file(char * fname, char * newdata)
 
 void append_file(char * fname, char * newdata)
 {
+    if (!is_not_null_file(fname))
+        return;
+
     File f = open_file(fname);
 
     if (f.name == "NULL" || f.permission != P3)
@@ -164,12 +284,23 @@ void append_file(char * fname, char * newdata)
     write_file(fname, nd);
 }
 
-void log(char * data)
+void init_fs()
 {
-    kwrite_file(".log", data);
+    for (int z = 0; z < file_limit; z++)
+    {
+        fs.files[z].name = "NULL";
+    }
 }
 
-void log_start()
+int ls_file()
 {
-    kcreate_file(".log", "");
+    int count = 0;
+
+    for (int z = 0; z < file_limit; z++)
+    {
+        if (fs.files[z].name != "NULL")
+            count++;
+    }
+
+    return count;
 }

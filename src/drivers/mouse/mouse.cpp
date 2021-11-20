@@ -1,5 +1,5 @@
 #pragma once
-#include "../../include/colors.cpp"
+#include "../../stdlib/colors.cpp"
 
 //Mouse functions
 void mouse_wait(unsigned char a_type) //unsigned char

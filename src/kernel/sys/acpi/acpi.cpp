@@ -63,9 +63,9 @@ unsigned int *acpiCheckRSDPtr(unsigned int *ptr)
       if (check == 0) {
          /*
           if (desc->Revision == 0)
-            log("acpi 1");
+            //("acpi 1");
          else
-            log("acpi 2");
+            //("acpi 2");
          */
          return (unsigned int *) rsdp->RsdtAddress;
       }
@@ -155,18 +155,18 @@ int acpiEnable()
                sleep(10);
             }
          if (i<300) {
-            log("enabled acpi.\n");
+            //("enabled acpi.\n");
             return 0;
          } else {
-            log("couldn't enable acpi.\n");
+            //("couldn't enable acpi.\n");
             return -1;
          }
       } else {
-         log("no known way to enable acpi.\n");
+         //("no known way to enable acpi.\n");
          return -1;
       }
    } else {
-      //log("acpi was already enabled.\n");
+      ////("acpi was already enabled.\n");
       return 0;
    }
 }
@@ -234,20 +234,20 @@ int initAcpi()
 
                      return 0;
                   } else {
-                     log("\\_S5 parse error.\n");
+                     //("\\_S5 parse error.\n");
                   }
                } else {
-                  log("\\_S5 not present.\n");
+                  //("\\_S5 not present.\n");
                }
             } else {
-               log("DSDT invalid.\n");
+               //("DSDT invalid.\n");
             }
          }
          ptr++;
       }
-      log("no valid FACP present.\n");
+      //("no valid FACP present.\n");
    } else {
-      log("no acpi.\n");
+      //("no acpi.\n");
    }
 
    return -1;

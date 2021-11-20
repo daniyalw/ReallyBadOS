@@ -1,7 +1,9 @@
 #pragma once
-#include "../include/string.cpp"
-#include "../drivers/video/video.cpp"
+#include "../../stdlib/string.cpp"
+#include "../../drivers/video/video.cpp"
 #include "../sys/power/shutdown.cpp"
+#include "../sys/time/timer.h"
+#include "../fs/fs.h"
 
 void rc(char * b)
 {
@@ -21,10 +23,47 @@ void rc(char * b)
             putchar(b[z]);
         }
 
+    } else if (startswith(b, "time")) {
+
+        printf("Date: %s %s %d\n", weekdays[weekday-1], months[month-1], day);
+        printf("Time: %d:%d", hour, minute);
+
     } else if (startswith(b, "help")) {
 
         printf("CeneOS 1.0, Daniyal Warraich\n");
         printf("Available commands:\n    - echo\n    - shutdown_os\n    - clear");
+
+    } else if (startswith(b, "ls")) {
+
+        int count = ls_file();
+        printf("Number of files: %d", count);
+
+        if (fs.file_number > 0) {
+            printf("\nFiles: \n");
+
+            for (int z = 0; z < file_limit; z++)
+            {
+                if (fs.files[z].name != "NULL")
+                    printf("    %s\n", fs.files[z].name);
+            }
+        }
+
+    } else if (startswith(b, "mkfile")) {
+
+        char filename[len(b)-7];
+        int fz = 0;
+
+        for (int z = 7; z < len(b); z++) {
+            if (b[z] != ' ')
+            {
+                filename[fz] = b[z];
+                fz++;
+            }
+        }
+
+        create_file(filename);
+
+        printf("File %s successfully created!", filename);
 
     } else if (startswith(b, "copyright")) {
 
