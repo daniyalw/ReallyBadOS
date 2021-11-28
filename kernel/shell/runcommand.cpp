@@ -6,6 +6,7 @@
 #include "../fs/fs.h"
 #include "../sys/power/reboot.cpp"
 #include "../sys/log/log.h"
+#include "rc.h"
 
 void rc(char * b)
 {
@@ -27,43 +28,13 @@ void rc(char * b)
     } else if (startswith(b, "help")) {
 
         printf("CeneOS 1.0, Daniyal Warraich\n");
-        printf("Available commands:\n    - echo\n    - shutdown_os\n    - clear");
+        printf("Available commands:\n");
 
-    } else if (startswith(b, "ls")) {
 
-        int count = ls_file();
-        printf("Number of files: %d", count);
-
-        if (fs.file_number > 0) {
-            printf("\nFiles: \n");
-
-            for (int z = 0; z < file_limit; z++)
-            {
-                if (fs.files[z].name != "NULL")
-                    printf("    %s\n", fs.files[z].name);
-            }
-        }
 
     } else if (startswith(b, "reboot")) {
 
         reboot();
-
-    } else if (startswith(b, "mkfile")) {
-
-        char filename[len(b)-7];
-        int fz = 0;
-
-        for (int z = 7; z < len(b); z++) {
-            if (b[z] != ' ')
-            {
-                filename[fz] = b[z];
-                fz++;
-            }
-        }
-
-        create_file(filename);
-
-        printf("File %s successfully created!", filename);
 
     } else if (startswith(b, "copyright")) {
 
@@ -87,8 +58,6 @@ void rc(char * b)
         unsigned short mem = get_available_memory();
         int mb;
         char * m;
-        mb = get_mb(mem);
-        itoa(mb, m);
         printf("Approximate Memory: ");
         printf(m);
         char * cpuname = get_cpu_name();

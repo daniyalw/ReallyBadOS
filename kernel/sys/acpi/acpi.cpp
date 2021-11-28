@@ -1,5 +1,6 @@
-#include "../../fs/fs.cpp"
+
 #include "../log/log.cpp"
+
 // from forum.osdev.org
 
 dword *SMI_CMD;

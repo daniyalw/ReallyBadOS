@@ -1,27 +1,5 @@
 #pragma once
 
-static void handle_time_int(registers_t regs)
-{
-    s++;
-    clear();
-    printf("S: %d", s);
-
-    outb(0x70, 0x0C);	// select register C
-    inb(0x71);		// just throw away contents
-}
-
-void enable_time()
-{
-    register_interrupt_handler(IRQ8, handle_time_int);
-
-    disable_interrupts();			// disable interrupts
-    outb(0x70, 0x8B);		// select register B, and disable NMI
-    char prev=inb(0x71);	// read the current value of register B
-    outb(0x70, 0x8B);		// set the index again (a read will reset the index to register D)
-    outb(0x71, prev | 0x40);	// write the previous value ORed with 0x40. This turns on bit 6 of register B
-    enable_interrupts();
-}
-
 int get_update_in_progress_flag() {
       outb(cmos_address, 0x0A);
       return (inb(cmos_data) & 0x80);

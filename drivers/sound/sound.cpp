@@ -1,5 +1,7 @@
 #pragma once
 
+// https://wiki.osdev.org/PC_Speaker
+
 static void play_sound(uint32_t nFrequence) {
    uint32_t Div;
    uint8_t tmp;

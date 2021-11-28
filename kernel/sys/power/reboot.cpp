@@ -1,5 +1,7 @@
 #pragma once
 
+//https://wiki.osdev.org/Reboot
+
 void reboot()
 {
     asm("cli");

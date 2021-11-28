@@ -2,10 +2,11 @@ int text_x = 0;
 int text_y = 0;
 int cx = 0;
 int cy = 0;
+bool booted = false;
 int back_buffer[1024*768]; // back buffer for gui
 
 #include <cpuid.h>
-//#include "sys/background.cpp"
+#include "sys/background.cpp"
 #include "sys/log/log.h"
 #include "sys/panic/panic.h"
 #include "../stdlib/stdint.h"
@@ -48,8 +49,6 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "sys/panic/panic.cpp"
 //#include "sys/background.cpp"
 
-
-
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         printf("Invalid magic number.");
@@ -62,7 +61,7 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     pitch = mbd->framebuffer_pitch;
     width = (uint32_t)mbd->framebuffer_width;
     height = (uint32_t)mbd->framebuffer_height;
-    bpp = mbd->framebuffer_bpp;
+    bpp = mbd->ramebuffer_bpp;
 
     // initialize ACPI
     initAcpi();
@@ -71,27 +70,24 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     init_descriptor_tables();
     // IDT & interrupts enable
     isr_install();
+    init_timer(100);
     // mouse & keyboard
     init_keyboard();
     mouse_install();
 
-    init_timer(100);
+
+    while (true);
     */
-    system_log("Entered kernel.\n");
-    initAcpi();
-    acpiEnable();
+
+    // initialize ACPI
+    //initAcpi();
 
     // GDT enable
-    init_descriptor_tables();
+    init_gdt();
     // IDT & interrupts enable
     isr_install();
-
-    read_rtc();
-    init_timer(100);
-
-    init_fs();
-
-    printf_centered("Terminal", 0);
-    printf("\n/> ");
-    init_keyboard();
+    init_timer(1000);
+    // mouse & keyboard
+    //init_keyboard();
+    //mouse_install();
 }

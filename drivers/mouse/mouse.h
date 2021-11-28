@@ -23,6 +23,8 @@ int cursor_height = 19;
 int cursor_width = 12;
 int cursor_inner = 0xffffff;
 int cursor_outer = 0;
+
+// graphical cursor
 int cursor_map[19][12] =
 {
     {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},

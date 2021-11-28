@@ -130,14 +130,32 @@ bool charcmp(char str1, char str2) {
     return false;
 }
 
-char * append(char * orig, char * anew)
+// ex:
+//      char * a = "/";
+//      char * b = "abc";
+//      char * dest;
+//      append(a, b, dest);
+//
+// dest will be "/abc"
+char * append(char * j1, char * j2, char * dest)
 {
-    for (int z = len(orig); z < len(orig) + len(anew); z++)
+    int js = 0;
+
+    for (int z = 0; z < len(j1); z++)
     {
-        orig[z] = anew[z - len(orig)];
+        dest[js] = j1[z];
+        js++;
     }
 
-    return orig;
+    for (int z = 0; z < len(j2); z++)
+    {
+        dest[js] = j2[z];
+        js++;
+    }
+
+    dest[js] = 0;
+
+    return dest;
 }
 
 bool startswith(char * words, char * start)
@@ -200,20 +218,34 @@ char * split(char * string, char key)
     return buffer;
 }
 
-char * strip(char * s)
+// get how many times a value appears in a string
+int gvfs(char * s, char value)
 {
-    char * r;
-    int rs;
+    int count = 0;
+
+    for (int z = 0; z < len(s); z++)
+        if (s[z] == value)
+            count++;
+
+    return count;
+}
+
+char * strip(char * s, char value, char * output)
+{
+    int rs = 0;
+
     for (int z = 0; z < len(s); z++)
     {
-        if (s[z] != ' ')
+        if (s[z] != value)
         {
-            r[rs] = s[z];
+            output[rs] = s[z];
             rs++;
         }
     }
 
-    return r;
+    output[rs] = '\0';
+
+    return output;
 }
 
 bool strisempty(char * s)
@@ -264,4 +296,60 @@ char * strchr(char * s, int c) {
         }
     }
     return s;
+}
+
+bool find(char * s, char c) {
+    for (int z = 0; z < len(s); z++) {
+        if (s[z] == c)
+            return true;
+    }
+
+    return false;
+}
+
+void memcpy(u8 *source, u8 *dest, int nb) {
+    int i;
+    for (i = 0; i < nb; i++) {
+        *(dest + i) = *(source + i);
+    }
+}
+
+void memcpy(char *source, char *dest, int nb) {
+    int i;
+    for (i = 0; i < nb; i++) {
+        *(dest + i) = *(source + i);
+    }
+}
+
+void memset(u8 *dest, u8 val, u32 len) {
+    u8 *temp = (u8 *)dest;
+
+    for (; len != 0; len--)
+    {
+        *temp++ = val;
+    }
+}
+
+int memcmp(void* buf1, void* buf2, int count) {
+    if(!count)
+        return(0);
+
+    while(--count && *(char*)buf1 == *(char*)buf2 ) {
+        buf1 = (char*)buf1 + 1;
+        buf2 = (char*)buf2 + 1;
+    }
+
+    return(*((unsigned char*)buf1) - *((unsigned char*)buf2));
+}
+
+int memcmp(void* buf1, const void* buf2, int count) {
+    if(!count)
+        return(0);
+
+    while(--count && *(char*)buf1 == *(char*)buf2 ) {
+        buf1 = (char*)buf1 + 1;
+        buf2 = (char*)buf2 + 1;
+    }
+
+    return(*((unsigned char*)buf1) - *((unsigned char*)buf2));
 }

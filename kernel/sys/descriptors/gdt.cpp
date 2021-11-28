@@ -2,15 +2,13 @@
 #include "gdt.h"
 #include "../log/log.cpp"
 
-void init_descriptor_tables()
-{
-   // Initialise the global descriptor table.
-   init_gdt();
-}
+/*
+http://jamesmolloy.co.uk/tutorial_html/
+*/
 
 static void init_gdt()
 {
-    system_log("Enabled GDT.\n");
+   system_log("Enabled GDT.\n");
    gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
    gdt_ptr.base  = (u32)&gdt_entries;
 

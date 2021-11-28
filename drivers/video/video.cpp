@@ -2,6 +2,11 @@
 #include "video.h"
 #include "../mouse/cursor.cpp"
 
+int text_get_color(int backcolour, int forecolour)
+{
+    int attrib = (backcolour << 4) | (forecolour & 0x0F);
+    return attrib;
+}
 
 void clear() {
     short * vidmem = (short *)0xb8000;
@@ -65,15 +70,15 @@ void scroll()
    }
 }
 
-void printf(int color, char *format, ...)
+void printf(int color, char *text, ...)
 {
-  char **arg = (char **) &format;
+  char **arg = (char **) &text;
   int c;
-  char buf[20];
+  char buffer[20];
 
   arg++;
 
-  while ((c = *format++) != 0)
+  while ((c = *text++) != 0)
     {
       if (c != '%')
       {
@@ -102,26 +107,29 @@ void printf(int color, char *format, ...)
           char *p, *p2;
           int pad0 = 0, pad = 0;
 
-          c = *format++;
+          c = *text++;
           if (c == '0')
             {
               pad0 = 1;
-              c = *format++;
+              c = *text++;
             }
 
           if (c >= '0' && c <= '9')
             {
               pad = c - '0';
-              c = *format++;
+              c = *text++;
             }
 
           switch (c)
             {
+            case 'c':
+                putchar(c);
+                break;
             case 'd':
             case 'u':
             case 'x':
-              itoa (buf, c, *((int *) arg++));
-              p = buf;
+              itoa (buffer, c, *((int *) arg++));
+              p = buffer;
               goto string;
               break;
 
@@ -151,15 +159,15 @@ void printf(int color, char *format, ...)
     set_hardware_cursor(text_y, text_x);
 }
 
-void printf(char *format, ...)
+void printf(char *text, ...)
 {
-  char **arg = (char **) &format;
+  char **arg = (char **) &text;
   int c;
-  char buf[20];
+  char buffer[20];
 
   arg++;
 
-  while ((c = *format++) != 0)
+  while ((c = *text++) != 0)
     {
       if (c != '%')
       {
@@ -188,26 +196,29 @@ void printf(char *format, ...)
           char *p, *p2;
           int pad0 = 0, pad = 0;
 
-          c = *format++;
+          c = *text++;
           if (c == '0')
             {
               pad0 = 1;
-              c = *format++;
+              c = *text++;
             }
 
           if (c >= '0' && c <= '9')
             {
               pad = c - '0';
-              c = *format++;
+              c = *text++;
             }
 
           switch (c)
             {
+            case 'c':
+                putchar(c);
+                break;
             case 'd':
             case 'u':
             case 'x':
-              itoa (buf, c, *((int *) arg++));
-              p = buf;
+              itoa (buffer, c, *((int *) arg++));
+              p = buffer;
               goto string;
               break;
 
@@ -262,4 +273,25 @@ void printf_centered(char * s, int line_no)
         }
         z++;
     }
+}
+
+void warning(char * warn)
+{
+    int yellow = 0x0E00;
+    printf(yellow, "warning: ");
+    printf(warn);
+}
+
+void error(char * err)
+{
+    int red = 0x0400;
+    printf(red, "error: ");
+    printf(err);
+}
+
+void info(char * s)
+{
+    int light_blue = 0x0300;
+    printf(light_blue, "info: ");
+    printf(s);
 }

@@ -53,33 +53,42 @@ char _getch()
     while (true)
     {
         if (!is_keyboard_locked())
-            return buffer[get_buffer_size()-1];
+        {
+            char k = buffer[get_buffer_size()-1];
+            edit_buffer_size(1);
+            return k;
+        }
     }
-
-    edit_buffer_size(1);
 }
 
 // doesn't work properly
-char * scanf(int size)
+char * scanf()
 {
-    char _b[size];
+    char data[100];
     char k;
-    int s;
+    int s = 0;
 
-    while (s < size)
+    while (true)
     {
         k = _getch();
 
+        //putchar(k);
 
-        _b[s] = k;
+        if (k == '\n')
+        {
+            char *dd = (char *)malloc(sizeof(char) * s + 1);
+
+            for (int z = 0; z < s; z++)
+            {
+                dd[z] = data[z];
+            }
+
+            return dd;
+        }
+
+        data[s] = k;
         s++;
     }
-
-    char * _c;
-
-    memcpy(_b, _c, s);
-
-    return _c;
 }
 
 static void scan_key(registers_t regs)
@@ -87,6 +96,10 @@ static void scan_key(registers_t regs)
     // we don't need a safety since this is only run
     // when an interrupt is fired
     current_key = inb(0x60);
+    // if we did not finish boot yet this doesn't matter
+    if (!booted)
+        return;
+    // so we already booted
     get_key(current_key);
 
     return;
@@ -203,7 +216,7 @@ void get_key(unsigned char code)
             key = ";";
         else if (code == 0x28)
             key = "\'";
-        else if (code == 0x28)
+        else if (code == 0x29)
             key = "\n";
         else if (code == 0x2C)
             key = "z";
@@ -360,7 +373,7 @@ void get_key(unsigned char code)
         buffer_size++;
         keyboard_unlock();
     }
-
+    /*
     if (key != "") {
         if (key == "\n")
         {
@@ -394,16 +407,12 @@ void get_key(unsigned char code)
 
         }
     }
-
+    */
 }
 
 
 void init_keyboard() {
     system_log("Enabled keyboard.\n");
-    buffer[0] = 'H';
-    buffer[1] = 'C';
-    buffer[2] = 'F';
-    buffer_size += 3;
     // register the interrupt
    register_interrupt_handler(IRQ1, scan_key);
 }

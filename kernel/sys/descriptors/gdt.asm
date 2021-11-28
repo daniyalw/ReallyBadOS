@@ -1,5 +1,7 @@
 global gdt_flush
 
+; http://jamesmolloy.co.uk/tutorial_html/
+
 gdt_flush:
    mov eax, [esp+4]
    lgdt [eax]
