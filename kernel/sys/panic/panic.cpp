@@ -4,13 +4,13 @@ void panic(char * message, char * file, int line)
 {
     char * data;
     itoa(line, data);
-    system_log("Kernel panic: in file ");
-    system_log(file);
-    system_log(", line ");
-    system_log(data);
-    system_log(":\n\t");
-    system_log(message);
-    system_log("\n");
+    Kernel::system_log("Kernel panic: in file ");
+    Kernel::system_log(file);
+    Kernel::system_log(", line ");
+    Kernel::system_log(data);
+    Kernel::system_log(":\n\t");
+    Kernel::system_log(message);
+    Kernel::system_log("\n");
     short * vidmem = (short *)0xb8000;
     int bg = 0x1F00; // blue
 

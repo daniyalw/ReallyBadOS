@@ -1,5 +1,7 @@
 #pragma once
 
+namespace Kernel {
+
 // https://wiki.osdev.org/PC_Speaker
 
 static void play_sound(uint32_t nFrequence) {
@@ -33,4 +35,6 @@ void beep() {
         io_wait();
     nosound();
          //set_PIT_2(old_frequency);
+}
+
 }

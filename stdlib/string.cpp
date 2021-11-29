@@ -1,6 +1,13 @@
 #pragma once
 #include "string.h"
 
+int get_sizeof_var(void * data)
+{
+    void * newdata;
+    newdata = data;
+    return sizeof(newdata);
+}
+
 static void itoa(char *buf, int base, int d)
 {
   char *p = buf;

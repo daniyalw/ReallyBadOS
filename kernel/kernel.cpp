@@ -6,7 +6,7 @@ bool booted = false;
 int back_buffer[1024*768]; // back buffer for gui
 
 #include <cpuid.h>
-#include "sys/background.cpp"
+//#include "sys/background.cpp"
 #include "sys/log/log.h"
 #include "sys/panic/panic.h"
 #include "../stdlib/stdint.h"
@@ -79,18 +79,21 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     */
 
     // initialize ACPI
-    //initAcpi();
+    Kernel::initAcpi();
 
     // GDT enable
-    init_gdt();
+    Kernel::init_gdt();
     // IDT & interrupts enable
-    isr_install();
+    Kernel::isr_install();
     init_timer(1000);
     // mouse & keyboard
     //init_keyboard();
     //mouse_install();
-    char * a;
-    int n = 12345;
-    itoa(n, a);
-    printf(a);
+
+    std::List<char *> a;
+    std::List<char *> b;
+
+    a.push_back("Hello!");
+    b.push_back("Hello!");
+
 }

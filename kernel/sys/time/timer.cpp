@@ -63,10 +63,10 @@ static void timer_callback(registers_t regs) {
 }
 
 void init_timer(u32 freq) {
-    system_log("Enabled timer.\n");
+    Kernel::system_log("Enabled timer.\n");
     hz = freq;
     /* Install the function we just wrote */
-    register_interrupt_handler(IRQ0, timer_callback);
+    Kernel::register_interrupt_handler(IRQ0, timer_callback);
 
     /* Get the PIT value: hardware clock at 1193180 Hz */
     u32 divisor = 1193180 / freq;

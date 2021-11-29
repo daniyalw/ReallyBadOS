@@ -1,6 +1,8 @@
 #pragma once
 #include "log.h"
 
+namespace Kernel {
+
 void system_log(char * data)
 {
     int size = len(data);
@@ -10,4 +12,6 @@ void system_log(char * data)
         sys_log[sys_log_size] = data[z];
         sys_log_size++;
     }
+}
+
 }

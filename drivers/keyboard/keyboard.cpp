@@ -412,7 +412,7 @@ void get_key(unsigned char code)
 
 
 void init_keyboard() {
-    system_log("Enabled keyboard.\n");
+    Kernel::system_log("Enabled keyboard.\n");
     // register the interrupt
-   register_interrupt_handler(IRQ1, scan_key);
+   Kernel::register_interrupt_handler(IRQ1, scan_key);
 }

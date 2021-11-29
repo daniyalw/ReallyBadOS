@@ -150,7 +150,7 @@ static void mouse_handler(registers_t regs)
 
         // check if power off button was clicked
         if (mouse_x < 20 && mouse_y < 20)
-            shutdown_os();
+            Kernel::shutdown_os();
 
     }
 
@@ -195,5 +195,5 @@ void mouse_install()
   mouse_write(0xF4);
   mouse_read();  //Acknowledge
 
-  register_interrupt_handler(IRQ12, mouse_handler); // interrupts
+  Kernel::register_interrupt_handler(IRQ12, mouse_handler); // interrupts
 }

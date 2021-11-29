@@ -2,6 +2,8 @@
 #include "cursor.h"
 #include "../../kernel/sys/log/log.cpp"
 
+namespace Kernel {
+
 void update_hardware_cursor(int cursor_x, int cursor_y)
 {
 	unsigned short cursor_location = cursor_y * 80 + cursor_x;
@@ -15,7 +17,7 @@ void update_hardware_cursor(int cursor_x, int cursor_y)
 // we don't need an enable function as it is enabled by default
 void disable_hardware_cursor()
 {
-	system_log("Disabled hardware cursor.\n");
+	Kernel::system_log("Disabled hardware cursor.\n");
 	outb(0x3D4, 0x0A);
 	outb(0x3D5, 0x20);
 }
@@ -41,4 +43,6 @@ void set_hardware_cursor(int cursor_y, int cursor_x)
 	outb(0x3D5, (unsigned char)(cursor_location & 0xFF));
 	outb(0x3D4, 0x0E);
 	outb(0x3D5, (unsigned char )((cursor_location >> 8) & 0xFF));
+}
+
 }

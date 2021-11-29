@@ -156,7 +156,7 @@ void printf(int color, char *text, ...)
             }
         }
     }
-    set_hardware_cursor(text_y, text_x);
+    Kernel::set_hardware_cursor(text_y, text_x);
 }
 
 void printf(char *text, ...)
@@ -245,7 +245,7 @@ void printf(char *text, ...)
             }
         }
     }
-    set_hardware_cursor(text_y, text_x);
+    Kernel::set_hardware_cursor(text_y, text_x);
 }
 
 void printf_centered(char * s, int line_no)

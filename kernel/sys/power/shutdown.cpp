@@ -4,7 +4,11 @@
 #include "../../../drivers/video/graphics.cpp"
 #include "../io.cpp"
 
+namespace Kernel {
+
 void shutdown_os()
 {
-    acpiPowerOff();
+    Kernel::acpiPowerOff();
+}
+
 }

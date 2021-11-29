@@ -1,6 +1,8 @@
 #include "../../../stdlib/string.cpp"
 #include "../log/log.cpp"
 
+namespace Kernel {
+
 // from forum.osdev.org
 
 dword *SMI_CMD;
@@ -175,7 +177,7 @@ int acpiEnable()
 
 int initAcpi()
 {
-    system_log("Enabled ACPI.\n");
+    Kernel::system_log("Enabled ACPI.\n");
    unsigned int *ptr = acpiGetRSDPtr();
 
    // check if address is correct  ( if acpi is available on this pc )
@@ -270,4 +272,6 @@ void acpiPowerOff()
    outw((unsigned int) PM1a_CNT, SLP_TYPa | SLP_EN );
    if ( PM1b_CNT != 0 )
       outw((unsigned int) PM1b_CNT, SLP_TYPb | SLP_EN );
+}
+
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+namespace std {
+
 template <typename T>
 class List {
 private:
@@ -45,6 +47,39 @@ public:
         capacity = sizeof(arr);
         length = 0;
     }
+
+    bool operator==(List other)
+    {
+        int size = other.size();
+
+        if (size != this->size())
+            return false;
+
+        for (int z = 0; z < size; z++)
+        {
+            if (this->get(z) != other.get(z))
+                return false;
+        }
+
+        return true;
+    }
+
+    bool operator!=(List other)
+    {
+        int size = other.size();
+
+        if (size != this->size())
+            return true;
+
+        for (int z = 0; z < size; z++)
+        {
+            if (this->get(z) != other.get(z))
+                return true;
+        }
+
+        return false;
+    }
+
     // Function that returns the number of
     // elements in array after pushing the data
     void push_back(T data)
@@ -98,3 +133,5 @@ public:
     }
 
 };
+
+}

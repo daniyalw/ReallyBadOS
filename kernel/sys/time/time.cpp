@@ -1,5 +1,7 @@
 #pragma once
 
+namespace Time {
+
 int get_update_in_progress_flag() {
       outb(cmos_address, 0x0A);
       return (inb(cmos_data) & 0x80);
@@ -11,7 +13,7 @@ int get_RTC_register(int reg) {
 }
 
 void read_rtc() {
-    system_log("Read RTC.\n");
+    Kernel::system_log("Read RTC.\n");
       int century;
       int last_second;
       int last_minute;
@@ -88,4 +90,6 @@ void read_rtc() {
             if(year < CURRENT_YEAR) year += 100;
       }
     seconds = second;
+}
+
 }

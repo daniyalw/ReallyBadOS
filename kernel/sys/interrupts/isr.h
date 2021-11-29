@@ -113,4 +113,8 @@ typedef struct {
 
 typedef void (*isr_t)(registers_t);
 
+namespace Kernel {
+
 void register_interrupt_handler(u8 n, isr_t handler);
+
+}

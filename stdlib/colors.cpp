@@ -1,6 +1,7 @@
 #pragma once
 #include "colors.h"
 
+namespace std {
 // split a color into red green and blue
 colors_t get_colors(int color)
 {
@@ -9,19 +10,6 @@ colors_t get_colors(int color)
     colors.green = (color >> 8) & 255;
     colors.red = (color >> 16) & 255;
     return colors;
-}
-
-// mix as in red + black = dark red
-int mix(int color1, int color2)
-{
-    colors_t c1, c2;
-    int r, g, b;
-    c1 = get_colors(color1);
-    c2 = get_colors(color2);
-    r = (c1.red + c2.red)/2;
-    g = (c1.green + c2.green)/2;
-    b = (c1.blue + c2.blue)/2;
-    return get_color(r, g, b);
 }
 
 // add red and green and blue to form one color
@@ -36,10 +24,25 @@ int rgb(int red, int green, int blue)
     return get_color(red, green, blue);
 }
 
+// mix as in red + black = dark red
+int mix(int color1, int color2)
+{
+    colors_t c1, c2;
+    int r, g, b;
+    c1 = std::get_colors(color1);
+    c2 = std::get_colors(color2);
+    r = (c1.red + c2.red)/2;
+    g = (c1.green + c2.green)/2;
+    b = (c1.blue + c2.blue)/2;
+    return std::get_color(r, g, b);
+}
+
+}
+
 // common colors
-int blue = rgb(0, 0, 255);
-int green = rgb(0, 255, 0);
-int red = rgb(255, 0, 0);
+int blue = std::rgb(0, 0, 255);
+int green = std::rgb(0, 255, 0);
+int red = std::rgb(255, 0, 0);
 int black = 0;
 int white = 0xffffff;
 int yellow = 0xffff00;

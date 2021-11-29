@@ -74,7 +74,7 @@ void rc(char * b)
     } else if (startswith(b, "shutdown")) {
 
         disable_interrupts();
-        shutdown_os();
+        Kernel::shutdown_os();
 
     } else if (startswith(b, "cls") || startswith(b, "clear")) {
 

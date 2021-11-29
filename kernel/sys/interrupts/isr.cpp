@@ -3,6 +3,8 @@
 #include "isr.h"
 #include "../log/log.cpp"
 
+namespace Kernel {
+
 /*
 BSD 3-Clause License
 
@@ -38,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 isr_t interrupt_handlers[256];
 
 void isr_install() {
-    system_log("Enabled interrupts.\n");
+    Kernel::system_log("Enabled interrupts.\n");
     set_idt_gate(0, (u32)isr0);
     set_idt_gate(1, (u32)isr1);
     set_idt_gate(2, (u32)isr2);
@@ -172,4 +174,6 @@ extern "C" void irq_handler(registers_t r) {
         isr_t handler = interrupt_handlers[r.int_no];
         handler(r);
     }
+}
+
 }

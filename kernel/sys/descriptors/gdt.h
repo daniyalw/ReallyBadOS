@@ -24,11 +24,11 @@ extern "C" {
     extern void gdt_flush(u32 push);
 }
 
+namespace Kernel {
 // Internal function prototypes.
 static void init_gdt();
 static void gdt_set_gate(s32 num, u32 base, u32 limit, u8 access, u8 gran);
+}
 
 gdt_entry_t gdt_entries[5];
 gdt_ptr_t   gdt_ptr;
-
-void init_descriptor_tables();
