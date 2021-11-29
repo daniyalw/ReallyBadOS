@@ -1,4 +1,4 @@
-
+#include "../../../stdlib/string.cpp"
 #include "../log/log.cpp"
 
 // from forum.osdev.org
@@ -200,7 +200,7 @@ int initAcpi()
                int dsdtLength = *(facp->DSDT+1) -36;
                while (0 < dsdtLength--)
                {
-                  if ( memcmp(S5Addr, "_S5_", 4) == 0)
+                  if ( memcmp(S5Addr, (void *)"_S5_", 4) == 0)
                      break;
                   S5Addr++;
                }

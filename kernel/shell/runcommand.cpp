@@ -3,7 +3,6 @@
 #include "../../drivers/video/video.cpp"
 #include "../sys/power/shutdown.cpp"
 #include "../sys/time/timer.h"
-#include "../fs/fs.h"
 #include "../sys/power/reboot.cpp"
 #include "../sys/log/log.h"
 #include "rc.h"

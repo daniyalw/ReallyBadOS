@@ -1,67 +1,13 @@
 #pragma once
 #include "string.h"
 
-char * rIntToAscii(int num, char * result) {
-    if (num == 0) {
-        return result;
-    }
-    else {
-         result=rIntToAscii( num/10, result );
-         *result = '0'+num%10;
-         return result+1;
-    }
-}
-
-void itoa(int num, char * output) {
-  if (num==0){
-    *output++='0';
-    *output='\0';
-  }
-    else
-    {
-      if(num<0){
-        *output++='-';
-        num=-num;
-      }
-      *rIntToAscii(num, output) = '\0';
-    }
-}
-
-char * rIntToAscii(unsigned int num, char * result) {
-    if (num == 0) {
-        return result;
-    }
-    else {
-         result=rIntToAscii( num/10, result );
-         *result = '0'+num%10;
-         return result+1;
-    }
-}
-
-void itoa(unsigned int num, char * output) {
-  if (num==0){
-    *output++='0';
-    *output='\0';
-  }
-    else
-    {
-      if(num<0){
-        *output++='-';
-        num=-num;
-      }
-      *rIntToAscii(num, output) = '\0';
-    }
-}
-
-static void
-itoa (char *buf, int base, int d)
+static void itoa(char *buf, int base, int d)
 {
   char *p = buf;
   char *p1, *p2;
   unsigned long ud = d;
   int divisor = 10;
 
-  /* If %d is specified and D is minus, put ‘-’ in the head. */
   if (base == 'd' && d < 0)
     {
       *p++ = '-';
@@ -71,7 +17,6 @@ itoa (char *buf, int base, int d)
   else if (base == 'x')
     divisor = 16;
 
-  /* Divide UD by DIVISOR until UD == 0. */
   do
     {
       int remainder = ud % divisor;
@@ -80,10 +25,8 @@ itoa (char *buf, int base, int d)
     }
   while (ud /= divisor);
 
-  /* Terminate BUF. */
   *p = 0;
 
-  /* Reverse BUF. */
   p1 = buf;
   p2 = p - 1;
   while (p1 < p2)
@@ -94,6 +37,16 @@ itoa (char *buf, int base, int d)
       p1++;
       p2--;
     }
+}
+
+void itoa(int num, char * out)
+{
+    itoa(out, 10, num);
+}
+
+void itoa(unsigned int num, char * out)
+{
+    itoa(out, 10, num);
 }
 
 int len(char * str)
@@ -331,18 +284,6 @@ void memset(u8 *dest, u8 val, u32 len) {
 }
 
 int memcmp(void* buf1, void* buf2, int count) {
-    if(!count)
-        return(0);
-
-    while(--count && *(char*)buf1 == *(char*)buf2 ) {
-        buf1 = (char*)buf1 + 1;
-        buf2 = (char*)buf2 + 1;
-    }
-
-    return(*((unsigned char*)buf1) - *((unsigned char*)buf2));
-}
-
-int memcmp(void* buf1, const void* buf2, int count) {
     if(!count)
         return(0);
 

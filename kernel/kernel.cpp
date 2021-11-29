@@ -45,7 +45,6 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "sys/time/timer.cpp"
 #include "../stdlib/colors.cpp"
 #include "../stdlib/list.cpp"
-#include "fs/fs.cpp"
 #include "sys/panic/panic.cpp"
 //#include "sys/background.cpp"
 
@@ -90,4 +89,8 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     // mouse & keyboard
     //init_keyboard();
     //mouse_install();
+    char * a;
+    int n = 12345;
+    itoa(n, a);
+    printf(a);
 }

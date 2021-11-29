@@ -33,13 +33,12 @@ unsigned short get_hardware_cursor_pos()
 	return position;
 }
 
-void set_hardware_cursor(int _y, int _x)
+void set_hardware_cursor(int cursor_y, int cursor_x)
 {
-	unsigned short cursor_location = _y * 80 + _x;
+	unsigned short cursor_location = cursor_y * 80 + cursor_x;
 
 	outb(0x3D4, 0x0F);
 	outb(0x3D5, (unsigned char)(cursor_location & 0xFF));
 	outb(0x3D4, 0x0E);
-	outb(0x3D5, (unsigned char )((cursor_location >> 8) &0 xFF));
-
+	outb(0x3D5, (unsigned char )((cursor_location >> 8) & 0xFF));
 }
