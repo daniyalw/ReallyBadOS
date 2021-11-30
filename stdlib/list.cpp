@@ -64,6 +64,22 @@ public:
         return true;
     }
 
+    bool operator>(List other)
+    {
+        if (this->size() > other.size())
+            return true;
+
+        return false;
+    }
+
+    bool operator<(List other)
+    {
+        if (this->size() < other.size())
+            return true;
+
+        return false;
+    }
+
     bool operator!=(List other)
     {
         int size = other.size();

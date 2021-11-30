@@ -12,8 +12,10 @@ void clear() {
     short * vidmem = (short *)0xb8000;
 
     for (int z = 0; z < 80; z++) {
-        for (int b = 0; b < 25; b++)
+        for (int b = 0; b < 25; b++) {
             vidmem[b*80+z] = 0x0F00 | ' ';
+            written_on[z+b*80] = false;
+        }
     }
 
     text_x = 0;
@@ -29,17 +31,84 @@ void next_char() {
 }
 
 void putchar(char text) {
+    if (text == '\n') {
+        text_x = 0;
+        text_y++;
+        return;
+    } else if (text == '\t') {
+        text_x += 4;
+        return;
+    } else if (text == '\b') {
+        if (text_x > 1)
+        {
+            // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
+            // behind text_x will remain
+            text_x--;
+            if (text_x < 0) {
+                for (int b = 0; b < 80; b++)
+                {
+                    if (!written_on[b+(text_y - 1)*80])
+                    {
+                        text_x = b;
+                        break;
+                    }
+                }
+                text_y--;
+            }
+            putchar(' ');
+            text_x--;
+            if (text_x < 0) {
+                text_x = 0;
+                text_y--;
+            }
+        }
+        return;
+    }
+
     short * vidmem = (short *)0xb8000;
     int color = 0x0F00;
 
     vidmem[text_x+text_y*80] = color | text;
+    written_on[text_x+text_y*80] = true;
     next_char();
 }
 
 void putchar(char text, int color) {
+    if (text == '\n') {
+        text_x = 0;
+        text_y++;
+    } else if (text == '\t') {
+        text_x += 4;
+    } else if (text == '\b') {
+        if (text_x > 1)
+        {
+            // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
+            // behind text_x will remain
+            text_x--;
+            if (text_x < 0) {
+                for (int b = 0; b < 80; b++)
+                {
+                    if (!written_on[b+(text_y - 1)*80])
+                    {
+                        text_x = b;
+                        break;
+                    }
+                }
+                text_y--;
+            }
+            putchar(' ');
+            text_x--;
+            if (text_x < 0) {
+                text_x = 0;
+                text_y--;
+            }
+        }
+    }
+
     short * vidmem = (short *)0xb8000;
 
     vidmem[text_x+text_y*80] = color | text;
+    written_on[text_x+text_y*80] = true;
     next_char();
 }
 
@@ -60,11 +129,13 @@ void scroll()
        for (i = 0*80; i < 24*80; i++)
        {
            vidmem[i] = vidmem[i+80];
+           written_on[i] = vidmem[i+80];
        }
 
        for (i = 24*80; i < 25*80; i++)
        {
            vidmem[i] = space;
+           written_on[i] = false;
        }
        text_y = 24;
    }
@@ -89,6 +160,32 @@ void printf(int color, char *text, ...)
 
             if (scroll_on)
                 scroll();
+        }
+        else if (c == '\b')
+        {
+            if (text_x > 1)
+            {
+                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
+                // behind text_x will remain
+                text_x--;
+                if (text_x < 0) {
+                    for (int b = 0; b < 80; b++)
+                    {
+                        if (!written_on[b+(text_y - 1)*80])
+                        {
+                            text_x = b;
+                            break;
+                        }
+                    }
+                    text_y--;
+                }
+                putchar(' ');
+                text_x--;
+                if (text_x < 0) {
+                    text_x = 0;
+                    text_y--;
+                }
+            }
         }
         else if (c == '\t')
         {
@@ -178,6 +275,32 @@ void printf(char *text, ...)
 
             if (scroll_on)
                 scroll();
+        }
+        else if (c == '\b')
+        {
+            if (text_x > 1)
+            {
+                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
+                // behind text_x will remain
+                text_x--;
+                if (text_x < 0) {
+                    for (int b = 0; b < 80; b++)
+                    {
+                        if (!written_on[b+(text_y - 1)*80])
+                        {
+                            text_x = b;
+                            break;
+                        }
+                    }
+                    text_y--;
+                }
+                putchar(' ');
+                text_x--;
+                if (text_x < 0) {
+                    text_x = 0;
+                    text_y--;
+                }
+            }
         }
         else if (c == '\t')
         {

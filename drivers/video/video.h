@@ -1,6 +1,10 @@
 #pragma once
 
+#define TERMINAL_HEIGHT 25
+#define TERMINAL_WIDTH 80
+
 bool scroll_on = true;
+bool written_on[80*25];
 void clear();
 void next_char();
 void putchar(char text);

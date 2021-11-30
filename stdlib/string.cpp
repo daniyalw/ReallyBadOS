@@ -8,6 +8,51 @@ int get_sizeof_var(void * data)
     return sizeof(newdata);
 }
 
+bool isspace(char c)
+{
+    if (c == ' ')
+        return true;
+
+    return false;
+}
+
+bool isdigit(char k)
+{
+    if (k == '1' || k == '2' || k == '3' || k == '4' || k == '5' || k == '6' || k == '7' || k == '8' || k == '9' || k == '0')
+        return true;
+
+    return false;
+}
+
+int atoi(int var, char * str)
+{
+    int res = 0; // Initialize result
+    int sgn = 1;
+    for (; isspace(*str); ++str);
+
+    if (*str == '-')
+    {
+     sgn = -1;
+     ++str;
+    }
+    else if (*str == '+')
+    {
+     ++str;
+    }
+
+    for (; *str != 0; ++str)
+    {
+     if (*str < '0' || *str > '9')
+        {
+         return sgn * res;
+        }
+     res = res * 10 + *str - '0';
+    }
+    var = sgn * res;
+    // return result.
+    return sgn * res;
+}
+
 static void itoa(char *buf, int base, int d)
 {
   char *p = buf;

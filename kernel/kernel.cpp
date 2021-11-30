@@ -46,7 +46,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../stdlib/colors.cpp"
 #include "../stdlib/list.cpp"
 #include "sys/panic/panic.cpp"
-//#include "sys/background.cpp"
+#include "../drivers/video/bga.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -87,13 +87,7 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     Kernel::isr_install();
     init_timer(1000);
     // mouse & keyboard
-    //init_keyboard();
+    init_keyboard(false);
     //mouse_install();
-
-    std::List<char *> a;
-    std::List<char *> b;
-
-    a.push_back("Hello!");
-    b.push_back("Hello!");
 
 }

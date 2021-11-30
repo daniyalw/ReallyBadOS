@@ -61,33 +61,43 @@ char _getch()
     }
 }
 
-// doesn't work properly
-char * scanf()
+// dd is the variable to store the input in
+// type is the type of input wanted
+char * scanf(char * dd)
 {
-    char data[100];
+    char data[128];
     char k;
     int s = 0;
+    int limit = 128;
 
     while (true)
     {
         k = _getch();
 
-        //putchar(k);
+        putchar(k);
 
-        if (k == '\n')
+        if (k != '\b')
         {
-            char *dd = (char *)malloc(sizeof(char) * s + 1);
-
-            for (int z = 0; z < s; z++)
+            if (k == '\n')
             {
-                dd[z] = data[z];
+
+                for (int z = 0; z < s; z++)
+                {
+                    dd[z] = data[z];
+                }
+
+                printf("\b");
+
+                return dd;
             }
 
-            return dd;
+            data[s] = k;
+            s++;
         }
-
-        data[s] = k;
-        s++;
+        else
+        {
+            s--;
+        }
     }
 }
 
@@ -96,9 +106,6 @@ static void scan_key(registers_t regs)
     // we don't need a safety since this is only run
     // when an interrupt is fired
     current_key = inb(0x60);
-    // if we did not finish boot yet this doesn't matter
-    if (!booted)
-        return;
     // so we already booted
     get_key(current_key);
 
@@ -373,45 +380,51 @@ void get_key(unsigned char code)
         buffer_size++;
         keyboard_unlock();
     }
-    /*
-    if (key != "") {
-        if (key == "\n")
-        {
-            printf("\n\n");
-            rc(buff);
-            clears(buff);
-            bf = 0;
-            printf("\n\n/> ");
-        } else {
-            if (key != "\b")
+    //printf(key);
+    if (terminal_on) {
+        if (key != "") {
+            if (key == "\n")
             {
-                printf(key);
-                for (int z = 0; z < len(key); z++)
+                printf("\n\n");
+                rc(buff);
+                clears(buff);
+                bf = 0;
+                printf("\n\n/> ");
+            } else {
+                if (key != "\b")
                 {
-                    buff[z+bf] = key[z];
-                    bf++;
+                    printf(key);
+                    for (int z = 0; z < len(key); z++)
+                    {
+                        buff[z+bf] = key[z];
+                        bf++;
+                    }
                 }
-            }
-            else
-            {
-                if (text_x > 3)
+                else
                 {
-                    buff[bf] = ' ';
-                    bf--;
-                    text_x--;
-                    putchar(' ');
-                    text_x--;
-                    set_hardware_cursor(text_y, text_x);
+                    if (text_x > 3)
+                    {
+                        buff[bf] = ' ';
+                        bf--;
+                        text_x--;
+                        putchar(' ');
+                        text_x--;
+                        Kernel::set_hardware_cursor(text_y, text_x);
+                    }
                 }
-            }
 
+            }
         }
     }
-    */
 }
 
 
-void init_keyboard() {
+void init_keyboard(bool on) {
+    if (on) {
+        printf_centered("Terminal", 0); // 0 indicates line 0
+        printf("\n/> ");
+    }
+    terminal_on = on;
     Kernel::system_log("Enabled keyboard.\n");
     // register the interrupt
    Kernel::register_interrupt_handler(IRQ1, scan_key);
