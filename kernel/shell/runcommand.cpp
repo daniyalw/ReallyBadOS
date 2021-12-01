@@ -33,7 +33,7 @@ void rc(char * b)
 
     } else if (startswith(b, "reboot")) {
 
-        reboot();
+        Kernel::reboot();
 
     } else if (startswith(b, "copyright")) {
 
@@ -41,14 +41,14 @@ void rc(char * b)
 
     } else if (startswith(b, "viewlog")) {
 
-        char nl[sys_log_size + 1];
+        char nl[Kernel::sys_log_size + 1];
 
-        for (int z = 0; z < sys_log_size; z++)
+        for (int z = 0; z < Kernel::sys_log_size; z++)
         {
-            nl[z] = sys_log[z];
+            nl[z] = Kernel::sys_log[z];
         }
 
-        nl[sys_log_size] = '\0';
+        nl[Kernel::sys_log_size] = '\0';
 
         printf(nl);
 

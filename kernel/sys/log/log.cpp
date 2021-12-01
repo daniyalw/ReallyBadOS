@@ -9,8 +9,8 @@ void system_log(char * data)
 
     for (int z = 0; z < size; z++)
     {
-        sys_log[sys_log_size] = data[z];
-        sys_log_size++;
+        Kernel::sys_log[Kernel::sys_log_size] = data[z];
+        Kernel::sys_log_size++;
     }
 }
 

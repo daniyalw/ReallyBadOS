@@ -1,5 +1,6 @@
 #pragma once
 #include "string.h"
+#include "list.cpp"
 
 int get_sizeof_var(void * data)
 {
@@ -24,33 +25,14 @@ bool isdigit(char k)
     return false;
 }
 
-int atoi(int var, char * str)
+int atoi(char * str)
 {
-    int res = 0; // Initialize result
-    int sgn = 1;
-    for (; isspace(*str); ++str);
+    int num = 0;
 
-    if (*str == '-')
-    {
-     sgn = -1;
-     ++str;
-    }
-    else if (*str == '+')
-    {
-     ++str;
-    }
+    for (int z = 0; str[z] != '\0'; z++)
+        num = num * 10 + str[z] - '0';
 
-    for (; *str != 0; ++str)
-    {
-     if (*str < '0' || *str > '9')
-        {
-         return sgn * res;
-        }
-     res = res * 10 + *str - '0';
-    }
-    var = sgn * res;
-    // return result.
-    return sgn * res;
+    return num;
 }
 
 static void itoa(char *buf, int base, int d)
@@ -202,27 +184,6 @@ void clears(char d[128])
         d[z] = ' ';
 }
 
-char * split(char * string, char key)
-{
-    char buffer[len(string)];
-    int buffer_size = 0;
-    for (int z = 0; z < len(string); z++)
-    {
-        if (string[z] == key)
-        {
-            for (int b = 0; b < len(string); b++)
-                buffer[b] = ' ';
-        }
-        else
-        {
-            buffer[buffer_size] = string[z];
-            buffer_size++;
-        }
-    }
-
-    return buffer;
-}
-
 // get how many times a value appears in a string
 int gvfs(char * s, char value)
 {
@@ -235,22 +196,61 @@ int gvfs(char * s, char value)
     return count;
 }
 
-char * strip(char * s, char value, char * output)
+char * split(char * string, char key, int position, char * out)
 {
-    int rs = 0;
+    int lcount = 0;
+    int v = 0;
 
-    for (int z = 0; z < len(s); z++)
+    for (int z = 0; z < len(string); z++)
     {
-        if (s[z] != value)
+        if (string[z] == key)
         {
-            output[rs] = s[z];
-            rs++;
+            if (lcount == position)
+            {
+                return out;
+            }
+            lcount++;
+            out = "";
+            v = 0;
+        }
+        else
+        {
+            out[v] = string[z];
+            v++;
+            out[v] = 0;
         }
     }
 
-    output[rs] = '\0';
+    return out;
+}
 
-    return output;
+char * strip(char * string, char key)
+{
+    int sz = 0;
+
+    // we loop through and check each char
+    // if it's a match, we copy every char
+    // in front one space back in removal
+    // and keep count of how many times key is found
+    for (int z = 0; z < len(string); z++)
+    {
+        if (string[z] == key)
+        {
+            for (int b = z + 1; b < len(string); b++)
+            {
+                string[b - 1] = string[b];
+            }
+            sz++;
+        }
+    }
+
+    // we subtract whatever the length of
+    // the string was by how many times it
+    // appeared in the string so that no
+    // extra letters remain
+    string[len(string)-sz] = 0;
+
+    return string;
 }
 
 bool strisempty(char * s)
@@ -335,6 +335,15 @@ void memset(u8 *dest, u8 val, u32 len) {
     }
 }
 
+void memset(char *dest, char val, u32 len) {
+    char *temp = (char *)dest;
+
+    for (; len != 0; len--)
+    {
+        *temp++ = val;
+    }
+}
+
 int memcmp(void* buf1, void* buf2, int count) {
     if(!count)
         return(0);
@@ -345,4 +354,9 @@ int memcmp(void* buf1, void* buf2, int count) {
     }
 
     return(*((unsigned char*)buf1) - *((unsigned char*)buf2));
+}
+
+int strlen(char * data)
+{
+    return len(data);
 }

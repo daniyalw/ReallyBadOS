@@ -2,6 +2,8 @@
 
 //https://wiki.osdev.org/Reboot
 
+namespace Kernel {
+
 void reboot()
 {
     asm("cli");
@@ -10,4 +12,6 @@ void reboot()
         good = inb(0x64);
     outb(0x64, 0xFE);
     asm("hlt");
+}
+
 }

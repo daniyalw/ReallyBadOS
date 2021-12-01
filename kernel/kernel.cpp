@@ -47,6 +47,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../stdlib/list.cpp"
 #include "sys/panic/panic.cpp"
 #include "../drivers/video/bga.cpp"
+#include "../stdlib/map.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -78,6 +79,8 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     while (true);
     */
 
+    Kernel::system_log("Entered kernel.\n");
+
     // initialize ACPI
     Kernel::initAcpi();
 
@@ -89,5 +92,5 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     // mouse & keyboard
     init_keyboard(false);
     //mouse_install();
-
+    
 }

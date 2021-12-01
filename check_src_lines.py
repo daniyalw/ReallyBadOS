@@ -1,6 +1,6 @@
 import os
 
-path ='./src/'
+path ='.'
 list_of_files = []
 asm = 0
 cpp = 0
@@ -11,16 +11,22 @@ for root, dirs, files in os.walk(path):
 		list_of_files.append(os.path.join(root,file))
 
 for file in list_of_files:
-    if file.endswith("cpp") or file.endswith("h"):
-        f = open(file, 'r')
-        for line in f.read().split('\n'):
-            cpp += 1
-        f.close()
-    elif file.lower().endswith("asm") or file.lower().endswith("s"):
-        f = open(file, 'r')
-        for line in f.read().split('\n'):
-            asm += 1
-        f.close()
+	if file.endswith("cpp") or file.endswith("h"):
+		try:
+			f = open(file, 'r')
+		except UnicodeDecodeError:
+			continue
+		for line in f.read().split('\n'):
+			cpp += 1
+		f.close()
+	elif file.lower().endswith("asm") or file.lower().endswith("s"):
+		try:
+			f = open(file, 'r')
+		except UnicodeDecodeError:
+			continue
+		for line in f.read().split('\n'):
+			asm += 1
+		f.close()
 
 total += cpp
 total += asm

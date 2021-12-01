@@ -3,17 +3,10 @@
 namespace std {
 
 template <typename T>
-class List {
+class list {
 private:
     T * arr;
-
-    int capacity;
-
-    int length;
-
-    bool exceptions_on;
-
-    int exceptions;
+    int length = 0;
 
     void newarr() {
         // create a new array
@@ -25,30 +18,18 @@ private:
         int b = 0;
         for (int z = 0; z < length; z++)
         {
-            // we check if it is not equal to exceptions
-            if ((z != exceptions && exceptions_on) || (!exceptions_on))
-            {
-                narr[b] = arr[z];
-                b++;
-                newl++;
-            }
+            narr[b] = arr[z];
+            b++;
+            newl++;
         }
         // the original array is now the new array
         arr = narr;
 
-        // new capacity
-        capacity = sizeof(arr);
     }
 
 public:
-    List()
-    {
-        // capacity is always sizeof arr
-        capacity = sizeof(arr);
-        length = 0;
-    }
 
-    bool operator==(List other)
+    bool operator==(list other)
     {
         int size = other.size();
 
@@ -64,7 +45,7 @@ public:
         return true;
     }
 
-    bool operator>(List other)
+    bool operator>(list other)
     {
         if (this->size() > other.size())
             return true;
@@ -72,7 +53,7 @@ public:
         return false;
     }
 
-    bool operator<(List other)
+    bool operator<(list other)
     {
         if (this->size() < other.size())
             return true;
@@ -80,7 +61,7 @@ public:
         return false;
     }
 
-    bool operator!=(List other)
+    bool operator!=(list other)
     {
         int size = other.size();
 
@@ -100,9 +81,6 @@ public:
     // elements in array after pushing the data
     void push_back(T data)
     {
-        if (capacity + length >= capacity) {
-            newarr();
-        }
         arr[length] = data;
         length++;
     }
@@ -111,7 +89,7 @@ public:
     {
         if (value > length) {
             // caller tried to access illegal value
-            return 0;
+            return arr[0];
         } else {
             return arr[value];
         }
@@ -119,14 +97,19 @@ public:
 
     void remove(int value)
     {
-        // we set the exceptions value to the value the user wants to remove
-        // with newarr(), it'll loop through the values of the old array, and
-        // check if the value is not exceptions
-        exceptions = value;
-        // we do this so the newarr() won't check if it's called outside of remove()
-        exceptions_on = true;
-        newarr();
-        exceptions_on = false;
+        T * newarr;
+        int nz = 0;
+
+        for (int z = 0; z < length; z++)
+        {
+            if (z == value)
+                continue;
+
+            newarr[nz] = arr[z];
+            nz++;
+        }
+        length = nz;
+        arr = newarr;
     }
 
     void pop()
@@ -136,6 +119,16 @@ public:
         //
         // we just ignore the element
         length--;
+        T * newarr;
+        int nz = 0;
+
+        for (int z = 0; z < length; z++)
+        {
+            newarr[nz] = arr[z];
+            nz++;
+        }
+        length = nz;
+        arr = newarr;
     }
 
     T get_last()
