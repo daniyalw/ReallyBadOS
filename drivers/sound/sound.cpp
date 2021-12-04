@@ -1,5 +1,7 @@
 #pragma once
 
+#include <kernel/io.h>
+
 namespace Kernel {
 
 // https://wiki.osdev.org/PC_Speaker

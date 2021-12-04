@@ -1,6 +1,6 @@
 #pragma once
-#include "string.h"
-#include "list.cpp"
+#include <string.h>
+#include <list.h>
 
 int get_sizeof_var(void * data)
 {
@@ -166,6 +166,19 @@ bool startswith(char * words, char * start)
     return true;
 }
 
+bool endswith(char * words, char * end)
+{
+    int x = 0;
+
+    for (int z = len(words)-len(end); z < len(words); z++)
+    {
+        if (words[z] != end[x])
+            return false;
+    }
+
+    return true;
+}
+
 char * strcpy(char * d, char * s) // destination, source
 {
     while ((*d++ = *s++));
@@ -196,6 +209,10 @@ int gvfs(char * s, char value)
     return count;
 }
 
+// string: the variable to split
+// key: the delimeter of the split
+// position: which part of the split string to return
+// out: where to store the return value
 char * split(char * string, char key, int position, char * out)
 {
     int lcount = 0;
@@ -227,28 +244,20 @@ char * split(char * string, char key, int position, char * out)
 char * strip(char * string, char key)
 {
     int sz = 0;
+    char buff[len(string)];
 
-    // we loop through and check each char
-    // if it's a match, we copy every char
-    // in front one space back in removal
-    // and keep count of how many times key is found
     for (int z = 0; z < len(string); z++)
     {
-        if (string[z] == key)
+        if (string[z] != key)
         {
-            for (int b = z + 1; b < len(string); b++)
-            {
-                string[b - 1] = string[b];
-            }
+            buff[sz] = string[z];
             sz++;
         }
     }
 
-    // we subtract whatever the length of
-    // the string was by how many times it
-    // appeared in the string so that no
-    // extra letters remain
-    string[len(string)-sz] = 0;
+    buff[sz] = 0;
+
+    string = buff;
 
     return string;
 }
@@ -359,4 +368,64 @@ int memcmp(void* buf1, void* buf2, int count) {
 int strlen(char * data)
 {
     return len(data);
+}
+
+void swap(int num1, int num2)
+{
+    int num3 = num1;
+    num1 = num2;
+    num2 = num3;
+}
+
+int findMinIndex(std::list<int> A, int start) {
+    int min_index = start;
+
+    ++start;
+
+    while(start < (int)A.size()) {
+        if(A.get(start) < A.get(min_index))
+            min_index = start;
+
+        ++start;
+    }
+
+    return min_index;
+}
+
+void sort(std::list<int> A) {
+    for(int i = 0; i < (int)A.size(); ++i) {
+        int min_index = findMinIndex(A, i);
+
+        if(i != min_index)
+            A.swap(i, min_index);
+    }
+}
+
+int findMinIndex(int * A, int start, int sz) {
+    int min_index = start;
+
+    ++start;
+
+    while(start < sz) {
+        if(A[start] < A[min_index])
+            min_index = start;
+
+        ++start;
+    }
+
+    return min_index;
+}
+
+void sort(int * A, int sz) {
+    for(int i = 0; i < sz; ++i) {
+        int min_index = findMinIndex(A, i, sz);
+
+        if(i != min_index)
+        {
+            int temp;
+            temp = A[i];
+            A[i] = A[min_index];
+            A[min_index] = temp;
+        }
+    }
 }

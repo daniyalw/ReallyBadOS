@@ -1,3 +1,5 @@
+#pragma once
+
 // from forum.osdev.org
 dword *SMI_CMD;
 byte ACPI_ENABLE;
@@ -40,3 +42,14 @@ struct FACP
    byte unneded4[89 - 72];
    byte PM1_CNT_LEN;
 };
+
+namespace Kernel {
+
+unsigned int *acpiCheckRSDPtr(unsigned int *ptr);
+unsigned int *acpiGetRSDPtr();
+int acpiCheckHeader(unsigned int *ptr, char *sig);
+int acpiEnable();
+int initAcpi();
+void acpiPowerOff();
+
+}

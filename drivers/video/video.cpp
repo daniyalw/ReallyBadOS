@@ -1,6 +1,6 @@
 #pragma once
-#include "video.h"
-#include "../mouse/cursor.cpp"
+#include <drivers/video/video.h>
+#include <drivers/mouse/cursor.h>
 
 int text_get_color(int backcolour, int forecolour)
 {

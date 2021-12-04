@@ -1,6 +1,7 @@
-#include "../../stdlib/string.h"
-#include "../../stdlib/memory.cpp"
-#include "../../kernel/sys/log/log.cpp"
+#include <string.h>
+#include <memory.h>
+#include <drivers/keyboard/keyboard.h>
+#include <kernel/log.h>
 
 void get_key(unsigned char code);
 

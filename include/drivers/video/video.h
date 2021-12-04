@@ -12,3 +12,6 @@ void print(char * text);
 void scroll();
 void printf(char *text, ...);
 void printf_centered(char * s, int line_no);
+void warning(char * warn);
+void info(char * s);
+void error(char * err);

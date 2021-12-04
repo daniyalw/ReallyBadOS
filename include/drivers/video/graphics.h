@@ -19,3 +19,8 @@ int get_color(int red, int green, int blue);
 int rgb(int red, int green, int blue);
 void SetPixel(int x, int y, int color);
 void draw_empty_rect(int x, int y, int w, int h, int c);
+void rounded_rectangle(int x, int y, int w, int h, int r, int color);
+void fill_circle(int cx, int cy, int radius, int color);
+void circle(int cx, int cy, int r, int color);
+void plotpoints(int x, int y, int cx, int cy, int color);
+void blit_changes();

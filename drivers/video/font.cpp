@@ -1,5 +1,5 @@
 #pragma once
-#include "../../stdlib/string.h"
+#include <string.h>
 
 /*
 skiftOS

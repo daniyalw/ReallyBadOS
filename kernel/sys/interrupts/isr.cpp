@@ -1,7 +1,7 @@
-#include "../../../stdlib/string.cpp"
-#include "../../../drivers/video/video.cpp"
-#include "isr.h"
-#include "../log/log.cpp"
+#include <string.h>
+#include <drivers/video/video.h>
+#include <kernel/isr.h>
+#include <kernel/log.h>
 
 namespace Kernel {
 

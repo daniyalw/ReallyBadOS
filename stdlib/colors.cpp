@@ -1,5 +1,5 @@
 #pragma once
-#include "colors.h"
+#include <colors.h>
 
 namespace std {
 // split a color into red green and blue
@@ -38,14 +38,3 @@ int mix(int color1, int color2)
 }
 
 }
-
-// common colors
-int blue = std::rgb(0, 0, 255);
-int green = std::rgb(0, 255, 0);
-int red = std::rgb(255, 0, 0);
-int black = 0;
-int white = 0xffffff;
-int yellow = 0xffff00;
-int lime = 0x00ff00;
-int purple = 0x800080;
-int pink = 0xffc0cb;

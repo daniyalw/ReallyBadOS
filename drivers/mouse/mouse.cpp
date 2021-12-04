@@ -1,5 +1,6 @@
 #pragma once
-#include "../../stdlib/colors.cpp"
+#include <colors.h>
+#include <drivers/mouse/mouse.h>
 
 //https://forum.osdev.org/viewtopic.php?t=10247
 

@@ -1,4 +1,4 @@
-#include "idt.h"
+#include <kernel/idt.h>
 
 /*
 BSD 3-Clause License

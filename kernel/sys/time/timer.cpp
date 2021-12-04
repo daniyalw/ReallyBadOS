@@ -1,9 +1,8 @@
 #pragma once
-#include "../interrupts/isr.h"
-#include "time.h"
-#include "timer.h"
-#include "../io.cpp"
-#include "../log/log.cpp"
+#include <time.h>
+#include <timer.h>
+#include <kernel/io.h>
+#include <kernel/log.h>
 
 /*
 BSD 3-Clause License

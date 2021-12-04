@@ -1,5 +1,5 @@
 #pragma once
-#include "../io.cpp"
+#include <kernel/io.h>
 
 static int get_model()
 {

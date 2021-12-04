@@ -24,3 +24,11 @@ enum {
 };
 
 int s = 0;
+
+namespace Time {
+    
+void read_rtc();
+int get_RTC_register(int reg);
+int get_update_in_progress_flag();
+
+}

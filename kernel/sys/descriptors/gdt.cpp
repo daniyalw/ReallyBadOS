@@ -1,6 +1,6 @@
 #pragma once
-#include "gdt.h"
-#include "../log/log.cpp"
+#include <kernel/gdt.h>
+#include <kernel/log.h>
 
 namespace Kernel {
 

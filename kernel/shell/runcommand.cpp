@@ -1,10 +1,9 @@
 #pragma once
-#include "../../stdlib/string.cpp"
-#include "../../drivers/video/video.cpp"
-#include "../sys/power/shutdown.cpp"
-#include "../sys/time/timer.h"
-#include "../sys/power/reboot.cpp"
-#include "../sys/log/log.h"
+#include <string.h>
+#include <drivers/video/video.h>
+#include <kernel/power.h>
+#include <timer.h>
+#include <kernel/log.h>
 #include "rc.h"
 
 void rc(char * b)

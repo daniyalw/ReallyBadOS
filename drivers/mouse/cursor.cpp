@@ -1,6 +1,6 @@
 #pragma once
-#include "cursor.h"
-#include "../../kernel/sys/log/log.cpp"
+#include <drivers/mouse/cursor.h>
+#include <kernel/log.h>
 
 namespace Kernel {
 

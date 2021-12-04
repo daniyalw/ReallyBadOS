@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../kernel/sys/io.cpp"
-#include "graphics.h"
-#include "bga.h"
+#include <kernel/io.h>
+#include <drivers/video/graphics.h>
+#include <drivers/video/bga.h>
 
 namespace Kernel {
 

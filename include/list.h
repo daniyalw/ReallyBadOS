@@ -140,6 +140,14 @@ public:
     int size() {
         return length;
     }
+    
+    void swap(int index1, int index2)
+    {
+        T index3;
+        index3 = arr[index1];
+        arr[index1] = arr[index2];
+        arr[index2] = index3;
+    }
 
 };
 

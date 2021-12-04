@@ -1,5 +1,5 @@
 #pragma once
-#include "../interrupts/isr.h"
+#include <kernel/isr.h>
 
 u32 tick = 0;
 int seconds = 0;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <list.h>
+
 namespace std {
 
 template <typename T, typename VALUE>
