@@ -38,19 +38,6 @@ void rc(char * b)
 
         printf("CeneOS 1.0, Daniyal Warraich 2021");
 
-    } else if (startswith(b, "viewlog")) {
-
-        char nl[Kernel::sys_log_size + 1];
-
-        for (int z = 0; z < Kernel::sys_log_size; z++)
-        {
-            nl[z] = Kernel::sys_log[z];
-        }
-
-        nl[Kernel::sys_log_size] = '\0';
-
-        printf(nl);
-
     } else if (startswith(b, "cpuinfo")) {
 
         unsigned short mem = get_available_memory();

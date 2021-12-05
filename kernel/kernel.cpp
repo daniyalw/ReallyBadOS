@@ -83,7 +83,7 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     while (true);
     */
-
+    init_serial(SERIAL_PORT);
     Kernel::system_log("Entered kernel.\n");
 
     // initialize ACPI
@@ -99,6 +99,4 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     //mouse_install();
 
     //printf("%d", kernel_main);
-
-    init_serial();
 }

@@ -1,10 +1,11 @@
 #pragma once
 
-#define PORT 0x3f8 // com port 1
+#define SERIAL_PORT 0x3f8
 
 int set_port;
 
-static int is_empty_transmit();
-void output_char_serial(char a);
-void init_serial();
+static int empty_serial_transmit(int port);
+void output_serial_char(int port, char a);
+void init_serial(int port);
+static int serial_write(int port, char *buf);
 void serial_write_string(char *buf);

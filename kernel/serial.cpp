@@ -2,32 +2,38 @@
 
 #include <kernel/serial.h>
 
-static int is_empty_transmit()
+static int empty_serial_transmit(int port)
 {
-	return inb(PORT + 5) & 1;
+	return inb(port + 5) & 0x20;
 }
 
-void output_char_serial(char a)
+void output_serial_char(int port, char a)
 {
-	while (is_empty_transmit() == 0);
+	while (empty_serial_transmit(port) == 0)
+		;
 
-    // just the PORT is the data register
-	outb(PORT, a);
+	outb(port, a);
+}
+
+static int serial_write(int port, char *buf)
+{
+	for (int i = 0; i < len(buf); ++i)
+		output_serial_char(port, buf[i]);
+	return 0;
 }
 
 void serial_write_string(char *buf)
 {
-	for (int i = 0; i < len(buf); ++i)
-		output_char_serial(buf[i]);
+	serial_write(SERIAL_PORT, buf);
 }
 
-void init_serial()
+void init_serial(int port)
 {
-	outb(PORT + 1, 0x00); // setting the interrupts register to 0
-	outb(PORT + 3, 0x80);
-	outb(PORT + 0, 0x03);
-	outb(PORT + 1, 0x00);
-	outb(PORT + 3, 0x03);
-	outb(PORT + 2, 0xC7);
-	outb(PORT + 4, 0x0B);
+	outb(port + 1, 0x00);  // Disable all interrupts
+	outb(port + 3, 0x80);  // Enable DLAB (set baud rate divisor)
+	outb(port + 0, 0x03);  // Set divisor to 3 (lo byte) 38400 baud
+	outb(port + 1, 0x00);  //                  (hi byte)
+	outb(port + 3, 0x03);  // 8 bits, no parity, one stop bit
+	outb(port + 2, 0xC7);  // Enable FIFO, clear them, with 14-byte threshold
+	outb(port + 4, 0x0B);  // IRQs enabled, RTS/DSR set
 }
