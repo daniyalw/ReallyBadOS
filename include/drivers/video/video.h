@@ -15,3 +15,13 @@ void printf_centered(char * s, int line_no);
 void warning(char * warn);
 void info(char * s);
 void error(char * err);
+
+struct output
+{
+    void operator<<(char * text)
+    {
+        print(text);
+    }
+};
+
+output cout;

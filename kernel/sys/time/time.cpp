@@ -93,4 +93,17 @@ void read_rtc() {
     seconds = second;
 }
 
+GetTime get_time()
+{
+    GetTime t;
+    t.sec = second;
+    t.min = minute;
+    t.h = hour;
+    t.y = year;
+    t.m = month;
+    t.d = day;
+    t.wd = weekday;
+    return t;
+}
+
 }

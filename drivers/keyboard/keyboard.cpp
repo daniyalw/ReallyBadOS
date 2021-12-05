@@ -64,7 +64,7 @@ char _getch()
 
 // dd is the variable to store the input in
 // type is the type of input wanted
-char * scanf(char * dd)
+char * scanf(char * bb)
 {
     char data[128];
     char k;
@@ -81,15 +81,20 @@ char * scanf(char * dd)
         {
             if (k == '\n')
             {
+                char dd[s];
 
                 for (int z = 0; z < s; z++)
                 {
                     dd[z] = data[z];
                 }
 
+                dd[s+1] = 0;
+
                 printf("\b");
 
-                return dd;
+                bb = dd;
+
+                return bb;
             }
 
             data[s] = k;

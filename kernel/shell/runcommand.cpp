@@ -1,6 +1,6 @@
 #pragma once
 #include <string.h>
-#include <drivers/video/video.h>
+#include <stdio.h>
 #include <kernel/power.h>
 #include <timer.h>
 #include <kernel/log.h>
@@ -92,5 +92,17 @@ void rc(char * b)
             putchar(b[z]);
         }
 
+    }
+}
+
+void shell()
+{
+    char * command;
+
+    while (true)
+    {
+        scanf(command);
+        rc(command);
+        printf("\n/> ");
     }
 }

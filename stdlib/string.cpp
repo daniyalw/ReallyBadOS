@@ -2,13 +2,6 @@
 #include <string.h>
 #include <list.h>
 
-int get_sizeof_var(void * data)
-{
-    void * newdata;
-    newdata = data;
-    return sizeof(newdata);
-}
-
 bool isspace(char c)
 {
     if (c == ' ')

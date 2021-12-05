@@ -1,6 +1,7 @@
 #pragma once
 
 #include <kernel/io.h>
+#include <drivers/sound/sound.h>
 
 namespace Kernel {
 

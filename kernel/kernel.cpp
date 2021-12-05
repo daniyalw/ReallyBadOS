@@ -4,6 +4,7 @@ int cx = 0;
 int cy = 0;
 bool booted = false;
 int back_buffer[1024*768]; // back buffer for gui
+int background__[1024*768];
 
 #include <cpuid.h>
 //#include "sys/background.cpp"
@@ -14,6 +15,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include <kernel/multiboot.h>
 #include <string.h>
 #include <memory.h>
+#include <math.h>
 #include <drivers/video/video.h>
 #include <drivers/mouse/mouse.h>
 #include <time.h>
@@ -46,6 +48,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "sys/time/timer.cpp"
 #include "../stdlib/colors.cpp"
 #include "../drivers/video/bga.cpp"
+#include "serial.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -54,7 +57,7 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     }
 
     // for graphics
-
+    /*
     framebuffer_addr = (void*)mbd->framebuffer_addr;
     pitch = mbd->framebuffer_pitch;
     width = (uint32_t)mbd->framebuffer_width;
@@ -68,16 +71,19 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     Kernel::init_gdt();
     // IDT & interrupts enable
     Kernel::isr_install();
-    init_timer(1000);
+    //init_timer(1000);
     // mouse & keyboard
     init_keyboard(false);
     mouse_install();
 
-    rounded_rectangle(100, 100, 200, 200, 50, std::rgb(255, 255, 255));
+    initialise_syscalls();
+
+    init_serial();
+
 
     while (true);
+    */
 
-    /*
     Kernel::system_log("Entered kernel.\n");
 
     // initialize ACPI
@@ -91,7 +97,8 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     // mouse & keyboard
     init_keyboard(false);
     //mouse_install();
-    */
 
+    //printf("%d", kernel_main);
 
+    init_serial();
 }

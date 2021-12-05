@@ -24,3 +24,13 @@ char * scanf(char * dd);
 static void scan_key(registers_t regs);
 void get_key(unsigned char code);
 void init_keyboard(bool on);
+
+struct input
+{
+    void operator>>(char * buff)
+    {
+        scanf(buff);
+    }
+};
+
+input cin;
