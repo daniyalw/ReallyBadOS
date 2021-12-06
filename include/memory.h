@@ -1,5 +1,12 @@
 #pragma once
 
-u32 free_mem_addr = 0x10000;
-u32 malloc(u32 size, int align, u32 *phys_addr);
-u32 malloc(u32 size);
+#include <map.h>
+
+// first int is memory location
+// second int is size
+std::map<int, int> memory_free_locations;
+
+void init_mem();
+void free(int addr, int size);
+int malloc(int size);
+void wipe(int ad, int sz);

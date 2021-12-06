@@ -33,7 +33,7 @@ public:
     {
         int size = other.size();
 
-        if (size != this->size())
+        if (size != length)
             return false;
 
         for (int z = 0; z < size; z++)
@@ -47,7 +47,7 @@ public:
 
     bool operator>(list other)
     {
-        if (this->size() > other.size())
+        if (length > other.size())
             return true;
 
         return false;
@@ -55,7 +55,7 @@ public:
 
     bool operator<(list other)
     {
-        if (this->size() < other.size())
+        if (length < other.size())
             return true;
 
         return false;
@@ -65,7 +65,7 @@ public:
     {
         int size = other.size();
 
-        if (size != this->size())
+        if (size != length)
             return true;
 
         for (int z = 0; z < size; z++)
@@ -114,10 +114,6 @@ public:
 
     void pop()
     {
-        // since we don't check above the length
-        // we don't actually remove the element
-        //
-        // we just ignore the element
         length--;
         T * newarr;
         int nz = 0;
@@ -136,11 +132,60 @@ public:
         return arr[length - 1];
     }
 
-    // Function that return the size of vector
     int size() {
         return length;
     }
-    
+
+    void insert_at(T insert, int pos)
+    {
+        if (pos > length)
+            return;
+
+        for (int z = length; z > (pos - 1); z--)
+        {
+            arr[z+1] = arr[z];
+        }
+
+        arr[pos] = insert;
+        length++;
+    }
+
+    void move(int oldpos, int newpos)
+    {
+        if (oldpos > length || newpos > length)
+            return;
+
+        T copied = arr[oldpos];
+        this->remove(oldpos);
+        this->insert_at(copied, newpos);
+    }
+
+    int get_first_pos(T obj)
+    {
+        for (int z = 0; z < length; z++)
+        {
+            if (arr[z] == obj)
+                return z;
+        }
+    }
+
+    int get_last_pos(T obj)
+    {
+        for (int z = length; z > 0; z--)
+        {
+            if (arr[z] == obj)
+                return z;
+        }
+    }
+
+    void replace(T rplce, int pos)
+    {
+        if (pos > length)
+            return;
+
+        arr[pos] = rplce;
+    }
+
     void swap(int index1, int index2)
     {
         T index3;

@@ -2,53 +2,55 @@
 
 #include <memory.h>
 
-/*
-BSD 3-Clause License
-
-Copyright (c) 2018, Carlos Fenollosa
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-u32 malloc(u32 size, int align, u32 *phys_addr) {
-
-    /* Pages are aligned to 4K, or 0x1000 */
-    if (align == 1 && (free_mem_addr & 0xFFFFF000)) {
-        free_mem_addr &= 0xFFFFF000;
-        free_mem_addr += 0x1000;
+int malloc(int size)
+{
+    for (int z = 0; z < memory_free_locations.size(); z++)
+    {
+        if (memory_free_locations.get_value(z) == size)
+        {
+            int mem_location = memory_free_locations.get_key(z);
+            memory_free_locations.remove(z);
+            return mem_location;
+        }
+        else if (memory_free_locations.get_value(z) > size)
+        {
+            int loc = memory_free_locations.get_key(z);
+            int sz = memory_free_locations.get_value(z);
+            memory_free_locations.replace(loc+size, sz-size, memory_free_locations.get_first_pos(loc));
+            return loc;
+        }
     }
-    /* Save also the physical address */
-    if (phys_addr) *phys_addr = free_mem_addr;
 
-    u32 ret = free_mem_addr;
-    free_mem_addr += size; /* Remember to increment the pointer */
-    return ret;
+    return NULL;
 }
 
-u32 malloc(u32 size) {
-    return malloc(size, 10, (u32 *)1);
+void wipe(int ad, int sz)
+{
+    short * a = (short *)ad;
+
+    for (int z = 0; z < sz; z++)
+    {
+        a[z] = 0;
+    }
+}
+
+void free(int addr, int size)
+{
+    wipe(addr, size);
+
+    for (int z = 0; z < memory_free_locations.size(); z++)
+    {
+        if ((memory_free_locations.get_key(z)-size) == addr)
+        {
+            memory_free_locations.replace(memory_free_locations.get_key(z)-size, memory_free_locations.get_value(z)+size, memory_free_locations.get_first_pos(memory_free_locations.get_key(z)));
+            return;
+        }
+    }
+
+    memory_free_locations.push_back(addr, size);
+}
+
+void init_mem()
+{
+    memory_free_locations.push_back(0x10000, 400);
 }

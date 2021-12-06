@@ -97,6 +97,47 @@ public:
         arr.pop();
     }
 
+    void insert_at(T key, VALUE val, int pos)
+    {
+        map_array a;
+        a.object = key;
+        a.value = val;
+        arr.insert_at(a, pos);
+    }
+
+    void replace(T newobject, VALUE newval, int pos)
+    {
+        map_array a;
+        a.object = newobject;
+        a.value = newval;
+        arr.replace(a, pos);
+    }
+
+    int get_first_pos(T obj)
+    {
+        for (int z = 0; z < arr.size(); z++)
+            if (arr.get(z).object == obj)
+                return z;
+    }
+
+    int get_last_pos(T obj)
+    {
+        for (int z = arr.size(); z > 0; z--)
+            if (arr.get(z).object == obj)
+                return z;
+    }
+
+
+    void move(int oldpos, int newpos)
+    {
+        arr.move(oldpos, newpos);
+    }
+
+    void swap(int index1, int index2)
+    {
+        arr.swap(index1, index2);
+    }
+
     VALUE get_last_value()
     {
         return arr.get_last().value;

@@ -4,7 +4,6 @@ int cx = 0;
 int cy = 0;
 bool booted = false;
 int back_buffer[1024*768]; // back buffer for gui
-int background__[1024*768];
 
 #include <cpuid.h>
 //#include "sys/background.cpp"
@@ -48,7 +47,25 @@ int background__[1024*768];
 #include "sys/time/timer.cpp"
 #include "../stdlib/colors.cpp"
 #include "../drivers/video/bga.cpp"
-#include "serial.cpp"
+#include "sys/serial.cpp"
+
+class ABC
+{
+    int a;
+public:
+    ABC();
+    ~ABC();
+};
+
+ABC::ABC()
+{
+    a = malloc(sizeof(int));
+}
+
+ABC::~ABC()
+{
+    free((int)&a, sizeof(a));
+}
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -99,4 +116,15 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     //mouse_install();
 
     //printf("%d", kernel_main);
+    char * addr;
+    itoa((int)kernel_main, addr);
+    Kernel::system_log("\nkernel_main() address: 0x");
+    Kernel::system_log(addr);
+
+    Kernel::system_log("\n");
+
+    init_mem();
+
+    
+
 }

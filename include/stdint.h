@@ -25,6 +25,8 @@ typedef uint32 dword;
 
 typedef unsigned int uintptr_t;
 
+typedef long unsigned int size_t;
+
 #define true 1
 #define false 0
 

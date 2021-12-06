@@ -410,6 +410,8 @@ void error(char * err)
     int red = 0x0400;
     printf(red, "error: ");
     printf(err);
+    Kernel::system_log("\nError: ");
+    Kernel::system_log(err);
 }
 
 void info(char * s)
@@ -417,4 +419,6 @@ void info(char * s)
     int light_blue = 0x0300;
     printf(light_blue, "info: ");
     printf(s);
+    Kernel::system_log("\nInfo: ");
+    Kernel::system_log(s);
 }
