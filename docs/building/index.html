@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../style.css">
+        <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+        <meta charset="utf-8">
+        <meta name="description" content="Hobby operating system homepage">
+        <meta name="keywords" content="osdev, os, hobby os">
+
+        <title>Building | CeneOS</title>
+    </head>
+    <body>
+        <div class="navbar">
+            <a href="../index.html">Home</a>
+            <a href="building/index.html" class="active">Building</a>
+        </div>
+
+        <div class="header">
+            <div class="content">
+                <div class="font-sizer">
+                    <h1>Building CeneOS</h1>
+                    <p style="text-align: left">To build CeneOS you need:</p>
+                    <ul style="padding-left: 75px">
+                        <li>nasm</li>
+                        <li>i686-elf-gcc</li>
+                        <li>GRUB</li>
+                        <li>QEMU</li>
+                    </ul>
+
+                    <p style="text-align: left"><br>Installing tools on macOS:</p>
+                    <pre class="prettyprint code lang-sh" style="text-align: left">
+brew install nasm i686-elf-gcc qemu  # QEMU, NASM, and GCC
+git clone git://git.savannah.gnu.org/grub.git # Now we will download GRUB
+git clone https://github.com/vertis/objconv # We download objconv
+cd objconv
+g++ -o objconv -O2 src/*.cpp # build objconv
+echo "export PATH=/opt/homebrew/bin:$PATH" >> ~/.zshrc # add it to our path
+cd ..
+cd grub
+./autogen.sh
+cd ..
+mkdir grub-build
+cd grub-build
+../grub/configure --disable-werror TARGET_CC=i686-elf-gcc TARGET_OBJCOPY=i686-elf-objcopy TARGET_STRIP=i686-elf-strip \
+TARGET_NM=i686-elf-nm TARGET_RANLIB=i686-elf-ranlib --target=i686-elf
+make
+make install
+                    </pre>
+                    <p style="text-align: left"><br>There! Now you have installed GRUB, QEMU, NASM, and GCC onto your Mac. You can now build CeneOS!</p>
+                    <br>
+                    <p style="text-align:left">Now, let's actually build CeneOS: just run <code class="code">make</code>.
+                        It should run QEMU for you, automatically. </p>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
