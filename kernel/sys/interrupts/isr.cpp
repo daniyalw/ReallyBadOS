@@ -152,7 +152,7 @@ extern "C" void isr_handler(registers_t r) {
 
     printf("received interrupt: ");
     char s[3];
-    itoa(r.int_no, s);
+    std::itoa(r.int_no, s);
     printf(s);
     printf("\n");
     printf(exception_messages[r.int_no]);

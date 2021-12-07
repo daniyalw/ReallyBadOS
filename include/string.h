@@ -1,6 +1,8 @@
 #pragma once
 #include <list.h>
 
+namespace std {
+
 char * strchr(char * s, int c);
 char * toupper(char * data);
 bool strisempty(char * s);
@@ -39,3 +41,5 @@ static void itoa(char *buf, int base, int d);
 int atoi(char * str);
 bool isspace(char c);
 bool isdigit(char k);
+
+}

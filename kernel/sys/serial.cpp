@@ -1,6 +1,7 @@
 #pragma once
 
 #include <kernel/serial.h>
+#include <kernel/io.h>
 
 static int empty_serial_transmit(int port)
 {
@@ -17,7 +18,7 @@ void output_serial_char(int port, char a)
 
 static int serial_write(int port, char *buf)
 {
-	for (int i = 0; i < len(buf); ++i)
+	for (int i = 0; i < std::len(buf); ++i)
 		output_serial_char(port, buf[i]);
 	return 0;
 }

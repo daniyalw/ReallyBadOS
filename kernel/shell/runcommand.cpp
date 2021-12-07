@@ -8,13 +8,13 @@
 
 void rc(char * b)
 {
-    if (startswith(b, "echo")) {
+    if (std::startswith(b, "echo")) {
 
         for (int z = 5; z < bf; z++) {
             putchar(b[z]);
         }
 
-    } else if (startswith(b, "time")) {
+    } else if (std::startswith(b, "time")) {
 
         printf("Date: %s %s %d\n", weekdays[weekday-1], months[month-1], day);
         if (hour > 12) {
@@ -23,22 +23,22 @@ void rc(char * b)
             printf("Time: %d:%d AM", hour, minute);
         }
 
-    } else if (startswith(b, "help")) {
+    } else if (std::startswith(b, "help")) {
 
         printf("CeneOS 1.0, Daniyal Warraich\n");
         printf("Available commands:\n");
 
 
 
-    } else if (startswith(b, "reboot")) {
+    } else if (std::startswith(b, "reboot")) {
 
         Kernel::reboot();
 
-    } else if (startswith(b, "copyright")) {
+    } else if (std::startswith(b, "copyright")) {
 
         printf("CeneOS 1.0, Daniyal Warraich 2021");
 
-    } else if (startswith(b, "cpuinfo")) {
+    } else if (std::startswith(b, "cpuinfo")) {
 
         unsigned short mem = get_available_memory();
         int mb;
@@ -54,22 +54,22 @@ void rc(char * b)
         int model = get_model();
         printf("\nModel: ");
         char * mdl;
-        itoa(model, mdl);
+        std::itoa(model, mdl);
         printf(mdl);
 
-    } else if (startswith(b, "shutdown")) {
+    } else if (std::startswith(b, "shutdown")) {
 
         disable_interrupts();
         Kernel::shutdown_os();
 
-    } else if (startswith(b, "cls") || startswith(b, "clear")) {
+    } else if (std::startswith(b, "cls") || std::startswith(b, "clear")) {
 
         clear();
         text_y = -2;
 
     } else {
 
-        if (strisempty(b)) {
+        if (std::strisempty(b)) {
             text_y--;
             return;
         }

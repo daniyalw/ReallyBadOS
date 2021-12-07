@@ -265,7 +265,7 @@ void g_printf(char * string, int x, int y, int fg, int bg)
     int xx = x;
     int yy = y;
 
-    for (int z = 0; z < len(string); z++)
+    for (int z = 0; z < std::len(string); z++)
     {
         g_putchar(string[z], xx, yy, fg, bg);
         xx += 9;
@@ -277,7 +277,7 @@ void g_printf(char * string, int x, int y)
     int xx = x;
     int yy = y;
 
-    for (int z = 0; z < len(string); z++)
+    for (int z = 0; z < std::len(string); z++)
     {
         g_putchar(string[z], xx, yy);
         xx += 9;
@@ -297,11 +297,11 @@ void font_draw(char cp, int x, int y)
 
             if (set)
             {
-                SetPixel(x + xx, y + yy, fg);
+                Graphic::SetPixel(x + xx, y + yy, fg);
             }
             else
             {
-                SetPixel(x + xx, y + yy, bg);
+                Graphic::SetPixel(x + xx, y + yy, bg);
             }
         }
     }
@@ -320,11 +320,11 @@ void font_draw(char cp, int x, int y, int fg, int bg)
 
             if (set)
             {
-                SetPixel(x + xx, y + yy, fg);
+                Graphic::SetPixel(x + xx, y + yy, fg);
             }
             else
             {
-                SetPixel(x + xx, y + yy, bg);
+                Graphic::SetPixel(x + xx, y + yy, bg);
             }
         }
     }
@@ -345,11 +345,11 @@ void font_draw_double(char cp, int x, int y, int fg, int bg)
 
             if (set)
             {
-                SetPixel(x + xx, y + yy, fg);
+                Graphic::SetPixel(x + xx, y + yy, fg);
             }
             else
             {
-                SetPixel(x + xx, y + yy, bg);
+                Graphic::SetPixel(x + xx, y + yy, bg);
             }
         }
     }
@@ -370,11 +370,11 @@ void font_draw_double(char cp, int x, int y)
 
             if (set)
             {
-                SetPixel(x + xx, y + yy, fg);
+                Graphic::SetPixel(x + xx, y + yy, fg);
             }
             else
             {
-                SetPixel(x + xx, y + yy, bg);
+                Graphic::SetPixel(x + xx, y + yy, bg);
             }
         }
     }

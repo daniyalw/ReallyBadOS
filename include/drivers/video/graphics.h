@@ -6,6 +6,8 @@ signed int width;
 unsigned int height;
 unsigned int bpp;
 
+namespace Graphic {
+
 void SetPixel(uint32_t x, uint32_t y, int color);
 void display_menu(int mx, int my, char * option);
 void show_buffer();
@@ -24,3 +26,6 @@ void fill_circle(int cx, int cy, int radius, int color);
 void circle(int cx, int cy, int r, int color);
 void plotpoints(int x, int y, int cx, int cy, int color);
 void blit_changes();
+void tint(int * arr, int w, int h, int color);
+
+}

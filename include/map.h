@@ -118,6 +118,8 @@ public:
         for (int z = 0; z < arr.size(); z++)
             if (arr.get(z).object == obj)
                 return z;
+
+        return NULL;
     }
 
     int get_last_pos(T obj)
@@ -125,6 +127,8 @@ public:
         for (int z = arr.size(); z > 0; z--)
             if (arr.get(z).object == obj)
                 return z;
+
+        return NULL;
     }
 
 

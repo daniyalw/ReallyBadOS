@@ -2,6 +2,8 @@
 #include <string.h>
 #include <list.h>
 
+namespace std {
+
 bool isspace(char c)
 {
     if (c == ' ')
@@ -421,4 +423,6 @@ void sort(int * A, int sz) {
             A[min_index] = temp;
         }
     }
+}
+
 }

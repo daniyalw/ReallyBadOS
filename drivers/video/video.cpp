@@ -113,7 +113,7 @@ void putchar(char text, int color) {
 }
 
 void print(char * text) {
-    for (int z = 0; z < len(text); z++) {
+    for (int z = 0; z < std::len(text); z++) {
         putchar(text[z]);
     }
 }
@@ -225,7 +225,7 @@ void printf(int color, char *text, ...)
             case 'd':
             case 'u':
             case 'x':
-              itoa (buffer, c, *((int *) arg++));
+              std::itoa (buffer, c, *((int *) arg++));
               p = buffer;
               goto string;
               break;
@@ -340,7 +340,7 @@ void printf(char *text, ...)
             case 'd':
             case 'u':
             case 'x':
-              itoa (buffer, c, *((int *) arg++));
+              std::itoa (buffer, c, *((int *) arg++));
               p = buffer;
               goto string;
               break;
@@ -373,11 +373,11 @@ void printf(char *text, ...)
 
 void printf_centered(char * s, int line_no)
 {
-    int w = 80/2 - (len(s)/2);
+    int w = 80/2 - (std::len(s)/2);
     int i = line_no * 80 + w;
     short * vidmem = (short *)0xb8000;
     int c = 0x0F00;
-    int l = len(s);
+    int l = std::len(s);
     int z = 0;
     int b = 0;
 

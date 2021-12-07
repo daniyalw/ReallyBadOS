@@ -1,6 +1,9 @@
 #pragma once
 #include <drivers/video/graphics.h>
+#include <colors.h>
 #include "font.cpp"
+
+namespace Graphic {
 
 void center_printf(char * string, int x, int y, int w);
 
@@ -37,7 +40,7 @@ void redraw_background_picture(int list[])
         for (int b = 0; b < width; b++)
         {
             color = list[b+z*width];
-            SetPixel(b, z, color);
+            Graphic::SetPixel(b, z, color);
         }
     }
 }
@@ -73,25 +76,25 @@ void draw_rect(int x, int y, int w, int h, int c)
 void draw_empty_rect(int x, int y, int w, int h, int c)
 {
     for (int z = x; z < x + w; z++)
-        SetPixel(z, y, c);
+        Graphic::SetPixel(z, y, c);
 
     for (int z = y; z < y + h; z++)
-        SetPixel(x, z, c);
+        Graphic::SetPixel(x, z, c);
 
     for (int z = x; z < x + w; z++)
-        SetPixel(z, y+h, c);
+        Graphic::SetPixel(z, y+h, c);
 
     for (int z = y; z < y + h; z++)
-        SetPixel(x+w, z, c);
+        Graphic::SetPixel(x+w, z, c);
 
-    SetPixel(x+w, y+h, c);
+    Graphic::SetPixel(x+w, y+h, c);
 }
 
 void clear_screen()
 {
     for (int z = 0; z < width; z++)
         for (int b = 0; b < height; b++)
-            SetPixel(z, b, 0);
+            Graphic::SetPixel(z, b, 0);
 }
 
 void center_printf(char * string, int x, int y, int w)
@@ -101,14 +104,14 @@ void center_printf(char * string, int x, int y, int w)
 
 
 void plotpoints(int x, int y, int cx, int cy, int color) {
-    SetPixel(cx + x, cy + y, color);
-    SetPixel(cx - x, cy + y, color);
-    SetPixel(cx + x, cy - y, color);
-    SetPixel(cx - x, cy - y, color);
-    SetPixel(cx + y, cy + x, color);
-    SetPixel(cx - y, cy + x, color);
-    SetPixel(cx + y, cy - x, color);
-    SetPixel(cx - y, cy - x, color);
+    Graphic::SetPixel(cx + x, cy + y, color);
+    Graphic::SetPixel(cx - x, cy + y, color);
+    Graphic::SetPixel(cx + x, cy - y, color);
+    Graphic::SetPixel(cx - x, cy - y, color);
+    Graphic::SetPixel(cx + y, cy + x, color);
+    Graphic::SetPixel(cx - y, cy + x, color);
+    Graphic::SetPixel(cx + y, cy - x, color);
+    Graphic::SetPixel(cx - y, cy - x, color);
 }
 
 void circle(int cx, int cy, int r, int color) {
@@ -135,7 +138,7 @@ void fill_circle(int cx, int cy, int radius, int color)
     for(int y = -radius; y <= radius; y++)
         for(int x = -radius; x <= radius; x++)
             if(x * x + y * y <= radius * radius)
-                SetPixel(cx+x, cy+y, color);
+                Graphic::SetPixel(cx+x, cy+y, color);
 }
 
 void rounded_rectangle(int x, int y, int w, int h, int r, int color)
@@ -146,4 +149,17 @@ void rounded_rectangle(int x, int y, int w, int h, int r, int color)
     fill_circle(x+r, (y+h)-r, r, color);
     draw_rect(x+r, y, w-(r*2), h+1, color);
     draw_rect(x, y+r, w+1, h-(r*2), color);
+}
+
+void tint(int * arr, int w, int h, int color)
+{
+    for (int z = 0; z < w; z++)
+    {
+        for (int b = 0; b < h; b++)
+        {
+            arr[z+b*w] = Graphic::mix(arr[z+b*w], color);
+        }
+    }
+}
+
 }

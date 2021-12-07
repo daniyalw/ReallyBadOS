@@ -16,7 +16,7 @@ unsigned int *acpiCheckRSDPtr(unsigned int *ptr)
    byte check = 0;
    int i;
 
-   if (memcmp(sig, rsdp, 8) == 0)
+   if (std::memcmp(sig, rsdp, 8) == 0)
    {
       // check checksum rsdpd
       bptr = (byte *) ptr;
@@ -78,7 +78,7 @@ unsigned int *acpiGetRSDPtr()
 // checks for a given header and validates checksum
 int acpiCheckHeader(unsigned int *ptr, char *sig)
 {
-   if (memcmp(ptr, sig, 4) == 0)
+   if (std::memcmp(ptr, sig, 4) == 0)
    {
       char *checkPtr = (char *) ptr;
       int len = *(ptr + 1);
@@ -165,7 +165,7 @@ int initAcpi()
                int dsdtLength = *(facp->DSDT+1) -36;
                while (0 < dsdtLength--)
                {
-                  if ( memcmp(S5Addr, (void *)"_S5_", 4) == 0)
+                  if ( std::memcmp(S5Addr, (void *)"_S5_", 4) == 0)
                      break;
                   S5Addr++;
                }

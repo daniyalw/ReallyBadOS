@@ -21,6 +21,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include <drivers/keyboard/keyboard.h>
 #include <drivers/video/graphics.h>
 #include <list.h>
+#include <macros.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
@@ -48,24 +49,8 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../stdlib/colors.cpp"
 #include "../drivers/video/bga.cpp"
 #include "sys/serial.cpp"
-
-class ABC
-{
-    int a;
-public:
-    ABC();
-    ~ABC();
-};
-
-ABC::ABC()
-{
-    a = malloc(sizeof(int));
-}
-
-ABC::~ABC()
-{
-    free((int)&a, sizeof(a));
-}
+#include "../gui/gui.cpp"
+#include "../drivers/video/saturation.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -75,6 +60,9 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     // for graphics
     /*
+    init_serial(SERIAL_PORT);
+    Kernel::system_log("Entered kernel.\n");
+
     framebuffer_addr = (void*)mbd->framebuffer_addr;
     pitch = mbd->framebuffer_pitch;
     width = (uint32_t)mbd->framebuffer_width;
@@ -93,13 +81,19 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     init_keyboard(false);
     mouse_install();
 
-    initialise_syscalls();
+    Graphic::redraw_background_picture(array);
 
-    init_serial();
+    Graphic::saturation(0, 0, width, height, 5);
+
+    Window win = create_window();
+    Widget w = create_widget(win);
+    win.draw_window();
+    w.draw_widget();
 
 
     while (true);
     */
+
     init_serial(SERIAL_PORT);
     Kernel::system_log("Entered kernel.\n");
 
@@ -117,14 +111,12 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     //printf("%d", kernel_main);
     char * addr;
-    itoa((int)kernel_main, addr);
+    std::itoa((int)kernel_main, addr);
     Kernel::system_log("\nkernel_main() address: 0x");
     Kernel::system_log(addr);
 
     Kernel::system_log("\n");
 
     init_mem();
-
-    
 
 }

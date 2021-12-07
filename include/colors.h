@@ -6,7 +6,7 @@ typedef struct {
     int blue;
 } colors_t;
 
-namespace std {
+namespace Graphic {
 
 colors_t get_colors(int color);
 int mix(int color1, int color2);
@@ -16,9 +16,9 @@ int rgb(int red, int green, int blue);
 }
 
 // common colors
-int blue = std::rgb(0, 0, 255);
-int green = std::rgb(0, 255, 0);
-int red = std::rgb(255, 0, 0);
+int blue = Graphic::rgb(0, 0, 255);
+int green = Graphic::rgb(0, 255, 0);
+int red = Graphic::rgb(255, 0, 0);
 int black = 0;
 int white = 0xffffff;
 int yellow = 0xffff00;

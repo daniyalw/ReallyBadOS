@@ -393,14 +393,14 @@ void get_key(unsigned char code)
             {
                 printf("\n\n");
                 rc(buff);
-                clears(buff);
+                std::clears(buff);
                 bf = 0;
                 printf("\n\n/> ");
             } else {
                 if (key != "\b")
                 {
                     printf(key);
-                    for (int z = 0; z < len(key); z++)
+                    for (int z = 0; z < std::len(key); z++)
                     {
                         buff[z+bf] = key[z];
                         bf++;
