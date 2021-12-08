@@ -102,8 +102,27 @@ void center_printf(char * string, int x, int y, int w)
     g_printf(string, (w/2)+x, y);
 }
 
+void topleft_plotpoints(int x, int y, int cx, int cy, int color) {
+    Graphic::SetPixel(cx - x, cy - y, color);
+    Graphic::SetPixel(cx - y, cy - x, color);
+}
 
-void plotpoints(int x, int y, int cx, int cy, int color) {
+void topright_plotpoints(int x, int y, int cx, int cy, int color) {
+    Graphic::SetPixel(cx + x, cy - y, color);
+    Graphic::SetPixel(cx + y, cy - x, color);
+}
+
+void bottomright_plotpoints(int x, int y, int cx, int cy, int color) {
+    Graphic::SetPixel(cx + x, cy + y, color);
+    Graphic::SetPixel(cx + y, cy + x, color);
+}
+
+void bottomleft_plotpoints(int x, int y, int cx, int cy, int color) {
+    Graphic::SetPixel(cx - x, cy + y, color);
+    Graphic::SetPixel(cx - y, cy + x, color);
+}
+
+void full_plotpoints(int x, int y, int cx, int cy, int color) {
     Graphic::SetPixel(cx + x, cy + y, color);
     Graphic::SetPixel(cx - x, cy + y, color);
     Graphic::SetPixel(cx + x, cy - y, color);
@@ -114,13 +133,13 @@ void plotpoints(int x, int y, int cx, int cy, int color) {
     Graphic::SetPixel(cx - y, cy - x, color);
 }
 
-void circle(int cx, int cy, int r, int color) {
+void topleft_circle(int cx, int cy, int r, int color) {
     int x = 0, y, p;
     y = r;
     p = 1 - r;
 
     while (x < y) {
-        plotpoints(x, y, cx, cy, color);
+        topleft_plotpoints(x, y, cx, cy, color);
         x++;
         if (p < 0)
             p += 2 * x + 1;
@@ -129,6 +148,64 @@ void circle(int cx, int cy, int r, int color) {
                 p += 2 * (x - y) + 1;
         }
     }
+}
+
+void topright_circle(int cx, int cy, int r, int color) {
+    int x = 0, y, p;
+    y = r;
+    p = 1 - r;
+
+    while (x < y) {
+        topright_plotpoints(x, y, cx, cy, color);
+        x++;
+        if (p < 0)
+            p += 2 * x + 1;
+        else {
+                y--;
+                p += 2 * (x - y) + 1;
+        }
+    }
+}
+
+void bottomleft_circle(int cx, int cy, int r, int color) {
+    int x = 0, y, p;
+    y = r;
+    p = 1 - r;
+
+    while (x < y) {
+        bottomleft_plotpoints(x, y, cx, cy, color);
+        x++;
+        if (p < 0)
+            p += 2 * x + 1;
+        else {
+                y--;
+                p += 2 * (x - y) + 1;
+        }
+    }
+}
+
+void bottomright_circle(int cx, int cy, int r, int color) {
+    int x = 0, y, p;
+    y = r;
+    p = 1 - r;
+
+    while (x < y) {
+        bottomright_plotpoints(x, y, cx, cy, color);
+        x++;
+        if (p < 0)
+            p += 2 * x + 1;
+        else {
+                y--;
+                p += 2 * (x - y) + 1;
+        }
+    }
+}
+
+void circle(int cx, int cy, int r, int color) {
+    bottomleft_circle(cx, cy, r, color);
+    bottomright_circle(cx, cy, r, color);
+    topleft_circle(cx, cy, r, color);
+    topright_circle(cx, cy, r, color);
 }
 
 void fill_circle(int cx, int cy, int radius, int color)
@@ -142,6 +219,28 @@ void fill_circle(int cx, int cy, int radius, int color)
 }
 
 void rounded_rectangle(int x, int y, int w, int h, int r, int color)
+{
+    // draw rounded corners
+    topleft_circle(x+r, y+r, r, color);
+    topright_circle((x+w)-r, y+r, r, color);
+    bottomright_circle((x+w)-r, (y+h)-r, r, color);
+    bottomleft_circle(x+r, (y+h)-r, r, color);
+
+    // draw the lines in between the corners
+    for (int z = x + r; z < (x + w) - r; z++)
+        SetPixel(z, y, color);
+
+    for (int b = y + r; b < (y + h) - r; b++)
+        SetPixel(x, b, color);
+
+    for (int b = y + r; b < (y + h) - r; b++)
+        SetPixel(x + w, b, color);
+
+    for (int z = x + r; z < (x + w) - r; z++)
+        SetPixel(z, y + h, color);
+}
+
+void fill_rounded_rectangle(int x, int y, int w, int h, int r, int color)
 {
     fill_circle(x+r, y+r, r, color);
     fill_circle((x+w)-r, y+r, r, color);

@@ -81,19 +81,9 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     init_keyboard(false);
     mouse_install();
 
-    Graphic::redraw_background_picture(array);
-
-    Graphic::saturation(0, 0, width, height, 5);
-
-    Window win = create_window();
-    Widget w = create_widget(win);
-    win.draw_window();
-    w.draw_widget();
-
-
     while (true);
     */
-
+    
     init_serial(SERIAL_PORT);
     Kernel::system_log("Entered kernel.\n");
 
