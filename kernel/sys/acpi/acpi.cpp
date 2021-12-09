@@ -122,25 +122,24 @@ int acpiEnable()
                sleep(10);
             }
          if (i<300) {
-            //("enabled acpi.\n");
+            info("ACPI: enabled acpi.\n");
             return 0;
          } else {
-            //("couldn't enable acpi.\n");
+            error("ACPI: couldn't enable acpi.\n");
             return -1;
          }
       } else {
-         //("no known way to enable acpi.\n");
+         error("ACPI: no known way to enable acpi.\n");
          return -1;
       }
    } else {
-      ////("acpi was already enabled.\n");
+      warning("ACPI: acpi was already enabled.\n");
       return 0;
    }
 }
 
 int initAcpi()
 {
-    Kernel::system_log("Enabled ACPI.\n");
    unsigned int *ptr = acpiGetRSDPtr();
 
    // check if address is correct  ( if acpi is available on this pc )
@@ -200,22 +199,24 @@ int initAcpi()
                      SLP_EN = 1<<13;
                      SCI_EN = 1;
 
+                     info("ACPI: Enabled ACPI.\n");
+
                      return 0;
                   } else {
-                     //("\\_S5 parse error.\n");
+                     error("ACPI: \\_S5 parse error.\n");
                   }
                } else {
-                  //("\\_S5 not present.\n");
+                  error("ACPI: \\_S5 not present.\n");
                }
             } else {
-               //("DSDT invalid.\n");
+               error("ACPI: DSDT invalid.\n");
             }
          }
          ptr++;
       }
-      //("no valid FACP present.\n");
+      error("ACPI: no valid FACP present.\n");
    } else {
-      //("no acpi.\n");
+      error("ACPI: no acpi.\n");
    }
 
    return -1;
@@ -227,7 +228,10 @@ void acpiPowerOff()
 {
    // SCI_EN is set to 1 if acpi shutdown is possible
    if (SCI_EN == 0)
-      return;
+   {
+       error("ACPI: ACPI shutdown not possible!\n");
+       return;
+   }
 
    acpiEnable();
 
@@ -235,6 +239,8 @@ void acpiPowerOff()
    outw((unsigned int) PM1a_CNT, SLP_TYPa | SLP_EN );
    if ( PM1b_CNT != 0 )
       outw((unsigned int) PM1b_CNT, SLP_TYPb | SLP_EN );
+
+   error("ACPI: Cannot shut down!");
 }
 
 }

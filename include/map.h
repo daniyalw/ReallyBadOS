@@ -67,6 +67,21 @@ public:
         return false;
     }
 
+    void operator=(map other)
+    {
+        for (int z = 0; z < arr.size() + 1; z++)
+            arr.pop();
+
+        if (arr.size() != 0)
+        {
+            error("Could not pop all values in map.");
+            return;
+        }
+
+        for (int z = 0; z < other.size(); z++)
+            this->push_back(other.get(z).object, other.get(z).value);
+    }
+
     // Function that returns the number of
     // elements in array after pushing the data
     void push_back(T data, VALUE val)

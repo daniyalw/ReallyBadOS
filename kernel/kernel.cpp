@@ -6,7 +6,7 @@ bool booted = false;
 int back_buffer[1024*768]; // back buffer for gui
 
 #include <cpuid.h>
-//#include "sys/background.cpp"
+#include "sys/background.cpp"
 #include <kernel/log.h>
 #include <stdint.h>
 #include <map.h>
@@ -22,6 +22,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include <drivers/video/graphics.h>
 #include <list.h>
 #include <macros.h>
+#include <sys.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
@@ -81,11 +82,15 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     init_keyboard(false);
     mouse_install();
 
+    Graphic::redraw_background_picture(array);
+
     while (true);
     */
-    
+
+    printf("%s %s\n\n", System::SYSTEM, System::VERSION);
+
     init_serial(SERIAL_PORT);
-    Kernel::system_log("Entered kernel.\n");
+    Kernel::system_log("Entered CeneOS kernel.\n");
 
     // initialize ACPI
     Kernel::initAcpi();
@@ -108,5 +113,21 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     Kernel::system_log("\n");
 
     init_mem();
+
+    char * buff;
+    buff = Kernel::get_log(buff);
+    printf(buff);
+
+    sleep(2);
+
+    clear();
+
+    Kernel::set_hardware_cursor(1, 0);
+
+    printf_centered("Terminal", 0);
+    printf("\n/> ");
+    terminal_on = true; // init terminal
+
+    serial_write_string("\n");
 
 }

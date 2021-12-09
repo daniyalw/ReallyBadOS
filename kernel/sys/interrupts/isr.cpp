@@ -173,6 +173,12 @@ extern "C" void irq_handler(registers_t r) {
     if (interrupt_handlers[r.int_no] != 0) {
         isr_t handler = interrupt_handlers[r.int_no];
         handler(r);
+    } else {
+        char * irq;
+        std::itoa(r.int_no, irq);
+        Kernel::system_log("IRQ ");
+        Kernel::system_log(irq);
+        Kernel::system_log(" had no handler.\n");
     }
 }
 

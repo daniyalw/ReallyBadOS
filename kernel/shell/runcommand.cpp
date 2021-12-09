@@ -4,6 +4,7 @@
 #include <kernel/power.h>
 #include <timer.h>
 #include <kernel/log.h>
+#include <sys.h>
 #include "rc.h"
 
 void rc(char * b)
@@ -25,10 +26,12 @@ void rc(char * b)
 
     } else if (std::startswith(b, "help")) {
 
-        printf("CeneOS 1.0, Daniyal Warraich\n");
+        printf("%s %s, Daniyal Warraich\n", System::SYSTEM, System::VERSION);
         printf("Available commands:\n");
 
+    } else if (std::startswith(b, "about")) {
 
+        printf("%s %s, Daniyal Warraich", System::SYSTEM, System::VERSION);
 
     } else if (std::startswith(b, "reboot")) {
 
@@ -36,7 +39,7 @@ void rc(char * b)
 
     } else if (std::startswith(b, "copyright")) {
 
-        printf("CeneOS 1.0, Daniyal Warraich 2021");
+        printf("%s %s, Daniyal Warraich 2021", System::SYSTEM, System::VERSION);
 
     } else if (std::startswith(b, "cpuinfo")) {
 
@@ -59,6 +62,7 @@ void rc(char * b)
 
     } else if (std::startswith(b, "shutdown")) {
 
+        printf("Shutting down...\n");
         disable_interrupts();
         Kernel::shutdown_os();
 
@@ -80,16 +84,5 @@ void rc(char * b)
         }
 
     }
-}
 
-void shell()
-{
-    char * command;
-
-    while (true)
-    {
-        scanf(command);
-        rc(command);
-        printf("\n/> ");
-    }
 }

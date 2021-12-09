@@ -1,7 +1,7 @@
 #pragma once
 #include <drivers/video/graphics.h>
 #include <colors.h>
-#include "font.cpp"
+#include <font.h>
 
 namespace Graphic {
 
@@ -99,7 +99,7 @@ void clear_screen()
 
 void center_printf(char * string, int x, int y, int w)
 {
-    g_printf(string, (w/2)+x, y);
+    g_printf(string, x+((w - std::len(string) * 8)/2), y);
 }
 
 void topleft_plotpoints(int x, int y, int cx, int cy, int color) {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdio.h>
+
 namespace std {
 
 template <typename T>
@@ -75,6 +77,21 @@ public:
         }
 
         return false;
+    }
+
+    void operator=(list other)
+    {
+        for (int z = 0; z < length + 1; z++)
+            this->pop();
+
+        if (length != 0)
+        {
+            error("Could not copy lists.");
+            return;
+        }
+
+        for (int z = 0; z < other.size(); z++)
+            this->push_back(other.get(z));
     }
 
     // Function that returns the number of

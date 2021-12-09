@@ -10,7 +10,6 @@ http://jamesmolloy.co.uk/tutorial_html/
 
 static void init_gdt()
 {
-   Kernel::system_log("Enabled GDT.\n");
    gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
    gdt_ptr.base  = (u32)&gdt_entries;
 
@@ -21,6 +20,7 @@ static void init_gdt()
    Kernel::gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); // User mode data segment
 
    gdt_flush((u32)&gdt_ptr);
+   Kernel::system_log("Enabled GDT.\n");
 }
 
 // Set the value of one GDT entry.
