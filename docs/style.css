@@ -104,6 +104,13 @@ p {
   text-decoration: none;
 }
 
+.navbar p {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 0px 10px;
+}
 
 /* Right-aligned link */
 .navbar-right {
