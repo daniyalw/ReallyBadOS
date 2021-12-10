@@ -84,6 +84,7 @@ extern "C" {
     extern void irq13();
     extern void irq14();
     extern void irq15();
+    extern void irq16();
 }
 
 #define IRQ0 32
@@ -102,6 +103,7 @@ extern "C" {
 #define IRQ13 45
 #define IRQ14 46
 #define IRQ15 47
+#define IRQ16 48
 
 /* Struct which aggregates many registers */
 typedef struct {

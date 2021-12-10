@@ -2,6 +2,7 @@
 #include <kernel/acpi.h>
 #include <timer.h>
 #include <kernel/log.h>
+#include <drivers/video/video.h>
 
 namespace Kernel {
 

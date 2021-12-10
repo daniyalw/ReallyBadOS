@@ -52,6 +52,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "sys/serial.cpp"
 #include "../gui/gui.cpp"
 #include "../drivers/video/saturation.cpp"
+#include "sys/syscall/syscall.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -102,8 +103,10 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     init_timer(1000);
     // mouse & keyboard
     init_keyboard(false);
-    //mouse_install();
-
+    init_mem();
+    mouse_install();
+    initialise_syscalls();
+    /*
     //printf("%d", kernel_main);
     char * addr;
     std::itoa((int)kernel_main, addr);
@@ -111,8 +114,6 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     Kernel::system_log(addr);
 
     Kernel::system_log("\n");
-
-    init_mem();
 
     char * buff;
     buff = Kernel::get_log(buff);
@@ -129,5 +130,5 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     terminal_on = true; // init terminal
 
     serial_write_string("\n");
-
+    */
 }

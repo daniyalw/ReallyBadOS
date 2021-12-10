@@ -12,9 +12,9 @@ void print(char * text);
 void scroll();
 void printf(char *text, ...);
 void printf_centered(char * s, int line_no);
-void warning(char * warn);
-void info(char * s);
-void error(char * err);
+void warning(char * text, ...);
+void info(char * text, ...);
+void error(char * text, ...);
 
 struct output
 {

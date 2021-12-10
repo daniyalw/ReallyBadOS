@@ -103,6 +103,7 @@ void isr_install() {
     set_idt_gate(45, (u32)irq13);
     set_idt_gate(46, (u32)irq14);
     set_idt_gate(47, (u32)irq15);
+    set_idt_gate(48, (u32)irq16);
 
     set_idt(); // Load with ASM
 }
@@ -150,13 +151,10 @@ extern "C" void isr_handler(registers_t r) {
         return;
     }
 
-    printf("received interrupt: ");
-    char s[3];
-    std::itoa(r.int_no, s);
-    printf(s);
-    printf("\n");
-    printf(exception_messages[r.int_no]);
-    printf("\n");
+    error("Interrupt received: %d\n", r.int_no);
+
+    asm("cli");
+    asm("hlt");
 }
 
 void register_interrupt_handler(u8 n, isr_t handler) {
@@ -173,12 +171,6 @@ extern "C" void irq_handler(registers_t r) {
     if (interrupt_handlers[r.int_no] != 0) {
         isr_t handler = interrupt_handlers[r.int_no];
         handler(r);
-    } else {
-        char * irq;
-        std::itoa(r.int_no, irq);
-        Kernel::system_log("IRQ ");
-        Kernel::system_log(irq);
-        Kernel::system_log(" had no handler.\n");
     }
 }
 

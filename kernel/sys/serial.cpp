@@ -23,6 +23,11 @@ static int serial_write(int port, char *buf)
 	return 0;
 }
 
+void output_serial_char(char a)
+{
+	output_serial_char(SERIAL_PORT, a);
+}
+
 void serial_write_string(char *buf)
 {
 	serial_write(SERIAL_PORT, buf);

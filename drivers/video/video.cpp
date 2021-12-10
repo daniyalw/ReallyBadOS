@@ -398,27 +398,382 @@ void printf_centered(char * s, int line_no)
     }
 }
 
-void warning(char * warn)
+void warning(char *text, ...)
 {
     int yellow = 0x0E00;
-    printf(yellow, "warning: ");
-    printf(warn);
+    Kernel::system_log("Warning: ");
+    printf(yellow, "Warning: ");
+  char **arg = (char **) &text;
+  int c;
+  char buffer[20];
+
+  arg++;
+
+  while ((c = *text++) != 0)
+    {
+      if (c != '%')
+      {
+        if (c == '\n')
+        {
+            text_x = 0;
+            text_y++;
+
+            if (scroll_on)
+                scroll();
+        }
+        else if (c == '\b')
+        {
+            if (text_x > 1)
+            {
+                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
+                // behind text_x will remain
+                text_x--;
+                if (text_x < 0) {
+                    for (int b = 0; b < 80; b++)
+                    {
+                        if (!written_on[b+(text_y - 1)*80])
+                        {
+                            text_x = b;
+                            break;
+                        }
+                    }
+                    text_y--;
+                }
+                putchar(' ');
+                Kernel::system_log_char(' ');
+                text_x--;
+                if (text_x < 0) {
+                    text_x = 0;
+                    text_y--;
+                }
+            }
+        }
+        else if (c == '\t')
+        {
+            for (int z = 0; z < 4; z++) next_char();
+
+            if (scroll_on)
+                scroll();
+        }
+        else
+        {
+            putchar(c);
+            Kernel::system_log_char(c);
+        }
+      }
+      else
+        {
+          char *p, *p2;
+          int pad0 = 0, pad = 0;
+
+          c = *text++;
+          if (c == '0')
+            {
+              pad0 = 1;
+              c = *text++;
+            }
+
+          if (c >= '0' && c <= '9')
+            {
+              pad = c - '0';
+              c = *text++;
+            }
+
+          switch (c)
+            {
+            case 'c':
+                putchar(c);
+                Kernel::system_log_char(c);
+                break;
+            case 'd':
+            case 'u':
+            case 'x':
+              std::itoa (buffer, c, *((int *) arg++));
+              p = buffer;
+              goto string;
+              break;
+
+            case 's':
+              p = *arg++;
+              if (! p)
+                p = "(null)";
+
+            string:
+              for (p2 = p; *p2; p2++);
+              for (; p2 < p + pad; p2++)
+              {
+                putchar (pad0 ? '0' : ' ');
+                Kernel::system_log_char(pad0 ? '0' : ' ');
+              }
+              while (*p)
+              {
+                putchar (*p);
+                Kernel::system_log_char(*p);
+                *p++;
+              }
+              break;
+
+            default:
+              putchar (*((int *) arg));
+              Kernel::system_log_char(*(int *) arg);
+              arg++;
+              break;
+            }
+        }
+    }
+    Kernel::set_hardware_cursor(text_y, text_x);
 }
 
-void error(char * err)
+void error(char *text, ...)
 {
     int red = 0x0400;
-    printf(red, "error: ");
-    printf(err);
-    Kernel::system_log("\nError: ");
-    Kernel::system_log(err);
+    Kernel::system_log("Error: ");
+    printf(red, "Error: ");
+  char **arg = (char **) &text;
+  int c;
+  char buffer[20];
+
+  arg++;
+
+  while ((c = *text++) != 0)
+    {
+      if (c != '%')
+      {
+        if (c == '\n')
+        {
+            text_x = 0;
+            text_y++;
+
+            if (scroll_on)
+                scroll();
+        }
+        else if (c == '\b')
+        {
+            if (text_x > 1)
+            {
+                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
+                // behind text_x will remain
+                text_x--;
+                if (text_x < 0) {
+                    for (int b = 0; b < 80; b++)
+                    {
+                        if (!written_on[b+(text_y - 1)*80])
+                        {
+                            text_x = b;
+                            break;
+                        }
+                    }
+                    text_y--;
+                }
+                putchar(' ');
+                Kernel::system_log_char(' ');
+                text_x--;
+                if (text_x < 0) {
+                    text_x = 0;
+                    text_y--;
+                }
+            }
+        }
+        else if (c == '\t')
+        {
+            for (int z = 0; z < 4; z++) next_char();
+
+            if (scroll_on)
+                scroll();
+        }
+        else
+        {
+            putchar(c);
+            Kernel::system_log_char(c);
+        }
+      }
+      else
+        {
+          char *p, *p2;
+          int pad0 = 0, pad = 0;
+
+          c = *text++;
+          if (c == '0')
+            {
+              pad0 = 1;
+              c = *text++;
+            }
+
+          if (c >= '0' && c <= '9')
+            {
+              pad = c - '0';
+              c = *text++;
+            }
+
+          switch (c)
+            {
+            case 'c':
+                putchar(c);
+                Kernel::system_log_char(c);
+                break;
+            case 'd':
+            case 'u':
+            case 'x':
+              std::itoa (buffer, c, *((int *) arg++));
+              p = buffer;
+              goto string;
+              break;
+
+            case 's':
+              p = *arg++;
+              if (! p)
+                p = "(null)";
+
+            string:
+              for (p2 = p; *p2; p2++);
+              for (; p2 < p + pad; p2++)
+              {
+                putchar (pad0 ? '0' : ' ');
+                Kernel::system_log_char(pad0 ? '0' : ' ');
+              }
+              while (*p)
+              {
+                putchar (*p);
+                Kernel::system_log_char(*p);
+                *p++;
+              }
+              break;
+
+            default:
+              putchar (*((int *) arg));
+              Kernel::system_log_char(*(int *) arg);
+              arg++;
+              break;
+            }
+        }
+    }
+    Kernel::set_hardware_cursor(text_y, text_x);
 }
 
-void info(char * s)
+void info(char *text, ...)
 {
     int light_blue = 0x0300;
-    printf(light_blue, "info: ");
-    printf(s);
-    Kernel::system_log("\nInfo: ");
-    Kernel::system_log(s);
+    Kernel::system_log("Info: ");
+    printf(light_blue, "Info: ");
+  char **arg = (char **) &text;
+  int c;
+  char buffer[20];
+
+  arg++;
+
+  while ((c = *text++) != 0)
+    {
+      if (c != '%')
+      {
+        if (c == '\n')
+        {
+            text_x = 0;
+            text_y++;
+
+            if (scroll_on)
+                scroll();
+
+            Kernel::system_log("\n");
+        }
+        else if (c == '\b')
+        {
+            if (text_x > 1)
+            {
+                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
+                // behind text_x will remain
+                text_x--;
+                if (text_x < 0) {
+                    for (int b = 0; b < 80; b++)
+                    {
+                        if (!written_on[b+(text_y - 1)*80])
+                        {
+                            text_x = b;
+                            break;
+                        }
+                    }
+                    text_y--;
+                }
+                putchar(' ');
+                text_x--;
+                if (text_x < 0) {
+                    text_x = 0;
+                    text_y--;
+                }
+            }
+        }
+        else if (c == '\t')
+        {
+            Kernel::system_log("    ");
+            for (int z = 0; z < 4; z++) next_char();
+
+            if (scroll_on)
+                scroll();
+        }
+        else
+        {
+            putchar(c);
+            Kernel::system_log_char(c);
+        }
+      }
+      else
+        {
+          char *p, *p2;
+          int pad0 = 0, pad = 0;
+
+          c = *text++;
+          if (c == '0')
+            {
+              pad0 = 1;
+              c = *text++;
+            }
+
+          if (c >= '0' && c <= '9')
+            {
+              pad = c - '0';
+              c = *text++;
+            }
+
+          switch (c)
+            {
+            case 'c':
+                putchar(c);
+                Kernel::system_log_char(c);
+                break;
+            case 'd':
+            case 'u':
+            case 'x':
+              std::itoa (buffer, c, *((int *) arg++));
+              p = buffer;
+              goto string;
+              break;
+
+            case 's':
+              p = *arg++;
+              if (! p)
+                p = "(null)";
+
+            string:
+              for (p2 = p; *p2; p2++);
+              for (; p2 < p + pad; p2++)
+              {
+                putchar (pad0 ? '0' : ' ');
+                Kernel::system_log_char(pad0 ? '0' : ' ');
+              }
+              while (*p)
+              {
+                putchar (*p);
+                Kernel::system_log_char(*p);
+                *p++;
+              }
+              break;
+
+            default:
+              putchar (*((int *) arg));
+              Kernel::system_log_char(*(int *) arg);
+              arg++;
+              break;
+            }
+        }
+    }
+    Kernel::set_hardware_cursor(text_y, text_x);
 }
