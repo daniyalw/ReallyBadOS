@@ -104,7 +104,7 @@ p {
   text-decoration: none;
 }
 
-.navbar p {
+.navbar-p {
   float: left;
   display: block;
   color: white;
@@ -129,6 +129,7 @@ p {
   background-color: #666;
   color: white;
   border-bottom:3px solid red;
+  pointer-events: none;
 }
 /* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
 @media screen and (max-width: 400px) {
