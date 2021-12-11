@@ -14,31 +14,16 @@ void set_string(char * string, char * newvalue)
     }
 }
 
-void s_print(char * s)
+void print(char * text)
 {
-    printf(s);
+    printf(text);
 }
 
-void s_d(char * b)
-{
-    printf("s_d() called\n");
-    set_string(b, "Hello!");
+DECL_SYSCALL1(print, char *);
+DEFN_SYSCALL1(print, 0, char *);
 
-}
-
-DECL_SYSCALL1(s_print, char *);
-DEFN_SYSCALL1(s_print, 0, char *);
-
-DECL_SYSCALL1(s_d, char *);
-DEFN_SYSCALL1(s_d, 1, char *);
-
-void initialise_syscalls()
-{
-    syscall_append((void *)s_print);
-    syscall_append((void *)s_d);
-    Kernel::register_interrupt_handler(IRQ16, syscall_handler);
-    Kernel::system_log("Syscalls initialized at interrupt 48!");
-}
+DECL_SYSCALL1(serial_write_string, char *);
+DEFN_SYSCALL1(serial_write_string, 1, char *);
 
 void syscall_append(void *func)
 {
@@ -67,4 +52,16 @@ void syscall_handler(registers_t regs)
      pop %%ebx; \
    " : "=a" (ret) : "r" (regs.edi), "r" (regs.esi), "r" (regs.edx), "r" (regs.ecx), "r" (regs.ebx), "r" (location));
    //regs.eax = ret;
+}
+
+namespace Kernel {
+
+void init_syscalls()
+{
+    syscall_append((void *)print);
+    syscall_append((void *)serial_write_string);
+    Kernel::register_interrupt_handler(IRQ16, syscall_handler);
+    Kernel::system_log("Syscalls initialized at interrupt 48!");
+}
+
 }

@@ -4,30 +4,52 @@
 
 #include <colors.h>
 
-struct Widget
+class Widget;
+class Window;
+
+class Widget
 {
-    int window_id;
+protected:
     int id;
+    int window_id;
+public:
     int x, y, w, h;
     int color;
-    void draw_widget();
-    void hide_widget();
+    Widget();
+    void start(int win_id);
+    void draw_widget() {};
+    void hide_widget() {};
     bool active = false;
 };
-
-struct Window
+/*
+class Canvas : protected Widget
+{
+public:
+    Canvas()
+    {};
+    void draw_widget()
+    {};
+    void hide_widget()
+    {};
+};
+*/
+class Window
 {
     int id;
-    Widget widgets[MAX_];
+public:
+    Widget * widgets[MAX_];
     int widget_count = 0;
+    int w, h;
     int z;
     bool active = false;
     int avx, avy;
     int bg = Graphic::rgb(100, 100, 100);
+    Window();
+    int get_id();
     void draw_window();
 };
 
-std::list<Window> windows;
+std::list<Window *> windows;
 
-Window create_window();
-Widget create_widget(Window win);
+void save_widget(Widget widget);
+void save_window(Window win);

@@ -170,7 +170,9 @@ static void mouse_handler(registers_t regs)
     middle = false;
 }
 
-void mouse_install()
+namespace Kernel {
+
+void init_mouse()
 {
   unsigned char _status;  //unsigned char
 
@@ -197,4 +199,6 @@ void mouse_install()
   mouse_read();  //Acknowledge
 
   Kernel::register_interrupt_handler(IRQ12, mouse_handler); // interrupts
+}
+
 }

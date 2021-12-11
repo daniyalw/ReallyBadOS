@@ -2,6 +2,8 @@
 
 #include <memory.h>
 
+namespace std {
+
 int malloc(int size)
 {
     for (int z = 0; z < memory_free_locations.size(); z++)
@@ -50,7 +52,13 @@ void free(int addr, int size)
     memory_free_locations.push_back(addr, size);
 }
 
+}
+
+namespace Kernel {
+
 void init_mem()
 {
     memory_free_locations.push_back(0x10000, 400);
+}
+
 }

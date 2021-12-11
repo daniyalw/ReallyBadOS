@@ -49,7 +49,7 @@ unsigned int *acpiCheckRSDPtr(unsigned int *ptr);
 unsigned int *acpiGetRSDPtr();
 int acpiCheckHeader(unsigned int *ptr, char *sig);
 int acpiEnable();
-int initAcpi();
+int init_acpi();
 void acpiPowerOff();
 
 }

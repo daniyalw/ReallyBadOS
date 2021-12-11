@@ -7,7 +7,7 @@ namespace Kernel {
 
 void system_log_char(char ch)
 {
-    output_serial_char(ch);
+    Kernel::output_serial_char(ch);
 
     Kernel::buffer[Kernel::buffer_size] = ch;
     Kernel::buffer_size++;
@@ -27,15 +27,23 @@ void system_log(char *text, ...)
       {
         if (c == '\n')
         {
-            serial_write_string("\n");
+            Kernel::serial_write_string("\n");
+            Kernel::buffer[Kernel::buffer_size] = '\n';
+            Kernel::buffer_size++;
         }
         else if (c == '\t')
         {
-            serial_write_string("    ");
+            Kernel::serial_write_string("    ");
+
+            for (int z = 0; z < 4; z++)
+            {
+                Kernel::buffer[Kernel::buffer_size] = ' ';
+                Kernel::buffer_size++;
+            }
         }
         else
         {
-            system_log_char(c);
+            Kernel::system_log_char(c);
         }
       }
       else
@@ -59,7 +67,7 @@ void system_log(char *text, ...)
           switch (c)
             {
             case 'c':
-                system_log_char(c);
+                Kernel::system_log_char(c);
                 break;
             case 'd':
             case 'u':
@@ -78,11 +86,11 @@ void system_log(char *text, ...)
               for (p2 = p; *p2; p2++);
               for (; p2 < p + pad; p2++)
               {
-                system_log_char (pad0 ? '0' : ' ');
+                Kernel::system_log_char (pad0 ? '0' : ' ');
               }
               while (*p)
               {
-                system_log_char (*p);
+                Kernel::system_log_char (*p);
                 *p++;
               }
               break;

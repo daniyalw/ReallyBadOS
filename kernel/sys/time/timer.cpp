@@ -61,6 +61,8 @@ static void timer_callback(registers_t regs) {
     }
 }
 
+namespace Kernel {
+
 void init_timer(u32 freq) {
     Kernel::system_log("Enabled timer.\n");
     hz = freq;
@@ -75,6 +77,8 @@ void init_timer(u32 freq) {
     outb(0x43, 0x36); /* Command port */
     outb(0x40, low);
     outb(0x40, high);
+}
+
 }
 
 void timer_wait(int ticks)

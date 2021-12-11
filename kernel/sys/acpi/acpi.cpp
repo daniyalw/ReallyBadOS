@@ -139,7 +139,7 @@ int acpiEnable()
    }
 }
 
-int initAcpi()
+int init_acpi()
 {
    unsigned int *ptr = acpiGetRSDPtr();
 

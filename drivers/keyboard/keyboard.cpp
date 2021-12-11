@@ -424,6 +424,7 @@ void get_key(unsigned char code)
     }
 }
 
+namespace Kernel {
 
 void init_keyboard(bool on) {
     if (on) {
@@ -434,4 +435,6 @@ void init_keyboard(bool on) {
     Kernel::system_log("Enabled keyboard.\n");
     // register the interrupt
    Kernel::register_interrupt_handler(IRQ1, scan_key);
+}
+
 }

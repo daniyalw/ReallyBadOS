@@ -53,6 +53,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../gui/gui.cpp"
 #include "../drivers/video/saturation.cpp"
 #include "sys/syscall/syscall.cpp"
+//#include "../drivers/video/blur.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -72,63 +73,37 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     bpp = mbd->framebuffer_bpp;
 
     // initialize ACPI
-    Kernel::initAcpi();
+    Kernel::init_acpi();
 
     // GDT enable
     Kernel::init_gdt();
     // IDT & interrupts enable
     Kernel::isr_install();
-    //init_timer(1000);
+    //Kernel::init_timer(1000);
     // mouse & keyboard
-    init_keyboard(false);
-    mouse_install();
+    Kernel::init_keyboard(false);
+    Kernel::mouse_install();
 
     Graphic::redraw_background_picture(array);
 
+    Window win = Window();
+    Canvas canvas = Canvas();
+    //win.draw_window();
+
     while (true);
     */
+    Kernel::init_serial(SERIAL_PORT);
 
-    printf("%s %s\n\n", System::SYSTEM, System::VERSION);
-
-    init_serial(SERIAL_PORT);
     Kernel::system_log("Entered CeneOS kernel.\n");
 
-    // initialize ACPI
-    Kernel::initAcpi();
-
-    // GDT enable
+    Kernel::init_acpi();
     Kernel::init_gdt();
-    // IDT & interrupts enable
-    Kernel::isr_install();
-    init_timer(1000);
-    // mouse & keyboard
-    init_keyboard(false);
-    init_mem();
-    mouse_install();
-    initialise_syscalls();
-    /*
-    //printf("%d", kernel_main);
-    char * addr;
-    std::itoa((int)kernel_main, addr);
-    Kernel::system_log("\nkernel_main() address: 0x");
-    Kernel::system_log(addr);
+    Kernel::init_isr();
+    Kernel::init_timer(1000);
+    Kernel::init_keyboard(false);
+    Kernel::init_mem();
+    Kernel::init_mouse();
+    Kernel::init_syscalls();
 
-    Kernel::system_log("\n");
-
-    char * buff;
-    buff = Kernel::get_log(buff);
-    printf(buff);
-
-    sleep(2);
-
-    clear();
-
-    Kernel::set_hardware_cursor(1, 0);
-
-    printf_centered("Terminal", 0);
-    printf("\n/> ");
-    terminal_on = true; // init terminal
-
-    serial_write_string("\n");
-    */
+    Kernel::serial_write_string("\n");
 }

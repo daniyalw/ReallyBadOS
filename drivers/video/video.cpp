@@ -111,13 +111,6 @@ void putchar(char text, int color) {
     written_on[text_x+text_y*80] = true;
     next_char();
 }
-
-void print(char * text) {
-    for (int z = 0; z < std::len(text); z++) {
-        putchar(text[z]);
-    }
-}
-
 void scroll()
 {
    uint8 attr = (0 << 4) | (15 & 0x0F);

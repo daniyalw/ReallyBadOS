@@ -3,6 +3,8 @@
 #include <kernel/serial.h>
 #include <kernel/io.h>
 
+namespace Kernel {
+
 static int empty_serial_transmit(int port)
 {
 	return inb(port + 5) & 0x20;
@@ -42,4 +44,6 @@ void init_serial(int port)
 	outb(port + 3, 0x03);  // 8 bits, no parity, one stop bit
 	outb(port + 2, 0xC7);  // Enable FIFO, clear them, with 14-byte threshold
 	outb(port + 4, 0x0B);  // IRQs enabled, RTS/DSR set
+}
+
 }

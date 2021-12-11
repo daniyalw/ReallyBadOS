@@ -39,7 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 isr_t interrupt_handlers[256];
 
-void isr_install() {
+void init_isr() {
     Kernel::system_log("Enabled interrupts.\n");
     set_idt_gate(0, (u32)isr0);
     set_idt_gate(1, (u32)isr1);

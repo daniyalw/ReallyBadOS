@@ -12,7 +12,6 @@ bool middle_clicked = false;
 int menux = 0, menuy = 0;
 int movedx = 0, movedy = 0;
 
-void mouse_install();
 int mouse_handler();
 unsigned char mouse_read();
 void draw_cursor(int x, int y, bool right_c);
