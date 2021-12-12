@@ -14,16 +14,26 @@ void set_string(char * string, char * newvalue)
     }
 }
 
+// ----------------------------- //
+
 void print(char * text)
 {
     printf(text);
 }
 
-DECL_SYSCALL1(print, char *);
 DEFN_SYSCALL1(print, 0, char *);
 
-DECL_SYSCALL1(serial_write_string, char *);
 DEFN_SYSCALL1(serial_write_string, 1, char *);
+
+// ----------------------------- //
+
+void sys_print(char * text)
+{
+    syscall_print(text);
+}
+
+// ----------------------------- //
+
 
 void syscall_append(void *func)
 {

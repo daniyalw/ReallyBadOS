@@ -26,7 +26,6 @@ int back_buffer[1024*768]; // back buffer for gui
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
-#include "sys/acpi/acpi.cpp"
 #include "sys/power/shutdown.cpp"
 #include "sys/power/reboot.cpp"
 #include "sys/cpu/info.cpp"
@@ -50,8 +49,6 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../stdlib/colors.cpp"
 #include "../drivers/video/bga.cpp"
 #include "sys/serial.cpp"
-#include "../gui/gui.cpp"
-#include "../drivers/video/saturation.cpp"
 #include "sys/syscall/syscall.cpp"
 //#include "../drivers/video/blur.cpp"
 
@@ -86,24 +83,21 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     Graphic::redraw_background_picture(array);
 
-    Window win = Window();
-    Canvas canvas = Canvas();
-    //win.draw_window();
-
     while (true);
     */
     Kernel::init_serial(SERIAL_PORT);
 
     Kernel::system_log("Entered CeneOS kernel.\n");
 
-    Kernel::init_acpi();
     Kernel::init_gdt();
     Kernel::init_isr();
     Kernel::init_timer(1000);
     Kernel::init_keyboard(false);
-    Kernel::init_mem();
+    Kernel::init_mem(mbd);
     Kernel::init_mouse();
     Kernel::init_syscalls();
+
+    int loc = std::get_free_blocks(3);
 
     Kernel::serial_write_string("\n");
 }

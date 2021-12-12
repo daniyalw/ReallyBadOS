@@ -4,49 +4,41 @@
 
 //https://forum.osdev.org/viewtopic.php?t=10247
 
-//Mouse functions
-void mouse_wait(unsigned char a_type) //unsigned char
+void mouse_wait(unsigned char at)
 {
-  unsigned int _time_out=100000; //unsigned int
-  if(a_type==0)
-  {
-    while(_time_out--) //Data
+    unsigned int timeout = 100000;
+
+    switch (at)
     {
-      if((inb(0x64) & 1)==1)
-      {
-        return;
-      }
+        case 0:
+            while (timeout--)
+                if ((inb(0x64) & 1) == 1)
+                    return;
+
+            break;
+        default:
+            while (timeout--)
+                if ((inb(0x64) & 2) == 0)
+                    return;
+
+            break;
     }
-    return;
-  }
-  else
-  {
-    while(_time_out--) //Signal
-    {
-      if((inb(0x64) & 2)==0)
-      {
-        return;
-      }
-    }
-    return;
-  }
 }
 
-void mouse_write(unsigned char a_write) //unsigned char
+void mouse_write(unsigned char data)
 {
-  //Wait to be able to send a command
-  mouse_wait(1);
-  //Tell the mouse we are sending a command
-  outb(0x64, 0xD4);
-  //Wait for the final part
-  mouse_wait(1);
-  //Finally write
-  outb(0x60, a_write);
+    // wait for the mouse to be ready
+    mouse_wait(1);
+    // tell them mouse we are sending a command
+    outb(0x64, 0xD4);
+    // wait so the mouse is ready for the command
+    mouse_wait(1);
+    // the actual write
+    outb(0x60, data);
 }
 
 unsigned char mouse_read()
 {
-  //Get's response from mouse
   mouse_wait(0);
   return inb(0x60);
 }
@@ -81,44 +73,40 @@ void draw_cursor(int x, int y, bool right_c)
 
 static void mouse_handler(registers_t regs)
 {
-  int r = 0;
-  int mx = 0;
-  int my = 0;
-  bool left, right, middle;
+    int r = 0;
+    int mx = 0;
+    int my = 0;
+    bool left, right, middle;
 
-  switch(mouse_cycle)
-  {
-    case 0:
-      mouse_byte[0]=mouse_read();
-      mouse_cycle++;
-      break;
-    case 1:
-      mouse_byte[1]=mouse_read();
-      mouse_cycle++;
-      break;
-    case 2:
-      mouse_byte[2]=mouse_read();
-      oldx = mouse_x;
-      oldy = mouse_y;
-      mouse_x+=(int)mouse_byte[1];
-      mouse_y-=(int)mouse_byte[2];
+    switch(mouse_cycle)
+    {
+        case 0:
+            mouse_byte[0]=mouse_read();
+            mouse_cycle++;
+            break;
+        case 1:
+            mouse_byte[1]=mouse_read();
+            mouse_cycle++;
+            break;
+        case 2:
+            mouse_byte[2]=mouse_read();
+            oldx = mouse_x;
+            oldy = mouse_y;
+            mouse_x+=(int)mouse_byte[1];
+            mouse_y-=(int)mouse_byte[2];
 
-      if (mouse_x && (mouse_byte[0] & (1 << 4)))
-      {
-          mouse_x -= 0x100;
-      }
+            if (mouse_x && (mouse_byte[0] & (1 << 4)))
+                mouse_x -= 0x100;
 
-      if (mouse_y && (mouse_byte[0] & (1 << 5)))
-      {
-          mouse_y += 0x100;
-      }
+            if (mouse_y && (mouse_byte[0] & (1 << 5)))
+                mouse_y += 0x100;
 
-      mouse_cycle=0;
-      r = 1;
-      break;
-     default:
-        return;
-  }
+            mouse_cycle=0;
+            r = 1;
+            break;
+        default:
+            return;
+    }
 
     if (mouse_x >= width) {
         mouse_x = width;
@@ -174,31 +162,29 @@ namespace Kernel {
 
 void init_mouse()
 {
-  unsigned char _status;  //unsigned char
+    unsigned char mstatus;
 
-  //Enable the auxiliary mouse device
-  mouse_wait(1);
-  outb(0x64, 0xA8);
+    mouse_wait(1);
+    outb(0x64, 0xA8);
 
-  //Enable the interrupts
-  mouse_wait(1);
-  outb(0x64, 0x20);
-  mouse_wait(0);
-  _status=(inb(0x60) | 2);
-  mouse_wait(1);
-  outb(0x64, 0x60);
-  mouse_wait(1);
-  outb(0x60, _status);
+    mouse_wait(1);
+    outb(0x64, 0x20);
 
-  //Tell the mouse to use default settings
-  mouse_write(0xF6);
-  mouse_read();  //Acknowledge
+    mouse_wait(0);
+    mstatus = inb(0x60) | 2;
+    mouse_wait(1);
 
-  //Enable the mouse
-  mouse_write(0xF4);
-  mouse_read();  //Acknowledge
+    outb(0x64, 0x60);
+    mouse_wait(1);
+    outb(0x60, mstatus);
 
-  Kernel::register_interrupt_handler(IRQ12, mouse_handler); // interrupts
+    mouse_write(0xF6);
+    mouse_read();
+
+    mouse_write(0xF4);
+    mouse_read();
+
+    Kernel::register_interrupt_handler(IRQ12, mouse_handler);
 }
 
 }

@@ -4,10 +4,6 @@
 
 namespace Kernel {
 
-/*
-http://jamesmolloy.co.uk/tutorial_html/
-*/
-
 static void init_gdt()
 {
    gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
@@ -23,7 +19,6 @@ static void init_gdt()
    Kernel::system_log("Enabled GDT.\n");
 }
 
-// Set the value of one GDT entry.
 static void gdt_set_gate(s32 num, u32 base, u32 limit, u8 access, u8 gran)
 {
    gdt_entries[num].base_low    = (base & 0xFFFF);

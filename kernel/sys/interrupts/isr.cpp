@@ -39,6 +39,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 isr_t interrupt_handlers[256];
 
+void pic_remap() {
+    outb(0x20, 0x11);
+    outb(0xA0, 0x11);
+    outb(0x21, 0x20);
+    outb(0xA1, 0x28);
+    outb(0x21, 0x04);
+    outb(0xA1, 0x02);
+    outb(0x21, 0x01);
+    outb(0xA1, 0x01);
+    outb(0x21, 0x0);
+    outb(0xA1, 0x0);
+}
+
 void init_isr() {
     Kernel::system_log("Enabled interrupts.\n");
     set_idt_gate(0, (u32)isr0);
@@ -74,19 +87,8 @@ void init_isr() {
     set_idt_gate(30, (u32)isr30);
     set_idt_gate(31, (u32)isr31);
 
-    // Remap the PIC
-    outb(0x20, 0x11);
-    outb(0xA0, 0x11);
-    outb(0x21, 0x20);
-    outb(0xA1, 0x28);
-    outb(0x21, 0x04);
-    outb(0xA1, 0x02);
-    outb(0x21, 0x01);
-    outb(0xA1, 0x01);
-    outb(0x21, 0x0);
-    outb(0xA1, 0x0);
+    pic_remap();
 
-    // Install the IRQs
     set_idt_gate(32, (u32)irq0);
     set_idt_gate(33, (u32)irq1);
     set_idt_gate(34, (u32)irq2);
@@ -105,7 +107,7 @@ void init_isr() {
     set_idt_gate(47, (u32)irq15);
     set_idt_gate(48, (u32)irq16);
 
-    set_idt(); // Load with ASM
+    set_idt();
 }
 
 char *exception_messages[] = {
@@ -151,7 +153,8 @@ extern "C" void isr_handler(registers_t r) {
         return;
     }
 
-    error("Interrupt received: %d\n", r.int_no);
+    error("\nInterrupt received: %d\n", r.int_no);
+    error("Interrupt: %s\n", exception_messages[r.int_no]);
 
     asm("cli");
     asm("hlt");
@@ -162,12 +165,9 @@ void register_interrupt_handler(u8 n, isr_t handler) {
 }
 
 extern "C" void irq_handler(registers_t r) {
-    /* After every interrupt we need to send an EOI to the PICs
-     * or they will not send another interrupt again */
-    if (r.int_no >= 40) outb(0xA0, 0x20); /* slave */
-    outb(0x20, 0x20); /* master */
+    if (r.int_no >= 40) outb(0xA0, 0x20);
+    outb(0x20, 0x20);
 
-    /* Handle the interrupt in a more modular way */
     if (interrupt_handlers[r.int_no] != 0) {
         isr_t handler = interrupt_handlers[r.int_no];
         handler(r);

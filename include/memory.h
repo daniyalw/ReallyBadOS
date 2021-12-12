@@ -2,11 +2,14 @@
 
 #include <map.h>
 
+#define MEM_USED 0
+#define MEM_FREE 1
+
 // first int is memory location
 // second int is size
-std::map<int, int> memory_free_locations;
+int mem_beginning = 0x10000;
+int total_mem;
+std::map<int, int> memory_list;
 
 void init_mem();
-void free(int addr, int size);
-int malloc(int size);
-void wipe(int ad, int sz);
+int get_free_block();

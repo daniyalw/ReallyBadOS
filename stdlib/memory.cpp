@@ -4,61 +4,123 @@
 
 namespace std {
 
-int malloc(int size)
-{
-    for (int z = 0; z < memory_free_locations.size(); z++)
+int get_free_block() {
+    int location;
+
+    for (int z = 0; z < memory_list.size(); z++)
     {
-        if (memory_free_locations.get_value(z) == size)
+        location = memory_list.get_key(z);
+
+        if (memory_list.get_value(z) == MEM_FREE)
         {
-            int mem_location = memory_free_locations.get_key(z);
-            memory_free_locations.remove(z);
-            return mem_location;
-        }
-        else if (memory_free_locations.get_value(z) > size)
-        {
-            int loc = memory_free_locations.get_key(z);
-            int sz = memory_free_locations.get_value(z);
-            memory_free_locations.replace(loc+size, sz-size, memory_free_locations.get_first_pos(loc));
-            return loc;
+            memory_list.replace(location, MEM_USED, z);
+            return location;
         }
     }
 
     return NULL;
 }
 
-void wipe(int ad, int sz)
-{
-    short * a = (short *)ad;
+int get_free_blocks(int blocks) {
+    if (blocks == 0 || blocks == 1)
+        return 1;
 
-    for (int z = 0; z < sz; z++)
+    bool potential = false;
+    int together = 0;
+    int loc = NULL;
+    int potential_location = NULL;
+
+    for (int z = 0; z < memory_list.size(); z++)
     {
-        a[z] = 0;
-    }
-}
+        loc = memory_list.get_key(z);
 
-void free(int addr, int size)
-{
-    wipe(addr, size);
-
-    for (int z = 0; z < memory_free_locations.size(); z++)
-    {
-        if ((memory_free_locations.get_key(z)-size) == addr)
+        if (memory_list.get_value(z) == MEM_FREE)
         {
-            memory_free_locations.replace(memory_free_locations.get_key(z)-size, memory_free_locations.get_value(z)+size, memory_free_locations.get_first_pos(memory_free_locations.get_key(z)));
-            return;
+            potential = true;
+            together++;
+
+            if (together == blocks)
+            {
+                return potential_location;
+            }
+            else if (together == 1)
+            {
+                potential_location = loc;
+            }
+        }
+        else
+        {
+            potential = false;
+            together = 0;
+            potential_location = NULL;
         }
     }
 
-    memory_free_locations.push_back(addr, size);
+    return 2;
+}
+
+void free_block(int location) {
+    for (int z = 0; z < memory_list.size(); z++)
+    {
+        if (memory_list.get_key(z) == location)
+        {
+            if (memory_list.get_value(z) != MEM_USED)
+            {
+                return;
+            }
+            else
+            {
+                memory_list.replace(location, MEM_FREE, z);
+            }
+        }
+    }
+}
+
+void free_blocks(int location, int blocks) {
+    for (int z = 0; z < size; z++)
+    {
+        free_block(location + (z * 4000));
+    }
+}
+
+int malloc(int size) {
+    int blocks_needed = size/4000;
+
+    return get_free_blocks(blocks_needed);
+}
+
+void free(int addr, int size) {
+    int blocks_to_free = size/4000;
+
+    free_blocks(addr, blocks_to_free);
 }
 
 }
 
 namespace Kernel {
 
-void init_mem()
+void init_mem(multiboot_info_t * mbd)
 {
-    memory_free_locations.push_back(0x10000, 400);
+    int total = 0;
+
+    if (!(mbd->flags >> 6 & 0x1)) {
+        error("invalid memory map given by GRUB!");
+        return;
+    }
+
+    for (int z = 0; z < mbd->mmap_length;  z += sizeof(multiboot_memory_map_t)) {
+        multiboot_memory_map_t* mmmt =  (multiboot_memory_map_t*) (mbd->mmap_addr + z);
+        total += mmmt->len_low;
+    }
+
+    total_mem = total;
+    int count = 0;
+
+    for (int z = mem_beginning; z < total; z += 4000)
+    {
+        memory_list.push_back(z, MEM_FREE);
+        count++;
+    }
 }
 
 }

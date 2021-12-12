@@ -31,34 +31,28 @@ extern irq_handler
 ;OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-; Common ISR code
 isr_common_stub:
-    ; 1. Save CPU state
-	pusha ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
-	mov ax, ds ; Lower 16-bits of eax = ds.
-	push eax ; save the data segment descriptor
-	mov ax, 0x10  ; kernel data segment descriptor
+	pusha
+	mov ax, ds
+	push eax
+	mov ax, 0x10
 	mov ds, ax
 	mov es, ax
 	mov fs, ax
 	mov gs, ax
 
-    ; 2. Call C handler
 	call isr_handler
 
-    ; 3. Restore state
 	pop eax
 	mov ds, ax
 	mov es, ax
 	mov fs, ax
 	mov gs, ax
 	popa
-	add esp, 8 ; Cleans up the pushed error code and pushed ISR number
+	add esp, 8
 	sti
-	iret ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
+	iret
 
-; Common IRQ code. Identical to ISR code except for the 'call'
-; and the 'pop ebx'
 irq_common_stub:
     pusha
     mov ax, ds
@@ -68,8 +62,8 @@ irq_common_stub:
     mov es, ax
     mov fs, ax
     mov gs, ax
-    call irq_handler ; Different than the ISR code
-    pop ebx  ; Different than the ISR code
+    call irq_handler
+    pop ebx
     mov ds, bx
     mov es, bx
     mov fs, bx
@@ -79,14 +73,6 @@ irq_common_stub:
     sti
     iret
 
-; We don't get information about which interrupt was caller
-; when the handler is run, so we will need to have a different handler
-; for every interrupt.
-; Furthermore, some interrupts push an error code onto the stack but others
-; don't, so we will push a dummy error code for those which don't, so that
-; we have a consistent stack for all of them.
-
-; First make the ISRs global
 global isr0
 global isr1
 global isr2
