@@ -97,7 +97,5 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     Kernel::init_mouse();
     Kernel::init_syscalls();
 
-    int loc = std::get_free_blocks(3);
-
     Kernel::serial_write_string("\n");
 }

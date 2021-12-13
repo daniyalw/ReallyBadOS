@@ -25,10 +25,10 @@ int get_free_blocks(int blocks) {
     if (blocks == 0 || blocks == 1)
         return 1;
 
-    bool potential = false;
     int together = 0;
     int loc = NULL;
     int potential_location = NULL;
+    int potential_z = NULL;
 
     for (int z = 0; z < memory_list.size(); z++)
     {
@@ -36,21 +36,24 @@ int get_free_blocks(int blocks) {
 
         if (memory_list.get_value(z) == MEM_FREE)
         {
-            potential = true;
             together++;
 
             if (together == blocks)
             {
+                for (int b = 0; b < blocks; b++)
+                {
+                    memory_list.replace_value(MEM_USED, potential_z+b);
+                }
                 return potential_location;
             }
             else if (together == 1)
             {
                 potential_location = loc;
+                potential_z = z;
             }
         }
         else
         {
-            potential = false;
             together = 0;
             potential_location = NULL;
         }
@@ -71,26 +74,27 @@ void free_block(int location) {
             else
             {
                 memory_list.replace(location, MEM_FREE, z);
+                return;
             }
         }
     }
 }
 
 void free_blocks(int location, int blocks) {
-    for (int z = 0; z < size; z++)
+    for (int z = 0; z < blocks; z++)
     {
-        free_block(location + (z * 4000));
+        free_block(location + (z * BLOCK_SIZE));
     }
 }
 
 int malloc(int size) {
-    int blocks_needed = size/4000;
+    int blocks_needed = size/BLOCK_SIZE;
 
     return get_free_blocks(blocks_needed);
 }
 
 void free(int addr, int size) {
-    int blocks_to_free = size/4000;
+    int blocks_to_free = size/BLOCK_SIZE;
 
     free_blocks(addr, blocks_to_free);
 }
@@ -116,7 +120,7 @@ void init_mem(multiboot_info_t * mbd)
     total_mem = total;
     int count = 0;
 
-    for (int z = mem_beginning; z < total; z += 4000)
+    for (int z = mem_beginning; z < total; z += BLOCK_SIZE)
     {
         memory_list.push_back(z, MEM_FREE);
         count++;

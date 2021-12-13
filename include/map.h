@@ -120,12 +120,26 @@ public:
         arr.insert_at(a, pos);
     }
 
-    void replace(T newobject, VALUE newval, int pos)
+    void replace_key(T newobj, int pos)
     {
         map_array a;
-        a.object = newobject;
-        a.value = newval;
+        a.object = newobj;
+        a.value = this->get_value(pos);
         arr.replace(a, pos);
+    }
+
+    void replace_value(VALUE val, int pos)
+    {
+        map_array a;
+        a.object = this->get_key(pos);
+        a.value = val;
+        arr.replace(a, pos);
+    }
+
+    void replace(T newobject, VALUE newval, int pos)
+    {
+        this->replace_key(newobject, pos);
+        this->replace_value(newval, pos);
     }
 
     int get_first_pos(T obj)

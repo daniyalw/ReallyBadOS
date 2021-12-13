@@ -5,6 +5,9 @@
 #define MEM_USED 0
 #define MEM_FREE 1
 
+// 4k
+#define BLOCK_SIZE 4096
+
 // first int is memory location
 // second int is size
 int mem_beginning = 0x10000;
