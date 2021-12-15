@@ -3,6 +3,28 @@
 
 namespace std {
 
+class string
+{
+    char * str;
+    int length;
+public:
+    char * get();
+    string(char * data);
+    int size() { return length; };
+    bool operator==(char * s);
+    bool operator==(string s);
+    bool operator!=(char * s);
+    bool operator!=(string s);
+    bool operator<(string s);
+    bool operator>(string s);
+    bool operator>(char * s);
+    bool operator<(char * s);
+    void operator+(char * s);
+    void operator+(string s);
+    void operator=(string s);
+    void operator=(char * s);
+};
+
 char * strchr(char * s, int c);
 char * toupper(char * data);
 bool strisempty(char * s);

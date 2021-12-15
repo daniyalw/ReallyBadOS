@@ -216,6 +216,7 @@ static const char font_ascii[129] = {
 
 static int fg = 0xffffff;
 static int bg = 0x000000;
+bool font_double_on = true;
 
 
 void font_draw(char cp, int x, int y, int fg, int bg);

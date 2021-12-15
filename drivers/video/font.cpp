@@ -44,7 +44,10 @@ void g_putchar(char ch, int x, int y)
             break;
         }
 
-    font_draw(no, x, y);
+    if (!font_double_on)
+        font_draw(no, x, y);
+    else
+        font_draw_double(no, x, y);
 }
 
 void g_putchar(char ch, int x, int y, int fg, int bg)
@@ -58,7 +61,10 @@ void g_putchar(char ch, int x, int y, int fg, int bg)
             break;
         }
 
-    font_draw(no, x, y, fg, bg);
+    if (!font_double_on)
+        font_draw(no, x, y, fg, bg);
+    else
+        font_draw_double(no, x, y, fg, bg);
 }
 
 void g_printf(char * string, int x, int y, int fg, int bg)

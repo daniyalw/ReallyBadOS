@@ -36,7 +36,6 @@ global _start
 extern kernel_main
 
 _start:
-
   push eax
   push ebx
   call kernel_main                   ; call our main() function.

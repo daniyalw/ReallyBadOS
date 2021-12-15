@@ -153,8 +153,12 @@ extern "C" void isr_handler(registers_t r) {
         return;
     }
 
-    error("\nInterrupt received: %d\n", r.int_no);
-    error("Interrupt: %s\n", exception_messages[r.int_no]);
+    if (interrupt_handlers[r.int_no] != NULL) {
+        isr_t handler = interrupt_handlers[r.int_no];
+        handler(r);
+    } else {
+        error("Interrupt received: %d\nMessage: %s", r.int_no, exception_messages[r.int_no]);
+    }
 
     asm("cli");
     asm("hlt");
@@ -168,7 +172,7 @@ extern "C" void irq_handler(registers_t r) {
     if (r.int_no >= 40) outb(0xA0, 0x20);
     outb(0x20, 0x20);
 
-    if (interrupt_handlers[r.int_no] != 0) {
+    if (interrupt_handlers[r.int_no] != NULL) {
         isr_t handler = interrupt_handlers[r.int_no];
         handler(r);
     }

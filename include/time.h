@@ -23,9 +23,9 @@ enum {
       cmos_data    = 0x71
 };
 
-struct GetTime {
+typedef struct {
     int sec, min, h, d, m, y, wd;
-};
+} time_t;
 
 int s = 0;
 
@@ -34,6 +34,6 @@ namespace Time {
 void read_rtc();
 int get_RTC_register(int reg);
 int get_update_in_progress_flag();
-GetTime get_time();
+time_t get_time();
 
 }

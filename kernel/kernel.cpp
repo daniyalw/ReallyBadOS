@@ -5,6 +5,8 @@ int cy = 0;
 bool booted = false;
 int back_buffer[1024*768]; // back buffer for gui
 
+//#define DEBUG
+
 #include <cpuid.h>
 #include "sys/background.cpp"
 #include <kernel/log.h>
@@ -31,7 +33,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "sys/cpu/info.cpp"
 #include "../drivers/mouse/cursor.cpp"
 #include "../stdlib/string.cpp"
-#include "../stdlib/memory.cpp"
+#include "sys/memory/memory.cpp"
 #include "../drivers/video/video.cpp"
 #include "sys/log/log.cpp"
 #include "sys/descriptors/gdt.cpp"
@@ -50,7 +52,8 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "../drivers/video/bga.cpp"
 #include "sys/serial.cpp"
 #include "sys/syscall/syscall.cpp"
-//#include "../drivers/video/blur.cpp"
+#include "../drivers/video/blur.cpp"
+#include "../gui/window.cpp"
 
 extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -60,8 +63,8 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
 
     // for graphics
     /*
-    init_serial(SERIAL_PORT);
-    Kernel::system_log("Entered kernel.\n");
+    Kernel::init_serial(SERIAL_PORT);
+    Kernel::system_log("%s: line %d: Entered CeneOS kernel.\n", __FILE__, __LINE__);
 
     framebuffer_addr = (void*)mbd->framebuffer_addr;
     pitch = mbd->framebuffer_pitch;
@@ -69,28 +72,32 @@ extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     height = (uint32_t)mbd->framebuffer_height;
     bpp = mbd->framebuffer_bpp;
 
-    // initialize ACPI
-    Kernel::init_acpi();
-
-    // GDT enable
     Kernel::init_gdt();
-    // IDT & interrupts enable
-    Kernel::isr_install();
-    //Kernel::init_timer(1000);
-    // mouse & keyboard
+    Kernel::init_isr();
+    Kernel::read_rtc();
+    Kernel::init_timer(1000);
     Kernel::init_keyboard(false);
-    Kernel::mouse_install();
+    Kernel::init_mem(mbd);
+    Kernel::init_mouse();
 
-    Graphic::redraw_background_picture(array);
+    g_printf((char *)(are_interrupts_enabled() ? "Interrupts are enabled" : "Interrupts are NOT enabled"), 0, 0);
+    //Kernel::init_syscalls();
+
+    //Graphic::redraw_background_picture(array);
+
+    window_t * win = create_window("Hello!");
+    draw_window(win);
 
     while (true);
     */
+
     Kernel::init_serial(SERIAL_PORT);
 
     Kernel::system_log("Entered CeneOS kernel.\n");
 
     Kernel::init_gdt();
     Kernel::init_isr();
+    Kernel::read_rtc();
     Kernel::init_timer(1000);
     Kernel::init_keyboard(false);
     Kernel::init_mem(mbd);

@@ -13,6 +13,10 @@ int get_RTC_register(int reg) {
       return inb(cmos_data);
 }
 
+}
+
+namespace Kernel {
+
 void read_rtc() {
     Kernel::system_log("Read RTC.\n");
       int century;
@@ -29,16 +33,16 @@ void read_rtc() {
       // Note: This uses the "read registers until you get the same values twice in a row" technique
       //       to avoid getting dodgy/inconsistent values due to RTC updates
 
-      while (get_update_in_progress_flag());                // Make sure an update isn't in progress
-      second = (int)get_RTC_register(0x00);
-      minute = (int)get_RTC_register(0x02);
-      hour = (int)get_RTC_register(0x04);
-      day = (int)get_RTC_register(0x07);
-      weekday = (int)get_RTC_register(0x06);
-      month = (int)get_RTC_register(0x08);
-      year = (int)get_RTC_register(0x09);
+      while (Time::get_update_in_progress_flag());                // Make sure an update isn't in progress
+      second = (int)Time::get_RTC_register(0x00);
+      minute = (int)Time::get_RTC_register(0x02);
+      hour = (int)Time::get_RTC_register(0x04);
+      day = (int)Time::get_RTC_register(0x07);
+      weekday = (int)Time::get_RTC_register(0x06);
+      month = (int)Time::get_RTC_register(0x08);
+      year = (int)Time::get_RTC_register(0x09);
       if(century_register != 0) {
-            century = (int)get_RTC_register(century_register);
+            century = (int)Time::get_RTC_register(century_register);
       }
 
       do {
@@ -51,25 +55,25 @@ void read_rtc() {
             last_wkday = weekday;
             last_century = century;
 
-            while (get_update_in_progress_flag());
+            while (Time::get_update_in_progress_flag());
 
-            second = (int)get_RTC_register(0x00);
-            minute = (int)get_RTC_register(0x02);
-            hour = (int)get_RTC_register(0x04);
-            day = (int)get_RTC_register(0x07);
-            month = (int)get_RTC_register(0x08);
-            weekday = (int)get_RTC_register(0x06);
-            year = (int)get_RTC_register(0x09);
+            second = (int)Time::get_RTC_register(0x00);
+            minute = (int)Time::get_RTC_register(0x02);
+            hour = (int)Time::get_RTC_register(0x04);
+            day = (int)Time::get_RTC_register(0x07);
+            month = (int)Time::get_RTC_register(0x08);
+            weekday = (int)Time::get_RTC_register(0x06);
+            year = (int)Time::get_RTC_register(0x09);
 
             if (century_register != 0) {
-                  century = (int)get_RTC_register(century_register);
+                  century = (int)Time::get_RTC_register(century_register);
             }
 
       } while( (last_second != second) || (last_minute != minute) || (last_hour != hour) ||
                (last_day != day) || (last_month != month) || (last_year != year) ||
                (last_century != century) );
 
-      registerB = (int)get_RTC_register(0x0B);
+      registerB = (int)Time::get_RTC_register(0x0B);
 
       if (!(registerB & 0x04)) {
             second = (second & 0x0F) + ((second / 16) * 10);
@@ -93,9 +97,13 @@ void read_rtc() {
     seconds = second;
 }
 
-GetTime get_time()
+}
+
+namespace Time {
+
+time_t get_time()
 {
-    GetTime t;
+    time_t t;
     t.sec = second;
     t.min = minute;
     t.h = hour;

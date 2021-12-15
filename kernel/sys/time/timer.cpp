@@ -36,7 +36,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-static void timer_callback(registers_t regs) {
+void timer_int(registers_t regs) {
     tick++;
     ctick++;
 
@@ -63,18 +63,18 @@ static void timer_callback(registers_t regs) {
 
 namespace Kernel {
 
-void init_timer(u32 freq) {
-    Kernel::system_log("Enabled timer.\n");
-    hz = freq;
-    /* Install the function we just wrote */
-    Kernel::register_interrupt_handler(IRQ0, timer_callback);
+void init_timer(uint frequency) {
+    Kernel::system_log("Timer enabled.\n");
+    hz = frequency;
 
-    /* Get the PIT value: hardware clock at 1193180 Hz */
-    u32 divisor = 1193180 / freq;
-    u8 low  = (u8)(divisor & 0xFF);
-    u8 high = (u8)( (divisor >> 8) & 0xFF);
-    /* Send the command */
-    outb(0x43, 0x36); /* Command port */
+    Kernel::register_interrupt_handler(IRQ0, timer_int);
+
+    uint divisor = 1193180/frequency;
+
+    uint8_t low = (uint8_t)(divisor & 0xFF);
+    uint8_t high = (uint8_t)((divisor >> 8) & 0xFF);
+
+    outb(0x43, 0x36);
     outb(0x40, low);
     outb(0x40, high);
 }

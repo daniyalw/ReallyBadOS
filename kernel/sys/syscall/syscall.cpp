@@ -21,11 +21,21 @@ void print(char * text)
     printf(text);
 }
 
+void s_putchar(char text)
+{
+    putchar(text);
+}
+
 DEFN_SYSCALL1(print, 0, char *);
 
-DEFN_SYSCALL1(serial_write_string, 1, char *);
+DEFN_SYSCALL1(s_putchar, 1, char);
 
 // ----------------------------- //
+
+void sys_putchar(char text)
+{
+    syscall_s_putchar(text);
+}
 
 void sys_print(char * text)
 {
@@ -69,7 +79,7 @@ namespace Kernel {
 void init_syscalls()
 {
     syscall_append((void *)print);
-    syscall_append((void *)serial_write_string);
+    syscall_append((void *)s_putchar);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     Kernel::system_log("Syscalls initialized at interrupt 48!");
 }

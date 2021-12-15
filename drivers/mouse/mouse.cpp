@@ -1,6 +1,7 @@
 #pragma once
 #include <colors.h>
 #include <drivers/mouse/mouse.h>
+#include "../../gui/window.cpp"
 
 //https://forum.osdev.org/viewtopic.php?t=10247
 
@@ -43,11 +44,43 @@ unsigned char mouse_read()
   return inb(0x60);
 }
 
-void draw_cursor(int x, int y, bool right_c)
+void draw_cursor(int x, int y, bool right_c, bool left, bool middle)
 {
     int bx = x;
     int by = y;
     int color;
+
+    if (left && oldx != x && oldy != y)
+    {
+        window_t * win = get_window_pixel(x, y);
+        if (win != NULL)
+        {
+            if (win->dragging)
+            {
+                Kernel::system_log("Moving window ID %d to %d x %d y\n", win->id, x, y);
+                move_window(win);
+            }
+            else
+            {
+                Kernel::system_log("Setting dragging of window ID %d to true\n", win->id);
+                win->dragging = true;
+                windows.replace(win, win->z);
+            }
+        }
+        else
+        {
+            Kernel::system_log("win is NULL\n");
+        }
+    }
+    else if (!left)
+    {
+        for (int z = 0; z < windows.size(); z++)
+        {
+            window_t * win = windows.get(z);
+            win->dragging = false;
+            windows.replace(win, win->z);
+        }
+    }
 
     for (int z = 0; z < cursor_height; z++)
     {
@@ -138,8 +171,8 @@ static void mouse_handler(registers_t regs)
         left = true;
 
         // check if power off button was clicked
-        if (mouse_x < 20 && mouse_y < 20)
-            Kernel::shutdown_os();
+        //if (mouse_x < 20 && mouse_y < 20)
+        //    Kernel::shutdown_os();
 
     }
 
@@ -152,10 +185,12 @@ static void mouse_handler(registers_t regs)
     if ((mouse_byte[0] >> 2) & 1) {
         middle = true;
     }
-    draw_cursor(mouse_x, mouse_y, right);
+    draw_cursor(mouse_x, mouse_y, right, left, middle);
     right = false;
     left = false;
     middle = false;
+
+    //Graphic::redraw_background_picture(back_buffer);
 }
 
 namespace Kernel {

@@ -140,6 +140,13 @@ char * append(char * j1, char * j2, char * dest)
     return dest;
 }
 
+char * append_int(char * j1, int num, char * dest)
+{
+    char * textnum;
+    itoa(num, textnum);
+    return append(j1, textnum, dest);
+}
+
 bool startswith(char * words, char * start)
 {
     int cl = len(start);
@@ -423,6 +430,103 @@ void sort(int * A, int sz) {
             A[min_index] = temp;
         }
     }
+}
+
+string::string(char * data)
+{
+    str = data;
+    length = std::len(data);
+}
+
+void string::operator=(char * s)
+{
+    str = s;
+    length = std::len(s);
+}
+
+void string::operator=(string s)
+{
+    str = s.get();
+    length = s.size();
+}
+
+char * string::get()
+{
+    return str;
+}
+
+bool string::operator==(string s)
+{
+    if (s.get() == this->get() && s.size() == this->length)
+        return true;
+
+    return false;
+}
+
+bool string::operator==(char * s)
+{
+    if (s == this->get() && std::len(s) == this->length)
+        return true;
+
+    return false;
+}
+
+bool string::operator!=(string s)
+{
+    if (s.get() == this->get() && s.size() == this->length)
+        return false;
+
+    return true;
+}
+
+bool string::operator!=(char * s)
+{
+    if (s == this->get() && std::len(s) == this->length)
+        return false;
+
+    return true;
+}
+
+bool string::operator<(string s)
+{
+    if (this->size() < s.size())
+        return true;
+
+    return false;
+}
+
+bool string::operator<(char * s)
+{
+    if (this->length < std::len(s))
+        return true;
+
+    return false;
+}
+
+bool string::operator>(string s)
+{
+    if (this->size() > s.size())
+        return true;
+
+    return false;
+}
+
+bool string::operator>(char * s)
+{
+    if (this->length > std::len(s))
+        return true;
+
+    return false;
+}
+
+void string::operator+(string s)
+{
+    append(this->get(), s.get(), this->str);
+}
+
+void string::operator+(char * s)
+{
+    append(this->get(), s, this->str);
 }
 
 }
