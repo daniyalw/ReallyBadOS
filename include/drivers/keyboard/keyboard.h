@@ -9,9 +9,14 @@ unsigned char current_key;
 bool terminal_on = false;
 
 bool keyboard_locked;
+bool scanf_on = false;
+// this is the /> _
+char *current_display;
+int current_display_len = 0;
 
 char buffer[1000];
 int buffer_size = 1;
+int entered_len = 0;
 
 void get_key(unsigned char code);
 bool keyboard_lock();
@@ -24,7 +29,7 @@ char * scanf(char * dd);
 static void scan_key(registers_t regs);
 void get_key(unsigned char code);
 
-struct input
+struct input_t
 {
     void operator>>(char * buff)
     {
@@ -32,4 +37,4 @@ struct input
     }
 };
 
-input cin;
+input_t cin;

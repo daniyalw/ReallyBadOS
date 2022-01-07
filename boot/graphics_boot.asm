@@ -1,43 +1,39 @@
-MBOOT_PAGE_ALIGN    equ 1<<0    ; Load kernel and modules on a page boundary
-MBOOT_MEM_INFO      equ 1<<1    ; Provide your kernel with memory info
-MBOOT_HEADER_MAGIC  equ 0x1BADB002 ; Multiboot Magic value
-; NOTE: We do not use MBOOT_AOUT_KLUDGE. It means that GRUB does not
-; pass us a symbol table.
-MBOOT_HEADER_FLAGS  equ MBOOT_PAGE_ALIGN | MBOOT_MEM_INFO
-MBOOT_CHECKSUM      equ -(MBOOT_HEADER_MAGIC + MBOOT_HEADER_FLAGS)
+.set ALIGN,    1 << 0
+.set MEMINFO,  1 << 1
+.set VIDINFO,  1 << 2
+.set FLAGS,    ALIGN | MEMINFO | VIDINFO
+.set MAGIC,    0x1BADB002
+.set CHECKSUM, -(MAGIC + FLAGS)
 
-[BITS 16]                       ; All instructions should be 32-bit.
+.section .multiboot
+.long MAGIC
+.long FLAGS
+.long CHECKSUM
+.long 0, 0, 0, 0, 0 # skip flags
+.long 0
+.long 0, 0, 0
 
-global mboot                  ; Make 'mboot' accessible from C.
-section .multiboot
-
-mboot:
-  dd  MBOOT_HEADER_MAGIC        ; GRUB will search for this value on each
-                                ; 4-byte boundary in your kernel file
-  dd  MBOOT_HEADER_FLAGS        ; How GRUB should load your file / settings
-  dd  MBOOT_CHECKSUM            ; To ensure that the above values are correct
-
-  dd 0 ; skip some flags
-  dd 0
-  dd 0
-  dd 0
-  dd 0
-
-  dd 0 ; sets it to graphical mode
-  dd 800 ; sets the width
-  dd 600 ; sets the height
-  dd 32 ; sets the bits per pixel
-
-  dd  mboot                     ; Location of this descriptor
-  dd  _start                     ; Kernel entry point (initial EIP).
-
-
-global _start
-extern kernel_main
+.section .text
+.global _start
 
 _start:
-  push eax
-  push ebx
-  call kernel_main                   ; call our main() function.
-  cli
-  hlt
+    .extern kernel_main
+    mov $kernel_stack, %esp
+    push %esp
+    push %eax
+    push %ebx
+    call kernel_main # kernel
+
+_end:
+    cli # disable interrupts
+    hlt # halt
+    jmp _end # infinite loop
+
+
+.section .bss
+.space 2*1024*1024; # reserve some space
+.global kernel_stack
+.global stack_top
+kernel_stack:
+.skip 2*1024*1024
+stack_top:

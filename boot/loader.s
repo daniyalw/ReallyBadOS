@@ -1,7 +1,7 @@
 .set ALIGN,    1 << 0
 .set MEMINFO,  1 << 1
 .set VIDINFO,  1 << 2
-.set FLAGS,    ALIGN | MEMINFO | VIDINFO
+.set FLAGS,    ALIGN | MEMINFO
 .set MAGIC,    0x1BADB002
 .set CHECKSUM, -(MAGIC + FLAGS)
 
@@ -10,8 +10,6 @@
 .long FLAGS
 .long CHECKSUM
 .long 0, 0, 0, 0, 0 # skip flags
-.long 0 # graphics mode
-.long 0, 0, 0
 
 .section .text
 .global _start
@@ -31,4 +29,8 @@ _end:
 
 .section .bss
 .space 2*1024*1024; # reserve some space
+.global kernel_stack
+.global stack_top
 kernel_stack:
+.skip 2*1024*1024
+stack_top:

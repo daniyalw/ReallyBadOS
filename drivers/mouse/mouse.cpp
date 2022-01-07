@@ -1,7 +1,12 @@
 #pragma once
 #include <colors.h>
 #include <drivers/mouse/mouse.h>
-#include "../../gui/window.cpp"
+#include <notification.h>
+#include <fs.h>
+#include <gui/gui.h>
+
+using namespace Filesystem;
+using namespace VFS;
 
 //https://forum.osdev.org/viewtopic.php?t=10247
 
@@ -40,55 +45,43 @@ void mouse_write(unsigned char data)
 
 unsigned char mouse_read()
 {
-  mouse_wait(0);
-  return inb(0x60);
+    mouse_wait(0);
+    return inb(0x60);
 }
 
-void draw_cursor(int x, int y, bool right_c, bool left, bool middle)
+void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
 {
     int bx = x;
     int by = y;
     int color;
 
-    if (left && oldx != x && oldy != y)
+
+    #ifdef GRAPHICS
+        if (did_click_notification(x, y) && left)
+        {
+            active_notifications.pop();
+
+            Graphic::draw_rect(width/2 - BG_WIDTH_MINUS, height/2 - (font_height/2 + TEXT_PADDING), BG_WIDTH, font_height + 6 + (font_height + 3) * 6, array);
+
+            if (active_notifications.size())
+                gui_notification(active_notifications.get_key(0), active_notifications.get_value(0));
+
+            Graphic::blit_changes();
+        }
+    #endif
+
+    if (right_c)
     {
-        window_t * win = get_window_pixel(x, y);
-        if (win != NULL)
-        {
-            if (win->dragging)
-            {
-                Kernel::system_log("Moving window ID %d to %d x %d y\n", win->id, x, y);
-                move_window(win);
-            }
-            else
-            {
-                Kernel::system_log("Setting dragging of window ID %d to true\n", win->id);
-                win->dragging = true;
-                windows.replace(win, win->z);
-            }
-        }
-        else
-        {
-            Kernel::system_log("win is NULL\n");
-        }
-    }
-    else if (!left)
-    {
-        for (int z = 0; z < windows.size(); z++)
-        {
-            window_t * win = windows.get(z);
-            win->dragging = false;
-            windows.replace(win, win->z);
-        }
+        clicked_on_widget(bx, by, MOUSE_RIGHT_CLICK);
     }
 
     for (int z = 0; z < cursor_height; z++)
     {
         for (int b = 0; b < cursor_width; b++)
         {
-            color = cursor_map[z][b];
+            color = cursor_map[z * cursor_width + b];
             if (color == 0)
-                color = back_buffer[by*1024+bx];
+                color = back_buffer[bx+by*width];
             else if (color == 1)
                 color = cursor_inner;
             else if (color == 2)
@@ -110,19 +103,20 @@ static void mouse_handler(registers_t regs)
     int mx = 0;
     int my = 0;
     bool left, right, middle;
+    int offset = -1;
 
     switch(mouse_cycle)
     {
         case 0:
-            mouse_byte[0]=mouse_read();
+            mouse_byte[0] = mouse_read();
             mouse_cycle++;
             break;
         case 1:
-            mouse_byte[1]=mouse_read();
+            mouse_byte[1] = mouse_read();
             mouse_cycle++;
             break;
         case 2:
-            mouse_byte[2]=mouse_read();
+            mouse_byte[2] = mouse_read();
             oldx = mouse_x;
             oldy = mouse_y;
             mouse_x+=(int)mouse_byte[1];
@@ -134,6 +128,28 @@ static void mouse_handler(registers_t regs)
             if (mouse_y && (mouse_byte[0] & (1 << 5)))
                 mouse_y += 0x100;
 
+            if (mouse_x > width) {
+                mouse_x = width - 1;
+            } else if (mouse_x > width - cursor_width) {
+                offset = mouse_x - width - cursor_width;
+            } else if (mouse_x < 1) {
+                mouse_x = 0;
+            }
+
+            if (mouse_y > height - 1) {
+                mouse_y = 0;
+            } else if (mouse_y < 1) {
+                mouse_y = 0;
+            }
+
+            if (1 & (mouse_byte[0] >> 6)) {
+                return;
+            }
+
+            if (1 & (mouse_byte[0] >> 7)) {
+                return;
+            }
+
             mouse_cycle=0;
             r = 1;
             break;
@@ -141,17 +157,7 @@ static void mouse_handler(registers_t regs)
             return;
     }
 
-    if (mouse_x >= width) {
-        mouse_x = width;
-    } else if (mouse_x < 0) {
-        mouse_x = 0;
-    }
-
-    if (mouse_y > height) {
-        mouse_y = height;
-    } else if (mouse_y < 0) {
-        mouse_y = 0;
-    }
+    if (!r || (mouse_x == 0 && mouse_y == 0)) return;
 
     int col;
     for (int z = 0; z < cursor_height; z++)
@@ -185,7 +191,7 @@ static void mouse_handler(registers_t regs)
     if ((mouse_byte[0] >> 2) & 1) {
         middle = true;
     }
-    draw_cursor(mouse_x, mouse_y, right, left, middle);
+    draw_cursor(mouse_x, mouse_y, right, left, middle, offset);
     right = false;
     left = false;
     middle = false;
@@ -220,6 +226,8 @@ void init_mouse()
     mouse_read();
 
     Kernel::register_interrupt_handler(IRQ12, mouse_handler);
+
+    create_file("keyboard", "dev", "Mouse turned on.\n");
 }
 
 }

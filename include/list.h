@@ -94,6 +94,25 @@ public:
             this->push_back(other.get(z));
     }
 
+    T operator[](int index)
+    {
+        return this->get(index);
+    }
+
+    void operator=(T object)
+    {
+        for (int z = 0; z < length + 1; z++)
+            this->pop();
+
+        this->push_back(object);
+    }
+
+    void merge(list<T> other)
+    {
+        for (int z = 0; z < other.size(); z++)
+            this->push_back(other[z]);
+    }
+
     // Function that returns the number of
     // elements in array after pushing the data
     void push_back(T data)
@@ -127,6 +146,12 @@ public:
         }
         length = nz;
         arr = newarr;
+    }
+
+    void clear_all()
+    {
+        for (int z = 0; z < length + 1; z++)
+            this->pop();
     }
 
     void pop()
@@ -184,6 +209,8 @@ public:
             if (arr[z] == obj)
                 return z;
         }
+
+        return -1;
     }
 
     int get_last_pos(T obj)
@@ -193,6 +220,13 @@ public:
             if (arr[z] == obj)
                 return z;
         }
+
+        return -1;
+    }
+
+    int find(T obj)
+    {
+        return get_first_pos(obj);
     }
 
     void replace(T rplce, int pos)
@@ -209,6 +243,11 @@ public:
         index3 = arr[index1];
         arr[index1] = arr[index2];
         arr[index2] = index3;
+    }
+
+    T last()
+    {
+        return this->get(length-1);
     }
 
 };

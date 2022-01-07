@@ -4,11 +4,24 @@ int cx = 0;
 int cy = 0;
 bool booted = false;
 int back_buffer[1024*768]; // back buffer for gui
+//unsigned int initial_stack;
+
+extern "C" {
+    extern void jmp_somewhere(unsigned int place);
+    extern void main();
+    extern unsigned int stack_top;
+    extern unsigned int kernel_end;
+}
 
 //#define DEBUG
+//#define GRAPHICS
 
 #include <cpuid.h>
+
+#ifdef GRAPHICS
 #include "sys/background.cpp"
+#endif
+
 #include <kernel/log.h>
 #include <stdint.h>
 #include <map.h>
@@ -25,6 +38,7 @@ int back_buffer[1024*768]; // back buffer for gui
 #include <list.h>
 #include <macros.h>
 #include <sys.h>
+#include <assert.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
@@ -53,56 +67,96 @@ int back_buffer[1024*768]; // back buffer for gui
 #include "sys/serial.cpp"
 #include "sys/syscall/syscall.cpp"
 #include "../drivers/video/blur.cpp"
-#include "../gui/window.cpp"
+#include "sys/panic.cpp"
+#include "sys/cpu/halt.cpp"
+#include "../gui/notification.cpp"
+#include "sys/syscall/syscalls.h" // this is external
+#include "../fs/tar.cpp"
+#include "../fs/fs.cpp"
+#include "../gui/gui.cpp"
+#include "../gui/label.cpp"
+#include "sys/syscall/usermode.cpp"
+#include "../drivers/disk/ata.cpp"
 
-extern "C" void kernel_main(multiboot_info_t* mbd, unsigned int magic) {
+using namespace Filesystem::VFS;
+using namespace Filesystem;
+
+extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
-        printf("Invalid magic number.");
+        Kernel::system_log("Invalid magic.\n"); // we could use printf, but that's text-mode only
         return; // stop any more kernel code running since it's not multiboot
     }
 
-    // for graphics
-    /*
-    Kernel::init_serial(SERIAL_PORT);
-    Kernel::system_log("%s: line %d: Entered CeneOS kernel.\n", __FILE__, __LINE__);
-
-    framebuffer_addr = (void*)mbd->framebuffer_addr;
-    pitch = mbd->framebuffer_pitch;
-    width = (uint32_t)mbd->framebuffer_width;
-    height = (uint32_t)mbd->framebuffer_height;
-    bpp = mbd->framebuffer_bpp;
-
-    Kernel::init_gdt();
-    Kernel::init_isr();
-    Kernel::read_rtc();
-    Kernel::init_timer(1000);
-    Kernel::init_keyboard(false);
-    Kernel::init_mem(mbd);
-    Kernel::init_mouse();
-
-    g_printf((char *)(are_interrupts_enabled() ? "Interrupts are enabled" : "Interrupts are NOT enabled"), 0, 0);
-    //Kernel::init_syscalls();
-
-    //Graphic::redraw_background_picture(array);
-
-    window_t * win = create_window("Hello!");
-    draw_window(win);
-
-    while (true);
-    */
+    create_folder("dev");
+    create_folder("volumes");
+    create_file("ceneos-x86_32.iso", "volumes", "");
 
     Kernel::init_serial(SERIAL_PORT);
 
     Kernel::system_log("Entered CeneOS kernel.\n");
 
-    Kernel::init_gdt();
+    set_seed(4);
+
     Kernel::init_isr();
+    Kernel::init_gdt();
+    uint32_t esp;
+    asm volatile("mov %%esp, %0" : "=r"(esp));
+    Kernel::init_tss(5, 0x10, esp);
+    Kernel::init_sound();
     Kernel::read_rtc();
     Kernel::init_timer(1000);
-    Kernel::init_keyboard(false);
-    Kernel::init_mem(mbd);
+    Kernel::init_keyboard(false, "/> ");
     Kernel::init_mouse();
     Kernel::init_syscalls();
 
+    // for graphics
+#ifdef GRAPHICS
+
+    u32 location = *((u32*)mbd->mods_addr);
+    parse(location);
+
+    Graphic::init_graphics(mbd);
+
+    FILE file = get_file("framebuffer", "dev");
+
+    Graphic::redraw_background_picture(array);
+
+
+    Window win = Window();
+
+    win.set_title("Hello!");
+
+    win.set(50, 50, 100, 100);
+
+    Widget label = create_label("d52!", black);
+
+    win.add_widget(label);
+
+    win.draw();
+
+
+    draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
+
+    int ret = gui_notification("About", "CeneOS is just another hobby operating system!\n2022");
+
+    Graphic::blit_changes();
+
+    while (true);
+
+#else
+
+    u32 location = *((u32*)mbd->mods_addr);
+
+    parse(location);
+
+    for (int z = 0; z < block_count; z++)
+        create_file(blocks[z].name, "dev", blocks[z].contents);
+
+
+    switch_to_user_mode();
+
     Kernel::serial_write_string("\n");
+    while (true) {}
+
+#endif
 }

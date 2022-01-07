@@ -4,9 +4,32 @@
 
 namespace Kernel {
 
+    extern "C" void user_func()
+    {
+    }
+
+void init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp)
+{
+   gdt_set_gate(i, (unsigned int)&tss, (unsigned int)&tss + sizeof(TSS) - 1, 0x89, 0x00);
+
+   tss.ss0 = kernel_ss;
+   tss.esp0 = kernel_esp;
+
+   tss.cs = 0x0b;
+   tss.ss = 0x13;
+   tss.es = 0x13;
+   tss.ds = 0x13;
+   tss.fs = 0x13;
+   tss.gs = 0x13;
+
+   Kernel::system_log("Initialized TSS.\n");
+
+   flush_tss();
+}
+
 static void init_gdt()
 {
-   gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
+   gdt_ptr.limit = (sizeof(gdt_entry_t) * 6) - 1;
    gdt_ptr.base  = (u32)&gdt_entries;
 
    Kernel::gdt_set_gate(0, 0, 0, 0, 0);                // Null segment

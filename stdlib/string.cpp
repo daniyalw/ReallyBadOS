@@ -30,6 +30,16 @@ int atoi(char * str)
     return num;
 }
 
+void memcpy(char *source, char * dest, int begin, int end)
+{
+    //ASSERT(begin < end);
+
+    for (int z = begin; z < end; z++)
+    {
+        dest[z] = source[z];
+    }
+}
+
 static void itoa(char *buf, int base, int d)
 {
   char *p = buf;
@@ -89,20 +99,23 @@ int len(char * str)
 }
 
 bool strcmp(char * str1, char * str2) {
-    int total_length = len(str1);
-    int slength = len(str2);
+    int total = strlen(str1);
+    int sec = strlen(str2);
 
-    if (total_length < slength || total_length > slength) {
-        return false;
-    }
+    if (total != sec) return false;
 
-    for (int z = 0; z < total_length; z++) {
-        if (str1[z] != str2[z]) {
-            return false;
-        }
-    }
+    for (int z = 0; z < total; z++)
+        if (str1[z] != str2[z]) return false;
 
     return true;
+}
+
+void memset(char * dest, char *val, int len)
+{
+    for (int z = 0; z < len; z++)
+    {
+        dest[z] = val[z];
+    }
 }
 
 bool charcmp(char str1, char str2) {
@@ -211,6 +224,48 @@ int gvfs(char * s, char value)
     return count;
 }
 
+char * reverse_string(char * str, char * out)
+{
+    out = "";
+
+    for (int z = len(str); z > 0; z--)
+    {
+        out[z] = str[z];
+        out[z+1] = 0;
+    }
+
+    return out;
+}
+
+char * opposite_split(char * string, char key, int position, char * out)
+{
+    int lcount = 0;
+    int v = 0;
+
+    for (int z = len(string); z > 0; z--)
+    {
+        if (string[z] == key)
+        {
+            if (lcount == position)
+            {
+                out = reverse_string(string, out);
+                return out;
+            }
+            lcount++;
+            out = "";
+            v = 0;
+        }
+        else
+        {
+            out[v] = string[z];
+            v++;
+            out[v] = 0;
+        }
+    }
+
+    return out;
+}
+
 // string: the variable to split
 // key: the delimeter of the split
 // position: which part of the split string to return
@@ -225,9 +280,8 @@ char * split(char * string, char key, int position, char * out)
         if (string[z] == key)
         {
             if (lcount == position)
-            {
                 return out;
-            }
+
             lcount++;
             out = "";
             v = 0;
@@ -239,6 +293,98 @@ char * split(char * string, char key, int position, char * out)
             out[v] = 0;
         }
     }
+
+    return out;
+}
+
+void memcpy(char *source, char *dest, int nb)
+{
+    for (int z = 0; z < nb; z++)
+        dest[z] = source[z];
+}
+
+void memcpy_int(int *source, int *dest, int nb)
+{
+    for (int z = 0; z < nb; z++)
+        dest[z] = source[z];
+}
+
+char * get(char * out, char *text, ...)
+{
+  char **arg = (char **) &text;
+  int c;
+  char buffer[20];
+  int st = 0;
+
+  arg++;
+
+  while ((c = *text++) != 0)
+    {
+      if (c != '%')
+      {
+          out[st] = c;
+          st++;
+      }
+      else
+        {
+          char *p, *p2;
+          int pad0 = 0, pad = 0;
+
+          c = *text++;
+          if (c == '0')
+            {
+              pad0 = 1;
+              c = *text++;
+            }
+
+          if (c >= '0' && c <= '9')
+            {
+              pad = c - '0';
+              c = *text++;
+            }
+
+          switch (c)
+            {
+            case 'c':
+                out[st] = c;
+                st++;
+                break;
+            case 'd':
+            case 'u':
+            case 'x':
+              std::itoa (buffer, c, *((int *) arg++));
+              p = buffer;
+              goto string;
+              break;
+
+            case 's':
+              p = *arg++;
+              if (! p)
+                p = "(null)";
+
+            string:
+              for (p2 = p; *p2; p2++);
+              for (; p2 < p + pad; p2++)
+              {
+                out[st] = pad0 ? '0' : ' ';
+                st++;
+              }
+              while (*p)
+              {
+                out[st] = *p++;
+                st++;
+              }
+              break;
+
+            default:
+              out[st] = *((int *) arg++);
+              st++;
+              break;
+            }
+        }
+    }
+
+    out[st] = 0;
 
     return out;
 }
@@ -323,24 +469,19 @@ bool find(char * s, char c) {
     return false;
 }
 
-void memcpy(u8 *source, u8 *dest, int nb) {
-    int i;
-    for (i = 0; i < nb; i++) {
-        *(dest + i) = *(source + i);
-    }
-}
-
-void memcpy(char *source, char *dest, int nb) {
-    int i;
-    for (i = 0; i < nb; i++) {
-        *(dest + i) = *(source + i);
-    }
-}
-
 void memset(u8 *dest, u8 val, u32 len) {
     u8 *temp = (u8 *)dest;
 
     for (; len != 0; len--)
+    {
+        *temp++ = val;
+    }
+}
+
+void memset(int * dest, int val, int len) {
+    int *temp = (int *)dest;
+
+    for (int z = len; z != 0; z--)
     {
         *temp++ = val;
     }
@@ -438,6 +579,12 @@ string::string(char * data)
     length = std::len(data);
 }
 
+void string::append_string(char * data)
+{
+    append(str, data, str);
+    length += len(data);
+}
+
 void string::operator=(char * s)
 {
     str = s;
@@ -526,7 +673,7 @@ void string::operator+(string s)
 
 void string::operator+(char * s)
 {
-    append(this->get(), s, this->str);
+    append(this->str, s, this->str);
 }
 
 }

@@ -6,6 +6,8 @@ signed int width;
 unsigned int height;
 unsigned int bpp;
 
+bool blit_right_away = false;
+
 namespace Graphic {
 
 void SetPixel(uint32_t x, uint32_t y, int color);

@@ -77,6 +77,8 @@ void putchar(char text, int color) {
     if (text == '\n') {
         text_x = 0;
         text_y++;
+    } else if (text == '\r') {
+        text_x = 0;
     } else if (text == '\t') {
         text_x += 4;
     } else if (text == '\b') {
@@ -254,6 +256,16 @@ void printf(char *text, ...)
   char **arg = (char **) &text;
   int c;
   char buffer[20];
+
+  if (!text)
+  {
+      for (int z = 0; z < std::len("(null)"); z++)
+      {
+          putchar("(null)"[z]);
+      }
+      
+      return;
+  }
 
   arg++;
 

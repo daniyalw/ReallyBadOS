@@ -18,7 +18,6 @@ int get_RTC_register(int reg) {
 namespace Kernel {
 
 void read_rtc() {
-    Kernel::system_log("Read RTC.\n");
       int century;
       int last_second;
       int last_minute;
@@ -95,6 +94,8 @@ void read_rtc() {
             if(year < CURRENT_YEAR) year += 100;
       }
     seconds = second;
+
+    Kernel::system_log("Read RTC.\n");
 }
 
 }
@@ -111,6 +112,7 @@ time_t get_time()
     t.m = month;
     t.d = day;
     t.wd = weekday;
+    t.pm = pm_on;
     return t;
 }
 

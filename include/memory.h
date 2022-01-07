@@ -8,11 +8,11 @@
 // 4k
 #define BLOCK_SIZE 4096
 
-// first int is memory location
-// second int is size
-int mem_beginning = 0x10000;
-int total_mem;
-std::map<int, int> memory_list;
+typedef struct
+{
+    uint32_t addr;
+    int size;
+} mem_t;
 
-void init_mem();
-int get_free_block();
+std::list<mem_t> mlist;
+uint32_t total_memory;

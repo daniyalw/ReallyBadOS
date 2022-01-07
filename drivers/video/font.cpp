@@ -3,9 +3,9 @@
 #include <font.h>
 
 /*
-skiftOS
+MIT
 
-Copyright © 2018-2021 N. Van Bossuyt & contributors
+Copyright © 2020 Remco123
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -19,158 +19,132 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-void font_draw(char cp, int x, int y, int fg, int bg);
-
-void font_draw(char cp, int x, int y);
-void font_draw_double(char cp, int x, int y, int fg, int bg);
-void font_draw_double(char cp, int x, int y);
-
-void font_set_fg(int color) {
-    fg = color;
-}
-
-void font_set_bg(int color) {
-    bg = color;
-}
-
-void g_putchar(char ch, int x, int y)
+// test
+void draw_char(char character, int x, int y, uint32_t color)
 {
-    char no;
+    int font_x, font_y;
+    int count_x = 8;
+    int count_y = 12;
+    uint8_t shift_line;
 
-    for (int z = 0; z < 128; z++)
-        if (font_ascii[z] == ch)
-        {
-            no = (char)z;
-            break;
-        }
+    character &= 0x7F;
 
-    if (!font_double_on)
-        font_draw(no, x, y);
-    else
-        font_draw_double(no, x, y);
-}
+    for (font_y = 0; font_y < count_y; font_y++) {
+        shift_line = font[font_y * 128 + character];
+        for (font_x = 0; font_x < count_x; font_x++) {
+            if (shift_line & 0x80)
+                Graphic::SetPixel(font_x + x, font_y + y, color);
 
-void g_putchar(char ch, int x, int y, int fg, int bg)
-{
-    char no;
-
-    for (int z = 0; z < 128; z++)
-        if (font_ascii[z] == ch)
-        {
-            no = (char)z;
-            break;
-        }
-
-    if (!font_double_on)
-        font_draw(no, x, y, fg, bg);
-    else
-        font_draw_double(no, x, y, fg, bg);
-}
-
-void g_printf(char * string, int x, int y, int fg, int bg)
-{
-    int xx = x;
-    int yy = y;
-
-    for (int z = 0; z < std::len(string); z++)
-    {
-        g_putchar(string[z], xx, yy, fg, bg);
-        xx += 9;
-    }
-}
-
-void g_printf(char * string, int x, int y)
-{
-    int xx = x;
-    int yy = y;
-
-    for (int z = 0; z < std::len(string); z++)
-    {
-        g_putchar(string[z], xx, yy);
-        xx += 9;
-    }
-}
-
-void font_draw(char cp, int x, int y)
-{
-    if (cp > 0x7f)
-        return;
-
-    for (int yy = 0; yy < 9; yy++)
-    {
-        for (int xx = 0; xx < 9; xx++)
-        {
-            bool set = xx != 8 && yy != 8 && (font8x8_basic[cp][yy] & (1 << xx));
-
-            if (set)
-                Graphic::SetPixel(x + xx, y + yy, fg);
+            shift_line <<= 1;
         }
     }
 }
 
-void font_draw(char cp, int x, int y, int fg, int bg)
+void draw_string(char *string, int x, int y, uint32_t color)
 {
-    if (cp > 0x7f)
-        return;
+    int dx = x;
+    for (; *string; dx += 8) {
+        if (*(string) == '\n') {
+            dx = x-8; y += 14; string++;
+        }
+        else if (*string == '\t') {
+            dx += 8 * TAB_SIZE;
+        }
+        else
+            draw_char(*(string++), dx, y, color);
+    }
+}
 
-    for (int yy = 0; yy < 9; yy++)
+void draw_string(int x, int y, uint color, char *text, ...)
+{
+  char **arg = (char **) &text;
+  int c;
+  char buffer[20];
+  int dx = x;
+
+  arg++;
+
+  while ((c = *text++) != 0)
     {
-        for (int xx = 0; xx < 9; xx++)
+      if (c != '%')
+      {
+        if (c == '\n')
         {
-            bool set = xx != 8 && yy != 8 && (font8x8_basic[cp][yy] & (1 << xx));
-
-            if (set)
+            y += 14;
+            dx = x;
+        }
+        else if (c == '\t')
+        {
+            for (int z = 0; z < 4; z++)
             {
-                Graphic::SetPixel(x + xx, y + yy, fg);
-            }
-            else
-            {
-                Graphic::SetPixel(x + xx, y + yy, bg);
+                draw_char(' ', dx, y, color);
+                dx += 8;
             }
         }
-    }
-}
-
-void font_draw_double(char cp, int x, int y, int fg, int bg)
-{
-    if (cp > 0x7f)
-        return;
-
-    int scale = 2;
-
-    for (int yy = 0; yy < 17; yy++)
-    {
-        for (int xx = 0; xx < 17; xx++)
+        else
         {
-            bool set = xx != 16 && yy != 16 && ((uint8_t)(font8x8_basic[cp][yy/scale]) & (1 << xx));
-
-            if (set)
-            {
-                Graphic::SetPixel(x + xx, y + yy, fg);
-            }
-            else
-            {
-                Graphic::SetPixel(x + xx, y + yy, bg);
-            }
+            draw_char(c, dx, y, color);
+            dx += 8;
         }
-    }
-}
-
-void font_draw_double(char cp, int x, int y)
-{
-    if (cp > 0x7f)
-        return;
-
-    int scale = 2;
-
-    for (int yy = 0; yy < 17; yy++)
-    {
-        for (int xx = 0; xx < 17; xx++)
+      }
+      else
         {
-            bool set = xx != 16 && yy != 16 && ((uint8_t)(font8x8_basic[cp][yy/scale]) & (1 << xx));
+          char *p, *p2;
+          int pad0 = 0, pad = 0;
 
-            if (set)
-                Graphic::SetPixel(x + xx, y + yy, fg);
+          c = *text++;
+          if (c == '0')
+            {
+              pad0 = 1;
+              c = *text++;
+            }
+
+          if (c >= '0' && c <= '9')
+            {
+              pad = c - '0';
+              c = *text++;
+            }
+
+          switch (c)
+            {
+            case 'c':
+                draw_char(c, dx, y, color);
+                dx += 8;
+                break;
+            case 'd':
+            case 'u':
+            case 'x':
+              std::itoa (buffer, c, *((int *) arg++));
+              p = buffer;
+              goto string;
+              break;
+
+            case 's':
+              p = *arg++;
+              if (! p)
+                p = "(null)";
+
+            string:
+              for (p2 = p; *p2; p2++);
+              for (; p2 < p + pad; p2++)
+              {
+                draw_char(pad0 ? '0' : ' ', dx, y, color);
+                dx += 8;
+              }
+              while (*p)
+              {
+                draw_char(*p, dx, y, color);
+                dx += 8;
+                *p++;
+              }
+              break;
+
+            default:
+              draw_char(*((int *) arg), dx, y, color);
+              dx += 8;
+              arg++;
+              break;
+            }
         }
     }
 }

@@ -2,21 +2,26 @@
 #include <drivers/video/graphics.h>
 #include <colors.h>
 #include <font.h>
+#include <math.h>
 
 namespace Graphic {
 
 void center_printf(char * string, int x, int y, int w);
 
-void SetPixel(int x, int y, int color)
+inline void SetPixel(int x, int y, int color)
 {
     back_buffer[y*width+x] = color;
-    uint8_t * where = (uint8_t*)(y * pitch + (x * (bpp/8)) + (int)framebuffer_addr);
-    where[0] = color & 255;              // BLUE
-    where[1] = (color >> 8) & 255;   // GREEN
-    where[2] = (color >> 16) & 255;  // RED
+
+    if (blit_right_away)
+    {
+        uint8_t * where = (uint8_t*)(y * pitch + (x * (bpp/8)) + (int)framebuffer_addr);
+        where[0] = color & 255;              // BLUE
+        where[1] = (color >> 8) & 255;   // GREEN
+        where[2] = (color >> 16) & 255;  // RED
+    }
 }
 
-void blit_changes()
+inline void blit_changes()
 {
     for (int x = 0; x < width; x++)
     {
@@ -31,7 +36,7 @@ void blit_changes()
     }
 }
 
-void redraw_background_picture(int list[])
+inline void redraw_background_picture(int list[])
 {
     int color;
 
@@ -60,17 +65,71 @@ void redraw()
     }
 }
 
-void draw_rect(int x, int y, int w, int h, int c)
+inline void draw_rect(int x, int y, int w, int h, int c)
 {
     for (int z = x; z < x + w; z++)
         for (int b = y; b < y + h; b++)
         {
             back_buffer[b*width+z] = c;
-            uint8_t * where = (uint8_t*)(b * pitch + (z * (bpp/8)) + (int)framebuffer_addr);
-            where[0] = c & 255;              // BLUE
-            where[1] = (c >> 8) & 255;   // GREEN
-            where[2] = (c >> 16) & 255;  // RED
+
+            if (blit_right_away) {
+                uint8_t * where = (uint8_t*)(b * pitch + (z * (bpp/8)) + (int)framebuffer_addr);
+                where[0] = c & 255;              // BLUE
+                where[1] = (c >> 8) & 255;   // GREEN
+                where[2] = (c >> 16) & 255;  // RED
+            }
         }
+}
+
+// this function gets the pixels from the array in that same location to be displayed on-screen
+//
+// so for location (10, 30) it would get the color at location 10 + 30 * width in the array
+inline void draw_rect(int x, int y, int w, int h, int *arr)
+{
+    for (int z = x; z < x + w; z++)
+    {
+        for (int b = y; b < y + h; b++)
+        {
+            int c = arr[z+b*width];
+            back_buffer[b*width+z] = c;
+
+            if (blit_right_away) {
+                uint8_t * where = (uint8_t*)(b * pitch + (z * (bpp/8)) + (int)framebuffer_addr);
+                where[0] = c & 255;              // BLUE
+                where[1] = (c >> 8) & 255;   // GREEN
+                where[2] = (c >> 16) & 255;  // RED
+            }
+        }
+    }
+}
+
+// this one gets the pixels from the array from the start
+inline void draw_rect_arr(int x, int y, int w, int h, int *arr)
+{
+    for (int z = 0; z < w; z++)
+    {
+        for (int b = 0; b < h; b++)
+        {
+            int c = arr[z+b*width];
+
+            if (c == -1) // -1 is just transparent
+            {
+                c = back_buffer[(z + x) + (b + y) * width];
+            }
+            else
+            {
+                back_buffer[(z + x)+(b + y)*width] = c;
+            }
+
+            if (blit_right_away)
+            {
+                uint8_t * where = (uint8_t*)((b + y) * pitch + ((z + x) * (bpp/8)) + (int)framebuffer_addr);
+                where[0] = c & 255;              // BLUE
+                where[1] = (c >> 8) & 255;   // GREEN
+                where[2] = (c >> 16) & 255;  // RED
+            }
+        }
+    }
 }
 
 void draw_empty_rect(int x, int y, int w, int h, int c)
@@ -97,9 +156,85 @@ void clear_screen()
             Graphic::SetPixel(z, b, 0);
 }
 
-void center_printf(char * string, int x, int y, int w)
+inline void line_low(int x0, int y0, int x1, int y1, int color)
 {
-    g_printf(string, x+((w - std::len(string) * 8)/2), y);
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+    int yi = 1;
+
+    if (dy < 0)
+    {
+        yi = -1;
+        dy = -dy;
+    }
+    int D = (2 * dy) - dx;
+    int y = y0;
+
+    for (int x = x0; x < x1; x++)
+    {
+        SetPixel(x, y, color);
+        if (D > 0)
+        {
+            y = y + yi;
+            D = D + (2 * (dy - dx));
+        }
+        else
+        {
+            D = D + 2*dy;
+        }
+    }
+}
+
+inline void line_high(int x0, int y0, int x1, int y1, int color)
+{
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+    int xi = 1;
+
+    if (dx < 0)
+    {
+        xi = -1;
+        dx = -dx;
+    }
+    int D = (2 * dx) - dy;
+    int x = x0;
+
+    for (int y = y0; y < y1; y++)
+    {
+        SetPixel(x, y, color);
+        if (D > 0)
+        {
+            x = x + xi;
+            D = D + (2 * (dx - dy));
+        }
+        else
+        {
+            D = D + 2*dx;
+        }
+    }
+}
+
+inline void draw_line(int x0, int y0, int x1, int y1, int color)
+{
+    if (Math::abs(y1 - y0) < Math::abs(x1 - x0))
+    {
+        if (x0 > x1)
+            line_low(x1, y1, x0, y0, color);
+        else
+            line_low(x0, y0, x1, y1, color);
+    }
+    else
+    {
+        if (y0 > y1)
+            line_high(x1, y1, x0, y0, color);
+        else
+            line_high(x0, y0, x1, y1, color);
+    }
+}
+
+void center_text_graphics(char * string, int x, int y, int w, int color)
+{
+    draw_string(string, x+((w - std::len(string) * 8)/2), y, color);
 }
 
 void topleft_plotpoints(int x, int y, int cx, int cy, int color) {

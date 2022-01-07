@@ -160,6 +160,8 @@ extern "C" void isr_handler(registers_t r) {
         error("Interrupt received: %d\nMessage: %s", r.int_no, exception_messages[r.int_no]);
     }
 
+    Kernel::system_log("Interrupt received");
+
     asm("cli");
     asm("hlt");
 }
@@ -172,9 +174,15 @@ extern "C" void irq_handler(registers_t r) {
     if (r.int_no >= 40) outb(0xA0, 0x20);
     outb(0x20, 0x20);
 
+    //Kernel::system_log("IRQ received\n");
+
     if (interrupt_handlers[r.int_no] != NULL) {
         isr_t handler = interrupt_handlers[r.int_no];
         handler(r);
+    }
+    else
+    {
+        Kernel::system_log("No interrupts handler for IRQ %d\n", r.int_no);
     }
 }
 

@@ -2,6 +2,7 @@
 
 #include <kernel/io.h>
 #include <drivers/sound/sound.h>
+#include <fs.h>
 
 namespace Kernel {
 
@@ -38,6 +39,10 @@ void beep() {
         io_wait();
     nosound();
          //set_PIT_2(old_frequency);
+}
+
+void init_sound() {
+    Filesystem::VFS::create_file("sound", "dev", "pc-speaker");
 }
 
 }

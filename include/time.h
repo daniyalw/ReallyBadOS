@@ -25,6 +25,7 @@ enum {
 
 typedef struct {
     int sec, min, h, d, m, y, wd;
+    bool pm;
 } time_t;
 
 int s = 0;

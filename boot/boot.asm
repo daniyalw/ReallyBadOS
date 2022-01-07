@@ -25,6 +25,7 @@ global _start
 extern kernel_main
 
 _start:
+  push esp
   push eax
   push ebx
   cli

@@ -16,16 +16,22 @@ for file in list_of_files:
 			f = open(file, 'r')
 		except UnicodeDecodeError:
 			continue
-		for line in f.read().split('\n'):
-			cpp += 1
+		try:
+			for line in f.read().split('\n'):
+				cpp += 1
+		except UnicodeDecodeError:
+			continue
 		f.close()
 	elif file.lower().endswith("asm") or file.lower().endswith("s"):
 		try:
 			f = open(file, 'r')
 		except UnicodeDecodeError:
 			continue
-		for line in f.read().split('\n'):
-			asm += 1
+		try:
+			for line in f.read().split('\n'):
+				asm += 1
+		except UnicodeDecodeError:
+			continue
 		f.close()
 
 total += cpp

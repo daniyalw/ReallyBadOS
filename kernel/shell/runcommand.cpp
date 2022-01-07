@@ -5,17 +5,72 @@
 #include <timer.h>
 #include <kernel/log.h>
 #include <sys.h>
+#include <fs.h>
 #include "rc.h"
+
+using namespace std;
+using namespace Filesystem;
+using namespace VFS;
+
+bool check_name(char * name, char * check_against)
+{
+    if (!startswith(name, check_against))
+        return false;
+
+    if (len(name) == len(check_against))
+        if (startswith(name, check_against))
+            return true;
+
+    // here the lengths do not match
+    if (startswith(name, check_against))
+        if (name[len(check_against)] != 0 && name[len(check_against)] != ' ')
+            return false;
+
+    return true;
+}
 
 void rc(char * b)
 {
-    if (std::startswith(b, "echo")) {
+    if (check_name(b, "echo")) {
 
         for (int z = 5; z < bf; z++) {
             putchar(b[z]);
         }
+    } else if (check_name(b, "ls")) {
 
-    } else if (std::startswith(b, "time")) {
+        Filesystem::ls();
+
+    } else if (check_name(b, "cd")) {
+
+        int length = len(b);
+        char directory[length];
+        int c = 0;
+
+        for (int z = 0; z < length; z++)
+            directory[z] = 0;
+
+        for (int z = 3; z < length; z++)
+        {
+            directory[c] = b[z];
+            c++;
+        }
+
+        //printf("You want to go to directory %s?\n", directory);
+
+        FOLDER folder = get_folder(directory);
+
+        if (folder.null)
+        {
+            printf("Error: no such directory!\n");
+        }
+        else
+        {
+            char * out;
+            current_display = directory;
+            printf("Moved to %s\n", directory);
+        }
+
+    } else if (check_name(b, "time")) {
 
         printf("Date: %s %s %d\n", weekdays[weekday-1], months[month-1], day);
         if (hour > 12) {
@@ -24,24 +79,24 @@ void rc(char * b)
             printf("Time: %d:%d AM", hour, minute);
         }
 
-    } else if (std::startswith(b, "help")) {
+    } else if (check_name(b, "help")) {
 
         printf("%s %s, Daniyal Warraich\n", System::SYSTEM, System::VERSION);
         printf("Available commands:\n");
 
-    } else if (std::startswith(b, "about")) {
+    } else if (check_name(b, "about")) {
 
         printf("%s %s, Daniyal Warraich", System::SYSTEM, System::VERSION);
 
-    } else if (std::startswith(b, "reboot")) {
+    } else if (check_name(b, "reboot")) {
 
         Kernel::reboot();
 
-    } else if (std::startswith(b, "copyright")) {
+    } else if (check_name(b, "copyright")) {
 
         printf("%s %s, Daniyal Warraich 2021", System::SYSTEM, System::VERSION);
 
-    } else if (std::startswith(b, "cpuinfo")) {
+    } else if (check_name(b, "cpuinfo")) {
 
         unsigned short mem = get_available_memory();
         int mb;
@@ -57,26 +112,31 @@ void rc(char * b)
         int model = get_model();
         printf("\nModel: ");
         char * mdl;
-        std::itoa(model, mdl);
+        itoa(model, mdl);
         printf(mdl);
 
-    } else if (std::startswith(b, "shutdown")) {
+    } else if (check_name(b, "shutdown")) {
 
         printf("Shutting down...\n");
-        disable_interrupts();
+        Kernel::disable_interrupts();
         Kernel::shutdown_os();
 
-    } else if (std::startswith(b, "cls") || std::startswith(b, "clear")) {
+    } else if (check_name(b, "cls") || check_name(b, "clear")) {
 
         clear();
         text_y = -2;
 
     } else {
 
-        if (std::strisempty(b)) {
+        if (strisempty(b)) {
             text_y--;
             return;
         }
+
+        if (strip(b, ' ') == "") {
+            return;
+        }
+
         printf("Error: command not found.");
         printf("\nCommand: ");
         for (int z = 0; z < bf; z++) {
