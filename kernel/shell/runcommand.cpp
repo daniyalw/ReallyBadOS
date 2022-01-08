@@ -10,7 +10,7 @@
 
 using namespace std;
 using namespace Filesystem;
-using namespace VFS;
+using namespace Ramdisk;
 
 bool check_name(char * name, char * check_against)
 {
@@ -40,6 +40,28 @@ void rc(char * b)
 
         Filesystem::ls();
 
+    } else if (check_name(b, "read")) {
+
+        int length = len(b);
+        char name[length];
+        int c = 0;
+
+        for (int z = 0; z < length; z++)
+            name[z] = 0;
+
+        for (int z = 5; z < length; z++)
+        {
+            name[c] = b[z];
+            c++;
+        }
+
+        FILE file = get_file(name, "usr");
+
+        if (file.null)
+            printf("Error: couldn't read contents of %s!\n", name);
+        else
+            printf(file.contents);
+
     } else if (check_name(b, "cd")) {
 
         int length = len(b);
@@ -55,6 +77,15 @@ void rc(char * b)
             c++;
         }
 
+        if (strcmp(directory, ".."))
+        {
+            for (int z = 0; z < 128; z++)
+                current_display[z] = 0;
+
+            printf("Moved to %s\n", directory);
+            return;
+        }
+
         //printf("You want to go to directory %s?\n", directory);
 
         FOLDER folder = get_folder(directory);
@@ -65,8 +96,13 @@ void rc(char * b)
         }
         else
         {
-            char * out;
-            current_display = directory;
+            for (int z = 0; z < 128; z++)
+                current_display[z] = 0;
+            int dir_len = std::len(directory);
+            ASSERT(dir_len < 128);
+            for (int z = 0; z < dir_len; z++)
+                current_display[z] = directory[z];
+            current_display_len = dir_len;
             printf("Moved to %s\n", directory);
         }
 

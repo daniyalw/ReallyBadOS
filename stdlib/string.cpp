@@ -110,6 +110,24 @@ bool strcmp(char * str1, char * str2) {
     return true;
 }
 
+char * shift_left(char * out, char * str, int loc, int begin) {
+    int length = strlen(str);
+    char s[length];
+    int sz = 0;
+
+    for (int z = 0; z < length; z++)
+        s[z] = 0;
+
+    for (int z = begin; z < length; z++) {
+        s[sz] = str[z];
+        sz++;
+    }
+
+    out = s;
+
+    return out;
+}
+
 void memset(char * dest, char *val, int len)
 {
     for (int z = 0; z < len; z++)
@@ -226,15 +244,22 @@ int gvfs(char * s, char value)
 
 char * reverse_string(char * str, char * out)
 {
-    out = "";
+    int t = strlen(str);
+    int c = t;
 
-    for (int z = len(str); z > 0; z--)
-    {
-        out[z] = str[z];
-        out[z+1] = 0;
+    for (int z = 0; z < strlen(str); z++) {
+        out[t] = str[z];
+        t--;
     }
 
-    return out;
+    char a[c-1];
+
+    for (int z = 0; z < c; z++)
+    {
+        a[z] = out[z+1];
+    }
+
+    out = a;
 }
 
 char * opposite_split(char * string, char key, int position, char * out)
@@ -674,6 +699,16 @@ void string::operator+(string s)
 void string::operator+(char * s)
 {
     append(this->str, s, this->str);
+}
+
+char string::operator[](int z)
+{
+    return str[z];
+}
+
+char * string::c_str()
+{
+    return str;
 }
 
 }

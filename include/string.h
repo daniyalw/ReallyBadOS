@@ -25,6 +25,9 @@ public:
     void operator+(string s);
     void operator=(string s);
     void operator=(char * s);
+    char operator[](int z);
+
+    char *c_str();
 };
 
 char * strchr(char * s, int c);
@@ -38,6 +41,7 @@ bool startswith(char * words, char * start);
 char * append(char * orig, char * anew);
 bool charcmp(char str1, char str2);
 bool strcmp(char * str1, char * str2);
+char * shift_left(char * out, char * str, int loc, int begin);
 int len(char * str);
 int strlen(char * data);
 void sort(int * A, int sz);
@@ -69,5 +73,6 @@ int atoi(char * str);
 bool isspace(char c);
 bool isdigit(char k);
 void memset(int * dest, int val, int len);
+char * reverse_string(char * str, char * out);
 
 }

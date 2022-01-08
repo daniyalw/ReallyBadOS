@@ -6,7 +6,7 @@
 #include <fs.h>
 
 using namespace Filesystem;
-using namespace VFS;
+using namespace Ramdisk;
 
 namespace Graphic {
 

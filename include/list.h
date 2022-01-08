@@ -125,7 +125,7 @@ public:
     {
         if (value > length) {
             // caller tried to access illegal value
-            return arr[0];
+            return (T)NULL;
         } else {
             return arr[value];
         }
@@ -250,6 +250,11 @@ public:
         return this->get(length-1);
     }
 
+    T type() { return T(); }
 };
 
 }
+
+#define foreach(child, _list) \
+                auto child = _list[0]; \
+                for (int z = 0; z < _list.size(); z++, child = _list[z])

@@ -85,6 +85,7 @@ char * scanf(char * bb)
         {
             if (k == '\n')
             {
+                ASSERT(s <= 128);
                 char dd[s];
 
                 for (int z = 0; z < 128; z++)
@@ -405,7 +406,9 @@ void get_key(unsigned char code)
                         buff[z] = 0;
                     bf = 0;
                     entered_len = 0;
-                    printf("\n\n%s/> ", current_display);
+                    printf("\n\n");
+                    printf(current_display);
+                    printf("/> ");
                 } else {
                     if (key != '\b')
                     {
@@ -415,7 +418,7 @@ void get_key(unsigned char code)
                     }
                     else
                     {
-                        if (text_x > current_display_len)
+                        if (text_x > current_display_len + 3)
                         {
                             buff[bf] = ' ';
                             bf--;
@@ -440,9 +443,11 @@ void init_keyboard(bool on, char * cd) {
 
     for (int z = 0; z < 128; z++) {
         buff[z] = 0;
+        current_display[z] = 0;
     }
 
-    current_display = cd;
+    for (int z = 0; z < std::len(cd); z++)
+        current_display[z] = cd[z];
     current_display_len = std::len(cd);
 
     if (on) {

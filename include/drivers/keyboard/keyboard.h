@@ -10,9 +10,6 @@ bool terminal_on = false;
 
 bool keyboard_locked;
 bool scanf_on = false;
-// this is the /> _
-char *current_display;
-int current_display_len = 0;
 
 char buffer[1000];
 int buffer_size = 1;

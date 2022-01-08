@@ -42,7 +42,7 @@ void beep() {
 }
 
 void init_sound() {
-    Filesystem::VFS::create_file("sound", "dev", "pc-speaker");
+    Filesystem::Ramdisk::create_file("sound", "dev", "pc-speaker");
 }
 
 }

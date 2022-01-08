@@ -3,7 +3,7 @@
 namespace Filesystem
 {
 
-namespace VFS
+namespace Ramdisk
 {
 
 typedef struct
@@ -14,6 +14,8 @@ typedef struct
     char * parent;
     int id;
     bool null = false;
+
+    bool operator!() { return null; }
 } FILE;
 
 typedef struct
@@ -24,6 +26,8 @@ typedef struct
     int file_count = 0;
     int id;
     bool null = false;
+
+    bool operator!() { return null; }
 } FOLDER;
 
 typedef struct

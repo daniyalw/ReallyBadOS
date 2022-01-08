@@ -5,6 +5,9 @@ int cy = 0;
 bool booted = false;
 int back_buffer[1024*768]; // back buffer for gui
 //unsigned int initial_stack;
+// this is the /> _
+char current_display[128];
+int current_display_len = 0;
 
 extern "C" {
     extern void jmp_somewhere(unsigned int place);
@@ -13,7 +16,7 @@ extern "C" {
     extern unsigned int kernel_end;
 }
 
-//#define DEBUG
+#define DEBUG
 //#define GRAPHICS
 
 #include <cpuid.h>
@@ -47,7 +50,10 @@ extern "C" {
 #include "sys/cpu/info.cpp"
 #include "../drivers/mouse/cursor.cpp"
 #include "../stdlib/string.cpp"
+#include "sys/memory/block.cpp"
 #include "sys/memory/memory.cpp"
+#include "sys/memory/malloc.cpp"
+#include "sys/memory/free.cpp"
 #include "../drivers/video/video.cpp"
 #include "sys/log/log.cpp"
 #include "sys/descriptors/gdt.cpp"
@@ -72,14 +78,22 @@ extern "C" {
 #include "../gui/notification.cpp"
 #include "sys/syscall/syscalls.h" // this is external
 #include "../fs/tar.cpp"
-#include "../fs/fs.cpp"
+#include "../fs/ramdisk.cpp"
 #include "../gui/gui.cpp"
 #include "../gui/label.cpp"
 #include "sys/syscall/usermode.cpp"
 #include "../drivers/disk/ata.cpp"
 
-using namespace Filesystem::VFS;
 using namespace Filesystem;
+using namespace Ramdisk;
+
+void te(char * text)
+{
+    for (int z = 0; z < std::len(text); z++)
+    {
+        putchar(text[z]);
+    }
+}
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -88,8 +102,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     }
 
     create_folder("dev");
-    create_folder("volumes");
-    create_file("ceneos-x86_32.iso", "volumes", "");
+    create_folder("usr");
 
     Kernel::init_serial(SERIAL_PORT);
 
@@ -105,7 +118,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Kernel::init_sound();
     Kernel::read_rtc();
     Kernel::init_timer(1000);
-    Kernel::init_keyboard(false, "/> ");
+    Kernel::init_keyboard(false, "");
     Kernel::init_mouse();
     Kernel::init_syscalls();
 
@@ -145,13 +158,14 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
 #else
 
+    init_mem(mbd);
+
     u32 location = *((u32*)mbd->mods_addr);
 
     parse(location);
 
     for (int z = 0; z < block_count; z++)
-        create_file(blocks[z].name, "dev", blocks[z].contents);
-
+        create_file(blocks[z].name, "usr", blocks[z].contents);
 
     switch_to_user_mode();
 
