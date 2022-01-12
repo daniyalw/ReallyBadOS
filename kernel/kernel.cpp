@@ -14,6 +14,7 @@ extern "C" {
     extern void main();
     extern unsigned int stack_top;
     extern unsigned int kernel_end;
+    extern unsigned int read_eip();
 }
 
 #define DEBUG
@@ -42,6 +43,7 @@ extern "C" {
 #include <macros.h>
 #include <sys.h>
 #include <assert.h>
+#include <va_list.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
@@ -50,10 +52,6 @@ extern "C" {
 #include "sys/cpu/info.cpp"
 #include "../drivers/mouse/cursor.cpp"
 #include "../stdlib/string.cpp"
-#include "sys/memory/block.cpp"
-#include "sys/memory/memory.cpp"
-#include "sys/memory/malloc.cpp"
-#include "sys/memory/free.cpp"
 #include "../drivers/video/video.cpp"
 #include "sys/log/log.cpp"
 #include "sys/descriptors/gdt.cpp"
@@ -83,17 +81,10 @@ extern "C" {
 #include "../gui/label.cpp"
 #include "sys/syscall/usermode.cpp"
 #include "../drivers/disk/ata.cpp"
+#include "../fs/file.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
-
-void te(char * text)
-{
-    for (int z = 0; z < std::len(text); z++)
-    {
-        putchar(text[z]);
-    }
-}
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -103,6 +94,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     create_folder("dev");
     create_folder("usr");
+    create_file("hello.txt", "usr", "Hello, user!");
 
     Kernel::init_serial(SERIAL_PORT);
 
@@ -118,7 +110,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Kernel::init_sound();
     Kernel::read_rtc();
     Kernel::init_timer(1000);
-    Kernel::init_keyboard(false, "");
+    Kernel::init_keyboard(true, "");
     Kernel::init_mouse();
     Kernel::init_syscalls();
 
@@ -128,29 +120,80 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     u32 location = *((u32*)mbd->mods_addr);
     parse(location);
 
-    Graphic::init_graphics(mbd);
+    for (int z = 0; z < block_count; z++)
+        create_file(blocks[z].name, "usr", blocks[z].contents);
 
-    FILE file = get_file("framebuffer", "dev");
+    Graphic::init_graphics(mbd);
 
     Graphic::redraw_background_picture(array);
 
 
     Window win = Window();
 
-    win.set_title("Hello!");
+    win.set_title("File Manager");
 
-    win.set(50, 50, 100, 100);
+    win.set(50, 50, 300, 300);
 
-    Widget label = create_label("d52!", black);
+    int xx = 52, yy = 52;
+    //yy += font_height + 2;
+    int copyx = xx, copyy = yy;
 
-    win.add_widget(label);
+    //win.draw();
+    /*
+    for (int z = 0; z < folder_count; z++)
+    {
+        char *d = (char *)malloc(sizeof(char) * 2, std::len(folders[z].name) + 1);
+
+        draw_string(xx, yy, white, std::get(d, "%s\n", folders[z].name));
+        copyy += font_height + 2;
+        copyx += font_width * 4;
+        xx = copyx;
+        yy = copyy;
+
+        for (int b = 0; b < folders[z].file_count; b++)
+        {
+            draw_string(xx, yy, white, "/%s/%s\n", folders[z].name, folders[z].files[b].name);
+            xx = copyx;
+            copyy += font_height + 2;
+            yy = copyy;
+        }
+
+        copyx = 52;
+        xx = copyx;
+    }
+    */
+    for (int z = 0; z < folder_count; z++)
+    {
+        char * name = folders[z].name;
+        Widget label = create_label(name, black, xx, yy);
+        copyy += font_height + 2;
+        copyx += font_width * 4;
+        xx = copyx;
+        yy = copyy;
+
+        win.add_widget(label);
+
+        for (int b = 0; b < folders[z].file_count; b++)
+        {
+            Widget sub = create_label(folders[z].files[b].name, black, xx, yy);
+            xx = copyx;
+            copyy += font_height + 2;
+            yy = copyy;
+
+            win.add_widget(sub);
+        }
+
+        copyx = 52;
+        xx = copyx;
+    }
+
+    Kernel::system_log("Window widget count: %d\n", win.widget_count);
 
     win.draw();
 
+    //draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
 
-    draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
-
-    int ret = gui_notification("About", "CeneOS is just another hobby operating system!\n2022");
+    //int ret = gui_notification("About", "CeneOS is just another hobby operating system!\n2022");
 
     Graphic::blit_changes();
 
@@ -158,16 +201,20 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
 #else
 
-    init_mem(mbd);
-
     u32 location = *((u32*)mbd->mods_addr);
 
     parse(location);
 
     for (int z = 0; z < block_count; z++)
+    {
         create_file(blocks[z].name, "usr", blocks[z].contents);
 
-    switch_to_user_mode();
+        FILE f = fcreate(blocks[z]);
+
+        all_files.push_back(f);
+    }
+
+    //switch_to_user_mode();
 
     Kernel::serial_write_string("\n");
     while (true) {}

@@ -13,7 +13,6 @@ path_t parse_name(char * path)
     int fnz = 0;
 
     bool first = false;
-    bool second = false;
 
     for (int z = 0; z < length; z++)
     {
@@ -25,19 +24,16 @@ path_t parse_name(char * path)
     {
         if (path[z] == '/')
         {
-            if (first)
-                second = true;
-            else
-                first = true;
+            first = true;
         }
         else
         {
-            if (second)
+            if (first)
             {
                 fname[fnz] = path[z];
                 fnz++;
             }
-            else if (first)
+            else
             {
                 folder[fdz] = path[z];
                 fdz++;
@@ -68,21 +64,21 @@ namespace Filesystem
 namespace Ramdisk
 {
 
-FILE null_file()
+RFILE null_file()
 {
-    FILE f;
+    RFILE f;
     f.null = true;
     return f;
 }
 
-FOLDER null_folder()
+RFOLDER null_folder()
 {
-    FOLDER f;
+    RFOLDER f;
     f.null = true;
     return f;
 }
 
-FOLDER get_folder(char * name)
+RFOLDER get_folder(char * name)
 {
     for (int z = 0; z < Filesystem::Ramdisk::folder_count; z++)
         if (strcmp(Filesystem::Ramdisk::folders[z].name, name))
@@ -91,9 +87,9 @@ FOLDER get_folder(char * name)
     return null_folder();
 }
 
-FILE get_file(char * name, char * folder)
+RFILE get_file(char * name, char * folder)
 {
-    FOLDER parent = get_folder(folder);
+    RFOLDER parent = get_folder(folder);
 
     if (parent.null)
         return null_file();
@@ -105,9 +101,12 @@ FILE get_file(char * name, char * folder)
     return null_file();
 }
 
-FOLDER create_folder(char * name)
+RFOLDER create_folder(char * name)
 {
-    FOLDER folder;
+    if (!get_folder(name).null) {
+        return null_folder();
+    }
+    RFOLDER folder;
     folder.name = name;
     folder.path = std::get("/%s", name);
     folder.id = Filesystem::Ramdisk::folder_count;
@@ -118,16 +117,19 @@ FOLDER create_folder(char * name)
     return folder;
 }
 
-FILE create_file(char * name, char * folder, char * contents)
+RFILE create_file(char * name, char * folder, char * contents)
 {
-    FILE file;
+    if (!get_file(name, folder).null) {
+        return null_file();
+    }
+    RFILE file;
 
     file.name = name;
     file.parent = folder;
     file.contents = contents;
     file.path = std::get("/%s/%s", folder, name);
 
-    FOLDER parent = get_folder(folder);
+    RFOLDER parent = get_folder(folder);
 
     if (parent.null)
         return null_file();
@@ -160,11 +162,19 @@ void ls()
 
     for (int z = 0; z < Filesystem::Ramdisk::folder_count; z++)
     {
-        printf("/%s\n", Filesystem::Ramdisk::folders[z].name);
+        printf("/");
+        printf(Filesystem::Ramdisk::folders[z].name);
 
         for (int b = 0; b < Filesystem::Ramdisk::folders[z].file_count; b++)
         {
-            printf("/%s/%s\n", Filesystem::Ramdisk::folders[z].files[b].parent, Filesystem::Ramdisk::folders[z].files[b].name);
+            printf("\n");
+
+            printf("/");
+            printf(Filesystem::Ramdisk::folders[z].files[b].parent);
+            printf("/");
+            printf(Filesystem::Ramdisk::folders[z].files[b].name);
+
+            printf("\n");
 
             //printf("\t\t%s\n", Filesystem::Ramdisk::folders[z].files[b].contents);
         }

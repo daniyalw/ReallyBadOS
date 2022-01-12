@@ -260,6 +260,8 @@ char * reverse_string(char * str, char * out)
     }
 
     out = a;
+
+    return out;
 }
 
 char * opposite_split(char * string, char key, int position, char * out)
@@ -322,16 +324,62 @@ char * split(char * string, char key, int position, char * out)
     return out;
 }
 
-void memcpy(char *source, char *dest, int nb)
-{
-    for (int z = 0; z < nb; z++)
-        dest[z] = source[z];
+#if defined(__x86_64__) || defined(__x86_32__)
+static inline void __movsb_copy_str(char *from, const char *to, int size) {
+  asm volatile ("rep movsb"
+                : "=D" (from),
+                  "=S" (to),
+                  "=c" (size)
+                : "D" (from),
+                  "S" (to),
+                  "c" (size)
+                : "memory");
+
 }
 
-void memcpy_int(int *source, int *dest, int nb)
+#endif
+
+#if defined(__x86_64__) || defined(__x86_32__)
+static inline void __movsb_copy_int(int *from, const int *to, int size) {
+  asm volatile ("rep movsb"
+                : "=D" (from),
+                  "=S" (to),
+                  "=c" (size)
+                : "D" (from),
+                  "S" (to),
+                  "c" (size)
+                : "memory");
+
+}
+
+#endif
+
+inline void memcpy(const char *source, char *dest, const int nb)
 {
+    #if defined(__x86_64__) || defined(__x86_32__)
+
+    __movsb_copy_str(source, dest, nb);
+
+    #else
+
     for (int z = 0; z < nb; z++)
         dest[z] = source[z];
+
+    #endif
+}
+
+inline void memcpy_int(const int *source, int *dest, const int nb)
+{
+    #if defined(__x86_64__) || defined(__x86_32__)
+
+    __movsb_copy_int(source, dest, nb);
+
+    #else
+
+    for (int z = 0; z < nb; z++)
+        dest[z] = source[z];
+
+    #endif
 }
 
 char * get(char * out, char *text, ...)

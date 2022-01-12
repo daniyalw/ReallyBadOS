@@ -70,6 +70,8 @@ void clicked_on_widget(int x, int y, int type)
             {
                 if (y >= widget.gety() && y <= (widget.gety() + widget.geth()))
                 {
+                    Kernel::system_log("Widget found!\n");
+
                     gui_event_t * event;
 
                     event->type = type;
@@ -81,4 +83,6 @@ void clicked_on_widget(int x, int y, int type)
             }
         }
     }
+
+    Kernel::system_log("No widget clicked\n");
 }

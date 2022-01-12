@@ -1,7 +1,39 @@
 #pragma once
 
+#include <tar.h>
+
 namespace Filesystem
 {
+
+namespace VFS
+{
+
+struct FILE
+{
+    char * name;
+    char gid[8];
+    char uid[8];
+    uint32_t size;
+    char * contents;
+    bool null = false;
+
+    bool operator!() { return null; }
+};
+
+std::list<FILE> all_files;
+
+void write(char * name, char * data);
+void close(char *name);
+FILE fopen(char * name);
+char *read(char * fname);
+int get_file_z(char * name);
+FILE get_file_n(char * name);
+void list_dir();
+void save_file(FILE f);
+FILE fcreate(TarFile block);
+FILE f_null_file();
+
+}
 
 namespace Ramdisk
 {
@@ -16,19 +48,19 @@ typedef struct
     bool null = false;
 
     bool operator!() { return null; }
-} FILE;
+} RFILE;
 
 typedef struct
 {
     char * name;
     char * path;
-    FILE files[128];
+    RFILE files[128];
     int file_count = 0;
     int id;
     bool null = false;
 
     bool operator!() { return null; }
-} FOLDER;
+} RFOLDER;
 
 typedef struct
 {
@@ -36,15 +68,15 @@ typedef struct
     char foldername[128];
 } path_t;
 
-FOLDER folders[128];
+RFOLDER folders[128];
 int folder_count = 0;
 
-FILE null_file();
-FOLDER null_folder();
-FOLDER get_folder(char * name);
-FILE get_file(char * name, char * folder);
-FOLDER create_folder(char * name);
-FILE create_file(char * name, char * folder, char * contents);
+RFILE null_file();
+RFOLDER null_folder();
+RFOLDER get_folder(char * name);
+RFILE get_file(char * name, char * RFOLDER);
+RFOLDER create_folder(char * name);
+RFILE create_file(char * name, char * RFOLDER, char * contents);
 
 }
 

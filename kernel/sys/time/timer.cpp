@@ -3,6 +3,7 @@
 #include <timer.h>
 #include <kernel/io.h>
 #include <kernel/log.h>
+
 void timer_int(registers_t regs) {
     tick++;
     ctick++;

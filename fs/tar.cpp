@@ -35,7 +35,18 @@ bool parse(unsigned int address)
         block.name = headers[z]->name;
         block.size = headers[z]->file_size();
         block.typeflag = headers[z]->typeflag;
-        std::memcpy(block.linkname, headers[z]->linkname, 100);
+
+        for (int b = 0; b < 100; b++)
+        {
+            block.linkname[z] = headers[z]->linkname[z];
+        }
+
+        for (int b = 0; b < 8; b++)
+        {
+            block.uid[z] = headers[z]->uid[z];
+            block.gid[z] = headers[z]->gid[z];
+        }
+
         block.contents = (char *)headers[z] + 512;
 
         blocks[z] = block;

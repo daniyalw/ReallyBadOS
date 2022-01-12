@@ -1,3 +1,5 @@
+#pragma once
+
 struct TarFile
 {
     char *name;
@@ -5,6 +7,9 @@ struct TarFile
     char linkname[100];
     u32 size;
     char * contents;
+
+    char gid[8];
+    char uid[8];
 };
 
 struct __attribute__((packed)) RawTar
