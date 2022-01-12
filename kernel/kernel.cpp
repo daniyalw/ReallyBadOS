@@ -214,7 +214,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         all_files.push_back(f);
     }
 
-    //switch_to_user_mode();
+    switch_to_user_mode();
 
     Kernel::serial_write_string("\n");
     while (true) {}
