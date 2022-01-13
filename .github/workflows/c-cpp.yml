@@ -13,5 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: make
-      run: make
+    - name: make kernel
+      run: make kernel
+    - name: make textmode
+      run: make textmode
