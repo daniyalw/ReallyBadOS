@@ -56,6 +56,6 @@ void ata_write_one(uint32_t LBA, uint8_t *bytes) {
 void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes) {
     for (int i = 0; i < sector_count; i++) {
         ata_write_one(LBA + i, bytes);
-        bytes += 512;
+        bytes += SECTOR_SIZE;
     }
 }

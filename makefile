@@ -1,4 +1,7 @@
 boot = boot/loader.s
+COMPILER_FLAGS = -m32 -Iinclude -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone
+QEMU_FLAGS = -soundhw pcspk -m 100M -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk
+OUT = ceneos-x86_32.iso
 
 r:
 
@@ -19,14 +22,23 @@ jmp:
 usermode:
 	nasm -f elf32 kernel/sys/descriptors/usermode.asm -o built/user.o
 
+tss:
+	nasm -f elf32 kernel/sys/descriptors/tss.asm -o built/tss.o
+
+kernel:
+	make gdt
+	make interrupts
+	make jmp
+	make usermode
+	make tss
+
 textmode:
 	make bootloader
-	nasm -f elf32 kernel/sys/descriptors/tss.asm -o built/tss.o
-	i686-elf-g++ -Iinclude -m32 -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -nostdlib built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
 	cp built/main.o isodir/boot/main.o
 	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o ceneos-x86_32.iso isodir
-	qemu-system-x86_64 -cdrom ceneos-x86_32.iso -soundhw pcspk -m 100M -serial stdio -rtc base=localtime
+	grub-mkrescue -o ${OUT} isodir
+	qemu-system-x86_64 -cdrom ${OUT} ${QEMU_FLAGS}
 
 clean:
 	rm *.iso
@@ -42,10 +54,8 @@ iso:
 # graphics
 graphics:
 	i686-elf-as -o built/loader.o boot/graphics_boot.asm
-	nasm -f elf32 -o built/gdt.o kernel/sys/descriptors/gdt.asm
-	nasm -f elf32 kernel/sys/interrupts/exception_handler.asm -o built/int.o
-	i686-elf-g++ -m32 -Iinclude -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone built/loader.o kernel/kernel.cpp built/user.o built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
 	cp built/main.o isodir/boot/main.o
 	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o ceneos-x86_32.iso isodir
-	qemu-system-x86_64 -cdrom ceneos-x86_32.iso -soundhw pcspk -m 100M -serial stdio -rtc base=localtime
+	grub-mkrescue -o ${OUT} isodir
+	qemu-system-x86_64 -cdrom ${OUT} ${QEMU_FLAGS}

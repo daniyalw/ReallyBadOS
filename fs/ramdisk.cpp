@@ -64,21 +64,21 @@ namespace Filesystem
 namespace Ramdisk
 {
 
-RFILE null_file()
+FILE null_file()
 {
-    RFILE f;
+    FILE f;
     f.null = true;
     return f;
 }
 
-RFOLDER null_folder()
+FOLDER null_folder()
 {
-    RFOLDER f;
+    FOLDER f;
     f.null = true;
     return f;
 }
 
-RFOLDER get_folder(char * name)
+FOLDER get_folder(char * name)
 {
     for (int z = 0; z < Filesystem::Ramdisk::folder_count; z++)
         if (strcmp(Filesystem::Ramdisk::folders[z].name, name))
@@ -87,9 +87,9 @@ RFOLDER get_folder(char * name)
     return null_folder();
 }
 
-RFILE get_file(char * name, char * folder)
+FILE get_file(char * name, char * folder)
 {
-    RFOLDER parent = get_folder(folder);
+    FOLDER parent = get_folder(folder);
 
     if (parent.null)
         return null_file();
@@ -101,12 +101,12 @@ RFILE get_file(char * name, char * folder)
     return null_file();
 }
 
-RFOLDER create_folder(char * name)
+FOLDER create_folder(char * name)
 {
     if (!get_folder(name).null) {
         return null_folder();
     }
-    RFOLDER folder;
+    FOLDER folder;
     folder.name = name;
     folder.path = std::get("/%s", name);
     folder.id = Filesystem::Ramdisk::folder_count;
@@ -117,19 +117,20 @@ RFOLDER create_folder(char * name)
     return folder;
 }
 
-RFILE create_file(char * name, char * folder, char * contents)
+FILE create_file(char * name, char * folder, char * contents, uint32_t size)
 {
     if (!get_file(name, folder).null) {
         return null_file();
     }
-    RFILE file;
+    FILE file;
 
     file.name = name;
     file.parent = folder;
     file.contents = contents;
     file.path = std::get("/%s/%s", folder, name);
+    file.size = size;
 
-    RFOLDER parent = get_folder(folder);
+    FOLDER parent = get_folder(folder);
 
     if (parent.null)
         return null_file();
@@ -142,6 +143,32 @@ RFILE create_file(char * name, char * folder, char * contents)
     return file;
 }
 
+FILE create_file(char * name, char * folder, char * contents)
+{
+    if (!get_file(name, folder).null) {
+        return null_file();
+    }
+    FILE file;
+
+    file.name = name;
+    file.parent = folder;
+    file.contents = contents;
+    file.path = std::get("/%s/%s", folder, name);
+
+    FOLDER parent = get_folder(folder);
+
+    if (parent.null)
+        return null_file();
+
+    file.id = parent.file_count;
+    parent.files[file.id] = file;
+    parent.file_count++;
+    Filesystem::Ramdisk::folders[parent.id] = parent;
+
+    return file;
+}
+
+#ifdef DEBUG
 void __fs_test()
 {
     create_folder("f1");
@@ -153,6 +180,7 @@ void __fs_test()
 
     ls();
 }
+#endif
 
 }
 

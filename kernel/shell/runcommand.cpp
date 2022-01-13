@@ -11,7 +11,6 @@
 using namespace std;
 using namespace Filesystem;
 using namespace Ramdisk;
-using namespace VFS;
 
 bool check_name(char * name, char * check_against)
 {
@@ -41,7 +40,7 @@ void rc(char * b)
 
         Filesystem::ls();
 
-    } else if (check_name(b, "mkdir")) {
+    } /*else if (check_name(b, "mkdir")) {
 
         int length = len(b);
         char name[length];
@@ -50,13 +49,30 @@ void rc(char * b)
         for (int z = 0; z < length; z++)
             name[z] = 0;
 
-        for (int z = 5; z < length; z++)
+        for (int z = 6; z < length; z++)
         {
             name[c] = b[z];
             c++;
         }
 
-        create_folder(name);    
+        create_folder(name);
+
+    } */else if (check_name(b, "cp")) {
+
+        int length = len(b);
+        char name[length];
+        int c = 0;
+
+        for (int z = 0; z < length; z++)
+            name[z] = 0;
+
+        for (int z = 3; z < length; z++)
+        {
+            name[c] = b[z];
+            c++;
+        }
+
+        //copy_file(name)
 
     } else if (check_name(b, "read")) {
 
@@ -73,7 +89,7 @@ void rc(char * b)
             c++;
         }
 
-        FILE file = fopen(name);
+        FILE file = get_file(name, "usr");
 
         if (!file) {
             printf("Error: '%s' not valid!\n", name);
@@ -107,7 +123,7 @@ void rc(char * b)
 
         //printf("You want to go to directory %s?\n", directory);
 
-        RFOLDER folder = get_folder(directory);
+        FOLDER folder = get_folder(directory);
 
         if (folder.null)
         {

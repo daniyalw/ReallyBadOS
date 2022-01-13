@@ -17,7 +17,7 @@ extern "C" {
     extern unsigned int read_eip();
 }
 
-#define DEBUG
+//#define DEBUG
 //#define GRAPHICS
 
 #include <cpuid.h>
@@ -81,7 +81,6 @@ extern "C" {
 #include "../gui/label.cpp"
 #include "sys/syscall/usermode.cpp"
 #include "../drivers/disk/ata.cpp"
-#include "../fs/file.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -94,7 +93,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     create_folder("dev");
     create_folder("usr");
-    create_file("hello.txt", "usr", "Hello, user!");
 
     Kernel::init_serial(SERIAL_PORT);
 
@@ -207,11 +205,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     for (int z = 0; z < block_count; z++)
     {
-        create_file(blocks[z].name, "usr", blocks[z].contents);
-
-        FILE f = fcreate(blocks[z]);
-
-        all_files.push_back(f);
+        create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
     }
 
     switch_to_user_mode();
