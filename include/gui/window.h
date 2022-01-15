@@ -8,6 +8,7 @@ using namespace Graphic;
 
 #define TITLE_PADDING 2
 #define CLOSE_B 6
+#define RADIUS 10
 
 class Window
 {

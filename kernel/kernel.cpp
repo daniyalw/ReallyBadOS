@@ -108,7 +108,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Kernel::init_sound();
     Kernel::read_rtc();
     Kernel::init_timer(1000);
-    Kernel::init_keyboard(true, "");
+    Kernel::init_keyboard(false, "");
     Kernel::init_mouse();
     Kernel::init_syscalls();
 
@@ -124,6 +124,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Graphic::init_graphics(mbd);
 
     Graphic::redraw_background_picture(array);
+
 
 
     Window win = Window();
@@ -160,6 +161,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         xx = copyx;
     }
     */
+    /*
     for (int z = 0; z < folder_count; z++)
     {
         char * name = folders[z].name;
@@ -184,8 +186,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         copyx = 52;
         xx = copyx;
     }
-
-    Kernel::system_log("Window widget count: %d\n", win.widget_count);
+    */
 
     win.draw();
 
@@ -207,6 +208,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     {
         create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
     }
+
+    uint8_t *res;
+    res = ata_init(res);
 
     switch_to_user_mode();
 

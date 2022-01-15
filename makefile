@@ -3,9 +3,9 @@ COMPILER_FLAGS = -m32 -Iinclude -nostdlib -ffreestanding -Wno-write-strings -std
 QEMU_FLAGS = -soundhw pcspk -m 100M -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk
 OUT = ceneos-x86_32.iso
 
-r:
+run:
 
-	qemu-system-x86_64 -cdrom ceneos-x86_32.iso -soundhw pcspk -m 100M -serial stdio -rtc base=localtime
+	qemu-system-x86_64 -cdrom ceneos-x86_32.iso ${QEMU_FLAGS}
 
 bootloader:
 	i686-elf-as -o built/loader.o ${boot}
@@ -35,10 +35,8 @@ kernel:
 textmode:
 	make bootloader
 	i686-elf-g++ ${COMPILER_FLAGS} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
-	cp built/main.o isodir/boot/main.o
-	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o ${OUT} isodir
-	qemu-system-x86_64 -cdrom ${OUT} ${QEMU_FLAGS}
+	make iso
+	make run
 
 clean:
 	rm *.iso
@@ -47,9 +45,9 @@ clean:
 	rm isodir/*.cfg
 
 iso:
-	cp built/main.elf isodir/boot/main.bin
+	cp built/main.o isodir/boot/main.o
 	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o ceneos-x86_32.iso isodir
+	grub-mkrescue -o ${OUT} isodir
 
 # graphics
 graphics:
@@ -58,4 +56,4 @@ graphics:
 	cp built/main.o isodir/boot/main.o
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o ${OUT} isodir
-	qemu-system-x86_64 -cdrom ${OUT} ${QEMU_FLAGS}
+	make run

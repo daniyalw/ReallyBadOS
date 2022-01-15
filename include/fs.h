@@ -52,6 +52,22 @@ FILE fopen(char * name, char * folder);
 
 }
 
+// for the disk
+typedef struct
+{
+    char * name;
+    char * file_names[128];
+    int file_count = 0;
+} disk_folder_t;
+
+typedef struct
+{
+    disk_folder_t disk_folders[128];
+    int disk_folder_count = 0;
+} disk_header_t;
+
+disk_header_t disk_header;
+
 void ls();
 
 }

@@ -336,6 +336,13 @@ void bottomright_circle(int cx, int cy, int r, int color) {
     }
 }
 
+void fill_topleft_corner(int cx, int cy, int radius, int color, int position) {
+    for (int y = -radius; y <= 0; y++)
+        for (int x = -radius; x <= 0; x++)
+            if (x * x + y * y <= radius * radius)
+                Graphic::SetPixel(cx+x, cy+y, color);
+}
+
 void circle(int cx, int cy, int r, int color) {
     bottomleft_circle(cx, cy, r, color);
     bottomright_circle(cx, cy, r, color);
@@ -347,9 +354,9 @@ void fill_circle(int cx, int cy, int radius, int color)
 {
     circle(cx, cy, radius, color);
 
-    for(int y = -radius; y <= radius; y++)
-        for(int x = -radius; x <= radius; x++)
-            if(x * x + y * y <= radius * radius)
+    for (int y = -radius; y <= radius; y++)
+        for (int x = -radius; x <= radius; x++)
+            if (x * x + y * y <= radius * radius)
                 Graphic::SetPixel(cx+x, cy+y, color);
 }
 

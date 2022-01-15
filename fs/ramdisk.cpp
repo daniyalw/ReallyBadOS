@@ -13,6 +13,7 @@ path_t parse_name(char * path)
     int fnz = 0;
 
     bool first = false;
+    bool second = false;
 
     for (int z = 0; z < length; z++)
     {
@@ -24,16 +25,19 @@ path_t parse_name(char * path)
     {
         if (path[z] == '/')
         {
-            first = true;
+            if (first)
+                second = true;
+            else
+                first = true;
         }
         else
         {
-            if (first)
+            if (second)
             {
                 fname[fnz] = path[z];
                 fnz++;
             }
-            else
+            else if (first)
             {
                 folder[fdz] = path[z];
                 fdz++;
@@ -227,4 +231,10 @@ void ls()
 #endif
 }
 
+}
+
+FILE fopen(char * name)
+{
+    path_t path = parse_name(name);
+    return get_file(path.filename, path.foldername);
 }

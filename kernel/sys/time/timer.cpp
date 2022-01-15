@@ -27,6 +27,21 @@ void timer_int(registers_t regs) {
         hour -= 12;
         pm_on = true;
     }
+
+    for (int z = 0; z < timers.size(); z++) {
+        timer_t timer = timers[z];
+        timer.remaining_ms--;
+        timers.replace(timer, z);
+    }
+
+    for (int z = 0; z < timers.size(); z++) {
+        timer_t timer = timers[z];
+
+        if (timer.remaining_ms == 0) {
+            timers.remove(z);
+            timer.func();
+        }
+    }
 }
 
 namespace Kernel {
@@ -65,4 +80,12 @@ void sleep(int secs)
 void sleep_ms(int ms)
 {
     timer_wait(ms);
+}
+
+void create_timer(int ms, void (*function)())
+{
+    timer_t timer;
+    timer.func = function;
+    timer.remaining_ms = ms;
+    timers.push_back(timer);
 }

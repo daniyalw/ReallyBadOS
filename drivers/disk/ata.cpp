@@ -59,3 +59,63 @@ void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes) {
         bytes += SECTOR_SIZE;
     }
 }
+
+uint8_t * ata_init(uint8_t *bytes) {
+    uint8_t abc = inb(0x1F5);
+    bool non_packet = false;
+
+    if (abc == 0xEB) {
+        non_packet = true;
+    }
+
+    if (!non_packet) {
+        outb(0x1F6, 0xA0);
+        outb(0x1F2, 0);
+        outb(0x1F3, 0);
+        outb(0x1F4, 0);
+        outb(0x1F5, 0);
+        outb(0x1F7, 0xEC);
+        uint8_t res = inb(0x1F7);
+
+        if (res == 0) {
+            printf("Drive does not exist!\n");
+            return NULL;
+        }
+
+        while (inb(0x1F7) & STATUS_BSY)
+            ;
+        while (!(inb(0x1F7) & STATUS_RDY))
+            ;
+
+        for (int i = 0; i < 256; i++) {
+            bytes[i] = inw(0x1F0);
+        }
+
+        printf("Read bytes successfully!\n");
+
+        return bytes;
+    } else {
+        outb(0x1F6, 0xA1);
+        outb(0x1F2, 0);
+        outb(0x1F3, 0);
+        outb(0x1F4, 0);
+        outb(0x1F5, 0);
+        outb(0x1F7, 0xEC);
+        uint8_t res = inb(0x1F7);
+
+        if (res == 0) {
+            return NULL;
+        }
+
+        while (inb(0x1F7) & STATUS_BSY)
+            ;
+        while (!(inb(0x1F7) & STATUS_RDY))
+            ;
+
+        for (int i = 0; i < 256; i++) {
+            bytes[i] = inw(0x1F0);
+        }
+
+        return bytes;
+    }
+}
