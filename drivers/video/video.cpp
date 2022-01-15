@@ -20,6 +20,8 @@ void clear() {
 
     text_x = 0;
     text_y = 0;
+
+    Kernel::update_hardware_cursor(text_x, text_y);
 }
 
 void next_char() {
@@ -263,7 +265,7 @@ void printf(char *text, ...)
       {
           putchar("(null)"[z]);
       }
-      
+
       return;
   }
 

@@ -81,6 +81,10 @@ extern "C" {
 #include "../gui/label.cpp"
 #include "sys/syscall/usermode.cpp"
 #include "../drivers/disk/ata.cpp"
+#include "sys/mem/mem.cpp"
+#include "sys/mem/block.cpp"
+#include "sys/mem/malloc.cpp"
+#include "sys/mem/free.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -211,6 +215,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     uint8_t *res;
     res = ata_init(res);
+
+    init_mem(mbd);
 
     switch_to_user_mode();
 
