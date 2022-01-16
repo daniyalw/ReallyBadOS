@@ -113,7 +113,7 @@ void __mem_test()
 
     Kernel::system_log("============\n");
 
-    uint32_t addr = malloc(10);
+    addr = malloc(10);
 
     Kernel::system_log("%d\n", addr);
 

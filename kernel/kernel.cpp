@@ -86,6 +86,7 @@ extern "C" {
 #include "sys/mem/malloc.cpp"
 #include "sys/mem/free.cpp"
 #include "sys/mem/realloc.cpp"
+#include "sys/mem/calloc.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
