@@ -103,3 +103,34 @@ void free_block(uint32_t addr, int size)
         block_count_mem++;
     }
 }
+
+uint32_t move_block_with_new_size(uint32 old, int newsize)
+{
+    mem_t block;
+
+    for (int z = 0; z < total_used; z++)
+    {
+        if (!used[z]) continue;
+        else
+        {
+            if (used[z].addr == old)
+            {
+                block = used[z];
+            }
+        }
+    }
+
+    if (newsize > block.size)
+    {
+        free_block(block.addr, block.size);
+
+        uint32_t newaddr = get_free_block(newsize);
+
+        for (uint32_t z = old; z < block.size; z++)
+            ((short *)newaddr)[z] = ((short *)old)[z];
+
+        return newaddr;
+    }
+
+    return NULL;
+}

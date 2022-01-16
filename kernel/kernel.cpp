@@ -17,7 +17,7 @@ extern "C" {
     extern unsigned int read_eip();
 }
 
-//#define DEBUG
+#define DEBUG
 //#define GRAPHICS
 
 #include <cpuid.h>
@@ -85,9 +85,12 @@ extern "C" {
 #include "sys/mem/block.cpp"
 #include "sys/mem/malloc.cpp"
 #include "sys/mem/free.cpp"
+#include "sys/mem/realloc.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
+
+#define UCODE_START 0x600000
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -129,69 +132,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     Graphic::redraw_background_picture(array);
 
-
-
-    Window win = Window();
-
-    win.set_title("File Manager");
-
-    win.set(50, 50, 300, 300);
-
-    int xx = 52, yy = 52;
-    //yy += font_height + 2;
-    int copyx = xx, copyy = yy;
-
-    //win.draw();
-    /*
-    for (int z = 0; z < folder_count; z++)
-    {
-        char *d = (char *)malloc(sizeof(char) * 2, std::len(folders[z].name) + 1);
-
-        draw_string(xx, yy, white, std::get(d, "%s\n", folders[z].name));
-        copyy += font_height + 2;
-        copyx += font_width * 4;
-        xx = copyx;
-        yy = copyy;
-
-        for (int b = 0; b < folders[z].file_count; b++)
-        {
-            draw_string(xx, yy, white, "/%s/%s\n", folders[z].name, folders[z].files[b].name);
-            xx = copyx;
-            copyy += font_height + 2;
-            yy = copyy;
-        }
-
-        copyx = 52;
-        xx = copyx;
-    }
-    */
-    /*
-    for (int z = 0; z < folder_count; z++)
-    {
-        char * name = folders[z].name;
-        Widget label = create_label(name, black, xx, yy);
-        copyy += font_height + 2;
-        copyx += font_width * 4;
-        xx = copyx;
-        yy = copyy;
-
-        win.add_widget(label);
-
-        for (int b = 0; b < folders[z].file_count; b++)
-        {
-            Widget sub = create_label(folders[z].files[b].name, black, xx, yy);
-            xx = copyx;
-            copyy += font_height + 2;
-            yy = copyy;
-
-            win.add_widget(sub);
-        }
-
-        copyx = 52;
-        xx = copyx;
-    }
-    */
-
     win.draw();
 
     //draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
@@ -203,6 +143,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     while (true);
 
 #else
+
+    init_mem(mbd);
 
     u32 location = *((u32*)mbd->mods_addr);
 
@@ -216,7 +158,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     uint8_t *res;
     res = ata_init(res);
 
-    init_mem(mbd);
+
+    clear();
 
     switch_to_user_mode();
 
