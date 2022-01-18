@@ -1,4 +1,5 @@
 #include <fs.h>
+#include <memory.h>
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -136,8 +137,9 @@ FILE create_file(char * name, char * folder, char * contents, uint32_t size)
 
     FOLDER parent = get_folder(folder);
 
-    if (parent.null)
+    if (parent.null) {
         return null_file();
+    }
 
     file.id = parent.file_count;
     parent.files[file.id] = file;
@@ -147,17 +149,20 @@ FILE create_file(char * name, char * folder, char * contents, uint32_t size)
     return file;
 }
 
-FILE create_file(char * name, char * folder, char * contents)
+FILE create_file(char * name, char * folder, char *( *_read)(), void (*_write)(char*))
 {
     if (!get_file(name, folder).null) {
         return null_file();
     }
+
     FILE file;
 
     file.name = name;
     file.parent = folder;
-    file.contents = contents;
     file.path = std::get("/%s/%s", folder, name);
+
+    file.read = _read;
+    file.write = _write;
 
     FOLDER parent = get_folder(folder);
 
@@ -171,20 +176,6 @@ FILE create_file(char * name, char * folder, char * contents)
 
     return file;
 }
-
-#ifdef DEBUG
-void __fs_test()
-{
-    create_folder("f1");
-    create_file("abc.txt", "f1", "sucks to be you");
-    create_file("bb.txt", "f1", "NO");
-
-    create_folder("f2");
-    create_file("abc.txt", "f2", "dfasfds");
-
-    ls();
-}
-#endif
 
 }
 

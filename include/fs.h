@@ -6,6 +6,9 @@ namespace Filesystem
 namespace Ramdisk
 {
 
+typedef void (*__write)(char *);
+typedef char * (*__read)();
+
 typedef struct
 {
     char * name;
@@ -17,6 +20,9 @@ typedef struct
     bool null = false;
 
     bool operator!() { return null; }
+
+    __write write;
+    __read read;
 } FILE;
 
 typedef struct
@@ -44,10 +50,10 @@ int folder_count = 0;
 FILE null_file();
 FOLDER null_folder();
 FOLDER get_folder(char * name);
-FILE get_file(char * name, char * FOLDER);
+FILE get_file(char * name, char * folder);
 FOLDER create_folder(char * name);
-FILE create_file(char * name, char * FOLDER, char * contents, uint32_t size);
-FILE create_file(char * name, char * FOLDER, char * contents);
+FILE create_file(char * name, char * folder, char * contents, uint32_t size);
+FILE create_file(char * name, char * folder, char * (*_read)(), void (*_write)(char*));
 FILE fopen(char * name, char * folder);
 
 }

@@ -226,8 +226,6 @@ void init_mouse()
     mouse_read();
 
     Kernel::register_interrupt_handler(IRQ12, mouse_handler);
-
-    create_file("keyboard", "dev", "Mouse turned on.\n");
 }
 
 }

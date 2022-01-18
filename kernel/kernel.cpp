@@ -147,6 +147,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     init_mem(mbd);
 
+    clear();
+
     u32 location = *((u32*)mbd->mods_addr);
 
     parse(location);
@@ -156,11 +158,10 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
     }
 
+    init_vga();
+
     uint8_t *res;
     res = ata_init(res);
-
-
-    clear();
 
     switch_to_user_mode();
 

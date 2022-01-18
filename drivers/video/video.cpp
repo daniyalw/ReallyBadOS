@@ -1,6 +1,10 @@
 #pragma once
 #include <drivers/video/video.h>
 #include <drivers/mouse/cursor.h>
+#include <fs.h>
+
+using namespace Filesystem;
+using namespace Ramdisk;
 
 int text_get_color(int backcolour, int forecolour)
 {
@@ -15,6 +19,7 @@ void clear() {
         for (int b = 0; b < 25; b++) {
             vidmem[b*80+z] = 0x0F00 | ' ';
             written_on[z+b*80] = false;
+            vga_back[b*80+z] = ' ';
         }
     }
 
@@ -72,6 +77,7 @@ void putchar(char text) {
 
     vidmem[text_x+text_y*80] = color | text;
     written_on[text_x+text_y*80] = true;
+    vga_back[text_x+text_y*80] = text;
     next_char();
 }
 
@@ -113,6 +119,7 @@ void putchar(char text, int color) {
 
     vidmem[text_x+text_y*80] = color | text;
     written_on[text_x+text_y*80] = true;
+    vga_back[text_x+text_y*80] = text;
     next_char();
 }
 void scroll()
@@ -126,12 +133,14 @@ void scroll()
        for (i = 0*80; i < 24*80; i++)
        {
            vidmem[i] = vidmem[i+80];
+           vga_back[i] = vga_back[i+80];
            written_on[i] = vidmem[i+80];
        }
 
        for (i = 24*80; i < 25*80; i++)
        {
            vidmem[i] = space;
+           vga_back[i] = space;
            written_on[i] = false;
        }
        text_y = 24;
@@ -398,6 +407,7 @@ void printf_centered(char * s, int line_no)
         else
         {
             vidmem[i+b] = c | s[z];
+            vga_back[i+b] = s[z];
             next_char();
             b++;
         }
@@ -783,4 +793,19 @@ void info(char *text, ...)
         }
     }
     Kernel::set_hardware_cursor(text_y, text_x);
+}
+
+void write_vga(char *data)
+{
+    printf(data);
+}
+
+char * read_vga()
+{
+    return vga_back;
+}
+
+void init_vga()
+{
+    create_file("vga", "dev", read_vga, write_vga);
 }

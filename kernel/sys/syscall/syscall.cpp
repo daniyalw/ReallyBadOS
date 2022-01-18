@@ -55,6 +55,11 @@ void s_update_mouse()
     Kernel::update_hardware_cursor(text_x, text_y);
 }
 
+void s_test()
+{
+    printf("Hello!");
+}
+
 DEFN_SYSCALL1(print, 0, char *);
 
 DEFN_SYSCALL1(s_putchar, 1, char);
@@ -63,13 +68,11 @@ DEFN_SYSCALL1(get_num, 2, int *);
 
 DEFN_SYSCALL1(s_get_time, 3, time_t *);
 
-DEFN_SYSCALL2(s_free, 5, int, int);
+DEFN_SYSCALL3(s_putpixel, 4, int, int, int);
 
-DEFN_SYSCALL3(s_putpixel, 6, int, int, int);
+DEFN_SYSCALL0(s_update_mouse, 5);
 
-DEFN_SYSCALL1(test, 7, int);
-
-DEFN_SYSCALL0(s_update_mouse, 8);
+DEFN_SYSCALL0(s_test, 6);
 
 // ----------------------------- //
 
@@ -179,12 +182,6 @@ void sys_putpixel(int x, int y, int color)
     syscall_s_putpixel(x, y, color);
 }
 
-int sys_test()
-{
-    int num[1];
-    syscall_test(num[0]);
-    return num[0];
-}
 
 // ----------------------------- //
 
@@ -200,6 +197,8 @@ void syscall_handler(registers_t regs)
        return;
 
    void *location = syscalls.get(regs.eax);
+
+  // printf("\nSyscall: %d\n", regs.eax);
 
    int ret;
 
@@ -229,6 +228,7 @@ void init_syscalls()
     syscall_append((void *)s_get_time);
     syscall_append((void *)s_putpixel);
     syscall_append((void *)s_update_mouse);
+    syscall_append((void *)s_test);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     Kernel::system_log("Syscalls initialized at interrupt 48!");
 }

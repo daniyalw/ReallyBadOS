@@ -76,8 +76,6 @@ void init_graphics(auto mbd)
     char * out;
     out = std::get(out, "\nPitch: %d\nWidth: %d\nHeight: %d\nBPP: %d\n", pitch, width, height, bpp);
     Kernel::system_log(out);
-
-    create_file("framebuffer", "dev", out);
 }
 
 }

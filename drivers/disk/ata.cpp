@@ -91,8 +91,6 @@ uint8_t * ata_init(uint8_t *bytes) {
             bytes[i] = inw(0x1F0);
         }
 
-        printf("Read bytes successfully!\n");
-
         return bytes;
     } else {
         outb(0x1F6, 0xA1);
@@ -104,6 +102,7 @@ uint8_t * ata_init(uint8_t *bytes) {
         uint8_t res = inb(0x1F7);
 
         if (res == 0) {
+            printf("Non-existent drive!\n");
             return NULL;
         }
 
@@ -118,4 +117,16 @@ uint8_t * ata_init(uint8_t *bytes) {
 
         return bytes;
     }
+}
+
+FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
+{
+    FILE * file;
+    uint8_t * bytes;
+
+    ata_read(bytes, LBA, sectors);
+
+    file = (FILE *)bytes;
+
+    return file;
 }
