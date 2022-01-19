@@ -17,7 +17,7 @@ extern "C" {
     extern unsigned int read_eip();
 }
 
-#define DEBUG
+//#define DEBUG
 //#define GRAPHICS
 
 #include <cpuid.h>
@@ -145,8 +145,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     init_mem(mbd);
 
-    clear();
-
     u32 location = *((u32*)mbd->mods_addr); // load modules with GRUB
 
     // parse the tar file
@@ -159,6 +157,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     }
 
     init_vga();
+
 
     //ata_write_one(0, (uint8_t *)"installed");
 

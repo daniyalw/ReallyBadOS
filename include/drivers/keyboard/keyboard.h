@@ -22,7 +22,7 @@ bool is_keyboard_locked();
 int get_buffer_size();
 void edit_buffer_size(int change);
 char _getch();
-char * scanf(char * dd);
+char * scanf();
 static void scan_key(registers_t regs);
 void get_key(unsigned char code);
 
@@ -30,7 +30,7 @@ struct input_t
 {
     void operator>>(char * buff)
     {
-        scanf(buff);
+        buff = scanf();
     }
 };
 

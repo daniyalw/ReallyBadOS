@@ -73,7 +73,9 @@ void init_mem(auto mbd)
 
     total_memory = total;
 
+#ifdef DEBUG
     printf("Total: %d\n", total);
+#endif
 }
 
 #ifdef DEBUG

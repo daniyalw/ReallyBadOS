@@ -36,6 +36,11 @@ void rc(char * b)
         for (int z = 5; z < bf; z++) {
             putchar(b[z]);
         }
+    } else if (check_name(b, "read")) {
+
+        char * a = scanf();
+        printf("\nInput: %s\n", a);
+
     } else if (check_name(b, "ls")) {
 
         Filesystem::ls();

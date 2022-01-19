@@ -126,11 +126,37 @@ uint32_t move_block_with_new_size(uint32 old, int newsize)
 
         uint32_t newaddr = get_free_block(newsize);
 
+        if (newaddr == NULL)
+        {
+            return get_free_block(block.size);
+        }
+
         for (uint32_t z = old; z < block.size; z++)
             ((short *)newaddr)[z] = ((short *)old)[z];
 
         return newaddr;
     }
+    else
+    {
+        free_block(block.addr, block.size);
 
-    return NULL;
+        uint32_t newaddr = get_free_block(newsize);
+
+        if (newaddr == NULL)
+        {
+            // we should never come here, since we just free enough space
+            PANIC("NULL even after free()\n");
+        }
+
+        for (uint32_t z = old; z < newsize; z++)
+        {
+            ((short *)newaddr)[z] = ((short *)old)[z];
+        }
+
+        return newaddr;
+    }
+
+    PANIC("We managed to find ourselves outside of an if-else loop that returns on both conditions...\n");
+
+    return NULL; // we also shouldn't be here
 }

@@ -67,7 +67,7 @@ char _getch()
 
 // dd is the variable to store the input in
 // type is the type of input wanted
-char * scanf(char * bb)
+char * scanf()
 {
     scanf_on = true;
 
@@ -85,12 +85,7 @@ char * scanf(char * bb)
             if (k == '\n')
             {
                 ASSERT(s <= 128);
-                char dd[s];
-
-                for (int z = 0; z < 128; z++)
-                {
-                    dd[z] = 0;
-                }
+                char * dd = (char *)malloc(s);
 
                 for (int z = 0; z < s; z++)
                 {
@@ -99,9 +94,7 @@ char * scanf(char * bb)
 
                 printf("\b");
 
-                bb = dd;
-
-                return bb;
+                return dd;
             }
 
             data[s] = k;
@@ -456,7 +449,7 @@ void init_keyboard(bool on, char * cd) {
     terminal_on = on;
     Kernel::system_log("Enabled keyboard.\n");
     // register the interrupt
-   Kernel::register_interrupt_handler(IRQ1, scan_key);
+    Kernel::register_interrupt_handler(IRQ1, scan_key);
 }
 
 }
