@@ -17,3 +17,4 @@ mem_t used[128];
 int total_used = 0;
 
 int total_memory;
+int total_usable;

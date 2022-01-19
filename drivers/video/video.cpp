@@ -807,5 +807,5 @@ char * read_vga(char * data)
 
 void init_vga()
 {
-    create_file("vga", "dev", read_vga, write_vga);
+    create_file("tty0", "dev", read_vga, write_vga);
 }

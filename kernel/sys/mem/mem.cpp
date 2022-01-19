@@ -29,10 +29,12 @@ void init_mem(auto mbd)
         multiboot_memory_map_t* mmmt =
             (multiboot_memory_map_t*) (mbd->mmap_addr + i);
 
-        #ifdef DEBUG
-        printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
-            mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
-        #endif
+            #ifdef DEBUG
+            printf("TT: Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+                mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
+            #endif
+
+        total += mmmt->len_low;
 
         if (mmmt->type == MULTIBOOT_MEMORY_AVAILABLE) {
             if (mmmt->addr_low != 0x100000) {
@@ -40,7 +42,12 @@ void init_mem(auto mbd)
                 if (mmmt->addr_low == 0)
                     addr++; // so it doesn't do null
 
-                total += mmmt->len_low;
+                total_usable += mmmt->len_low;
+
+                #ifdef DEBUG
+                printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+                    mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
+                #endif
 
                 if (!last_av) {
                     mem_t m;

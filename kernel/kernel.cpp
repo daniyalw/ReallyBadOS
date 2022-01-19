@@ -59,7 +59,7 @@ extern "C" {
 #include "sys/interrupts/isr.cpp"
 #include "sys/interrupts/interrupts.cpp"
 #include "../drivers/sound/sound.cpp"
-#include "shell/runcommand.cpp"
+#include "shell/shell.cpp"
 #include "../drivers/video/font.cpp"
 #include "../drivers/video/graphics.cpp"
 #include "../drivers/keyboard/keyboard.cpp"
@@ -158,8 +158,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     init_vga();
 
-
-    //ata_write_one(0, (uint8_t *)"installed");
+    shell();
 
     switch_to_user_mode();
 

@@ -388,6 +388,7 @@ void get_key(unsigned char code)
     }
     //putchar(key);
     if (!scanf_on) {
+        /*
         if (terminal_on) {
             if (key != 0) {
                 if (key == '\n')
@@ -424,6 +425,7 @@ void get_key(unsigned char code)
                 }
             }
         }
+        */
     }
 }
 
@@ -434,7 +436,6 @@ void init_keyboard(bool on, char * cd) {
         buffer[z] = 0;
 
     for (int z = 0; z < 128; z++) {
-        buff[z] = 0;
         current_display[z] = 0;
     }
 

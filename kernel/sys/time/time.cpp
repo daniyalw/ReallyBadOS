@@ -93,7 +93,6 @@ void read_rtc() {
             year += (CURRENT_YEAR / 100) * 100;
             if(year < CURRENT_YEAR) year += 100;
       }
-    seconds = second;
 
     Kernel::system_log("Read RTC.\n");
 }
