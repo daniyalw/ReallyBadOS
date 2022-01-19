@@ -122,8 +122,14 @@ void putchar(char text, int color) {
     vga_back[text_x+text_y*80] = text;
     next_char();
 }
+
 void scroll()
 {
+    if (to_clear && text_y > 24)
+    {
+        clear();
+        return;
+    }
    uint8 attr = (0 << 4) | (15 & 0x0F);
    uint16 space = 0x20 | (attr << 8);
    short * vidmem = (short *)0xb8000;

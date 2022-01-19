@@ -74,6 +74,7 @@ typedef struct
 
 disk_header_t disk_header;
 
-void ls();
+void internal_ls();
+void ls(char *cwd);
 
 }

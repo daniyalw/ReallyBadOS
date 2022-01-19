@@ -179,7 +179,7 @@ FILE create_file(char * name, char * folder, char *( *_read)(char *), void (*_wr
 
 }
 
-void ls()
+void internal_ls()
 {
     printf("Folder count: %d\n\n", Filesystem::Ramdisk::folder_count);
 
@@ -220,6 +220,25 @@ void ls()
         Kernel::system_log("\n");
     }
 #endif
+}
+
+void ls(char *cwd)
+{
+    if (cwd == "/")
+    {
+        internal_ls();
+        return;
+    }
+    FOLDER folder = get_folder(cwd);
+
+    if (folder.null) return;
+    else
+    {
+        for (int z = 0; z < folder.file_count; z++)
+        {
+            printf("/%s/%s\n", folder.name, folder.files[z].name);
+        }
+    }
 }
 
 }

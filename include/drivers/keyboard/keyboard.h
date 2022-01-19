@@ -1,6 +1,7 @@
 #pragma once
 
 #include <kernel/isr.h>
+#include <memory.h>
 
 int shifted = 0;
 char * returned;
@@ -11,7 +12,8 @@ bool terminal_on = false;
 bool keyboard_locked;
 bool scanf_on = false;
 
-char buffer[1000];
+char * buffer = (char *)malloc(128);
+int total_size_b = 128;
 int buffer_size = 1;
 int entered_len = 0;
 

@@ -41,7 +41,7 @@ extern "C" {
 #include <drivers/video/graphics.h>
 #include <list.h>
 #include <macros.h>
-#include <sys.h>
+#include <system.h>
 #include <assert.h>
 #include <va_list.h>
 
@@ -90,6 +90,7 @@ extern "C" {
 
 using namespace Filesystem;
 using namespace Ramdisk;
+using namespace Time;
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -157,6 +158,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     }
 
     init_vga();
+
 
     shell();
 

@@ -2,7 +2,7 @@
 
 namespace System {
 
-const char * VERSION = "1.3";
+const char * VERSION = "1.5";
 const char * SYSTEM = "CeneOS";
 
 }

@@ -59,7 +59,6 @@ char _getch()
         {
             char k = buffer[get_buffer_size()-1];
             edit_buffer_size(1);
-            putchar(k);
             return k;
         }
     }
@@ -74,7 +73,7 @@ char * scanf()
     char data[128];
     char k;
     int s = 0;
-    int limit = 128;
+    const int limit = 128;
 
     while (true)
     {
@@ -82,9 +81,10 @@ char * scanf()
 
         if (k != '\b')
         {
+            putchar(k);
             if (k == '\n')
             {
-                ASSERT(s <= 128);
+                ASSERT(s <= limit);
                 char * dd = (char *)malloc(s);
 
                 for (int z = 0; z < s; z++)
@@ -102,7 +102,11 @@ char * scanf()
         }
         else
         {
-            s--;
+            if (s > 0)
+            {
+                s--;
+                printf("\b");
+            }
         }
     }
 
@@ -381,7 +385,13 @@ void get_key(unsigned char code)
             key = 0;
     }
     if (key != 0) {
+        if (buffer_size >= total_size_b)
+        {
+            buffer = (char *)realloc(buffer, total_size_b + 128);
+            total_size_b += 128;
+        }
         buffer[buffer_size] = key;
+        buffer[buffer_size+1] = 0;
         buffer_size++;
         entered_len++;
         keyboard_unlock();
