@@ -2,4 +2,4 @@
 An operating system.
 
 # Running
-Run this in QEMU (which is tested): `qemu-system-x86_64 -cdrom main.iso`
+Run this in QEMU (which is tested): make run
