@@ -163,7 +163,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     uint8_t *res;
     res = ata_init(res);
 
-
     //ata_write_one(0, (uint8_t *)"installed");
 
     switch_to_user_mode();

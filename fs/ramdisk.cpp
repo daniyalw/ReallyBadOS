@@ -149,7 +149,7 @@ FILE create_file(char * name, char * folder, char * contents, uint32_t size)
     return file;
 }
 
-FILE create_file(char * name, char * folder, char *( *_read)(), void (*_write)(char*))
+FILE create_file(char * name, char * folder, char *( *_read)(char *), void (*_write)(char*))
 {
     if (!get_file(name, folder).null) {
         return null_file();

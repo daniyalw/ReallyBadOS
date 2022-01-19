@@ -800,7 +800,7 @@ void write_vga(char *data)
     printf(data);
 }
 
-char * read_vga()
+char * read_vga(char * data)
 {
     return vga_back;
 }

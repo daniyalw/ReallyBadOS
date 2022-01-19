@@ -70,10 +70,17 @@ void fs_ata_write(char * str)
     ata_write_one(ata.lba, ata.bytes);
 }
 
-char * fs_ata_read()
+char * fs_ata_read(char * num)
 {
-    // not implemented
-    return NULL;
+    char * data = (char *)malloc(SECTOR_SIZE);
+    uint32_t sector = (uint32_t)atoi(num);
+    uint8_t *bytes;
+
+    ata_read(bytes, sector, 1);
+
+    for (int z = 0; z < SECTOR_SIZE; z++) data[z] = (char)bytes[z];
+
+    return data;
 }
 
 uint8_t * ata_init(uint8_t *bytes) {
