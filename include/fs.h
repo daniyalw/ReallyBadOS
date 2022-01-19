@@ -54,7 +54,7 @@ FILE get_file(char * name, char * folder);
 FOLDER create_folder(char * name);
 FILE create_file(char * name, char * folder, char * contents, uint32_t size);
 FILE create_file(char * name, char * folder, char * (*_read)(), void (*_write)(char*));
-FILE fopen(char * name, char * folder);
+FILE * fopen(char * name, char * folder);
 
 }
 

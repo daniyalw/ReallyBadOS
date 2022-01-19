@@ -224,8 +224,21 @@ void ls()
 
 }
 
-FILE fopen(char * name)
+FILE * fopen(char * name)
 {
     path_t path = parse_name(name);
-    return get_file(path.filename, path.foldername);
+    FILE * file;
+    FILE orig = get_file(path.filename, path.foldername);
+
+    file->name = orig.name;
+    file->contents = orig.contents;
+    file->path = orig.path;
+    file->parent = orig.parent;
+    file->id = orig.id;
+    file->size = orig.size;
+    file->null = orig.null;
+    file->write = orig.write;
+    file->read = orig.read;
+
+    return file;
 }

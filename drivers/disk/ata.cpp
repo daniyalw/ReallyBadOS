@@ -1,4 +1,7 @@
 #include <ata.h>
+#include <string.h>
+
+using namespace std;
 
 void ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count) {
     while (inb(0x1F7) & STATUS_BSY)
@@ -60,6 +63,19 @@ void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes) {
     }
 }
 
+void fs_ata_write(char * str)
+{
+    fs_ata_t ata = get_from_str(str);
+
+    ata_write_one(ata.lba, ata.bytes);
+}
+
+char * fs_ata_read()
+{
+    // not implemented
+    return NULL;
+}
+
 uint8_t * ata_init(uint8_t *bytes) {
     uint8_t abc = inb(0x1F5);
     bool non_packet = false;
@@ -91,6 +107,8 @@ uint8_t * ata_init(uint8_t *bytes) {
             bytes[i] = inw(0x1F0);
         }
 
+        create_file("ata", "dev", fs_ata_read, fs_ata_write);
+
         return bytes;
     } else {
         outb(0x1F6, 0xA1);
@@ -115,6 +133,8 @@ uint8_t * ata_init(uint8_t *bytes) {
             bytes[i] = inw(0x1F0);
         }
 
+        create_file("ata", "dev", fs_ata_read, fs_ata_write);
+
         return bytes;
     }
 }
@@ -129,4 +149,45 @@ FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
     file = (FILE *)bytes;
 
     return file;
+}
+
+fs_ata_t get_from_str(char * str)
+{
+    uint8_t bytes[strlen(str)];
+    int bz = 0;
+    uint32_t lba;
+    fs_ata_t ata;
+
+    char slba[strlen(str)];
+    int sz = 0;
+
+    for (int z = 0; z < strlen(str); z++)
+    {
+        if (str[z] == ':')
+        {
+            break;
+        }
+        else
+        {
+            slba[sz] = str[z];
+            sz++;
+        }
+    }
+
+    slba[sz] = 0;
+
+    for (int z = sz+1; z < strlen(str); z++)
+    {
+        bytes[bz] = (uint8_t)str[z];
+        bz++;
+    }
+
+    bytes[bz] = 0;
+
+    lba = (uint32_t)atoi(slba);
+
+    ata.bytes = bytes;
+    ata.lba = lba;
+
+    return ata;
 }

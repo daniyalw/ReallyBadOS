@@ -91,8 +91,6 @@ extern "C" {
 using namespace Filesystem;
 using namespace Ramdisk;
 
-#define UCODE_START 0x600000
-
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         Kernel::system_log("Invalid magic.\n"); // we could use printf, but that's text-mode only
@@ -149,10 +147,12 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     clear();
 
-    u32 location = *((u32*)mbd->mods_addr);
+    u32 location = *((u32*)mbd->mods_addr); // load modules with GRUB
 
+    // parse the tar file
     parse(location);
 
+    // loop through the files in the tar block and create the files in the vfs
     for (int z = 0; z < block_count; z++)
     {
         create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
@@ -162,6 +162,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     uint8_t *res;
     res = ata_init(res);
+
+
+    //ata_write_one(0, (uint8_t *)"installed");
 
     switch_to_user_mode();
 
