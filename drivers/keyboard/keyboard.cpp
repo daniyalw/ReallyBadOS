@@ -78,7 +78,6 @@ char * scanf(char * bb)
 
     while (true)
     {
-        printf("a");
         k = _getch();
 
         if (k != '\b')
