@@ -28,6 +28,7 @@ void timer_int(registers_t regs) {
         pm_on = true;
     }
 
+    /*
     for (int z = 0; z < timers.size(); z++) {
         timer_t timer = timers[z];
         timer.remaining_ms--;
@@ -42,6 +43,7 @@ void timer_int(registers_t regs) {
             timer.func();
         }
     }
+    */
 }
 
 namespace Kernel {

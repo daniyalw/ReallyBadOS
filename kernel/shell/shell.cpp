@@ -52,6 +52,7 @@ void shell()
     while (true)
     {
         printf("\n\n/> ");
+
         char * command = scanf();
 
         if (check_name(command, "die"))

@@ -88,10 +88,12 @@ extern "C" {
 #include "sys/mem/realloc.cpp"
 #include "sys/mem/calloc.cpp"
 #include "sys/multitasking/cooperative.cpp"
+#include "../stdlib/tree.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
 using namespace Time;
+using namespace Cooperative;
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -158,9 +160,11 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
     }
 
+
     init_vga();
 
-    shell();
+    uint8_t *bytes;
+    bytes = ata_init(bytes);
 
     switch_to_user_mode();
 

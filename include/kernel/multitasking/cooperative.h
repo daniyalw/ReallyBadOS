@@ -4,6 +4,7 @@ typedef struct
 {
     char *name;
     uint32_t addr;
+    bool null = false;
 } task_t;
 
 task_t tasks[10];
@@ -18,5 +19,7 @@ void create_task(char * name, uint32_t addr);
 void switch_task();
 void yield();
 void update_addr(uint32_t addr);
+void exit();
+void task_ls();
 
 }

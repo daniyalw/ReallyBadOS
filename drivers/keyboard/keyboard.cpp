@@ -70,22 +70,25 @@ char * scanf()
 {
     scanf_on = true;
 
-    char data[128];
-    char k;
+    int limit = 128;
+    char *data = (char *)malloc(limit);
     int s = 0;
-    const int limit = 128;
 
     while (true)
     {
-        k = _getch();
+        char k = _getch();
+
+        if (s >= limit)
+        {
+            limit += 128;
+            data = (char *)realloc(data, limit);
+        }
 
         if (k != '\b')
         {
             putchar(k);
             if (k == '\n')
             {
-                ASSERT(s <= limit);
-                ASSERT(s >= 0);
                 char * dd = (char *)malloc(s);
 
                 for (int z = 0; z < s; z++)
@@ -93,7 +96,14 @@ char * scanf()
                     dd[z] = data[z];
                 }
 
+                for (int z = s; z < s * 2; z++)
+                {
+                    dd[z] = 0;
+                }
+
                 printf("\b");
+
+                printf("Returning: %s\n", dd);
 
                 return dd;
             }
