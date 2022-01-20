@@ -85,6 +85,7 @@ char * scanf()
             if (k == '\n')
             {
                 ASSERT(s <= limit);
+                ASSERT(s >= 0);
                 char * dd = (char *)malloc(s);
 
                 for (int z = 0; z < s; z++)
@@ -395,47 +396,6 @@ void get_key(unsigned char code)
         buffer_size++;
         entered_len++;
         keyboard_unlock();
-    }
-    //putchar(key);
-    if (!scanf_on) {
-        /*
-        if (terminal_on) {
-            if (key != 0) {
-                if (key == '\n')
-                {
-                    printf("\n\n");
-                    rc(buff);
-                    for (int z = 0; z < 1000; z++)
-                        buff[z] = 0;
-                    bf = 0;
-                    entered_len = 0;
-                    printf("\n\n");
-                    printf(current_display);
-                    printf("/> ");
-                } else {
-                    if (key != '\b')
-                    {
-                        putchar(key);
-                        buff[bf] = key;
-                        bf++;
-                    }
-                    else
-                    {
-                        if (text_x > current_display_len + 3)
-                        {
-                            buff[bf] = ' ';
-                            bf--;
-                            text_x--;
-                            putchar(' ');
-                            text_x--;
-                            Kernel::set_hardware_cursor(text_y, text_x);
-                        }
-                    }
-
-                }
-            }
-        }
-        */
     }
 }
 

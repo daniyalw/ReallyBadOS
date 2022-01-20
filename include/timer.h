@@ -17,4 +17,4 @@ std::list<timer_t> timers;
 static void timer_callback(registers_t regs);
 void timer_wait(int ticks);
 void sleep(int secs);
-void create_timer(int ms, void (*function)());
+void async_timer(int ms, void (*function)());

@@ -87,6 +87,7 @@ extern "C" {
 #include "sys/mem/free.cpp"
 #include "sys/mem/realloc.cpp"
 #include "sys/mem/calloc.cpp"
+#include "sys/multitasking/cooperative.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -158,7 +159,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     }
 
     init_vga();
-
 
     shell();
 

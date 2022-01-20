@@ -82,7 +82,7 @@ void sleep_ms(int ms)
     timer_wait(ms);
 }
 
-void create_timer(int ms, void (*function)())
+void async_timer(int ms, void (*function)())
 {
     timer_t timer;
     timer.func = function;
