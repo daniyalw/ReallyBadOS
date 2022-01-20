@@ -168,6 +168,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     switch_to_user_mode();
 
+    shell();
+
     Kernel::serial_write_string("\n");
     while (true) {}
 
