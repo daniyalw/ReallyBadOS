@@ -2,6 +2,8 @@
 
 CeneOS is a 32-bit operating system.
 
+[Latest Release](https://github.com/Daniyal-Warraich/CeneOS/releases/tag/v.15)
+
 ### Contributions
 Just send a pull-request after forking the repo.
 
@@ -17,4 +19,4 @@ make kernel
 make textmode
 ```
 
-It should compile, and automatically run QEMU for you. 
+It should compile, and automatically run QEMU for you.
