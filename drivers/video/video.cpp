@@ -135,7 +135,7 @@ void scroll()
        {
            vidmem[i] = vidmem[i+80];
            vga_back[i] = vga_back[i+80];
-           written_on[i] = vidmem[i+80];
+           written_on[i] = written_on[i+80];
        }
 
        for (i = 24*80; i < 25*80; i++)

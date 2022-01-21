@@ -29,7 +29,8 @@ namespace Kernel {
 // Internal function prototypes.
 static void init_gdt();
 static void gdt_set_gate(s32 num, u32 base, u32 limit, u8 access, u8 gran);
-void init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp);
+void _init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp);
+void init_tss();
 }
 
 gdt_entry_t gdt_entries[5];

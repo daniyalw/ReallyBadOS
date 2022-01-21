@@ -115,4 +115,14 @@ char * get_log(char * buff)
     return buff;
 }
 
+void log(char * data)
+{
+    Kernel::system_log(data);
+}
+
+void init_logging()
+{
+    create_file("log", "dev", Kernel::get_log, Kernel::log);
+}
+
 }

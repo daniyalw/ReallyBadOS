@@ -112,6 +112,11 @@ void shell()
 
         char * command = scanf();
 
+        if (!command)
+        {
+            continue;
+        }
+
         run_command(command);
 
         free(command); // since scanf() uses malloc()

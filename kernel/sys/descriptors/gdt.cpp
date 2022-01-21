@@ -8,7 +8,7 @@ namespace Kernel {
     {
     }
 
-void init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp)
+void _init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp)
 {
    gdt_set_gate(i, (unsigned int)&tss, (unsigned int)&tss + sizeof(TSS) - 1, 0x89, 0x00);
 
@@ -25,6 +25,13 @@ void init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp)
    Kernel::system_log("Initialized TSS.\n");
 
    flush_tss();
+}
+
+void init_tss()
+{
+    uint32_t esp;
+    asm volatile("mov %%esp, %0" : "=r"(esp));
+    Kernel::_init_tss(5, 0x10, esp);
 }
 
 static void init_gdt()

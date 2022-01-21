@@ -96,14 +96,12 @@ char * scanf()
                     dd[z] = data[z];
                 }
 
-                for (int z = s; z < s * 2; z++)
-                {
-                    dd[z] = 0;
-                }
+                dd[s] = 0;
 
                 printf("\b");
 
-                printf("Returning: %s\n", dd);
+                Kernel::system_log("Returning: %s\n", dd);
+                //printf("Returning: %s\n", dd);
 
                 return dd;
             }

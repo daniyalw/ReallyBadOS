@@ -44,6 +44,7 @@ extern "C" {
 #include <system.h>
 #include <assert.h>
 #include <va_list.h>
+#include <operator.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
@@ -89,6 +90,7 @@ extern "C" {
 #include "sys/mem/calloc.cpp"
 #include "sys/multitasking/cooperative.cpp"
 #include "../stdlib/tree.cpp"
+#include "../drivers/disk/partitions.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -101,20 +103,16 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         return; // stop any more kernel code running since it's not multiboot
     }
 
+    Kernel::system_log("Entered CeneOS kernel.\n");
+
     create_folder("dev");
     create_folder("usr");
 
     Kernel::init_serial(SERIAL_PORT);
-
-    Kernel::system_log("Entered CeneOS kernel.\n");
-
-    set_seed(4);
-
+    Kernel::init_logging();
     Kernel::init_isr();
     Kernel::init_gdt();
-    uint32_t esp;
-    asm volatile("mov %%esp, %0" : "=r"(esp));
-    Kernel::init_tss(5, 0x10, esp);
+    Kernel::init_tss();
     Kernel::init_sound();
     Kernel::read_rtc();
     Kernel::init_timer(1000);
@@ -159,7 +157,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     {
         create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
     }
-
 
     init_vga();
 
