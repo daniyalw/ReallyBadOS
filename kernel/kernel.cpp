@@ -126,13 +126,13 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     parse(location);
 
     for (int z = 0; z < block_count; z++)
-        create_file(blocks[z].name, "usr", blocks[z].contents);
+        create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
 
     Graphic::init_graphics(mbd);
 
     Graphic::redraw_background_picture(array);
 
-    win.draw();
+    draw_string("Hello!", 100, 100, white);
 
     //draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
 
