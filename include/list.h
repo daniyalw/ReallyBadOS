@@ -10,25 +10,6 @@ private:
     T * arr;
     int length = 0;
 
-    void newarr() {
-        // create a new array
-        // and fill it up with the already given values
-        // in the original array
-        T * narr;
-        int newl = 0; // new length
-
-        int b = 0;
-        for (int z = 0; z < length; z++)
-        {
-            narr[b] = arr[z];
-            b++;
-            newl++;
-        }
-        // the original array is now the new array
-        arr = narr;
-
-    }
-
 public:
 
     bool operator==(list other)

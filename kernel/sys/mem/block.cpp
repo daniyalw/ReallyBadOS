@@ -144,7 +144,7 @@ uint32_t move_block_with_new_size(uint32 old, int newsize)
 
         if (newaddr == NULL)
         {
-            // we should never come here, since we just free enough space
+            // we should never come here, since we just freed enough space
             PANIC("NULL even after free()\n");
         }
 
@@ -156,7 +156,7 @@ uint32_t move_block_with_new_size(uint32 old, int newsize)
         return newaddr;
     }
 
-    PANIC("We managed to find ourselves outside of an if-else loop that returns on both conditions...\n");
+    PANIC("Surprise: We managed to find ourselves outside of an if-else loop that returns on both conditions...\n");
 
     return NULL; // we also shouldn't be here
 }
