@@ -1,6 +1,4 @@
-## CeneOS
-
-CeneOS is a 32-bit operating system.
+## Release
 
 [Latest Release](https://github.com/Daniyal-Warraich/CeneOS/releases/tag/v.15)
 
