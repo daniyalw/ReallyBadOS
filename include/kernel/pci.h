@@ -18,8 +18,13 @@ struct PCIDevice
     uint8_t revisionID;
 } __attribute__((packed));
 
-uint16_t pciConfigReadWord(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset);
-void write_pci();
+uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset);
+bool device_functions(uint16_t bus, uint16_t device);
+uint16_t get_class_id(uint16_t bus, uint16_t device, uint16_t function);
+uint16_t get_subclass_id(uint16_t bus, uint16_t device, uint16_t function);
+void scan_buses();
+void go_through_and_print();
+PCIDevice * find_device(uint16_t vendor, uint16_t device);
 
 PCIDevice * devices[256*32*8];
 int device_count = 0;

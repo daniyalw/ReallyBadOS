@@ -352,11 +352,17 @@ void printf(char *text, ...)
           switch (c)
             {
             case 'c':
-                putchar(c);
+                putchar(*arg++);
                 break;
             case 'd':
+                std::itoa (buffer, c, *((int *) arg++));
+                p = buffer;
+                goto string;
+                break;
             case 'u':
             case 'x':
+              putchar('0');
+              putchar('x');
               std::itoa (buffer, c, *((int *) arg++));
               p = buffer;
               goto string;

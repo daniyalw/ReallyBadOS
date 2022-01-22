@@ -1,6 +1,7 @@
 #include <kernel/pci.h>
 
-uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
+uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
+{
     uint32_t address;
     uint16_t tmp = 0;
 
@@ -25,7 +26,7 @@ uint16_t get_class_id(uint16_t bus, uint16_t device, uint16_t function)
 
 uint16_t get_subclass_id(uint16_t bus, uint16_t device, uint16_t function)
 {
-        uint32_t res = read_pci(bus, device, function, 0xA);
+        uint32_t res = read_pci(bus, device, function, 0x08);
         return (res & 0xFF);
 }
 
@@ -74,8 +75,18 @@ void go_through_and_print()
 {
     for (int z = 0; z < device_count; z++)
     {
-        printf("classID: %d   :::   SubID: %d\n", devices[z]->classID, devices[z]->subclassID);
+        printf("classID: %x   :::   SubID: %x\n", devices[z]->classID, devices[z]->subclassID);
     }
 
     printf("\n\nTotal devices: %d\n", device_count);
+}
+
+PCIDevice * find_device(uint16_t vendor, uint16_t device)
+{
+    // pic must already be initialized
+    for (int z = 0; z < device_count; z++)
+        if (devices[z]->vendorID == vendor && devices[z]->deviceID == device)
+            return devices[z];
+
+    return NULL;
 }

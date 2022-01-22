@@ -162,8 +162,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     init_mem(mbd, beginning);
 
-    print_lists();
-
     init_vga();
 
     uint8_t *bytes;
@@ -176,7 +174,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     */
 
     scan_buses();
-    go_through_and_print();
 
     shell();
 
