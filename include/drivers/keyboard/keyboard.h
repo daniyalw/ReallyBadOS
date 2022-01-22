@@ -12,7 +12,7 @@ bool terminal_on = false;
 bool keyboard_locked;
 bool scanf_on = false;
 
-char * buffer = (char *)malloc(128);
+char buffer[1000];
 int total_size_b = 128;
 int buffer_size = 1;
 int entered_len = 0;

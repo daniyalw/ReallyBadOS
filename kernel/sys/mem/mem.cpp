@@ -3,7 +3,7 @@
 #include <kernel/mem/free.h>
 #include <kernel/mem/malloc.h>
 
-void init_mem(auto mbd)
+void init_mem(auto mbd, uint32_t beginning_addr)
 {
     uint32_t copy;
     uint32_t total;
@@ -37,30 +37,25 @@ void init_mem(auto mbd)
         total += mmmt->len_low;
 
         if (mmmt->type == MULTIBOOT_MEMORY_AVAILABLE) {
-            if (mmmt->addr_low != 0x100000) {
-                addr = mmmt->addr_low;
-                if (mmmt->addr_low == 0)
-                    addr++; // so it doesn't do null
+            if (mmmt->addr_low != 0) {
+                if (mmmt->addr_low != 0x100000)
+                    addr = mmmt->addr_low;
+                else
+                    addr = beginning_addr;
 
                 total_usable += mmmt->len_low;
 
                 #ifdef DEBUG
                 printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
-                    mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
+                    addr, mmmt->len_low - (addr - 0x100000), mmmt->size, mmmt->type);
                 #endif
 
-                if (!last_av) {
-                    mem_t m;
-                    m.addr = addr;
-                    m.size = mmmt->len_low;
-                    bz++;
-                    mem_blocks[block_count_mem] = m;
-                    block_count_mem++;
-                } else {
-                    mem_t m = mem_blocks[block_count_mem-1];
-                    m.size += mmmt->len_low;
-                    mem_blocks[block_count_mem-1] = m;
-                }
+                mem_t m;
+                m.addr = addr;
+                m.size = mmmt->len_low - (addr - 0x100000);
+
+                mem_blocks[block_count_mem] = m;
+                block_count_mem++;
 
                 last_av = true;
             } else {
@@ -85,7 +80,6 @@ void init_mem(auto mbd)
 #endif
 }
 
-#ifdef DEBUG
 void print_lists()
 {
     Kernel::system_log("\n\nPrinting 'mem_blocks' list:\n");
@@ -140,4 +134,3 @@ void __mem_test()
 
     print_lists();
 }
-#endif

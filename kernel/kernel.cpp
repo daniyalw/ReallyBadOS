@@ -90,6 +90,7 @@ extern "C" {
 #include "sys/mem/calloc.cpp"
 #include "sys/multitasking/cooperative.cpp"
 #include "../stdlib/tree.cpp"
+#include "sys/pci.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -144,9 +145,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
 #else
 
-    init_mem(mbd);
-
     u32 location = *((u32*)mbd->mods_addr); // load modules with GRUB
+
+    uint32_t beginning = location;
 
     // parse the tar file
     parse(location);
@@ -155,14 +156,27 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     for (int z = 0; z < block_count; z++)
     {
         create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
+        beginning += 512;
+        beginning += blocks[z].size;
     }
+
+    init_mem(mbd, beginning);
+
+    print_lists();
 
     init_vga();
 
     uint8_t *bytes;
     bytes = ata_init(bytes);
 
+    /*
     switch_to_user_mode();
+
+    shell();
+    */
+
+    scan_buses();
+    go_through_and_print();
 
     shell();
 

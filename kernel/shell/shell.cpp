@@ -28,20 +28,23 @@ void run_command(char * command)
 {
     if (check_name(command, "die"))
     {
-        printf("why so mean?");
+        printf("\nwhy so mean?");
     }
     else if (check_name(command, "echo"))
     {
+        printf("\n");
         for (int z = 5; z < strlen(command); z++)
             putchar(command[z]);
     }
     else if (check_name(command, "info"))
     {
-        printf("OS: %s\n", System::SYSTEM);
+        printf("\nOS: %s\n", System::SYSTEM);
         printf("Version: %s\n", System::VERSION);
     }
     else if (check_name(command, "time"))
     {
+        printf("\n");
+
         // time
         time_t time = get_time();
         if (time.min < 10)
@@ -54,7 +57,7 @@ void run_command(char * command)
     else if (check_name(command, "date"))
     {
         time_t time = get_time();
-        printf("%s, %s %d", weekdays[time.wd-1], months[time.m-1], time.d);
+        printf("\n%s, %s %d", weekdays[time.wd-1], months[time.m-1], time.d);
     }
     else if (check_name(command, "ls"))
     {
@@ -68,13 +71,13 @@ void run_command(char * command)
     {
         for (int z = 0; z < 20; z += 2)
         {
-            printf("%s: %s\n", commands[z], commands[z+1]);
+            printf("\n%s: %s\n", commands[z], commands[z+1]);
         }
     }
     else
     {
         if (!strcmp(command, ""))
-            printf("Error: command '%s' not found!\n", command);
+            printf("\nError: command '%s' not found!\n", command);
     }
 }
 
@@ -108,16 +111,22 @@ void shell()
 {
     while (true)
     {
-        printf("\n\n/> ");
+        printf("/> ");
 
         char * command = scanf();
 
         if (!command)
         {
+#ifdef DEBUG
+            printf("String is NULL.\n");
+#endif
+            printf("\n\n");
             continue;
         }
 
         run_command(command);
+
+        printf("\n\n");
 
         free(command); // since scanf() uses malloc()
     }

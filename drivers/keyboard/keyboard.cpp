@@ -46,7 +46,7 @@ void edit_buffer_size(int change)
     buffer_size += change;
 }
 
-char _getch()
+char scanf_getch()
 {
     scanf_on = true;
 
@@ -64,6 +64,26 @@ char _getch()
     }
 }
 
+char getch()
+{
+    scanf_on = true;
+
+    int buffs = buffer_size;
+    keyboard_lock();
+
+    while (true)
+    {
+        if (!is_keyboard_locked())
+        {
+            char k = buffer[get_buffer_size()-1];
+            edit_buffer_size(1);
+
+            scanf_on = false;
+            return k;
+        }
+    }
+}
+
 // dd is the variable to store the input in
 // type is the type of input wanted
 char * scanf()
@@ -71,55 +91,53 @@ char * scanf()
     scanf_on = true;
 
     int limit = 128;
-    char *data = (char *)malloc(limit);
-    int s = 0;
+    char * buffer = (char *)malloc(limit);
+    int sz = 0;
 
     while (true)
     {
-        char k = _getch();
+        char c = scanf_getch();
 
-        if (s >= limit)
+        if (sz >= limit)
         {
             limit += 128;
-            data = (char *)realloc(data, limit);
+            buffer = (char *)realloc(buffer, limit);
         }
 
-        if (k != '\b')
+        switch (c)
         {
-            putchar(k);
-            if (k == '\n')
-            {
-                char * dd = (char *)malloc(s);
+            case '\n':
+                buffer[sz] = 0;
+                putchar('\n');
 
-                for (int z = 0; z < s; z++)
+                scanf_on = false;
+
+                return buffer;
+
+            case '\b':
+                sz--;
+                buffer[sz] = 0;
+                printf("\b");
+                break;
+
+            case '\t':
+                for (int z = 0; z < 4; z++)
                 {
-                    dd[z] = data[z];
+                    buffer[sz] = ' ';
+                    sz++;
+                    printf("    ");
                 }
 
-                dd[s] = 0;
+                break;
 
-                printf("\b");
+            default:
+                buffer[sz] = c;
+                sz++;
+                putchar(c);
 
-                Kernel::system_log("Returning: %s\n", dd);
-                //printf("Returning: %s\n", dd);
-
-                return dd;
-            }
-
-            data[s] = k;
-            s++;
-        }
-        else
-        {
-            if (s > 0)
-            {
-                s--;
-                printf("\b");
-            }
+                break;
         }
     }
-
-    scanf_on = false;
 }
 
 static void scan_key(registers_t regs)
@@ -394,11 +412,6 @@ void get_key(unsigned char code)
             key = 0;
     }
     if (key != 0) {
-        if (buffer_size >= total_size_b)
-        {
-            buffer = (char *)realloc(buffer, total_size_b + 128);
-            total_size_b += 128;
-        }
         buffer[buffer_size] = key;
         buffer[buffer_size+1] = 0;
         buffer_size++;
