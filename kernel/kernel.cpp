@@ -91,6 +91,8 @@ extern "C" {
 #include "sys/multitasking/cooperative.cpp"
 #include "../stdlib/tree.cpp"
 #include "sys/pci.cpp"
+#include "../drivers/keyboard/getch.cpp"
+#include "../drivers/keyboard/scanf.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;

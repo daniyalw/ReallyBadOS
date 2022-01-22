@@ -8,6 +8,8 @@ bool written_on[80*25];
 char vga_back[80*25];
 bool to_clear = true;
 
+bool has_scrolled = false;
+
 void clear();
 void next_char();
 void putchar(char text);

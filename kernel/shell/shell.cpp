@@ -3,6 +3,9 @@
 #include <system.h>
 #include <time.h>
 #include <kernel/shell.h>
+#include <drivers/video/video.h>
+#include <keyboard.h>
+#include <kernel/mem/memory.h>
 
 using namespace std;
 using namespace Time;
@@ -26,25 +29,47 @@ bool check_name(char * name, char * check_against)
 
 void run_command(char * command)
 {
+    if (has_scrolled)
+        printf("\n");
+
     if (check_name(command, "die"))
     {
-        printf("\nwhy so mean?");
+        printf("why so mean?");
     }
     else if (check_name(command, "echo"))
     {
-        printf("\n");
         for (int z = 5; z < strlen(command); z++)
             putchar(command[z]);
     }
     else if (check_name(command, "info"))
     {
-        printf("\nOS: %s\n", System::SYSTEM);
+        printf("OS: %s\n", System::SYSTEM);
         printf("Version: %s\n", System::VERSION);
+        printf("Copyright Daniyal Warraich 2022\n");
+
+        int total = total_memory/1048576;
+        int times_done = 0;
+
+        char *result[] = {
+            "MB",
+            "GB",
+            "TB",
+            "PB",
+            "EB",
+            "ZB",
+            "YB"
+        };
+
+        while (total >= 1000)
+        {
+            total = total/1000;
+            times_done++;
+        }
+
+        printf("Total memory: %d %s\n", total, result[times_done]);
     }
     else if (check_name(command, "time"))
     {
-        printf("\n");
-
         // time
         time_t time = get_time();
         if (time.min < 10)
@@ -57,7 +82,7 @@ void run_command(char * command)
     else if (check_name(command, "date"))
     {
         time_t time = get_time();
-        printf("\n%s, %s %d", weekdays[time.wd-1], months[time.m-1], time.d);
+        printf("%s, %s %d", weekdays[time.wd-1], months[time.m-1], time.d);
     }
     else if (check_name(command, "ls"))
     {
@@ -71,13 +96,13 @@ void run_command(char * command)
     {
         for (int z = 0; z < 20; z += 2)
         {
-            printf("\n%s: %s\n", commands[z], commands[z+1]);
+            printf("%s: %s\n", commands[z], commands[z+1]);
         }
     }
     else
     {
         if (!strcmp(command, ""))
-            printf("\nError: command '%s' not found!\n", command);
+            printf("Error: command '%s' not found!\n", command);
     }
 }
 
