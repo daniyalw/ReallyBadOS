@@ -182,9 +182,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
 
     if (time.min < 10)
-        printf("%d:0%d ", time.h, time.min);
+        printf("%d:0%d %s", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
     else
-        printf("%d:%d ", time.h, time.min);
+        printf("%d:%d %s", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
 
     printf("\n");
 
