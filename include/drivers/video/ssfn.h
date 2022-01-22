@@ -43,16 +43,8 @@ extern "C" {
 #  define __THROW
 # endif
 #endif
-/* if stdint.h was not included before us */
-#ifndef _STDINT_H
-typedef unsigned char       uint8_t;
-typedef unsigned short int  uint16_t;
-typedef short int           int16_t;
-typedef unsigned int        uint32_t;
-#ifndef _UINT64_T
-typedef unsigned long int   uint64_t;
-#endif
-#endif
+
+#include <stdint.h>
 
 /***** file format *****/
 

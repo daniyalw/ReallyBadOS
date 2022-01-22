@@ -352,7 +352,7 @@ void printf(char *text, ...)
           switch (c)
             {
             case 'c':
-                putchar(*arg++);
+                putchar(*((int *) arg++));
                 break;
             case 'd':
                 std::itoa (buffer, c, *((int *) arg++));

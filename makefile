@@ -1,6 +1,6 @@
 boot = boot/loader.s
 COMPILER_FLAGS = -m32 -Iinclude -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -fpermissive
-QEMU_FLAGS = -soundhw pcspk -m 1000M -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk -accel tcg -net nic,model=rtl8139 -net user
+QEMU_FLAGS = -soundhw pcspk -m 1000M -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk -accel tcg -net nic,model=rtl8139 -net user -vga cirrus
 OUT = ceneos-x86_32.iso
 
 run:
