@@ -91,6 +91,8 @@ extern "C" {
 #include "sys/multitasking/cooperative.cpp"
 #include "../stdlib/tree.cpp"
 #include "sys/pci.cpp"
+#include "../drivers/keyboard/getch.cpp"
+#include "../drivers/keyboard/scanf.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -174,6 +176,17 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     */
 
     scan_buses();
+
+    time_t time = get_time();
+
+    printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
+
+    if (time.min < 10)
+        printf("%d:0%d ", time.h, time.min);
+    else
+        printf("%d:%d ", time.h, time.min);
+
+    printf("\n");
 
     shell();
 

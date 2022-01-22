@@ -81,6 +81,11 @@ void putchar(char text) {
     next_char();
 }
 
+void putchar_with_cursor_move(char text) {
+    putchar(text);
+    Kernel::set_hardware_cursor(text_y, text_x);
+}
+
 void putchar(char text, int color) {
     if (text == '\n') {
         text_x = 0;
@@ -145,6 +150,8 @@ void scroll()
            written_on[i] = false;
        }
        text_y = 24;
+
+       has_scrolled = true;
    }
 }
 
