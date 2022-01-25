@@ -176,15 +176,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     init_vga();
 
-    uint8_t *bytes;
-    bytes = ata_init(bytes);
-
-    /*
-    switch_to_user_mode();
-
-    shell();
-    */
-
     scan_buses();
 
     time_t time = get_time();
@@ -198,6 +189,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     printf("\n");
 
+    switch_to_user_mode();
     shell();
 
     Kernel::serial_write_string("\n");
