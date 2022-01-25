@@ -289,7 +289,7 @@ void get_key(unsigned char code)
         else if (code == 0x27)
             key = ':';
         else if (code == 0x28)
-            key = '\0';
+            key = '\"';
         else if (code == 0x28)
             key = '\n';
         else if (code == 0x2C)
