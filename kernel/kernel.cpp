@@ -148,7 +148,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     // loop through the files in the tar block and create the files in the vfs
     for (int z = 0; z < tar.block_count; z++)
     {
-        create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
         beginning += 512;
         beginning += tar.blocks[z].size;
     }
@@ -157,6 +156,11 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 #ifdef GRAPHICS
 
     Graphic::init_graphics(mbd);
+
+    init_mem(mbd, beginning);
+
+    for (int z = 0; z < tar.block_count; z++)
+        create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
 
     Graphic::redraw_background_picture(array);
 
@@ -173,6 +177,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 #else
 
     init_mem(mbd, beginning);
+
+    for (int z = 0; z < tar.block_count; z++)
+        create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
 
     init_vga();
 

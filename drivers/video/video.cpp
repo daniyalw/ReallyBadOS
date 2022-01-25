@@ -6,12 +6,6 @@
 using namespace Filesystem;
 using namespace Ramdisk;
 
-int text_get_color(int backcolour, int forecolour)
-{
-    int attrib = (backcolour << 4) | (forecolour & 0x0F);
-    return attrib;
-}
-
 void clear() {
     short * vidmem = (short *)0xb8000;
 
@@ -34,66 +28,27 @@ void next_char() {
     if (text_x > 80) {
         text_x = 0;
         text_y++;
+
+        if (scroll_on)
+            scroll();
     }
-}
-
-void putchar(char text) {
-    if (text == '\n') {
-        text_x = 0;
-        text_y++;
-        return;
-    } else if (text == '\t') {
-        text_x += 4;
-        return;
-    } else if (text == '\b') {
-        if (text_x > 1)
-        {
-            // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
-            // behind text_x will remain
-            text_x--;
-            if (text_x < 0) {
-                for (int b = 0; b < 80; b++)
-                {
-                    if (!written_on[b+(text_y - 1)*80])
-                    {
-                        text_x = b;
-                        break;
-                    }
-                }
-                text_y--;
-            }
-            putchar(' ');
-            text_x--;
-            if (text_x < 0) {
-                text_x = 0;
-                text_y--;
-            }
-        }
-        return;
-    }
-
-    short * vidmem = (short *)0xb8000;
-    int color = 0x0F00;
-
-    vidmem[text_x+text_y*80] = color | text;
-    written_on[text_x+text_y*80] = true;
-    vga_back[text_x+text_y*80] = text;
-    next_char();
-}
-
-void putchar_with_cursor_move(char text) {
-    putchar(text);
-    Kernel::set_hardware_cursor(text_y, text_x);
 }
 
 void putchar(char text, int color) {
     if (text == '\n') {
         text_x = 0;
         text_y++;
+
+        if (scroll_on)
+            scroll();
+
+        return;
     } else if (text == '\r') {
         text_x = 0;
+        return;
     } else if (text == '\t') {
         text_x += 4;
+        return;
     } else if (text == '\b') {
         if (text_x > 1)
         {
@@ -118,6 +73,7 @@ void putchar(char text, int color) {
                 text_y--;
             }
         }
+        return;
     }
 
     short * vidmem = (short *)0xb8000;
@@ -126,6 +82,22 @@ void putchar(char text, int color) {
     written_on[text_x+text_y*80] = true;
     vga_back[text_x+text_y*80] = text;
     next_char();
+}
+
+void putchar(char text) {
+    if (!custom_color_on)
+    {
+        putchar(text, 0x0F00);
+    }
+    else
+    {
+        putchar(text, custom_color);
+    }
+}
+
+void putchar_with_cursor_move(char text) {
+    putchar(text);
+    Kernel::set_hardware_cursor(text_y, text_x);
 }
 
 void scroll()
@@ -155,277 +127,88 @@ void scroll()
    }
 }
 
-void printf(int color, char *text, ...)
+void vaprintf(char *text, va_list va)
 {
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
+    char buffer[20];
 
-  arg++;
-
-  while ((c = *text++) != 0)
+    for (int z = 0; z < std::len(text); z++)
     {
-      if (c != '%')
-      {
-        if (c == '\n')
+        if (text[z] == '%')
         {
-            text_x = 0;
-            text_y++;
-
-            if (scroll_on)
-                scroll();
-        }
-        else if (c == '\b')
-        {
-            if (text_x > 1)
+            z++;
+            if (text[z] == 's')
             {
-                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
-                // behind text_x will remain
-                text_x--;
-                if (text_x < 0) {
-                    for (int b = 0; b < 80; b++)
-                    {
-                        if (!written_on[b+(text_y - 1)*80])
-                        {
-                            text_x = b;
-                            break;
-                        }
-                    }
-                    text_y--;
-                }
-                putchar(' ');
-                text_x--;
-                if (text_x < 0) {
-                    text_x = 0;
-                    text_y--;
-                }
-            }
-        }
-        else if (c == '\t')
-        {
-            for (int z = 0; z < 4; z++) next_char();
+                char *str = (char *)va_arg(va, char*);
 
-            if (scroll_on)
-                scroll();
+                for (int b = 0; b < std::len(str); b++)
+                    putchar(str[b]);
+            }
+            else if (text[z] == 'c')
+            {
+                int ch = (int)va_arg(va, int);
+                putchar(ch);
+            }
+            else if (text[z] == 'd')
+            {
+                int i = (int)va_arg(va, int);
+                for (int b = 0; b < 20; b++) buffer[b] = 0;
+                std::itoa(buffer, 'd', i);
+                for (int b = 0; b < std::len(buffer); b++) putchar(buffer[b]);
+            }
+            else if (text[z] == 'x')
+            {
+                int arg = (int)va_arg(va, int);
+                for (int b = 0; b < 20; b++) buffer[b] = 0;
+                std::itoa(buffer, 'x', arg);
+                for (int b = 0; b < std::len(buffer); b++) putchar(buffer[b]);
+            }
         }
         else
         {
-            putchar(c, color);
-        }
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                putchar(c);
-                break;
-            case 'd':
-            case 'u':
-            case 'x':
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                putchar (pad0 ? '0' : ' ', color);
-              }
-              while (*p)
-              {
-                putchar (*p++, color);
-              }
-              break;
-
-            default:
-              putchar (*((int *) arg++), color);
-              break;
-            }
+            putchar(text[z]);
         }
     }
     Kernel::set_hardware_cursor(text_y, text_x);
 }
 
-void printf(char *text, ...)
+void printf(char *a, ...)
 {
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
-
-  if (!text)
-  {
-      for (int z = 0; z < std::len("(null)"); z++)
-      {
-          putchar("(null)"[z]);
-      }
-
-      return;
-  }
-
-  arg++;
-
-  while ((c = *text++) != 0)
-    {
-      if (c != '%')
-      {
-        if (c == '\n')
-        {
-            text_x = 0;
-            text_y++;
-
-            if (scroll_on)
-                scroll();
-        }
-        else if (c == '\b')
-        {
-            if (text_x > 1)
-            {
-                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
-                // behind text_x will remain
-                text_x--;
-                if (text_x < 0) {
-                    for (int b = 0; b < 80; b++)
-                    {
-                        if (!written_on[b+(text_y - 1)*80])
-                        {
-                            text_x = b;
-                            break;
-                        }
-                    }
-                    text_y--;
-                }
-                putchar(' ');
-                text_x--;
-                if (text_x < 0) {
-                    text_x = 0;
-                    text_y--;
-                }
-            }
-        }
-        else if (c == '\t')
-        {
-            for (int z = 0; z < 4; z++) next_char();
-
-            if (scroll_on)
-                scroll();
-        }
-        else
-        {
-            putchar(c);
-        }
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                putchar(*((int *) arg++));
-                break;
-            case 'd':
-                std::itoa (buffer, c, *((int *) arg++));
-                p = buffer;
-                goto string;
-                break;
-            case 'u':
-            case 'x':
-              putchar('0');
-              putchar('x');
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                putchar (pad0 ? '0' : ' ');
-              }
-              while (*p)
-              {
-                putchar (*p++);
-              }
-              break;
-
-            default:
-              putchar (*((int *) arg++));
-              break;
-            }
-        }
-    }
-    Kernel::set_hardware_cursor(text_y, text_x);
+    va_list va;
+    va_start(va, a);
+    vaprintf(a, va);
+    va_end(va);
 }
 
-void printf_centered(char * s, int line_no)
+void cprintf(int color, char *a, ...)
 {
-    int w = 80/2 - (std::len(s)/2);
-    int i = line_no * 80 + w;
+    custom_color_on = true;
+    custom_color = color;
+
+    va_list va;
+    va_start(va, a);
+    vaprintf(a, va);
+    va_end(va);
+}
+
+void putchar_at(int x, int y, char c)
+{
     short * vidmem = (short *)0xb8000;
-    int c = 0x0F00;
-    int l = std::len(s);
-    int z = 0;
-    int b = 0;
 
-    while (s[z] != '\0')
+    if (!custom_color_on)
+        vidmem[x+y*80] = 0x0F00 | c;
+    else
+        vidmem[x+y*80] = custom_color | c;
+}
+
+void printf_centered(char *s, int line_no)
+{
+    int half = std::len(s)/2;
+    int start = 40 - half;
+
+    for (int z = 0; z < std::len(s); z++)
     {
-        if (s[z] == '\n')
-        {
-            text_x = 0;
-            text_y++;
-        }
-        else
-        {
-            vidmem[i+b] = c | s[z];
-            vga_back[i+b] = s[z];
-            next_char();
-            b++;
-        }
-        z++;
+        putchar_at(start, line_no, s[z]);
+        start++;
     }
 }
 
@@ -433,380 +216,27 @@ void warning(char *text, ...)
 {
     int yellow = 0x0E00;
     Kernel::system_log("Warning: ");
-    printf(yellow, "Warning: ");
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
+    cprintf(yellow, "Warning: ");
 
-  arg++;
-
-  while ((c = *text++) != 0)
-    {
-      if (c != '%')
-      {
-        if (c == '\n')
-        {
-            text_x = 0;
-            text_y++;
-
-            if (scroll_on)
-                scroll();
-        }
-        else if (c == '\b')
-        {
-            if (text_x > 1)
-            {
-                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
-                // behind text_x will remain
-                text_x--;
-                if (text_x < 0) {
-                    for (int b = 0; b < 80; b++)
-                    {
-                        if (!written_on[b+(text_y - 1)*80])
-                        {
-                            text_x = b;
-                            break;
-                        }
-                    }
-                    text_y--;
-                }
-                putchar(' ');
-                Kernel::system_log_char(' ');
-                text_x--;
-                if (text_x < 0) {
-                    text_x = 0;
-                    text_y--;
-                }
-            }
-        }
-        else if (c == '\t')
-        {
-            for (int z = 0; z < 4; z++) next_char();
-
-            if (scroll_on)
-                scroll();
-        }
-        else
-        {
-            putchar(c);
-            Kernel::system_log_char(c);
-        }
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                putchar(c);
-                Kernel::system_log_char(c);
-                break;
-            case 'd':
-            case 'u':
-            case 'x':
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                putchar (pad0 ? '0' : ' ');
-                Kernel::system_log_char(pad0 ? '0' : ' ');
-              }
-              while (*p)
-              {
-                putchar (*p);
-                Kernel::system_log_char(*p);
-                *p++;
-              }
-              break;
-
-            default:
-              putchar (*((int *) arg));
-              Kernel::system_log_char(*(int *) arg);
-              arg++;
-              break;
-            }
-        }
-    }
-    Kernel::set_hardware_cursor(text_y, text_x);
+    printf(text);
 }
 
 void error(char *text, ...)
 {
     int red = 0x0400;
     Kernel::system_log("Error: ");
-    printf(red, "Error: ");
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
+    cprintf(red, "Error: ");
 
-  arg++;
-
-  while ((c = *text++) != 0)
-    {
-      if (c != '%')
-      {
-        if (c == '\n')
-        {
-            text_x = 0;
-            text_y++;
-
-            if (scroll_on)
-                scroll();
-        }
-        else if (c == '\b')
-        {
-            if (text_x > 1)
-            {
-                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
-                // behind text_x will remain
-                text_x--;
-                if (text_x < 0) {
-                    for (int b = 0; b < 80; b++)
-                    {
-                        if (!written_on[b+(text_y - 1)*80])
-                        {
-                            text_x = b;
-                            break;
-                        }
-                    }
-                    text_y--;
-                }
-                putchar(' ');
-                Kernel::system_log_char(' ');
-                text_x--;
-                if (text_x < 0) {
-                    text_x = 0;
-                    text_y--;
-                }
-            }
-        }
-        else if (c == '\t')
-        {
-            for (int z = 0; z < 4; z++) next_char();
-
-            if (scroll_on)
-                scroll();
-        }
-        else
-        {
-            putchar(c);
-            Kernel::system_log_char(c);
-        }
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                putchar(c);
-                Kernel::system_log_char(c);
-                break;
-            case 'd':
-            case 'u':
-            case 'x':
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                putchar (pad0 ? '0' : ' ');
-                Kernel::system_log_char(pad0 ? '0' : ' ');
-              }
-              while (*p)
-              {
-                putchar (*p);
-                Kernel::system_log_char(*p);
-                *p++;
-              }
-              break;
-
-            default:
-              putchar (*((int *) arg));
-              Kernel::system_log_char(*(int *) arg);
-              arg++;
-              break;
-            }
-        }
-    }
-    Kernel::set_hardware_cursor(text_y, text_x);
+    printf(text);
 }
 
 void info(char *text, ...)
 {
     int light_blue = 0x0300;
     Kernel::system_log("Info: ");
-    printf(light_blue, "Info: ");
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
+    cprintf(light_blue, "Info: ");
 
-  arg++;
-
-  while ((c = *text++) != 0)
-    {
-      if (c != '%')
-      {
-        if (c == '\n')
-        {
-            text_x = 0;
-            text_y++;
-
-            if (scroll_on)
-                scroll();
-
-            Kernel::system_log("\n");
-        }
-        else if (c == '\b')
-        {
-            if (text_x > 1)
-            {
-                // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
-                // behind text_x will remain
-                text_x--;
-                if (text_x < 0) {
-                    for (int b = 0; b < 80; b++)
-                    {
-                        if (!written_on[b+(text_y - 1)*80])
-                        {
-                            text_x = b;
-                            break;
-                        }
-                    }
-                    text_y--;
-                }
-                putchar(' ');
-                text_x--;
-                if (text_x < 0) {
-                    text_x = 0;
-                    text_y--;
-                }
-            }
-        }
-        else if (c == '\t')
-        {
-            Kernel::system_log("    ");
-            for (int z = 0; z < 4; z++) next_char();
-
-            if (scroll_on)
-                scroll();
-        }
-        else
-        {
-            putchar(c);
-            Kernel::system_log_char(c);
-        }
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                putchar(c);
-                Kernel::system_log_char(c);
-                break;
-            case 'd':
-            case 'u':
-            case 'x':
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                putchar (pad0 ? '0' : ' ');
-                Kernel::system_log_char(pad0 ? '0' : ' ');
-              }
-              while (*p)
-              {
-                putchar (*p);
-                Kernel::system_log_char(*p);
-                *p++;
-              }
-              break;
-
-            default:
-              putchar (*((int *) arg));
-              Kernel::system_log_char(*(int *) arg);
-              arg++;
-              break;
-            }
-        }
-    }
-    Kernel::set_hardware_cursor(text_y, text_x);
+    printf(text);
 }
 
 void write_vga(char *data)

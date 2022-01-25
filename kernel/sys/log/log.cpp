@@ -13,97 +13,56 @@ void system_log_char(char ch)
     Kernel::buffer_size++;
 }
 
-void system_log(char *text, ...)
+void system_log_string(char *text, va_list va)
 {
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
+    char buffer[20];
 
-  arg++;
-
-  while ((c = *text++) != 0)
+    for (int z = 0; z < std::len(text); z++)
     {
-      if (c != '%')
-      {
-        if (c == '\n')
+        if (text[z] == '%')
         {
-            Kernel::serial_write_string("\n");
-            Kernel::buffer[Kernel::buffer_size] = '\n';
-            Kernel::buffer_size++;
-        }
-        else if (c == '\t')
-        {
-            Kernel::serial_write_string("    ");
-
-            for (int z = 0; z < 4; z++)
+            z++;
+            if (text[z] == 's')
             {
-                Kernel::buffer[Kernel::buffer_size] = ' ';
-                Kernel::buffer_size++;
+                char *str = (char *)va_arg(va, char*);
+
+                for (int b = 0; b < std::len(str); b++)
+                    Kernel::system_log_char(str[b]);
+            }
+            else if (text[z] == 'c')
+            {
+                int ch = (int)va_arg(va, int);
+                Kernel::system_log_char(ch);
+            }
+            else if (text[z] == 'd')
+            {
+                int i = (int)va_arg(va, int);
+                for (int b = 0; b < 20; b++) buffer[b] = 0;
+                std::itoa(buffer, 'd', i);
+                for (int b = 0; b < std::len(buffer); b++) Kernel::system_log_char(buffer[b]);
+            }
+            else if (text[z] == 'x')
+            {
+                int arg = (int)va_arg(va, int);
+                for (int b = 0; b < 20; b++) buffer[b] = 0;
+                std::itoa(buffer, 'x', arg);
+                for (int b = 0; b < std::len(buffer); b++) Kernel::system_log_char(buffer[b]);
             }
         }
         else
         {
-            Kernel::system_log_char(c);
-        }
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                Kernel::system_log_char(c);
-                break;
-            case 'd':
-            case 'u':
-            case 'x':
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                Kernel::system_log_char (pad0 ? '0' : ' ');
-              }
-              while (*p)
-              {
-                Kernel::system_log_char (*p);
-                *p++;
-              }
-              break;
-
-            default:
-
-              arg++;
-              break;
-            }
+            Kernel::system_log_char(text[z]);
         }
     }
 }
 
+void system_log(char * text, ...)
+{
+    va_list va;
+    va_start(va, text);
+    system_log_string(text, va);
+    va_end(va);
+}
 
 char * get_log(char * buff)
 {
@@ -122,7 +81,7 @@ void log(char * data)
 
 void init_logging()
 {
-    create_file("log", "dev", Kernel::get_log, Kernel::log);
+    create_file("tty1", "dev", Kernel::get_log, Kernel::log);
 }
 
 }
