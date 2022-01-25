@@ -1,4 +1,4 @@
-#include <kernel/isr.h>
+#include <sys/descriptors/isr.h>
 
 #define DEFN_SYSCALL0(fn, num) \
 void syscall_##fn() \

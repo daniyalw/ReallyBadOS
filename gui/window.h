@@ -1,6 +1,6 @@
 #pragma once
 
-#include <drivers/video/graphics.h>
+#include <video/graphics.h>
 #include <gui/widget.h>
 #include <gui/event.h>
 

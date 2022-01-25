@@ -1,6 +1,6 @@
-#include <drivers/video/video.h>
+#include <video/video.h>
 #include <memory.h>
-#include <drivers/keyboard/keyboard.h>
+#include <keyboard/keyboard.h>
 
 char * scanf()
 {

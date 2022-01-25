@@ -1,6 +1,6 @@
 #pragma once
 
-#include <drivers/video/blur.h>
+#include <video/blur.h>
 
 // https://github.com/Supercip971/WingOS/blob/master/libs/gui/blur.cpp
 

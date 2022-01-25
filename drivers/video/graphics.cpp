@@ -1,5 +1,5 @@
 #pragma once
-#include <drivers/video/graphics.h>
+#include <video/graphics.h>
 #include <colors.h>
 #include <font.h>
 #include <math.h>

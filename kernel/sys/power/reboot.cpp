@@ -1,6 +1,6 @@
 #pragma once
-#include <kernel/power.h>
-#include <kernel/io.h>
+#include <sys/power/power.h>
+#include <sys/io.h>
 
 //https://wiki.osdev.org/Reboot
 

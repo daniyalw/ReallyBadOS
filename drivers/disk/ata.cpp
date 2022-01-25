@@ -1,4 +1,4 @@
-#include <ata.h>
+#include <disk/ata.h>
 #include <string.h>
 
 using namespace std;

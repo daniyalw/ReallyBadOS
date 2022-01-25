@@ -1,7 +1,7 @@
 #include <string.h>
 #include <memory.h>
-#include <drivers/keyboard/keyboard.h>
-#include <kernel/log.h>
+#include <keyboard/keyboard.h>
+#include <sys/log/log.h>
 
 void get_key(unsigned char code);
 
@@ -145,7 +145,7 @@ void get_key(unsigned char code)
         }
         else if (code == 0x1E)
             key = 'a';
-        else if (code == 0x9F)
+        else if (code == 0x1F)
             key = 's';
         else if (code == 0x20)
             key = 'd';

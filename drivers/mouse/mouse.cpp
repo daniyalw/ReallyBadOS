@@ -1,7 +1,7 @@
 #pragma once
 #include <colors.h>
-#include <drivers/mouse/mouse.h>
-#include <notification.h>
+#include <mouse/mouse.h>
+#include <gui/notification.h>
 #include <fs.h>
 #include <gui/gui.h>
 

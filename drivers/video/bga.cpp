@@ -1,8 +1,8 @@
 #pragma once
 
-#include <kernel/io.h>
-#include <drivers/video/graphics.h>
-#include <drivers/video/bga.h>
+#include <sys/io.h>
+#include <video/graphics.h>
+#include <video/bga.h>
 #include <fs.h>
 
 using namespace Filesystem;

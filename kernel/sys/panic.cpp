@@ -1,8 +1,8 @@
 #include <panic.h>
 #include <stdio.h>
-#include <kernel/interrupts.h>
-#include <kernel/halt.h>
-#include <kernel/log.h>
+#include <sys/descriptors/interrupts.h>
+#include <sys/cpu/halt.h>
+#include <sys/log/log.h>
 
 void panic(char * msg, char * file, char * function, int line)
 {

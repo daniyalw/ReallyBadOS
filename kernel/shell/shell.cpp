@@ -1,11 +1,11 @@
 #pragma once
 #include <string.h>
 #include <system.h>
-#include <time.h>
-#include <kernel/shell.h>
-#include <drivers/video/video.h>
+#include <sys/time/time.h>
+#include <shell/shell.h>
+#include <video/video.h>
 #include <keyboard.h>
-#include <kernel/mem/memory.h>
+#include <sys/mem/memory.h>
 
 using namespace std;
 using namespace Time;

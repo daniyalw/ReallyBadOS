@@ -48,10 +48,14 @@ struct __attribute__((packed)) RawTar
     }
 };
 
-RawTar * headers[32];
-int header_count = 0;
+struct Tar
+{
+public:
+    RawTar * headers[32];
+    int header_count = 0;
 
-TarFile blocks[32];
-int block_count = 0;
+    TarFile blocks[32];
+    int block_count = 0;
 
-bool parse(unsigned int address);
+    bool parse(unsigned int address);
+};

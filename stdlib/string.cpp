@@ -30,6 +30,16 @@ int atoi(char * str)
     return num;
 }
 
+uint32_t uint_atoi(char *str)
+{
+    uint32_t num = 0;
+
+    for (int z = 0; str[z] != '\0'; z++)
+        num = num * 10 + str[z] - '0';
+
+    return num;
+}
+
 void memcpy(char *source, char * dest, int begin, int end)
 {
     //ASSERT(begin < end);

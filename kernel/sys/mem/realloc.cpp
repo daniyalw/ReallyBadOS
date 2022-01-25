@@ -1,7 +1,7 @@
 #pragma once
 
-#include <kernel/mem/memory.h>
-#include <kernel/mem/block.h>
+#include <sys/mem/memory.h>
+#include <sys/mem/block.h>
 
 uint32_t realloc(void *buff, int newsize)
 {

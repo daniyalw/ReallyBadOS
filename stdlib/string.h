@@ -35,6 +35,7 @@ char * toupper(char * data);
 bool strisempty(char * s);
 char * strip(char * s);
 void clears(char * d);
+uint32_t uint_atoi(char *str);
 char * strcat(char * d, char * s);
 char * strcpy(char * d, char * s);
 bool startswith(char * words, char * start);

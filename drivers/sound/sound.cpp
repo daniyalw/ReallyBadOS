@@ -1,8 +1,11 @@
 #pragma once
 
-#include <kernel/io.h>
-#include <drivers/sound/sound.h>
+#include <sys/io.h>
+#include <sound/sound.h>
 #include <fs.h>
+
+using namespace Filesystem;
+using namespace Ramdisk;
 
 namespace Kernel {
 
@@ -32,16 +35,32 @@ static void nosound() {
    outb(0x61, tmp);
 }
 
-//Make a beep
-void beep() {
-    play_sound(1000);
+
+char *sound_input(char *data)
+{
+    UNUSED(data);
+    // not implemented
+    return NULL;
+}
+
+void sound_write(char *data)
+{
+    uint32_t frequency = std::uint_atoi(data);
+    play_sound(frequency);
+}
+
+void beep()
+{
+    FILE *file = fopen("/dev/sound");
+    file->write("1000"); // there's a difference between 1000 int and 1000 string
+
     for (int z = 0; z < 4000000; z++)
         io_wait();
     nosound();
-         //set_PIT_2(old_frequency);
 }
 
 void init_sound() {
+    create_file("sound", "dev", sound_input, sound_write);
 }
 
 }

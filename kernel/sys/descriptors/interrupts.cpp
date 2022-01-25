@@ -1,7 +1,7 @@
 #pragma once
-#include <kernel/io.h>
+#include <sys/io.h>
 #include <string.h>
-#include <kernel/interrupts.h>
+#include <sys/descriptors/interrupts.h>
 
 namespace Kernel {
 

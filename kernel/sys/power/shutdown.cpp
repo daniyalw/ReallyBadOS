@@ -1,5 +1,5 @@
 #pragma once
-#include <kernel/power.h>
+#include <sys/power/power.h>
 
 namespace Kernel {
 

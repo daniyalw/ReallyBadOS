@@ -1,6 +1,6 @@
-#include <kernel/mem/memory.h>
-#include <kernel/mem/block.h>
-#include <kernel/mem/malloc.h>
+#include <sys/mem/memory.h>
+#include <sys/mem/block.h>
+#include <sys/mem/malloc.h>
 
 uint32_t malloc(int size)
 {

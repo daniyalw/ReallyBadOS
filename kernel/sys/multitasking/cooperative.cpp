@@ -1,4 +1,4 @@
-#include <kernel/multitasking/cooperative.h>
+#include <sys/multitasking/cooperative.h>
 
 using namespace Cooperative;
 

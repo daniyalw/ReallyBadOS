@@ -1,5 +1,5 @@
 #include <font.h>
-#include <drivers/video/graphics.h>
+#include <video/graphics.h>
 
 void gui_notification_string(char * string, int line)
 {

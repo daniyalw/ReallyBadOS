@@ -1,5 +1,5 @@
-#include <kernel/mem/memory.h>
-#include <kernel/mem/block.h>
+#include <sys/mem/memory.h>
+#include <sys/mem/block.h>
 
 void set_new_used(mem_t m)
 {

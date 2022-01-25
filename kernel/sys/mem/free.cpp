@@ -1,6 +1,6 @@
-#include <kernel/mem/memory.h>
-#include <kernel/mem/block.h>
-#include <kernel/mem/free.h>
+#include <sys/mem/memory.h>
+#include <sys/mem/block.h>
+#include <sys/mem/free.h>
 
 void free(void *buff)
 {

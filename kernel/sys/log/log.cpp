@@ -1,6 +1,6 @@
 #pragma once
-#include <kernel/log.h>
-#include <kernel/serial.h>
+#include <sys/log/log.h>
+#include <sys/serial.h>
 #include <string.h>
 
 namespace Kernel {

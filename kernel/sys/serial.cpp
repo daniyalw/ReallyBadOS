@@ -1,7 +1,7 @@
 #pragma once
 
-#include <kernel/serial.h>
-#include <kernel/io.h>
+#include <sys/serial.h>
+#include <sys/io.h>
 
 namespace Kernel {
 

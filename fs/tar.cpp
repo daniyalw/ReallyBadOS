@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <tar.h>
 
-bool parse(unsigned int address)
+bool Tar::parse(unsigned int address)
 {
     unsigned int i;
 
@@ -58,13 +58,15 @@ bool parse(unsigned int address)
 
 void __tar_test(int location)
 {
-    bool r = parse(location);
+    Tar tar;
 
-    printf("Returned: %s\nBlock count: %d\n", (char *)(r ? "True" : "False"), block_count);
+    bool r = tar.parse(location);
 
-    for (int z = 0; z < block_count; z++)
+    printf("Returned: %s\nBlock count: %d\n", (char *)(r ? "True" : "False"), tar.block_count);
+
+    for (int z = 0; z < tar.block_count; z++)
     {
-        printf("Name: %s\nContents: %s\n", blocks[z].name, blocks[z].contents);
-        Kernel::system_log("Name: %s\n", blocks[z].name);
+        printf("Name: %s\nContents: %s\n", tar.blocks[z].name, tar.blocks[z].contents);
+        Kernel::system_log("Name: %s\n", tar.blocks[z].name);
     }
 }

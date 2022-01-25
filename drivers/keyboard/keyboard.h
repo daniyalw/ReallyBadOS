@@ -1,6 +1,6 @@
 #pragma once
 
-#include <kernel/isr.h>
+#include <sys/descriptors/isr.h>
 #include <memory.h>
 
 int shifted = 0;

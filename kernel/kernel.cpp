@@ -26,19 +26,19 @@ extern "C" {
 #include "sys/background.cpp"
 #endif
 
-#include <kernel/log.h>
+#include <sys/log/log.h>
 #include <stdint.h>
 #include <map.h>
-#include <drivers/video/ssfn.h>
-#include <kernel/multiboot.h>
+#include <video/ssfn.h>
+#include <sys/multiboot.h>
 #include <string.h>
 #include <memory.h>
 #include <math.h>
-#include <drivers/video/video.h>
-#include <drivers/mouse/mouse.h>
-#include <time.h>
-#include <drivers/keyboard/keyboard.h>
-#include <drivers/video/graphics.h>
+#include <video/video.h>
+#include <mouse/mouse.h>
+#include <sys/time/time.h>
+#include <keyboard/keyboard.h>
+#include <video/graphics.h>
 #include <list.h>
 #include <macros.h>
 #include <system.h>
@@ -56,9 +56,9 @@ extern "C" {
 #include "../drivers/video/video.cpp"
 #include "sys/log/log.cpp"
 #include "sys/descriptors/gdt.cpp"
-#include "sys/interrupts/idt.cpp"
-#include "sys/interrupts/isr.cpp"
-#include "sys/interrupts/interrupts.cpp"
+#include "sys/descriptors/idt.cpp"
+#include "sys/descriptors/isr.cpp"
+#include "sys/descriptors/interrupts.cpp"
 #include "../drivers/sound/sound.cpp"
 #include "shell/shell.cpp"
 #include "../drivers/video/font.cpp"
@@ -90,7 +90,7 @@ extern "C" {
 #include "sys/mem/calloc.cpp"
 #include "sys/multitasking/cooperative.cpp"
 #include "../stdlib/tree.cpp"
-#include "sys/pci.cpp"
+#include "sys/pci/pci.cpp"
 #include "../drivers/keyboard/getch.cpp"
 #include "../drivers/keyboard/scanf.cpp"
 
@@ -98,6 +98,20 @@ using namespace Filesystem;
 using namespace Ramdisk;
 using namespace Time;
 using namespace Cooperative;
+
+void detect_net()
+{
+    PCIDevice *device = find_device(0x10EC, 0x8139);
+
+    if (device == NULL)
+    {
+        error("could not detect RTL8139 network card\n");
+    }
+    else
+    {
+        info("detected RTL8139 network card!\n");
+    }
+}
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -122,14 +136,25 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Kernel::init_mouse();
     Kernel::init_syscalls();
 
+    u32 location = *((u32*)mbd->mods_addr); // load modules with GRUB
+
+    uint32_t beginning = location;
+
+    Tar tar;
+
+    // parse the tar file
+    tar.parse(location);
+
+    // loop through the files in the tar block and create the files in the vfs
+    for (int z = 0; z < tar.block_count; z++)
+    {
+        create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+        beginning += 512;
+        beginning += tar.blocks[z].size;
+    }
+
     // for graphics
 #ifdef GRAPHICS
-
-    u32 location = *((u32*)mbd->mods_addr);
-    parse(location);
-
-    for (int z = 0; z < block_count; z++)
-        create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
 
     Graphic::init_graphics(mbd);
 
@@ -146,21 +171,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     while (true);
 
 #else
-
-    u32 location = *((u32*)mbd->mods_addr); // load modules with GRUB
-
-    uint32_t beginning = location;
-
-    // parse the tar file
-    parse(location);
-
-    // loop through the files in the tar block and create the files in the vfs
-    for (int z = 0; z < block_count; z++)
-    {
-        create_file(blocks[z].name, "usr", blocks[z].contents, blocks[z].size * sizeof(char));
-        beginning += 512;
-        beginning += blocks[z].size;
-    }
 
     init_mem(mbd, beginning);
 

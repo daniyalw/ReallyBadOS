@@ -1,4 +1,4 @@
-#include <kernel/halt.h>
+#include <sys/cpu/halt.h>
 
 namespace Kernel {
 

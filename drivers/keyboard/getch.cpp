@@ -1,4 +1,4 @@
-#include <drivers/keyboard/keyboard.h>
+#include <keyboard/keyboard.h>
 
 char scanf_getch()
 {

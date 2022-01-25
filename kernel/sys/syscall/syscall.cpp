@@ -1,7 +1,7 @@
-#include <kernel/syscall.h>
+#include <sys/syscall/syscall.h>
 #include <random.h>
-#include <kernel/power.h>
-#include <drivers/mouse/cursor.h>
+#include <sys/power/power.h>
+#include <mouse/cursor.h>
 
 void set_string(char * string, char * newvalue)
 {

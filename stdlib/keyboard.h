@@ -1,8 +1,8 @@
 #pragma once
 
-#include <drivers/keyboard/keyboard.h>
-#include <drivers/keyboard/getch.h>
-#include <drivers/keyboard/scanf.h>
+#include <keyboard/keyboard.h>
+#include <keyboard/getch.h>
+#include <keyboard/scanf.h>
 
 struct input_t
 {

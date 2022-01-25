@@ -1,6 +1,6 @@
 #pragma once
-#include <drivers/video/video.h>
-#include <drivers/mouse/cursor.h>
+#include <video/video.h>
+#include <mouse/cursor.h>
 #include <fs.h>
 
 using namespace Filesystem;

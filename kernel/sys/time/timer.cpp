@@ -1,8 +1,8 @@
 #pragma once
-#include <time.h>
-#include <timer.h>
-#include <kernel/io.h>
-#include <kernel/log.h>
+#include <sys/time/time.h>
+#include <sys/time/timer.h>
+#include <sys/io.h>
+#include <sys/log/log.h>
 
 void timer_int(registers_t regs) {
     tick++;

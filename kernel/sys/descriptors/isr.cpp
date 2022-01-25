@@ -1,7 +1,7 @@
 #include <string.h>
-#include <drivers/video/video.h>
-#include <kernel/isr.h>
-#include <kernel/log.h>
+#include <video/video.h>
+#include <sys/descriptors/isr.h>
+#include <sys/log/log.h>
 
 namespace Kernel {
 

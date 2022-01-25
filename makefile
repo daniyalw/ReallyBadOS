@@ -1,6 +1,7 @@
 boot = boot/loader.s
-COMPILER_FLAGS = -m32 -Iinclude -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -fpermissive
-QEMU_FLAGS = -soundhw pcspk -m 1000M -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk -accel tcg -net nic,model=rtl8139 -net user -vga cirrus
+INCLUDES = -Istdlib -Ifs -Idrivers -Ikernel -I.
+COMPILER_FLAGS = -m32 -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -fpermissive
+QEMU_FLAGS = -soundhw pcspk -m 1000M -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk,id=nvm -accel tcg -net nic,model=rtl8139 -net user -vga std -boot d
 OUT = ceneos-x86_32.iso
 
 run:
@@ -34,7 +35,7 @@ kernel:
 
 textmode:
 	make bootloader
-	i686-elf-g++ ${COMPILER_FLAGS} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
 	make iso
 	make run
 
@@ -52,7 +53,7 @@ iso:
 # graphics
 graphics:
 	i686-elf-as -o built/loader.o boot/graphics_boot.asm
-	i686-elf-g++ ${COMPILER_FLAGS} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
 	cp built/main.o isodir/boot/main.o
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o ${OUT} isodir

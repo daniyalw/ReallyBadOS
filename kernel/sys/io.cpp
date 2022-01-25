@@ -1,6 +1,6 @@
 #pragma once
 
-#include <kernel/io.h>
+#include <sys/io.h>
 
 static inline void outw(unsigned short portid, unsigned short value)
 {
