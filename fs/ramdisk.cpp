@@ -1,5 +1,6 @@
 #include <fs.h>
 #include <memory.h>
+#include <string.h>
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -177,6 +178,23 @@ FILE create_file(char * name, char * folder, char *( *_read)(char *), void (*_wr
     return file;
 }
 
+void save_file(FILE file)
+{
+    FOLDER folder = get_folder(file.parent);
+
+    if (folder.null)
+    {
+        error("Parent folder not valid!\n");
+        return;
+    }
+    else
+    {
+        folder.files[file.id] = file;
+        folders[folder.id] = folder;
+        return;
+    }
+}
+
 }
 
 void internal_ls()
@@ -260,4 +278,30 @@ FILE * fopen(char * name)
     file->read = orig.read;
 
     return file;
+}
+
+void complex_fprintf(char *fname, char *data)
+{
+    path_t path = parse_name(fname);
+    FILE file = get_file(path.filename, path.foldername);
+
+    if (file.null)
+    {
+        error("file unavailable.\n");
+        return;
+    }
+    else
+    {
+        file.write(data);
+
+        save_file(file);
+        return;
+    }
+}
+
+void fprintf(FILE file, char *data)
+{
+    file.write(data);
+    save_file(file);
+    return;
 }

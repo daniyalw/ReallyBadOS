@@ -188,6 +188,8 @@ void cprintf(int color, char *a, ...)
     va_start(va, a);
     vaprintf(a, va);
     va_end(va);
+
+    custom_color_on = false;
 }
 
 void putchar_at(int x, int y, char c)
@@ -249,7 +251,28 @@ char * read_vga(char * data)
     return vga_back;
 }
 
+void write_error(char *data)
+{
+    error(data);
+}
+
+char *read_error(char *data)
+{
+    UNUSED(data);
+    // not implemented
+    return NULL;
+}
+
+FILE stdout;
+FILE stderr;
+
+void init_error()
+{
+    stderr = create_file("stderr", "dev", read_error, write_error);
+}
+
 void init_vga()
 {
-    create_file("tty0", "dev", read_vga, write_vga);
+    stdout = create_file("stdout", "dev", read_vga, write_vga);
+    init_error();
 }
