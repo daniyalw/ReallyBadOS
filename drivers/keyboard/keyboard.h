@@ -3,7 +3,7 @@
 #include <sys/descriptors/isr.h>
 #include <memory.h>
 
-int shifted = 0;
+bool shifted = 0;
 char * returned;
 unsigned char current_key;
 

@@ -6,6 +6,7 @@
 #include <video/video.h>
 #include <keyboard.h>
 #include <sys/mem/memory.h>
+#include <fs/fs.h>
 
 using namespace std;
 using namespace Time;
@@ -32,10 +33,6 @@ void run_command(char * command)
     if (has_scrolled)
         printf("\n");
 
-    if (check_name(command, "die"))
-    {
-        printf("why so mean?");
-    }
     else if (check_name(command, "echo"))
     {
         for (int z = 5; z < strlen(command); z++)
@@ -86,7 +83,10 @@ void run_command(char * command)
     }
     else if (check_name(command, "ls"))
     {
-        ls("/");
+        if (current_display_len == 0 || current_display_len == 1)
+            ls("/");
+        else
+            ls(current_display);
     }
     else if (check_name(command, "exit") || check_name(command, "shutdown") || check_name(command, "quit"))
     {
@@ -103,6 +103,8 @@ void run_command(char * command)
     {
         if (!strcmp(command, ""))
             printf("Error: command '%s' not found!\n", command);
+        else
+            printf("Nothing...");
     }
 }
 
@@ -136,7 +138,10 @@ void shell()
 {
     while (true)
     {
-        printf("/> ");
+        if (current_display_len != 0 && current_display_len != 1)
+            printf("/%s/> ", current_display);
+        else
+            printf("/> ");
 
         char * command = scanf();
 

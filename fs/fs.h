@@ -79,3 +79,5 @@ void ls(char *cwd);
 }
 
 Filesystem::Ramdisk::FILE * fopen(char * name);
+void complex_fprintf(char *fname, char *data);
+void fprintf(Filesystem::Ramdisk::FILE file, char *data);

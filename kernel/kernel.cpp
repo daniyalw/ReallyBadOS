@@ -132,7 +132,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Kernel::init_sound();
     Kernel::read_rtc();
     Kernel::init_timer(1000);
-    Kernel::init_keyboard(false, "");
+    Kernel::init_keyboard(false, "/");
     Kernel::init_mouse();
     Kernel::init_syscalls();
 

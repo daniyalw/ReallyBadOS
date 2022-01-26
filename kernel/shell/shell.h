@@ -7,8 +7,8 @@ typedef struct
 
 int total_command_count = 20;
 char *commands[] = {
-    "die",
-    "A test command",
+    "cd",
+    "Switch directory",
     "echo",
     "Print to the screen",
     "info",

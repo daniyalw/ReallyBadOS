@@ -220,7 +220,14 @@ void warning(char *text, ...)
     Kernel::system_log("Warning: ");
     cprintf(yellow, "Warning: ");
 
-    printf(text);
+    va_list va;
+    va_start(va, text);
+    vaprintf(text, va);
+    va_end(va);
+
+    va_start(va, text);
+    Kernel::system_log_string(text, va);
+    va_end(va);
 }
 
 void error(char *text, ...)
@@ -229,7 +236,14 @@ void error(char *text, ...)
     Kernel::system_log("Error: ");
     cprintf(red, "Error: ");
 
-    printf(text);
+    va_list va;
+    va_start(va, text);
+    vaprintf(text, va);
+    va_end(va);
+
+    va_start(va, text);
+    Kernel::system_log_string(text, va);
+    va_end(va);
 }
 
 void info(char *text, ...)
@@ -238,7 +252,14 @@ void info(char *text, ...)
     Kernel::system_log("Info: ");
     cprintf(light_blue, "Info: ");
 
-    printf(text);
+    va_list va;
+    va_start(va, text);
+    vaprintf(text, va);
+    va_end(va);
+
+    va_start(va, text);
+    Kernel::system_log_string(text, va);
+    va_end(va);
 }
 
 void write_vga(char *data)
