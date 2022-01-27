@@ -1,9 +1,7 @@
 #pragma once
 #include <colors.h>
 #include <mouse/mouse.h>
-#include <gui/notification.h>
 #include <fs.h>
-#include <gui/gui.h>
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -51,29 +49,10 @@ unsigned char mouse_read()
 
 void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
 {
+
     int bx = x;
     int by = y;
     int color;
-
-
-    #ifdef GRAPHICS
-        if (did_click_notification(x, y) && left)
-        {
-            active_notifications.pop();
-
-            Graphic::draw_rect(width/2 - BG_WIDTH_MINUS, height/2 - (font_height/2 + TEXT_PADDING), BG_WIDTH, font_height + 6 + (font_height + 3) * 6, array);
-
-            if (active_notifications.size())
-                gui_notification(active_notifications.get_key(0), active_notifications.get_value(0));
-
-            Graphic::blit_changes();
-        }
-    #endif
-
-    if (right_c)
-    {
-        clicked_on_widget(bx, by, MOUSE_RIGHT_CLICK);
-    }
 
     for (int z = 0; z < cursor_height; z++)
     {

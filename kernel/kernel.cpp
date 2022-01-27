@@ -74,12 +74,9 @@ extern "C" {
 #include "../drivers/video/blur.cpp"
 #include "sys/panic.cpp"
 #include "sys/cpu/halt.cpp"
-#include "../gui/notification.cpp"
 #include "sys/syscall/syscalls.h" // this is external
 #include "../fs/tar.cpp"
 #include "../fs/ramdisk.cpp"
-#include "../gui/gui.cpp"
-#include "../gui/label.cpp"
 #include "sys/syscall/usermode.cpp"
 #include "../drivers/disk/ata.cpp"
 #include "sys/mem/mem.cpp"
@@ -93,6 +90,7 @@ extern "C" {
 #include "sys/pci/pci.cpp"
 #include "../drivers/keyboard/getch.cpp"
 #include "../drivers/keyboard/scanf.cpp"
+#include "../gui/gui.h"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -164,7 +162,18 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     Graphic::redraw_background_picture(array);
 
-    draw_string("Hello!", 100, 100, white);
+    Window win;
+    Widget w;
+    w.setx(120);
+    w.sety(120);
+    w.padding = 10;
+    w.set_draw(test_draw);
+    win.widgets[0] = w;
+    win.widget_count++;
+    win.set_coords(100, 100);
+    win.set_dimensions(100, 100);
+
+    win.draw();
 
     //draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
 

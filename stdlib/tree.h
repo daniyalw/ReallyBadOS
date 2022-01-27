@@ -1,3 +1,5 @@
+#pragma once
+
 typedef struct tree_t
 {
     void * val;

@@ -2,6 +2,8 @@
 #include <string.h>
 #include <list.h>
 
+using namespace std;
+
 namespace std {
 
 bool isspace(char c)
@@ -394,80 +396,12 @@ inline void memcpy_int(const int *source, int *dest, const int nb)
 
 char * get(char * out, char *text, ...)
 {
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
-  int st = 0;
+    int max = strlen(text);
+    va_list va;
 
-  arg++;
-
-  while ((c = *text++) != 0)
-    {
-      if (c != '%')
-      {
-          out[st] = c;
-          st++;
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                out[st] = c;
-                st++;
-                break;
-            case 'd':
-            case 'u':
-            case 'x':
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                out[st] = pad0 ? '0' : ' ';
-                st++;
-              }
-              while (*p)
-              {
-                out[st] = *p++;
-                st++;
-              }
-              break;
-
-            default:
-              out[st] = *((int *) arg++);
-              st++;
-              break;
-            }
-        }
-    }
-
-    out[st] = 0;
+    va_start(va, text);
+    vnprintf(out, max, text, va);
+    va_end(va);
 
     return out;
 }

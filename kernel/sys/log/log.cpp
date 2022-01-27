@@ -15,45 +15,10 @@ void system_log_char(char ch)
 
 void system_log_string(char *text, va_list va)
 {
-    char buffer[20];
+    char *out = vsprintf("", text, va);
 
-    for (int z = 0; z < std::len(text); z++)
-    {
-        if (text[z] == '%')
-        {
-            z++;
-            if (text[z] == 's')
-            {
-                char *str = (char *)va_arg(va, char*);
-
-                for (int b = 0; b < std::len(str); b++)
-                    Kernel::system_log_char(str[b]);
-            }
-            else if (text[z] == 'c')
-            {
-                int ch = (int)va_arg(va, int);
-                Kernel::system_log_char(ch);
-            }
-            else if (text[z] == 'd')
-            {
-                int i = (int)va_arg(va, int);
-                for (int b = 0; b < 20; b++) buffer[b] = 0;
-                std::itoa(buffer, 'd', i);
-                for (int b = 0; b < std::len(buffer); b++) Kernel::system_log_char(buffer[b]);
-            }
-            else if (text[z] == 'x')
-            {
-                int arg = (int)va_arg(va, int);
-                for (int b = 0; b < 20; b++) buffer[b] = 0;
-                std::itoa(buffer, 'x', arg);
-                for (int b = 0; b < std::len(buffer); b++) Kernel::system_log_char(buffer[b]);
-            }
-        }
-        else
-        {
-            Kernel::system_log_char(text[z]);
-        }
-    }
+    for (int z = 0; z < std::len(out); z++)
+        Kernel::system_log_char(out[z]);
 }
 
 void system_log(char * text, ...)

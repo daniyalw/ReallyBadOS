@@ -1,35 +1,35 @@
 #pragma once
 
-#include <video/graphics.h>
 #include <gui/widget.h>
-#include <gui/event.h>
+#include <video/graphics.h>
+#include <fs.h>
 
-using namespace Graphic;
-
-#define TITLE_PADDING 2
-#define CLOSE_B 6
-#define RADIUS 10
-
-class Window
+struct Window
 {
-public:
     int x, y, w, h;
-    int id;
-    char * title;
+    int bg = rgb(100, 100, 100);
 
-    int bg = rgb(255, 0, 0);
+    int title_x, title_y;
+    char title[100];
 
     Widget widgets[100];
     int widget_count = 0;
 
-    Window();
-
-    void set_title(char * t) { title = t; }
-
     void draw();
-    void set(int _x, int _y, int _w, int _h);
-    void add_widget(Widget w);
-    void replace_widget(Widget w, int _id);
+    void set_coords(int _x, int _y) { x = _x; y = _y; }
+    void set_dimensions(int _w, int _h) { w = _w; h = _h; }
+    void set_title(char *_title) { for (int z = 0; z < 100; z++) title[z] = 0; for (int z = 0; z < std::len(_title); z++) title[z] = _title[z];}
 };
 
-std::list<Window *> windows;
+void Window::draw()
+{
+    draw_rect(x, y, w, h, bg);
+
+    for (int z = 0; z < this->widget_count; z++)
+    {
+        widgets[z].draw(widgets[z]);
+    }
+}
+
+Window *windows[100];
+int window_count = 0;

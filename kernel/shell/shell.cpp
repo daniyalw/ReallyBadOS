@@ -37,6 +37,11 @@ void run_command(char * command)
     {
         for (int z = 5; z < strlen(command); z++)
             putchar(command[z]);
+
+        #ifdef DEBUG
+        for (int z = 5; z < strlen(command); z++)
+            Kernel::system_log_char(command[z]);
+        #endif
     }
     else if (check_name(command, "info"))
     {
@@ -148,7 +153,7 @@ void shell()
         if (!command)
         {
 #ifdef DEBUG
-            printf("String is NULL.\n");
+            Kernel::system_log("String is NULL.\n");
 #endif
             printf("\n\n");
             continue;

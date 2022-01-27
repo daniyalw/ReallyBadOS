@@ -83,84 +83,10 @@ void sys_putchar(char text)
 
 void sys_print(char *text, ...)
 {
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
-
-  arg++;
-
-  while ((c = *text++) != 0)
-    {
-      if (c != '%')
-      {
-        if (c == '\n')
-        {
-            text_x = 0;
-            text_y++;
-        }
-        else if (c == '\t')
-        {
-            for (int z = 0; z < 4; z++) sys_putchar(' ');
-        }
-        else
-        {
-            sys_putchar(c);
-        }
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                sys_putchar(c);
-                break;
-            case 'd':
-            case 'u':
-            case 'x':
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                sys_putchar (pad0 ? '0' : ' ');
-              }
-              while (*p)
-              {
-                sys_putchar (*p++);
-              }
-              break;
-
-            default:
-              sys_putchar (*((int *) arg++));
-              break;
-            }
-        }
-    }
+    va_list va;
+    va_start(va, text);
+    vprintf(text, va);
+    va_end(va);
 }
 
 int sys_rand()

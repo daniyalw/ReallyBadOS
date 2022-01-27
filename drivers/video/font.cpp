@@ -57,94 +57,10 @@ void draw_string(char *string, int x, int y, uint32_t color)
 
 void draw_string(int x, int y, uint color, char *text, ...)
 {
-  char **arg = (char **) &text;
-  int c;
-  char buffer[20];
-  int dx = x;
+    va_list va;
+    va_start(va, text);
+    char *out = vsprintf("", text, va);
+    va_end(va);
 
-  arg++;
-
-  while ((c = *text++) != 0)
-    {
-      if (c != '%')
-      {
-        if (c == '\n')
-        {
-            y += 14;
-            dx = x;
-        }
-        else if (c == '\t')
-        {
-            for (int z = 0; z < 4; z++)
-            {
-                draw_char(' ', dx, y, color);
-                dx += 8;
-            }
-        }
-        else
-        {
-            draw_char(c, dx, y, color);
-            dx += 8;
-        }
-      }
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-
-          c = *text++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *text++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *text++;
-            }
-
-          switch (c)
-            {
-            case 'c':
-                draw_char(c, dx, y, color);
-                dx += 8;
-                break;
-            case 'd':
-            case 'u':
-            case 'x':
-              std::itoa (buffer, c, *((int *) arg++));
-              p = buffer;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-              {
-                draw_char(pad0 ? '0' : ' ', dx, y, color);
-                dx += 8;
-              }
-              while (*p)
-              {
-                draw_char(*p, dx, y, color);
-                dx += 8;
-                *p++;
-              }
-              break;
-
-            default:
-              draw_char(*((int *) arg), dx, y, color);
-              dx += 8;
-              arg++;
-              break;
-            }
-        }
-    }
+    draw_string(va, x, y, color);
 }

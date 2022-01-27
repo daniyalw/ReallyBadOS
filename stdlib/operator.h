@@ -1,3 +1,5 @@
+#pragma once
+
 void *operator new(size_t size)
 {
     return (void *)malloc((int)size);

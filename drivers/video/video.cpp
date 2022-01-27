@@ -84,6 +84,100 @@ void putchar(char text, int color) {
     next_char();
 }
 
+char * vnprintf(char *s, int max, char *format, va_list va)
+{
+    int sz = 0;
+    char buffer[20];
+
+    for (int z = 0; z < max; z++)
+    {
+        if (format[z] == '%')
+        {
+            z++;
+            if (format[z] == 's')
+            {
+                char *str = (char *)va_arg(va, char*);
+
+                for (int b = 0; b < std::len(str); b++)
+                {
+                    s[sz] = str[b];
+                    sz++;
+                }
+            }
+            else if (format[z] == 'c')
+            {
+                int ch = (int)va_arg(va, int);
+                s[sz] = ch;
+                sz++;
+            }
+            else if (format[z] == 'd')
+            {
+                int i = (int)va_arg(va, int);
+                for (int b = 0; b < 20; b++) buffer[b] = 0;
+                std::itoa(buffer, 'd', i);
+                for (int b = 0; b < std::len(buffer); b++)
+                {
+                    s[sz] = buffer[b];
+                    sz++;
+                }
+            }
+            else if (format[z] == 'x')
+            {
+                int arg = (int)va_arg(va, int);
+                for (int b = 0; b < 20; b++) buffer[b] = 0;
+                std::itoa(buffer, 'x', arg);
+                for (int b = 0; b < std::len(buffer); b++)
+                {
+                    s[sz] = buffer[b];
+                    sz++;
+                }
+            }
+            else
+            {
+                s[sz] = '%';
+                sz++;
+                s[sz] = format[z];
+                sz++;
+            }
+        }
+        else
+        {
+            s[sz] = format[z];
+            sz++;
+        }
+    }
+
+    s[sz] = 0;
+
+    return s;
+}
+
+char * vsprintf(char *s, char *format, va_list va)
+{
+    return vnprintf(s, std::len(format), format, va);
+}
+
+void vprintf(char *f, va_list va)
+{
+    printf(vsprintf("", f, va));
+}
+
+void sprintf(char *s, char *fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    vsprintf(s, fmt, va);
+    va_end(va);
+}
+
+void snprintf(char *s, int max, char *fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    vnprintf(s, max, fmt, va);
+    va_end(va);
+}
+
 void putchar(char text) {
     if (!custom_color_on)
     {
@@ -122,61 +216,20 @@ void scroll()
            written_on[i] = false;
        }
        text_y = 24;
-
-       has_scrolled = true;
    }
-}
-
-void vaprintf(char *text, va_list va)
-{
-    char buffer[20];
-
-    for (int z = 0; z < std::len(text); z++)
-    {
-        if (text[z] == '%')
-        {
-            z++;
-            if (text[z] == 's')
-            {
-                char *str = (char *)va_arg(va, char*);
-
-                for (int b = 0; b < std::len(str); b++)
-                    putchar(str[b]);
-            }
-            else if (text[z] == 'c')
-            {
-                int ch = (int)va_arg(va, int);
-                putchar(ch);
-            }
-            else if (text[z] == 'd')
-            {
-                int i = (int)va_arg(va, int);
-                for (int b = 0; b < 20; b++) buffer[b] = 0;
-                std::itoa(buffer, 'd', i);
-                for (int b = 0; b < std::len(buffer); b++) putchar(buffer[b]);
-            }
-            else if (text[z] == 'x')
-            {
-                int arg = (int)va_arg(va, int);
-                for (int b = 0; b < 20; b++) buffer[b] = 0;
-                std::itoa(buffer, 'x', arg);
-                for (int b = 0; b < std::len(buffer); b++) putchar(buffer[b]);
-            }
-        }
-        else
-        {
-            putchar(text[z]);
-        }
-    }
-    Kernel::set_hardware_cursor(text_y, text_x);
 }
 
 void printf(char *a, ...)
 {
     va_list va;
     va_start(va, a);
-    vaprintf(a, va);
+    char * out = vsprintf("", a, va);
     va_end(va);
+
+    for (int z = 0; z < std::len(out); z++)
+        putchar(out[z]);
+
+    Kernel::update_hardware_cursor(text_x, text_y);
 }
 
 void cprintf(int color, char *a, ...)
@@ -186,7 +239,7 @@ void cprintf(int color, char *a, ...)
 
     va_list va;
     va_start(va, a);
-    vaprintf(a, va);
+    vprintf(a, va);
     va_end(va);
 
     custom_color_on = false;
@@ -222,7 +275,7 @@ void warning(char *text, ...)
 
     va_list va;
     va_start(va, text);
-    vaprintf(text, va);
+    vprintf(text, va);
     va_end(va);
 
     va_start(va, text);
@@ -238,7 +291,7 @@ void error(char *text, ...)
 
     va_list va;
     va_start(va, text);
-    vaprintf(text, va);
+    vprintf(text, va);
     va_end(va);
 
     va_start(va, text);
@@ -254,7 +307,7 @@ void info(char *text, ...)
 
     va_list va;
     va_start(va, text);
-    vaprintf(text, va);
+    vprintf(text, va);
     va_end(va);
 
     va_start(va, text);
