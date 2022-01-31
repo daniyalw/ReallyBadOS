@@ -19,10 +19,6 @@ interrupts:
 
 jmp:
 	nasm -f elf32 kernel/jmp.asm -o built/jmp.o
-
-usermode:
-	nasm -f elf32 kernel/sys/descriptors/usermode.asm -o built/user.o
-
 tss:
 	nasm -f elf32 kernel/sys/descriptors/tss.asm -o built/tss.o
 
@@ -35,7 +31,7 @@ kernel:
 
 textmode:
 	make bootloader
-	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
 	make iso
 	make run
 

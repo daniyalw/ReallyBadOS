@@ -2,6 +2,7 @@
 #include <random.h>
 #include <sys/power/power.h>
 #include <mouse/cursor.h>
+#include <fs.h>
 
 void set_string(char * string, char * newvalue)
 {
@@ -60,6 +61,25 @@ void s_test()
     printf("Hello!");
 }
 
+void s_fopen(char * name, FILE *f)
+{
+    path_t path = parse_name(name);
+    FILE * file;
+    FILE orig = get_file(path.filename, path.foldername);
+
+    file->name = orig.name;
+    file->contents = orig.contents;
+    file->path = orig.path;
+    file->parent = orig.parent;
+    file->id = orig.id;
+    file->size = orig.size;
+    file->null = orig.null;
+    file->write = orig.write;
+    file->read = orig.read;
+
+    f = file;
+}
+
 DEFN_SYSCALL1(print, 0, char *);
 
 DEFN_SYSCALL1(s_putchar, 1, char);
@@ -73,6 +93,8 @@ DEFN_SYSCALL3(s_putpixel, 4, int, int, int);
 DEFN_SYSCALL0(s_update_mouse, 5);
 
 DEFN_SYSCALL0(s_test, 6);
+
+DEFN_SYSCALL2(s_fopen, 7, char*, FILE*);
 
 // ----------------------------- //
 
@@ -108,7 +130,6 @@ void sys_putpixel(int x, int y, int color)
     syscall_s_putpixel(x, y, color);
 }
 
-
 // ----------------------------- //
 
 
@@ -120,11 +141,12 @@ void syscall_append(void *func)
 void syscall_handler(registers_t regs)
 {
    if (regs.eax >= syscalls.size())
+   {
+       error("Syscall outside of initialized syscalls range.\n");
        return;
+   }
 
    void *location = syscalls.get(regs.eax);
-
-  // printf("\nSyscall: %d\n", regs.eax);
 
    int ret;
 
@@ -155,8 +177,9 @@ void init_syscalls()
     syscall_append((void *)s_putpixel);
     syscall_append((void *)s_update_mouse);
     syscall_append((void *)s_test);
+    syscall_append((void *)s_fopen);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
-    Kernel::system_log("Syscalls initialized at interrupt 48!");
+    Kernel::system_log("Syscalls initialized at interrupt 48!\n");
 }
 
 }

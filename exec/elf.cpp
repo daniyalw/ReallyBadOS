@@ -49,7 +49,28 @@ int load_app(uint32_t location, int argc, char **argv)
     if (!elf_verify(buf))
     {
         Kernel::system_log("non-ELF file\n");
-        return false;
+        return 1; // if we return 0 it'll be taken as success
+    }
+
+    return elf_start(buf, argc, argv);
+}
+
+int load_app_from_file(char *name, int argc, char **argv)
+{
+    FILE *file = fopen(name);
+
+    if (file->null)
+    {
+        error("ELF file not found.\n");
+        return 1;
+    }
+
+    uint8_t *buf = (uint8_t *)file->contents;
+
+    if (!elf_verify(buf))
+    {
+        error("Invalid ELF file.\n");
+        return 1;
     }
 
     return elf_start(buf, argc, argv);

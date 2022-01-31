@@ -23,8 +23,8 @@ void timer_int(registers_t regs) {
         hour++;
     }
 
-    if (hour > 12) {
-        hour -= 12;
+    if (hour >= 12) {
+        if (hour > 12) hour -= 12;
         pm_on = true;
     }
 

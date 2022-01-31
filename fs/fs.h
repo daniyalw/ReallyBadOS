@@ -38,12 +38,6 @@ typedef struct
     bool operator!() { return null; }
 } FOLDER;
 
-typedef struct
-{
-    char filename[128];
-    char foldername[128];
-} path_t;
-
 FOLDER folders[128];
 int folder_count = 0;
 
@@ -78,6 +72,14 @@ void ls(char *cwd);
 
 }
 
+typedef struct
+{
+    char filename[128];
+    char foldername[128];
+} path_t;
+
+
 Filesystem::Ramdisk::FILE * fopen(char * name);
 void complex_fprintf(char *fname, char *data);
 void fprintf(Filesystem::Ramdisk::FILE file, char *data);
+path_t parse_name(char * path);

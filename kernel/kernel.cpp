@@ -186,7 +186,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
 #else
 
-    //init_mem(mbd, beginning);
+    init_mem(mbd, beginning);
 
     for (int z = 0; z < tar.block_count; z++)
         create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
@@ -195,18 +195,13 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     putchar(' ');
     text_x--;
 
-    FILE *file = fopen("/usr/echo.o");
+    char *argv[] = {"Hello!", "Hi!"};
+    int result = load_app_from_file("/usr/test.cos", 2, argv);
 
-    if (file->null)
-    {
-        printf("File is null.\n");
-    }
+    if (!result)
+        printf("Exit returned successfully!\n");
     else
-    {
-        char *argv[] = {"Hello!", "Hi!"};
-        int result = elf_start((uint8_t *)file->contents, 2, argv);
-        printf("\nResult: %d\n", result);
-    }
+        printf("Application returned unsuccessfully.\n");
     */
 
     init_vga();

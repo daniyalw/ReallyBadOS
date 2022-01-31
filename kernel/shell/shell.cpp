@@ -98,7 +98,6 @@ void run_command(char * command)
         else
             printf("%d:%d ", time.h, time.min);
         printf((char *)(time.pm ? "PM" : "AM"));
-        printf("\n");
     }
     else if (check_name(command, "date"))
     {
@@ -125,7 +124,7 @@ void run_command(char * command)
     }
     else
     {
-        error("invalid command: %s\n", command);
+        printf("Error: invalid command: %s\n", command);
     }
 }
 

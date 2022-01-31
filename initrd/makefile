@@ -1,4 +1,4 @@
-FILES := test.o echo.o
+FILES := test.cos echo.cos hello.txt
 OUT = out.tar
 
 build:

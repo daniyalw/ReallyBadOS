@@ -253,13 +253,9 @@ void printf_centered(char *s, int line_no)
 void warning(char *text, ...)
 {
     int yellow = 0x0E00;
-    Kernel::system_log("Warning: ");
-    cprintf(yellow, "Warning: ");
-
     va_list va;
-    va_start(va, text);
-    vprintf(text, va);
-    va_end(va);
+
+    Kernel::system_log("Warning: ");
 
     va_start(va, text);
     Kernel::system_log_string(text, va);
@@ -269,13 +265,9 @@ void warning(char *text, ...)
 void error(char *text, ...)
 {
     int red = 0x0400;
-    Kernel::system_log("Error: ");
-    cprintf(red, "Error: ");
-
     va_list va;
-    va_start(va, text);
-    vprintf(text, va);
-    va_end(va);
+
+    Kernel::system_log("Error: ");
 
     va_start(va, text);
     Kernel::system_log_string(text, va);
@@ -285,13 +277,9 @@ void error(char *text, ...)
 void info(char *text, ...)
 {
     int light_blue = 0x0300;
-    Kernel::system_log("Info: ");
-    cprintf(light_blue, "Info: ");
-
     va_list va;
-    va_start(va, text);
-    vprintf(text, va);
-    va_end(va);
+
+    Kernel::system_log("Info: ");
 
     va_start(va, text);
     Kernel::system_log_string(text, va);
