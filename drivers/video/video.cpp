@@ -35,6 +35,9 @@ void next_char() {
 }
 
 void putchar(char text, int color) {
+    short * vidmem = (short *)0xb8000;
+
+
     if (text == '\n') {
         text_x = 0;
         text_y++;
@@ -47,36 +50,16 @@ void putchar(char text, int color) {
         text_x = 0;
         return;
     } else if (text == '\t') {
-        text_x += 4;
+        for (int z = 0; z < 4; z++) next_char();
         return;
     } else if (text == '\b') {
-        if (text_x > 1)
-        {
-            // can't do text_x -= 2 since then the space two spaces behind text_x will turn empty and the space right
-            // behind text_x will remain
-            text_x--;
-            if (text_x < 0) {
-                for (int b = 0; b < 80; b++)
-                {
-                    if (!written_on[b+(text_y - 1)*80])
-                    {
-                        text_x = b;
-                        break;
-                    }
-                }
-                text_y--;
-            }
-            putchar(' ');
-            text_x--;
-            if (text_x < 0) {
-                text_x = 0;
-                text_y--;
-            }
-        }
+        text_x--;
+        vidmem[text_x+text_y*80] = color | ' ';
+        written_on[text_x+text_y*80] = true;
+        vga_back[text_x+text_y*80] = ' ';
+
         return;
     }
-
-    short * vidmem = (short *)0xb8000;
 
     vidmem[text_x+text_y*80] = color | text;
     written_on[text_x+text_y*80] = true;
@@ -212,7 +195,7 @@ void scroll()
        for (i = 24*80; i < 25*80; i++)
        {
            vidmem[i] = space;
-           vga_back[i] = space;
+           vga_back[i] = ' ';
            written_on[i] = false;
        }
        text_y = 24;

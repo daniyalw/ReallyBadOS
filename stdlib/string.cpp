@@ -42,7 +42,7 @@ uint32_t uint_atoi(char *str)
     return num;
 }
 
-void memcpy(char *source, char * dest, int begin, int end)
+void memcpy(char *dest, char * source, int begin, int end)
 {
     //ASSERT(begin < end);
 
@@ -366,7 +366,7 @@ static inline void __movsb_copy_int(int *from, const int *to, int size) {
 
 #endif
 
-inline void memcpy(const char *source, char *dest, const int nb)
+inline void memcpy(char *dest, const char *source, const int nb)
 {
     #if defined(__x86_64__) || defined(__x86_32__)
 

@@ -35,7 +35,8 @@ char * scanf()
                 {
                     sz--;
                     buffer[sz] = 0;
-                    printf("\b");
+                    putchar('\b', 0x0F00);
+                    Kernel::update_hardware_cursor(text_x, text_y);
                 }
                 break;
 

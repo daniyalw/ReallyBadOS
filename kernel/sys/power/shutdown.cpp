@@ -5,6 +5,8 @@ namespace Kernel {
 
 void shutdown_os()
 {
+    Kernel::system_log("Shutting down...\n");
+    
     // bochs and older qemu
     outw(0xB004, 0x2000);
 

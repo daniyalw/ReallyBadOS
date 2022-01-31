@@ -91,6 +91,7 @@ extern "C" {
 #include "../drivers/keyboard/getch.cpp"
 #include "../drivers/keyboard/scanf.cpp"
 #include "../gui/gui.h"
+#include "../exec/elf.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -185,10 +186,27 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
 #else
 
-    init_mem(mbd, beginning);
+    //init_mem(mbd, beginning);
 
     for (int z = 0; z < tar.block_count; z++)
         create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+
+    /*
+    putchar(' ');
+    text_x--;
+
+    FILE *file = fopen("/usr/test.o");
+
+    if (file->null)
+    {
+        printf("File is null.\n");
+    }
+    else
+    {
+        int result = elf_start((uint8_t *)file->contents);
+        printf("\nResult: %d\n", result);
+    }
+    */
 
     init_vga();
 
@@ -199,11 +217,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
 
     if (time.min < 10)
-        printf("%d:0%d %s", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+        printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
     else
-        printf("%d:%d %s", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
-
-    printf("\n");
+        printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
 
     switch_to_user_mode();
     shell();

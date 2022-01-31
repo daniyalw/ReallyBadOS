@@ -11,6 +11,25 @@
 using namespace std;
 using namespace Time;
 
+void print_both(char *text, ...)
+{
+    va_list va;
+
+    va_start(va, text);
+    Kernel::system_log_string(text, va);
+    va_end(va);
+
+    va_start(va, text);
+    vprintf(text, va);
+    va_end(va);
+}
+
+void putchar_both(char text, ...)
+{
+    putchar(text);
+    Kernel::system_log_char(text);
+}
+
 bool check_name(char * name, char * check_against)
 {
     if (!startswith(name, check_against))
@@ -106,10 +125,7 @@ void run_command(char * command)
     }
     else
     {
-        if (!strcmp(command, ""))
-            printf("Error: command '%s' not found!\n", command);
-        else
-            printf("Nothing...");
+        error("invalid command: %s\n", command);
     }
 }
 
@@ -144,24 +160,39 @@ void shell()
     while (true)
     {
         if (current_display_len != 0 && current_display_len != 1)
+        {
+#ifdef DEBUG
+            Kernel::system_log("/%s/> ", current_display);
+#endif
             printf("/%s/> ", current_display);
+        }
         else
+        {
+#ifdef DEBUG
+            Kernel::system_log("/> ");
+#endif
             printf("/> ");
+        }
 
         char * command = scanf();
 
-        if (!command)
+        if (!command || strisempty(command) || command == "")
         {
 #ifdef DEBUG
             Kernel::system_log("String is NULL.\n");
 #endif
-            printf("\n\n");
+            putchar('\n');
             continue;
         }
 
+#ifdef DEBUG
+        Kernel::system_log(command);
+#endif
+
         run_command(command);
 
-        printf("\n\n");
+        putchar('\n');
+        putchar('\n');
 
         free(command); // since scanf() uses malloc()
     }

@@ -1,4 +1,4 @@
-FILES := hello.txt
+FILES := test.o
 OUT = out.tar
 
 build:

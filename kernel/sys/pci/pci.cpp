@@ -91,7 +91,7 @@ void go_through_and_print()
 {
     for (int z = 0; z < device_count; z++)
     {
-        printf("classID: %x ::: SubID: %x ::: DeviceID: %x ::: VendorID: %x\n",
+        printf("classID: %x ::: SubID: %x ::: DeviceID: 0x%x ::: VendorID: 0x%x\n",
                 devices[z]->classID,
                 devices[z]->subclassID,
                 devices[z]->deviceID,
