@@ -203,39 +203,41 @@ void internal_ls()
 
     for (int z = 0; z < Filesystem::Ramdisk::folder_count; z++)
     {
-        printf("/");
+        putchar('/');
         printf(Filesystem::Ramdisk::folders[z].name);
 
         for (int b = 0; b < Filesystem::Ramdisk::folders[z].file_count; b++)
         {
-            printf("\n");
+            putchar('\n');
 
-            printf("/");
+            putchar('/');
             printf(Filesystem::Ramdisk::folders[z].files[b].parent);
-            printf("/");
+            putchar('/');
             printf(Filesystem::Ramdisk::folders[z].files[b].name);
 
-            printf("\n");
+            putchar('\n');
 
             //printf("\t\t%s\n", Filesystem::Ramdisk::folders[z].files[b].contents);
         }
 
-        printf("\n");
+        putchar('\n');
     }
 
 #ifdef DEBUG
     for (int z = 0; z < Filesystem::Ramdisk::folder_count; z++)
     {
+        if (Filesystem::Ramdisk::folders[z].null) continue;
         Kernel::system_log("/%s\n", Filesystem::Ramdisk::folders[z].name);
 
         for (int b = 0; b < Filesystem::Ramdisk::folders[z].file_count; b++)
         {
+            if (Filesystem::Ramdisk::folders[z].files[b].null) continue;
             Kernel::system_log("/%s/%s\n", Filesystem::Ramdisk::folders[z].files[b].parent, Filesystem::Ramdisk::folders[z].files[b].name);
 
             //printf("\t\t%s\n", Filesystem::Ramdisk::folders[z].files[b].contents);
         }
 
-        Kernel::system_log("\n");
+        Kernel::system_log_char('\n');
     }
 #endif
 }

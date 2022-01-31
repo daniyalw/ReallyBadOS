@@ -92,6 +92,7 @@ extern "C" {
 #include "../drivers/keyboard/scanf.cpp"
 #include "../gui/gui.h"
 #include "../exec/elf.cpp"
+#include "../fs/utilities.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -122,6 +123,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     create_folder("dev");
     create_folder("usr");
+    create_folder("trash");
 
     Kernel::init_serial(SERIAL_PORT);
     Kernel::init_logging();
@@ -134,6 +136,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Kernel::init_keyboard(false, "/");
     Kernel::init_mouse();
     Kernel::init_syscalls();
+
+    init_vga();
 
     u32 location = *((u32*)mbd->mods_addr); // load modules with GRUB
 
@@ -203,8 +207,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     else
         printf("Application returned unsuccessfully.\n");
     */
-
-    init_vga();
 
     scan_buses();
 
