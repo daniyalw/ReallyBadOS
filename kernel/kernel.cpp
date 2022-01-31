@@ -195,7 +195,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     putchar(' ');
     text_x--;
 
-    FILE *file = fopen("/usr/test.o");
+    FILE *file = fopen("/usr/echo.o");
 
     if (file->null)
     {
@@ -203,7 +203,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     }
     else
     {
-        int result = elf_start((uint8_t *)file->contents);
+        char *argv[] = {"Hello!", "Hi!"};
+        int result = elf_start((uint8_t *)file->contents, 2, argv);
         printf("\nResult: %d\n", result);
     }
     */

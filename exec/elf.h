@@ -54,5 +54,5 @@ typedef struct {
 } elf_program_header_t;
 
 bool elf_verify(uint8_t *buf);
-int elf_start(uint8_t *buf);
-int load_app(uint32_t location);
+int elf_start(uint8_t *buf, int argc, char **argv);
+int load_app(uint32_t location, int argc, char **argv);

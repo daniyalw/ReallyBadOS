@@ -16,4 +16,4 @@ out: ${OBJ}
 %.o: %.cpp
 	cp ../src/start.o start.o
 	${CPP} ${CPP_FLAGS} $< ${EXTERNAL} -o obj/$@ -T link.ld
-	cp obj/$@ ../../isodir/boot/test.o
+	cp obj/$@ ../../initrd/$@

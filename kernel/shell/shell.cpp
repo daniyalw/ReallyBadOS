@@ -176,7 +176,7 @@ void shell()
 
         char * command = scanf();
 
-        if (!command || strisempty(command) || command == "")
+        if (strisempty(command) || command == "")
         {
 #ifdef DEBUG
             Kernel::system_log("String is NULL.\n");

@@ -10,7 +10,7 @@ bool elf_verify(uint8_t *buf)
     return true;
 }
 
-int elf_start(uint8_t *buf)
+int elf_start(uint8_t *buf, int argc, char **argv)
 {
 	elf_header_t *header = (elf_header_t *)buf;
 	if(header->e_type != 2)
@@ -37,13 +37,12 @@ int elf_start(uint8_t *buf)
 	}
 
     call_t func = (call_t)header->e_entry;
-    char *argv[] = {"dello"};
-    int result = func(1, argv);
+    int result = func(argc, argv);
 
     return result;
 }
 
-int load_app(uint32_t location)
+int load_app(uint32_t location, int argc, char **argv)
 {
     uint8_t *buf = (uint8_t *)location;
 
@@ -53,5 +52,5 @@ int load_app(uint32_t location)
         return false;
     }
 
-    return elf_start(buf);
+    return elf_start(buf, argc, argv);
 }
