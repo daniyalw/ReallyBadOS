@@ -85,25 +85,12 @@ extern "C" {
 #include "../exec/elf.cpp"
 #include "../fs/utilities.cpp"
 #include "../exec/argparse.cpp"
+#include "../drivers/net/rtl.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
 using namespace Time;
 using namespace Cooperative;
-
-void detect_net()
-{
-    PCIDevice *device = find_device(0x10EC, 0x8139);
-
-    if (device == NULL)
-    {
-        error("could not detect RTL8139 network card\n");
-    }
-    else
-    {
-        info("detected RTL8139 network card!\n");
-    }
-}
 
 void login()
 {
@@ -328,6 +315,12 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
     else
         printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+
+    Net::rtl8139 *card = (Net::rtl8139 *)malloc(sizeof(Net::rtl8139));
+
+    card->start();
+
+    return;
 
     switch_to_user_mode();
     shell();
