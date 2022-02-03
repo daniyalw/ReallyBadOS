@@ -67,7 +67,7 @@ void putchar(char text, int color) {
     next_char();
 }
 
-char * vnprintf(char *s, int max, char *format, va_list va)
+char * vsnprintf(char *s, int max, char *format, va_list va)
 {
     int sz = 0;
     char buffer[20];

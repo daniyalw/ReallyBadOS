@@ -24,7 +24,7 @@ void snprintf(char *s, int max, char *fmt, ...);
 void sprintf(char *s, char *fmt, ...);
 void vprintf(char *f, va_list va);
 char * vsprintf(char *s, char *format, va_list va);
-char * vnprintf(char *s, int max, char *format, va_list va);
+char * vsnprintf(char *s, int max, char *format, va_list va);
 void scroll();
 void vaprintf(char *text, va_list va);
 void printf(char *a, ...);
