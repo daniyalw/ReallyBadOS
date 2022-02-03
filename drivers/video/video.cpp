@@ -137,7 +137,7 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
 
 char * vsprintf(char *s, char *format, va_list va)
 {
-    return vnprintf(s, std::len(format), format, va);
+    return vsnprintf(s, std::len(format), format, va);
 }
 
 void vprintf(char *f, va_list va)
@@ -157,7 +157,7 @@ void snprintf(char *s, int max, char *fmt, ...)
 {
     va_list va;
     va_start(va, fmt);
-    vnprintf(s, max, fmt, va);
+    vsnprintf(s, max, fmt, va);
     va_end(va);
 }
 

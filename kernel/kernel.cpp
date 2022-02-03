@@ -216,7 +216,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         return; // stop any more kernel code running since it's not multiboot
     }
 
-    Kernel::system_log("Entered CeneOS kernel.\n");
+    Kernel::system_log("Entered ReallyBadOS kernel.\n");
 
     create_folder("dev");
     create_folder("usr");
@@ -280,8 +280,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     //draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
 
-    //int ret = gui_notification("About", "CeneOS is just another hobby operating system!\n2022");
-
     Graphic::blit_changes();
 
     while (true);
@@ -322,7 +320,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     uint8_t *bytes;
     bytes = ata_init(bytes);
 
-    printf("CeneOS Shell\n");
+    printf("%s Shell\n", System::SYSTEM);
 
     printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
 

@@ -409,7 +409,7 @@ char * get(char * out, char *text, ...)
     va_list va;
 
     va_start(va, text);
-    vnprintf(out, max, text, va);
+    vsnprintf(out, max, text, va);
     va_end(va);
 
     return out;
