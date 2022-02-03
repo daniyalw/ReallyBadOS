@@ -52,6 +52,15 @@ void memcpy(char *dest, char * source, int begin, int end)
     }
 }
 
+bool contains(char *str, char c)
+{
+    for (int z = 0; z < strlen(str); z++)
+        if (str[z] == c)
+            return true;
+
+    return false;
+}
+
 static void itoa(char *buf, int base, int d)
 {
   char *p = buf;

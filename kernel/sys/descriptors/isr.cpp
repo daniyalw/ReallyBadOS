@@ -106,6 +106,7 @@ void init_isr() {
     set_idt_gate(46, (u32)irq14);
     set_idt_gate(47, (u32)irq15);
     set_idt_gate(48, (u32)irq16);
+    set_idt_gate(49, (u32)irq17);
 
     set_idt();
 }

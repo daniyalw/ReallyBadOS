@@ -6,7 +6,7 @@
 #define TIME 3
 #define PUTPIXEL 4
 #define UPDATE_MOUSE 5
-#define TEST 6
+#define INFO 6
 
 #define DEFN_SYSCALL0(fn, num) \
 void syscall_##fn() \
@@ -54,4 +54,5 @@ void init_syscalls();
 static void syscall_handler(registers_t regs);
 void syscall_append(void *func);
 
-std::list<void *> syscalls;
+void *syscalls[10];
+int syscall_count = 0;

@@ -110,8 +110,8 @@ extern "C" void printf(char *a, ...)
     char * out = vsprintf("", a, va);
     va_end(va);
 
-    for (int z = 0; z < strlen(out); z++)
-        putchar(out[z]);
+    void * b;
+    asm volatile("int $48" : "=a" (b) : "0" (PRINT), "b" (out));
 }
 
 void test_print()

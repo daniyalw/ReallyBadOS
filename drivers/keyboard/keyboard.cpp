@@ -49,7 +49,7 @@ void edit_buffer_size(int change)
 
 static void scan_key(registers_t regs)
 {
-    current_key = inb(0x60);
+    current_key = inb(KEYBOARD_CODE);
     get_key(current_key);
 
     return;
@@ -78,33 +78,16 @@ void get_key(unsigned char code)
 
     if (index == -1)
     {
-        int i = -1;
-
-        for (int z = 0; z < special_codes_length; z++)
+        for (int z = 0; z < shift_code_length; z++)
         {
-            if (special_codes[z] == code)
+            if (code == shifted_codes[z])
             {
-                i = z;
+                shifted = !shifted;
+                key = 0;
                 break;
             }
         }
-
-        if (i == -1)
-            return;
-
-        if (code == 0x3A || code == 0x2A || code == 0x36)
-        {
-            if (shifted)
-            {
-                shifted = false;
-                key = 0;
-            }
-            else
-            {
-                shifted = true;
-                key = 0;
-            }
-        }
+        return;
     }
     else
     {

@@ -55,7 +55,7 @@ int load_app(uint32_t location, int argc, char **argv)
     return elf_start(buf, argc, argv);
 }
 
-int load_app_from_file(char *name, int argc, char **argv)
+int load_app_from_name(char *name, int argc, char **argv)
 {
     FILE *file = fopen(name);
 
@@ -65,6 +65,19 @@ int load_app_from_file(char *name, int argc, char **argv)
         return 1;
     }
 
+    uint8_t *buf = (uint8_t *)file->contents;
+
+    if (!elf_verify(buf))
+    {
+        error("Invalid ELF file.\n");
+        return 1;
+    }
+
+    return elf_start(buf, argc, argv);
+}
+
+int load_app_from_file(FILE *file, int argc, char **argv)
+{
     uint8_t *buf = (uint8_t *)file->contents;
 
     if (!elf_verify(buf))

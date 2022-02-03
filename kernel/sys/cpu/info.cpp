@@ -1,5 +1,6 @@
 #pragma once
 #include <sys/io.h>
+#include <cpuid.h>
 
 static int get_model()
 {
@@ -23,6 +24,14 @@ char *  get_vendor()
     vendor[12] = '\0';
 
     return vendor;
+}
+
+bool hypervisor()
+{
+    uint32_t eax, unused, edx;
+    __get_cpuid(1, &eax, &unused, &unused, &edx);
+
+    return edx & (1 << 31);
 }
 
 char * get_cpu_name()

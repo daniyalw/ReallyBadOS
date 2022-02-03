@@ -3,6 +3,9 @@
 
 using namespace std;
 
+// target_address = your variable to where to store
+// lba = which sector
+// sector_count = how many sectors to read
 void ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count) {
     while (inb(0x1F7) & STATUS_BSY)
         ;

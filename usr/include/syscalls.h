@@ -6,4 +6,5 @@
 #define TIME 3
 #define PUTPIXEL 4
 #define UPDATE_MOUSE 5
-#define TEST 6
+#define INFO 6
+#define FILE_S 7

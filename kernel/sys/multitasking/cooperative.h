@@ -1,9 +1,11 @@
+#pragma once
+
 namespace Cooperative {
 
 typedef struct
 {
     char *name;
-    uint32_t addr;
+    void (*func)();
     bool null = false;
 } task_t;
 
@@ -15,11 +17,14 @@ int current_id = 0;
 
 bool began = false;
 
-void create_task(char * name, uint32_t addr);
+void create_task(char * name, void (*func)());
 void switch_task();
 void yield();
-void update_addr(uint32_t addr);
+void update_addr(void (*func)());
 void exit();
 void task_ls();
 
+bool task_exists(char *proc);
+int task_id(char *proc);
+void kill_proc(char *proc);
 }

@@ -4,13 +4,13 @@ using namespace Cooperative;
 
 namespace Cooperative {
 
-void create_task(char * name, uint32_t addr)
+void create_task(char * name, void (*func)())
 {
     ASSERT(task_count < 10);
     task_t task;
 
     task.name = name;
-    task.addr = addr;
+    task.func = func;
 
     tasks[task_count] = task;
     task_count++;
@@ -58,7 +58,7 @@ void switch_task()
 
     began = true;
 
-    jmp_somewhere(current.addr);
+    current.func();
 }
 
 void yield()
@@ -66,17 +66,66 @@ void yield()
     switch_task();
 }
 
-void update_addr(uint32_t addr)
+void update_addr(void (*func)())
 {
-    current.addr = addr;
+    current.func = func;
     tasks[current_id] = current;
 }
 
 void task_ls()
 {
+    // task_count is not true reflection of available tasks, since it includes NULL tasks
+    int count = 0;
+
     for (int z = 0; z < task_count; z++)
     {
-        printf("\nTask%s: %s", (char *)(tasks[z].null ? " (NULL)" : ""), tasks[z].name);
+        if (!tasks[z].null) count++;
+    }
+
+    printf("Tasks: %d\n", count);
+
+    for (int z = 0; z < task_count; z++)
+    {
+        if (tasks[z].null) continue;
+
+        printf("Task: %s", tasks[z].name);
+        putchar('\n');
+    }
+}
+
+bool task_exists(char *proc)
+{
+    for (int z = 0; z < task_count; z++)
+    {
+        if (strcmp(tasks[z].name, proc))
+            return true;
+    }
+
+    return false;
+}
+
+int task_id(char *proc)
+{
+    if (!task_exists(proc)) return -1;
+
+    for (int z = 0; z < task_count; z++)
+    {
+        if (strcmp(tasks[z].name, proc))
+            return z;
+    }
+
+    return -1;
+}
+
+void kill_proc(char *proc)
+{
+    int z = task_id(proc);
+
+    if (z != -1)
+    {
+        task_t task = tasks[z];
+        task.null = true;
+        tasks[z] = task;
     }
 }
 
@@ -91,22 +140,19 @@ void exit()
 
 void idle_task()
 {
-    FILE *file = fopen("/usr/hello.txt");
-    file->write("Hello!");
+    Kernel::system_log("This task got run!\n");
     yield();
 }
 
 void second_idle()
 {
-    FILE *file = fopen("/usr/hello.txt");
-    file->write("Hello!");
     yield();
 }
 
 void init_cooperative_tasking()
 {
-    create_task("idle1", (uint32_t)&idle_task);
-    create_task("idle2", (uint32_t)&second_idle);
+    create_task("idle1", idle_task);
+    create_task("idle2", second_idle);
 
     switch_task();
 }

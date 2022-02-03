@@ -123,6 +123,7 @@ global irq13
 global irq14
 global irq15
 global irq16
+global irq17
 
 ; 0: Divide By Zero Exception
 isr0:
@@ -445,3 +446,10 @@ irq16:
     push byte 16
     push byte 48
     jmp irq_common_stub
+
+; for task switching to ring0
+irq17:
+	cli
+	push byte 17
+	push byte 49
+	jmp irq_common_stub

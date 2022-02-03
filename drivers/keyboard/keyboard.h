@@ -3,6 +3,8 @@
 #include <sys/descriptors/isr.h>
 #include <memory.h>
 
+#define KEYBOARD_CODE 0x60
+
 bool shifted = 0;
 char * returned;
 unsigned char current_key;

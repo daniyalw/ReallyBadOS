@@ -7,6 +7,9 @@
 #include <keyboard.h>
 #include <sys/mem/memory.h>
 #include <fs/fs.h>
+#include <exec/argparse.h>
+#include <exec/elf.h>
+#include <sys/multitasking/cooperative.h>
 
 using namespace std;
 using namespace Time;
@@ -49,82 +52,31 @@ bool check_name(char * name, char * check_against)
 
 void run_command(char * command)
 {
-    if (has_scrolled)
-        printf("\n");
+    args_t args = parse_args(command);
+    char *executable = args.argv[0];
+    char *fname = std::get("", "/apps/%s.o", executable);
 
-    else if (check_name(command, "echo"))
-    {
-        for (int z = 5; z < strlen(command); z++)
-            putchar(command[z]);
+    FILE *file = fopen(fname);
 
-        #ifdef DEBUG
-        for (int z = 5; z < strlen(command); z++)
-            Kernel::system_log_char(command[z]);
-        #endif
-    }
-    else if (check_name(command, "info"))
+    if (file->null)
     {
-        printf("OS: %s\n", System::SYSTEM);
-        printf("Version: %s\n", System::VERSION);
-        printf("Copyright Daniyal Warraich 2022\n");
-
-        int total = total_memory/1048576;
-        int times_done = 0;
-
-        char *result[] = {
-            "MB",
-            "GB",
-            "TB",
-            "PB",
-            "EB",
-            "ZB",
-            "YB"
-        };
-
-        while (total >= 1000)
-        {
-            total = total/1000;
-            times_done++;
-        }
-
-        printf("Total memory: %d %s\n", total, result[times_done]);
-    }
-    else if (check_name(command, "time"))
-    {
-        // time
-        time_t time = get_time();
-        if (time.min < 10)
-            printf("%d:0%d ", time.h, time.min);
-        else
-            printf("%d:%d ", time.h, time.min);
-        printf((char *)(time.pm ? "PM" : "AM"));
-    }
-    else if (check_name(command, "date"))
-    {
-        time_t time = get_time();
-        printf("%s, %s %d", weekdays[time.wd-1], months[time.m-1], time.d);
-    }
-    else if (check_name(command, "ls"))
-    {
-        if (current_display_len == 0 || current_display_len == 1)
-            ls("/");
-        else
-            ls(current_display);
-    }
-    else if (check_name(command, "exit") || check_name(command, "shutdown") || check_name(command, "quit"))
-    {
-        Kernel::shutdown_os();
-    }
-    else if (check_name(command, "help"))
-    {
-        for (int z = 0; z < 20; z += 2)
-        {
-            printf("%s: %s\n", commands[z], commands[z+1]);
-        }
+        printf("Error: command not found: %s\n", command);
     }
     else
     {
-        printf("Error: invalid command: %s\n", command);
+#ifdef DEBUG
+        printf("found app!\n");
+        printf("Arg count: %d\n", args.argc);
+#endif
+
+        char *argv[args.argc];
+
+        for (int z = 0; z < args.argc; z++)
+        {
+            argv[z] = args.argv[z];
+        }
+
+        load_app_from_file(file, args.argc, argv);
     }
 }
 
@@ -187,12 +139,19 @@ void shell()
 #ifdef DEBUG
         Kernel::system_log(command);
 #endif
-
         run_command(command);
 
         putchar('\n');
         putchar('\n');
 
         free(command); // since scanf() uses malloc()
+    }
+
+    printf("Would you like to shutdown? [y/n] ");
+    char result = getch();
+
+    if (result == 'y')
+    {
+        Kernel::shutdown_os();
     }
 }

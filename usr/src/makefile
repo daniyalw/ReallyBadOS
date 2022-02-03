@@ -1,4 +1,4 @@
-CPP_SOURCES = itoa.cpp length.cpp print.cpp time.cpp
+CPP_SOURCES = ${wildcard *.cpp}
 OBJ = ${CPP_SOURCES:.cpp=.o}
 
 CPP = i686-elf-g++

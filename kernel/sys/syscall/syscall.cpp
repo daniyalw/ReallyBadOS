@@ -61,23 +61,16 @@ void s_test()
     printf("Hello!");
 }
 
-void s_fopen(char * name, FILE *f)
+typedef struct
 {
-    path_t path = parse_name(name);
-    FILE * file;
-    FILE orig = get_file(path.filename, path.foldername);
+    char name[20];
+    char version[10];
+} info_t;
 
-    file->name = orig.name;
-    file->contents = orig.contents;
-    file->path = orig.path;
-    file->parent = orig.parent;
-    file->id = orig.id;
-    file->size = orig.size;
-    file->null = orig.null;
-    file->write = orig.write;
-    file->read = orig.read;
-
-    f = file;
+void s_info(info_t *info)
+{
+    strcpy(info->name, (char *)System::SYSTEM);
+    strcpy(info->version, (char *)System::VERSION);
 }
 
 DEFN_SYSCALL1(print, 0, char *);
@@ -92,9 +85,7 @@ DEFN_SYSCALL3(s_putpixel, 4, int, int, int);
 
 DEFN_SYSCALL0(s_update_mouse, 5);
 
-DEFN_SYSCALL0(s_test, 6);
-
-DEFN_SYSCALL2(s_fopen, 7, char*, FILE*);
+DEFN_SYSCALL1(s_info, 6, info_t*);
 
 // ----------------------------- //
 
@@ -135,18 +126,34 @@ void sys_putpixel(int x, int y, int color)
 
 void syscall_append(void *func)
 {
-    syscalls.push_back((void *)func);
+    syscalls[syscall_count] = func;
+    syscall_count++;
+}
+
+void syscall_print_syscalls()
+{
+    for (int z = 0; z < syscall_count; z++)
+        printf("%x\n", syscalls[z]);
+
+    printf("===\n");
+
+    printf("%x\n%x\n%x\n%x\n%x\n%x\n%x\n", (void *)print, (void *)s_putchar, (void *)get_num, (void *)s_get_time,
+                                        (void *)s_putpixel, (void *)s_update_mouse, (void *)s_info);
 }
 
 void syscall_handler(registers_t regs)
 {
-   if (regs.eax >= syscalls.size())
+   if (regs.eax >= syscall_count)
    {
        error("Syscall outside of initialized syscalls range.\n");
        return;
    }
 
-   void *location = syscalls.get(regs.eax);
+   void *location = syscalls[regs.eax];
+
+   info("Syscall: %d\nLocations: %x:%x\n", regs.eax, location, (void *)s_info);
+
+   //syscall_print_syscalls();
 
    int ret;
 
@@ -176,8 +183,7 @@ void init_syscalls()
     syscall_append((void *)s_get_time);
     syscall_append((void *)s_putpixel);
     syscall_append((void *)s_update_mouse);
-    syscall_append((void *)s_test);
-    syscall_append((void *)s_fopen);
+    syscall_append((void *)s_info);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     Kernel::system_log("Syscalls initialized at interrupt 48!\n");
 }

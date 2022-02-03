@@ -1,7 +1,8 @@
 boot = boot/loader.s
 INCLUDES = -Istdlib -Ifs -Idrivers -Ikernel -I.
 COMPILER_FLAGS = -m32 -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -fpermissive
-QEMU_FLAGS = -soundhw pcspk -m 1000M -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk,id=nvm -accel tcg -net nic,model=rtl8139 -net user -vga std -boot d
+QEMU_FLAGS = -soundhw pcspk -m 1000M -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk,id=nvm \
+			 -accel tcg -net nic,model=rtl8139 -net user -vga std -boot d
 OUT = ceneos-x86_32.iso
 
 run:
@@ -15,7 +16,7 @@ gdt:
 	nasm -f elf32 -o built/gdt.o kernel/sys/descriptors/gdt.asm
 
 interrupts:
-	nasm -f elf32 kernel/sys/interrupts/exception_handler.asm -o built/int.o
+	nasm -f elf32 kernel/sys/descriptors/exception_handler.asm -o built/int.o
 
 jmp:
 	nasm -f elf32 kernel/jmp.asm -o built/jmp.o

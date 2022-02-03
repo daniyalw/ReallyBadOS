@@ -182,7 +182,7 @@ namespace Kernel {
 
 void init_mouse()
 {
-    unsigned char mstatus;
+    unsigned char mstatus, res;
 
     mouse_wait(1);
     outb(0x64, 0xA8);
@@ -199,10 +199,21 @@ void init_mouse()
     outb(0x60, mstatus);
 
     mouse_write(0xF6);
-    mouse_read();
+    res = mouse_read();
+
+    if (res != MOUSE_ACK)
+    {
+        Kernel::system_log("Error: PS/2 mouse returned command other than 0xFA: 0x%x\n", res);
+    }
 
     mouse_write(0xF4);
-    mouse_read();
+    res = mouse_read();
+
+    if (res != MOUSE_ACK)
+    {
+        Kernel::system_log("Error: PS/2 mouse returned command other than 0xFA: 0x%x\n", res);
+    }
+
 
     Kernel::register_interrupt_handler(IRQ12, mouse_handler);
 }

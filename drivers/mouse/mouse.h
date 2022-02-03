@@ -1,5 +1,7 @@
 #pragma once
 
+#define MOUSE_ACK 0xFA
+
 unsigned char mouse_cycle=0;     //unsigned char
 unsigned char mouse_byte[3];    //signed char
 int mouse_x=0;         //signed char

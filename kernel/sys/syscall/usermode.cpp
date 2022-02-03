@@ -1,3 +1,5 @@
+#include <kernel/kernel.h>
+
 void switch_to_user_mode()
 {
    asm volatile("  \
@@ -20,4 +22,5 @@ void switch_to_user_mode()
      iret; \
    1: \
      ");
+     in_ring3 = true;
 }

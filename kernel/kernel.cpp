@@ -1,13 +1,4 @@
-int text_x = 0;
-int text_y = 0;
-int cx = 0;
-int cy = 0;
-bool booted = false;
-int back_buffer[1024*768]; // back buffer for gui
-//unsigned int initial_stack;
-// this is the /> _
-char current_display[128];
-int current_display_len = 0;
+#include <kernel/kernel.h>
 
 extern "C" {
     extern void jmp_somewhere(unsigned int place);
@@ -93,6 +84,7 @@ extern "C" {
 #include "../gui/gui.h"
 #include "../exec/elf.cpp"
 #include "../fs/utilities.cpp"
+#include "../exec/argparse.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -113,6 +105,111 @@ void detect_net()
     }
 }
 
+void login()
+{
+    uint8_t *login;
+    ata_read(login, 0, 1);
+
+    char username[64];
+    char password[64];
+    int b = 0;
+
+    for (int z = 6; z < 64; z++)
+    {
+        if ((char)login[z] == '=')
+        {
+            b = z + 1;
+            break;
+        }
+        username[z-6] = (char)login[z];
+    }
+
+    for (int z = b; z < 128; z++)
+    {
+        if ((char)login[z] == 0) break;
+        password[z-b] = (char)login[z];
+    }
+
+    while (true)
+    {
+        printf("Username: ");
+        char *user = scanf();
+
+        printf("Password: ");
+        char *pass = scanf();
+
+        if (strcmp(user, username) && strcmp(pass, password))
+        {
+            free(user);
+            free(pass);
+            printf("Logged in!\n");
+            break;
+        }
+        else
+        {
+            printf("Incorrect username or password.\n");
+#ifdef DEBUG
+            printf("Username: %s ::: Password: %s\n", username, password);
+#endif
+        }
+    }
+}
+
+void new_user()
+{
+    char *username;
+    char *password;
+
+    while (true)
+    {
+        printf("Hi!\n\nEnter a username: ");
+        username = scanf();
+
+        if (contains(username, '='))
+            printf("Username cannot contain '='!\n");
+        else
+            break;
+    }
+
+    while (true)
+    {
+        printf("Now enter a password: ");
+        password = scanf();
+
+        if (contains(password, '='))
+            printf("Password cannot contain '='!\n");
+        else
+            break;
+    }
+
+    printf("Registering...\n");
+
+    ata_write_one(0, (uint8_t *)std::get("", "LOGIN:%s=%s\0", username, password));
+
+    free(username);
+    free(password);
+
+    printf("Registered!\n");
+}
+
+void detect_user()
+{
+    uint8_t *bytes;
+    ata_read(bytes, 0, 1);
+
+    char first_six[7];
+
+    for (int z = 0; z < 6; z++)
+        first_six[z] = (char)bytes[z];
+
+    first_six[6] = 0;
+
+    if (strcmp(first_six, "LOGIN:"))
+        login();
+    else
+        new_user();
+}
+
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         Kernel::system_log("Invalid magic.\n"); // we could use printf, but that's text-mode only
@@ -124,6 +221,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     create_folder("dev");
     create_folder("usr");
     create_folder("trash");
+    create_folder("apps");
 
     Kernel::init_serial(SERIAL_PORT);
     Kernel::init_logging();
@@ -193,7 +291,16 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     init_mem(mbd, beginning);
 
     for (int z = 0; z < tar.block_count; z++)
-        create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+    {
+        if (endswith(tar.blocks[z].name, "o"))
+        {
+            create_file(tar.blocks[z].name, "apps", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+        }
+        else
+        {
+            create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+        }
+    }
 
     /*
     putchar(' ');
@@ -211,6 +318,11 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     scan_buses();
 
     time_t time = get_time();
+
+    uint8_t *bytes;
+    bytes = ata_init(bytes);
+
+    printf("CeneOS Shell\n");
 
     printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
 
