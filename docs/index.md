@@ -1,6 +1,6 @@
 ## Release
 
-[Latest Release](https://github.com/Daniyal-Warraich/ThisSucksOS/releases/tag/v1.5.1)
+[Latest Release](https://github.com/Daniyal-Warraich/ReallyBadOS/releases/tag/v1.5.1)
 
 ### Contributions
 Just send a pull-request after forking the repo.
