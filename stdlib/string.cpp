@@ -149,14 +149,6 @@ char * shift_left(char * out, char * str, int loc, int begin) {
     return out;
 }
 
-void memset(char * dest, char *val, int len)
-{
-    for (int z = 0; z < len; z++)
-    {
-        dest[z] = val[z];
-    }
-}
-
 bool charcmp(char str1, char str2) {
     if (str1 == str2)
         return true;
@@ -712,4 +704,12 @@ char * string::c_str()
     return str;
 }
 
+}
+
+extern "C" void memset(char * dest, char *val, int len)
+{
+    for (int z = 0; z < len; z++)
+    {
+        dest[z] = val[z];
+    }
 }

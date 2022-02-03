@@ -6,7 +6,7 @@ signed int width;
 unsigned int height;
 unsigned int bpp;
 
-bool blit_right_away = true;
+bool blit_right_away = false;
 
 namespace Graphic {
 

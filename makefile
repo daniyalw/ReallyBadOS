@@ -50,7 +50,7 @@ iso:
 # graphics
 graphics:
 	i686-elf-as -o built/loader.o boot/graphics_boot.asm
-	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/user.o built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
 	cp built/main.o isodir/boot/main.o
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o ${OUT} isodir

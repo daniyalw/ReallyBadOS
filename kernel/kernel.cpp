@@ -9,7 +9,7 @@ extern "C" {
 }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 
 #include <cpuid.h>
 
@@ -86,6 +86,8 @@ extern "C" {
 #include "../fs/utilities.cpp"
 #include "../exec/argparse.cpp"
 #include "../drivers/net/rtl.cpp"
+#include "../gui/label.cpp"
+#include "../gui/window.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -248,20 +250,22 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     init_mem(mbd, beginning);
 
     for (int z = 0; z < tar.block_count; z++)
-        create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+    {
+        if (endswith(tar.blocks[z].name, "o"))
+        {
+            create_file(tar.blocks[z].name, "apps", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+        }
+        else
+        {
+            create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+        }
+    }
 
     Graphic::redraw_background_picture(array);
 
     Window win;
-    Widget w;
-    w.setx(120);
-    w.sety(120);
-    w.padding = 10;
-    w.set_draw(test_draw);
-    win.widgets[0] = w;
-    win.widget_count++;
     win.set_coords(100, 100);
-    win.set_dimensions(100, 100);
+    win.set_dimensions(300, 300);
 
     win.draw();
 
