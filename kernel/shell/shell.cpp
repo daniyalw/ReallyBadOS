@@ -61,7 +61,7 @@ int run_command(char * command)
 
     if (file->null)
     {
-        printf("Error: command not found: %s\n", command);
+        printf("Error: command not found: %s\n", args.argv[0]);
         return 1;
     }
     else
