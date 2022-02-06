@@ -21,3 +21,4 @@ uint16_t bga_read_register(uint16_t addr);
 bool bga_available();
 void bga_set_bank(unsigned short bank_number);
 int bga_set_resolution(int w, int h, int _bpp);
+bool is_bga_device();

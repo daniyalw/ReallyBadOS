@@ -9,7 +9,7 @@ extern "C" {
 }
 
 //#define DEBUG
-#define GRAPHICS
+//#define GRAPHICS
 
 #include <cpuid.h>
 
@@ -85,7 +85,6 @@ extern "C" {
 #include "../exec/elf.cpp"
 #include "../fs/utilities.cpp"
 #include "../exec/argparse.cpp"
-#include "../drivers/net/rtl.cpp"
 #include "../gui/label.cpp"
 #include "../gui/window.cpp"
 
@@ -94,123 +93,19 @@ using namespace Ramdisk;
 using namespace Time;
 using namespace Cooperative;
 
-void login()
-{
-    uint8_t *login;
-    ata_read(login, 0, 1);
-
-    char username[64];
-    char password[64];
-    int b = 0;
-
-    for (int z = 6; z < 64; z++)
-    {
-        if ((char)login[z] == '=')
-        {
-            b = z + 1;
-            break;
-        }
-        username[z-6] = (char)login[z];
-    }
-
-    for (int z = b; z < 128; z++)
-    {
-        if ((char)login[z] == 0) break;
-        password[z-b] = (char)login[z];
-    }
-
-    while (true)
-    {
-        printf("Username: ");
-        char *user = scanf();
-
-        printf("Password: ");
-        char *pass = scanf();
-
-        if (strcmp(user, username) && strcmp(pass, password))
-        {
-            free(user);
-            free(pass);
-            printf("Logged in!\n");
-            break;
-        }
-        else
-        {
-            printf("Incorrect username or password.\n");
-#ifdef DEBUG
-            printf("Username: %s ::: Password: %s\n", username, password);
-#endif
-        }
-    }
-}
-
-void new_user()
-{
-    char *username;
-    char *password;
-
-    while (true)
-    {
-        printf("Hi!\n\nEnter a username: ");
-        username = scanf();
-
-        if (contains(username, '='))
-            printf("Username cannot contain '='!\n");
-        else
-            break;
-    }
-
-    while (true)
-    {
-        printf("Now enter a password: ");
-        password = scanf();
-
-        if (contains(password, '='))
-            printf("Password cannot contain '='!\n");
-        else
-            break;
-    }
-
-    printf("Registering...\n");
-
-    ata_write_one(0, (uint8_t *)std::get("", "LOGIN:%s=%s\0", username, password));
-
-    free(username);
-    free(password);
-
-    printf("Registered!\n");
-}
-
-void detect_user()
-{
-    uint8_t *bytes;
-    ata_read(bytes, 0, 1);
-
-    char first_six[7];
-
-    for (int z = 0; z < 6; z++)
-        first_six[z] = (char)bytes[z];
-
-    first_six[6] = 0;
-
-    if (strcmp(first_six, "LOGIN:"))
-        login();
-    else
-        new_user();
-}
-
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         Kernel::system_log("Invalid magic.\n"); // we could use printf, but that's text-mode only
         return; // stop any more kernel code running since it's not multiboot
     }
 
-    Kernel::system_log("Entered ReallyBadOS kernel.\n");
+    Kernel::system_log("Entered %s kernel.\n", System::SYSTEM);
 
     create_folder("dev");
     create_folder("usr");
     create_folder("trash");
     create_folder("apps");
+    create_folder("fonts");
 
     Kernel::init_serial(SERIAL_PORT);
     Kernel::init_logging();
@@ -269,6 +164,35 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     win.draw();
 
+    FILE *file = fopen("/usr/._Vera.sfn");
+
+    if (file->null)
+    {
+        Kernel::system_log("Eror: vera font not found!\n");
+        return;
+    }
+
+    /* set up context by global variables */
+    ssfn_src = (ssfn_font_t *)file->contents;      /* the bitmap font to use */
+    ssfn_dst.ptr = (uint8_t *)&framebuffer_addr;                  /* framebuffer address and bytes per line */
+    ssfn_dst.w = 1024;                          /* width */
+    ssfn_dst.h = 768;                           /* height */
+    ssfn_dst.p = 4096;                          /* bytes per line */
+    ssfn_dst.x = ssfn_dst.y = 0;                /* pen position */
+    ssfn_dst.bg = 0;
+    ssfn_dst.fg = 0xFFFFFF;
+
+
+    /* render text directly to the screen and then adjust ssfn_dst.x and ssfn_dst.y */
+    int res = ssfn_putc('H');
+
+    if (res != SSFN_OK)
+        Kernel::system_log("Error: result is not SSFN_OK %d\n", res);
+    ssfn_putc('e');
+    ssfn_putc('l');
+    ssfn_putc('l');
+    ssfn_putc('o');
+
     //draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
 
     Graphic::blit_changes();
@@ -291,19 +215,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         }
     }
 
-    /*
-    putchar(' ');
-    text_x--;
-
-    char *argv[] = {"Hello!", "Hi!"};
-    int result = load_app_from_file("/usr/test.cos", 2, argv);
-
-    if (!result)
-        printf("Exit returned successfully!\n");
-    else
-        printf("Application returned unsuccessfully.\n");
-    */
-
     scan_buses();
 
     time_t time = get_time();
@@ -320,11 +231,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     else
         printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
 
-    Net::rtl8139 *card = (Net::rtl8139 *)malloc(sizeof(Net::rtl8139));
-
-    card->start();
-
-    return;
 
     switch_to_user_mode();
     shell();

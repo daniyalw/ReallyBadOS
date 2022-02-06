@@ -10,6 +10,7 @@
 #include <exec/argparse.h>
 #include <exec/elf.h>
 #include <sys/multitasking/cooperative.h>
+#include <sys/syscall/user.h>
 
 using namespace std;
 using namespace Time;
@@ -50,7 +51,7 @@ bool check_name(char * name, char * check_against)
     return true;
 }
 
-void run_command(char * command)
+int run_command(char * command)
 {
     args_t args = parse_args(command);
     char *executable = args.argv[0];
@@ -61,6 +62,7 @@ void run_command(char * command)
     if (file->null)
     {
         printf("Error: command not found: %s\n", command);
+        return 1;
     }
     else
     {
@@ -76,21 +78,31 @@ void run_command(char * command)
             argv[z] = args.argv[z];
         }
 
-        load_app_from_file(file, args.argc, argv);
+        return load_app_from_file(file, args.argc, argv);
     }
 }
 
-void execute_script(script_t script)
+int execute_script(char *text)
 {
-    const int length = strlen(script.commands);
+    const int length = strlen(text);
     char * command = (char *)malloc(length);
+    for (int z = 0; z < length; z++) command[z] = 0;
     int sz = 0;
 
     for (int z = 0; z < length; z++)
     {
-        if (script.commands[z] == '\n')
+        if (text[z] == '\n')
         {
-            run_command(command);
+            if (strisempty(command)) continue;
+            int ret = run_command(command);
+
+            if (ret)
+            {
+                printf("Error: r: application exited with return code 1\n");
+                return 1;
+            }
+
+            printf("Returned: %d\n", ret);
 
             for (int b = 0; b < sz; b++)
                 command[b] = 0;
@@ -99,11 +111,13 @@ void execute_script(script_t script)
         }
         else
         {
-            command[sz] = script.commands[z];
+            command[sz] = text[z];
             sz++;
             command[sz] = 0;
         }
     }
+
+    return 0;
 }
 
 void shell()
@@ -139,6 +153,25 @@ void shell()
 #ifdef DEBUG
         Kernel::system_log(command);
 #endif
+        if (check_name(command, "exec"))
+        {
+            printf("Warning: %s\n", "executable not properly working...\n");
+            printf("Do you wish to continue? [y/n] ");
+
+            char res = getch();
+
+            putchar('\n');
+            putchar('\n');
+
+            if (res != 'y')
+                continue;
+        }
+        else if (check_name(command, "exit"))
+        {
+            printf("Exiting...\n");
+            break;
+        }
+
         run_command(command);
 
         putchar('\n');

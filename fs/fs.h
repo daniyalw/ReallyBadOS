@@ -78,8 +78,11 @@ typedef struct
     char foldername[128];
 } path_t;
 
+using namespace Filesystem;
+using namespace Ramdisk;
 
 Filesystem::Ramdisk::FILE * fopen(char * name);
 void complex_fprintf(char *fname, char *data);
 void fprintf(Filesystem::Ramdisk::FILE file, char *data);
 path_t parse_name(char * path);
+void fclose(FILE *file);

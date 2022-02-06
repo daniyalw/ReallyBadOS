@@ -1,4 +1,4 @@
-# CeneOS
+# ReallyBadOS
 An operating system.
 
 # Running

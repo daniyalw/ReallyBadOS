@@ -706,7 +706,7 @@ char * string::c_str()
 
 }
 
-extern "C" void memset(char * dest, char *val, int len)
+void memset(char * dest, char *val, int len)
 {
     for (int z = 0; z < len; z++)
     {

@@ -4,6 +4,7 @@
 #include <video/graphics.h>
 #include <video/bga.h>
 #include <fs.h>
+#include <sys/pci/pci.h>
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -30,6 +31,16 @@ bool bga_available()
 void bga_set_bank(unsigned short bank_number)
 {
     bga_write_register(BGA_BANK, bank_number);
+}
+
+bool is_bga_device()
+{
+    PCIDevice *device = find_device(0x1111, 0x1234);
+
+    if (device == NULL)
+        return false;
+    else
+        return true;
 }
 
 int bga_set_resolution(int w, int h, int _bpp)

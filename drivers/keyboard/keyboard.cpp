@@ -4,6 +4,9 @@
 #include <sys/log/log.h>
 #include "keys.cpp"
 
+using namespace Filesystem;
+using namespace Ramdisk;
+
 void get_key(unsigned char code);
 
 bool keyboard_lock()
@@ -106,6 +109,24 @@ void get_key(unsigned char code)
     }
 }
 
+char *read_keyboard(char *buff) {
+    char *k = scanf();
+    printf("done");
+    buff = k;
+    free(k);
+
+    return buff;
+}
+
+char *read_getch(char *buff) {
+    char k = getch();
+    buff[0] = k;
+
+    return buff;
+}
+
+void write_keyboard(char *buff) {}
+
 namespace Kernel {
 
 void init_keyboard(bool on, char * cd) {
@@ -128,6 +149,9 @@ void init_keyboard(bool on, char * cd) {
     Kernel::system_log("Enabled keyboard.\n");
     // register the interrupt
     Kernel::register_interrupt_handler(IRQ1, scan_key);
+
+    create_file("stdin", "dev", read_keyboard, write_keyboard);
+    create_file("getch", "dev", read_getch, write_keyboard);
 }
 
 }

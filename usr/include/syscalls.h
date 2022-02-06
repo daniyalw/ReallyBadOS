@@ -7,4 +7,7 @@
 #define PUTPIXEL 4
 #define UPDATE_MOUSE 5
 #define INFO 6
-#define FILE_S 7
+#define FOPEN 7
+#define FCLOSE 8
+#define FEXEC 9
+#define FLS 10

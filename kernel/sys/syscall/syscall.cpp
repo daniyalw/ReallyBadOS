@@ -3,6 +3,7 @@
 #include <sys/power/power.h>
 #include <mouse/cursor.h>
 #include <fs.h>
+#include <shell/shell.h>
 
 void set_string(char * string, char * newvalue)
 {
@@ -73,6 +74,35 @@ void s_info(info_t *info)
     strcpy(info->version, (char *)System::VERSION);
 }
 
+void s_file(char *path, uint32_t *addr)
+{
+    FILE *file = fopen(path);
+
+    uint32_t address = (uint32_t)file;
+
+    addr[0] = address;
+}
+
+void s_fclose(FILE *file)
+{
+    fclose(file);
+}
+
+void exec_file(char *contents, int *ret)
+{
+    int r = execute_script(contents);
+
+    ret[0] = r;
+}
+
+void s_ls(char *path)
+{
+    if (!path)
+        ls("/");
+    else
+        ls(path);
+}
+
 DEFN_SYSCALL1(print, 0, char *);
 
 DEFN_SYSCALL1(s_putchar, 1, char);
@@ -86,6 +116,14 @@ DEFN_SYSCALL3(s_putpixel, 4, int, int, int);
 DEFN_SYSCALL0(s_update_mouse, 5);
 
 DEFN_SYSCALL1(s_info, 6, info_t*);
+
+DEFN_SYSCALL2(s_file, 7, char*, uint32_t*);
+
+DEFN_SYSCALL1(s_fclose, 8, FILE*);
+
+DEFN_SYSCALL2(exec_file, 9, char*, int*);
+
+DEFN_SYSCALL1(s_ls, 10, char*);
 
 // ----------------------------- //
 
@@ -184,6 +222,10 @@ void init_syscalls()
     syscall_append((void *)s_putpixel);
     syscall_append((void *)s_update_mouse);
     syscall_append((void *)s_info);
+    syscall_append((void *)s_file);
+    syscall_append((void *)s_fclose);
+    syscall_append((void *)exec_file);
+    syscall_append((void *)s_ls);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     Kernel::system_log("Syscalls initialized at interrupt 48!\n");
 }

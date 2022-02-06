@@ -11,7 +11,7 @@ void draw_label(Widget label)
     draw_string((char *)(label.extras[0]), label.x, label.y, label.fg);
 }
 
-Widget create_label(int bg, int fg, int x, int y, int padding, char *text, ...)
+Widget create_label(Window win, int bg, int fg, int x, int y, int padding, char *text, ...)
 {
     Widget widget;
     va_list va;
@@ -35,6 +35,8 @@ Widget create_label(int bg, int fg, int x, int y, int padding, char *text, ...)
     widget.setfg(fg);
 
     widget.set_padding(padding);
+
+    win.add_widget(widget);
 
     return widget;
 }

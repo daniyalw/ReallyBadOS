@@ -1,10 +1,5 @@
 #pragma once
 
-typedef struct
-{
-    char * commands;
-} script_t;
-
 int total_command_count = 20;
 char *commands[] = {
     "cd",
@@ -30,6 +25,6 @@ char *commands[] = {
 };
 
 bool check_name(char * name, char * check_against);
-void run_command(char * command);
-void execute_script();
+int run_command(char * command);
+int execute_script(char *text);
 void shell();

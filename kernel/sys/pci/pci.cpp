@@ -58,7 +58,7 @@ void scan_buses()
                 if (res == 0xFFFF)
                     continue;
 
-                PCIDevice * pci_device = (PCIDevice *)malloc(sizeof(pci_device));
+                PCIDevice * pci_device = new PCIDevice();
 
                 pci_device->bus = bus;
                 pci_device->device = device;

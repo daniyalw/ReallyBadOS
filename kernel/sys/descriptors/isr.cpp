@@ -183,7 +183,7 @@ extern "C" void irq_handler(registers_t r) {
     }
     else
     {
-        Kernel::system_log("No interrupts handler for IRQ %d\n", r.int_no);
+        error("unknown IRQ: %d\n", r.int_no);
     }
 }
 

@@ -54,5 +54,6 @@ void init_syscalls();
 static void syscall_handler(registers_t regs);
 void syscall_append(void *func);
 
-void *syscalls[10];
+int max_syscalls = 30;
+void *syscalls[30];
 int syscall_count = 0;

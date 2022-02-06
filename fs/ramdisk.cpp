@@ -199,7 +199,7 @@ void save_file(FILE file)
 
 void internal_ls()
 {
-    printf("Folder count: %d\n\n", Filesystem::Ramdisk::folder_count);
+    printf("Folder count: %d\n", Filesystem::Ramdisk::folder_count);
 
     for (int z = 0; z < Filesystem::Ramdisk::folder_count; z++)
     {
@@ -209,13 +209,12 @@ void internal_ls()
         for (int b = 0; b < Filesystem::Ramdisk::folders[z].file_count; b++)
         {
             putchar('\n');
-
+            printf("---");
             putchar('/');
             printf(Filesystem::Ramdisk::folders[z].files[b].parent);
             putchar('/');
             printf(Filesystem::Ramdisk::folders[z].files[b].name);
 
-            putchar('\n');
 
             //printf("\t\t%s\n", Filesystem::Ramdisk::folders[z].files[b].contents);
         }
@@ -266,7 +265,7 @@ void ls(char *cwd)
 FILE * fopen(char * name)
 {
     path_t path = parse_name(name);
-    FILE * file;
+    FILE * file = (FILE *)malloc(sizeof(file));
     FILE orig = get_file(path.filename, path.foldername);
 
     file->name = orig.name;
@@ -280,6 +279,11 @@ FILE * fopen(char * name)
     file->read = orig.read;
 
     return file;
+}
+
+void fclose(FILE *file)
+{
+    free(file);
 }
 
 void complex_fprintf(char *fname, char *data)

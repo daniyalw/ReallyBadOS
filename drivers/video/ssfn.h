@@ -1487,8 +1487,6 @@ ssfn_buf_t *ssfn_text(ssfn_t *ctx,  char *str, unsigned int fg)
 
 #endif /* SSFN_IMPLEMENTATION */
 
-#if defined(SSFN_CONSOLEBITMAP_PALETTE) || defined(SSFN_CONSOLEBITMAP_HICOLOR) || defined(SSFN_CONSOLEBITMAP_TRUECOLOR)
-/*** special console bitmap font renderer (ca. 1.5k, no dependencies, no memory allocation and no error checking) ***/
 
 /**
  * public variables to configure
@@ -1513,9 +1511,9 @@ int ssfn_putc(uint32_t unicode)
 #   define SSFN_PIXEL uint32_t
 #  endif
 # endif
-    register SSFN_PIXEL *o, *p;
-    register uint8_t *ptr, *chr = NULL, *frg;
-    register int i, j, k, l, m, y = 0, w, s = ssfn_dst.p / sizeof(SSFN_PIXEL);
+    SSFN_PIXEL *o, *p;
+    uint8_t *ptr, *chr = NULL, *frg;
+    int i, j, k, l, m, y = 0, w, s = ssfn_dst.p / sizeof(SSFN_PIXEL);
 
     if(!ssfn_src || ssfn_src->magic[0] != 'S' || ssfn_src->magic[1] != 'F' || ssfn_src->magic[2] != 'N' ||
         ssfn_src->magic[3] != '2' || !ssfn_dst.ptr || !ssfn_dst.p) return SSFN_ERR_INVINP;
@@ -1563,8 +1561,6 @@ int ssfn_putc(uint32_t unicode)
     ssfn_dst.x += chr[4]; ssfn_dst.y += chr[5];
     return SSFN_OK;
 }
-
-#endif /* SSFN_CONSOLEBITMAP */
 
 #ifdef  __cplusplus
 }
