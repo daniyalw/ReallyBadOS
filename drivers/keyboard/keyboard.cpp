@@ -137,9 +137,9 @@ void init_keyboard(bool on, char * cd) {
         current_display[z] = 0;
     }
 
-    for (int z = 0; z < std::len(cd); z++)
+    for (int z = 0; z < len(cd); z++)
         current_display[z] = cd[z];
-    current_display_len = std::len(cd);
+    current_display_len = len(cd);
 
     if (on) {
         printf_centered("Terminal", 0); // 0 indicates line 0

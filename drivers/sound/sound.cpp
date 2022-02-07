@@ -45,7 +45,7 @@ char *sound_input(char *data)
 
 void sound_write(char *data)
 {
-    uint32_t frequency = std::uint_atoi(data);
+    uint32_t frequency = uint_atoi(data);
     play_sound(frequency);
 }
 

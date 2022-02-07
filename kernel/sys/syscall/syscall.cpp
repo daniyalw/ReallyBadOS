@@ -7,12 +7,12 @@
 
 void set_string(char * string, char * newvalue)
 {
-    for (int z = 0; z < std::len(string); z++)
+    for (int z = 0; z < len(string); z++)
     {
         string[z] = ' ';
     }
 
-    for (int z = 0; z < std::len(newvalue); z++)
+    for (int z = 0; z < len(newvalue); z++)
     {
         string[z] = newvalue[z];
         string[z+1] = 0;
@@ -66,12 +66,14 @@ typedef struct
 {
     char name[20];
     char version[10];
+    bool dev;
 } info_t;
 
 void s_info(info_t *info)
 {
     strcpy(info->name, (char *)System::SYSTEM);
     strcpy(info->version, (char *)System::VERSION);
+    info->dev = System::dev;
 }
 
 void s_file(char *path, uint32_t *addr)

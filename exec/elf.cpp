@@ -28,7 +28,7 @@ int elf_start(uint8_t *buf, int argc, char **argv)
 		 	case ELF_LOAD:
 		 		Kernel::system_log("LOAD: offset:0x%x virtual:0x%x physical:0x%x filesize:0x%x memsize:0x%x\n",
 		 				ph->p_offset, ph->p_vaddr, ph->p_paddr, ph->p_filesz, ph->p_memsz);
-		 		std::memcpy((char *)ph->p_paddr, (char *)(buf + ph->p_offset), ph->p_filesz);
+		 		memcpy((char *)ph->p_paddr, (char *)(buf + ph->p_offset), ph->p_filesz);
 		 		break;
 		 	default:
 		 	 Kernel::system_log("Unsupported type!\n");

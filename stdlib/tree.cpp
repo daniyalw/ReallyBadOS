@@ -13,7 +13,7 @@ tree_t * add_node(tree_t * tree, tree_t *sub)
 
 tree_t * add_val(tree_t * tree, const char *val)
 {
-    for (int z = 0; z < std::len((char *)val); z++)
+    for (int z = 0; z < len((char *)val); z++)
         tree->val[z] = val[z];
 
     return tree;

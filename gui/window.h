@@ -21,7 +21,7 @@ struct Window
     void set_coords(int _x, int _y) { x = _x; y = _y; }
 
     void set_dimensions(int _w, int _h) { w = _w; h = _h; }
-    void set_title(char *_title) { for (int z = 0; z < 100; z++) title[z] = 0; for (int z = 0; z < std::len(_title); z++) title[z] = _title[z];}
+    void set_title(char *_title) { for (int z = 0; z < 100; z++) title[z] = 0; for (int z = 0; z < len(_title); z++) title[z] = _title[z];}
 
     void add_widget(Widget widget);
 

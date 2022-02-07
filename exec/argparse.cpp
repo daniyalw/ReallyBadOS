@@ -2,7 +2,7 @@
 
 bool there_is_more(char *command, int z)
 {
-    for (int b = z; b < std::len(command); b++)
+    for (int b = z; b < len(command); b++)
         if (command[b] != ' ')
             return true;
 
@@ -18,7 +18,7 @@ args_t parse_args(char *command)
             args.argv[z][b] = 0;
 
     int argc = 1;
-    const int length = std::len(command);
+    const int length = len(command);
     char argv[64][64];
     int charcount = 0;
     bool found_char = false;

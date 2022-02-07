@@ -234,7 +234,7 @@ inline void draw_line(int x0, int y0, int x1, int y1, int color)
 
 void center_text_graphics(char * string, int x, int y, int w, int color)
 {
-    draw_string(string, x+((w - std::len(string) * 8)/2), y, color);
+    draw_string(string, x+((w - len(string) * 8)/2), y, color);
 }
 
 void topleft_plotpoints(int x, int y, int cx, int cy, int color) {

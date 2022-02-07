@@ -87,6 +87,7 @@ extern "C" {
 #include "../exec/argparse.cpp"
 #include "../gui/label.cpp"
 #include "../gui/window.cpp"
+#include "../stdlib/ctype.cpp"
 
 using namespace Filesystem;
 using namespace Ramdisk;
@@ -230,7 +231,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
         printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
     else
         printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
-
 
     switch_to_user_mode();
     shell();

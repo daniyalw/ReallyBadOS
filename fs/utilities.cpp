@@ -56,7 +56,7 @@ void rename_folder(char *foldername, char *newname)
         return;
 
     folder.name = newname;
-    folder.path = std::get("/%s", newname);
+    folder.path = get("/%s", newname);
 
     for (int z = 0; z < folder.file_count; z++)
     {
@@ -66,7 +66,7 @@ void rename_folder(char *foldername, char *newname)
             continue;
 
         file.parent = newname;
-        file.path = std::get("/%s/%s", newname, file.name);
+        file.path = get("/%s/%s", newname, file.name);
 
         folder.files[z] = file;
     }

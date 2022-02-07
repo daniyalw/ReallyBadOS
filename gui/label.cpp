@@ -26,7 +26,7 @@ Widget create_label(Window win, int bg, int fg, int x, int y, int padding, char 
 
     widget.setx(x);
     widget.sety(y);
-    widget.setw(std::len(text) * font_width);
+    widget.setw(len(text) * font_width);
     widget.seth(font_height);
 
     widget.set_draw(draw_label);

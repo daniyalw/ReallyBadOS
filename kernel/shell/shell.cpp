@@ -11,6 +11,7 @@
 #include <exec/elf.h>
 #include <sys/multitasking/cooperative.h>
 #include <sys/syscall/user.h>
+#include <ctype.h>
 
 using namespace std;
 using namespace Time;
@@ -55,7 +56,7 @@ int run_command(char * command)
 {
     args_t args = parse_args(command);
     char *executable = args.argv[0];
-    char *fname = std::get("", "/apps/%s.o", executable);
+    char *fname = get("", "/apps/%s.o", executable);
 
     FILE *file = fopen(fname);
 

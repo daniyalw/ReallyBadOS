@@ -30,9 +30,12 @@ public:
     char *c_str();
 };
 
+}
+
+const char upper_letters[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+const char lower_letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
 char * strchr(char * s, int c);
-char * toupper(char * data);
-bool strisempty(char * s);
 char * strip(char * s);
 void clears(char * d);
 uint32_t uint_atoi(char *str);
@@ -71,9 +74,5 @@ void itoa(unsigned int num, char * out);
 void itoa(int num, char * out);
 static void itoa(char *buf, int base, int d);
 int atoi(char * str);
-bool isspace(char c);
-bool isdigit(char k);
 void memset(int * dest, int val, int len);
 char * reverse_string(char * str, char * out);
-
-}

@@ -81,7 +81,7 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
             {
                 char *str = (char *)va_arg(va, char*);
 
-                for (int b = 0; b < std::len(str); b++)
+                for (int b = 0; b < len(str); b++)
                 {
                     s[sz] = str[b];
                     sz++;
@@ -97,8 +97,8 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
             {
                 int i = (int)va_arg(va, int);
                 for (int b = 0; b < 20; b++) buffer[b] = 0;
-                std::itoa(buffer, 'd', i);
-                for (int b = 0; b < std::len(buffer); b++)
+                itoa(buffer, 'd', i);
+                for (int b = 0; b < len(buffer); b++)
                 {
                     s[sz] = buffer[b];
                     sz++;
@@ -108,8 +108,8 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
             {
                 int arg = (int)va_arg(va, int);
                 for (int b = 0; b < 20; b++) buffer[b] = 0;
-                std::itoa(buffer, 'x', arg);
-                for (int b = 0; b < std::len(buffer); b++)
+                itoa(buffer, 'x', arg);
+                for (int b = 0; b < len(buffer); b++)
                 {
                     s[sz] = buffer[b];
                     sz++;
@@ -137,7 +137,7 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
 
 char * vsprintf(char *s, char *format, va_list va)
 {
-    return vsnprintf(s, std::len(format), format, va);
+    return vsnprintf(s, len(format), format, va);
 }
 
 void vprintf(char *f, va_list va)
@@ -209,7 +209,7 @@ void printf(char *a, ...)
     char * out = vsprintf("", a, va);
     va_end(va);
 
-    for (int z = 0; z < std::len(out); z++)
+    for (int z = 0; z < len(out); z++)
         putchar(out[z]);
 
     Kernel::update_hardware_cursor(text_x, text_y);
@@ -240,10 +240,10 @@ void putchar_at(int x, int y, char c)
 
 void printf_centered(char *s, int line_no)
 {
-    int half = std::len(s)/2;
+    int half = len(s)/2;
     int start = 40 - half;
 
-    for (int z = 0; z < std::len(s); z++)
+    for (int z = 0; z < len(s); z++)
     {
         putchar_at(start, line_no, s[z]);
         start++;

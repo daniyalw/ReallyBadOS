@@ -2,26 +2,6 @@
 #include <string.h>
 #include <list.h>
 
-using namespace std;
-
-namespace std {
-
-bool isspace(char c)
-{
-    if (c == ' ')
-        return true;
-
-    return false;
-}
-
-bool isdigit(char k)
-{
-    if (k == '1' || k == '2' || k == '3' || k == '4' || k == '5' || k == '6' || k == '7' || k == '8' || k == '9' || k == '0')
-        return true;
-
-    return false;
-}
-
 int atoi(char * str)
 {
     int num = 0;
@@ -428,47 +408,6 @@ char * strip(char * string, char key)
     return string;
 }
 
-bool strisempty(char * s)
-{
-    for (int z = 0; z < len(s); z++)
-        if (s[z] != ' ')
-            return false;
-
-    return true;
-}
-
-char * toupper(char * data)
-{
-    char upper_letters[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-    char lower_letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-
-    for (int z = 0; z < len(data); z++) {
-        for (int b = 0; z < 26; b++) {
-            if (data[z] == lower_letters[b]) {
-                data[z] = upper_letters[b];
-                break;
-            }
-        }
-    }
-
-    return data;
-}
-
-char toupper(char data)
-{
-    char upper_letters[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-    char lower_letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-
-    for (int b = 0; b < 26; b++) {
-        if (data == lower_letters[b]) {
-            data = upper_letters[b];
-            break;
-        }
-    }
-
-    return data;
-}
-
 char * strchr(char * s, int c) {
     while (*s != (char) c) {
         if (!*s++) {
@@ -591,10 +530,12 @@ void sort(int * A, int sz) {
     }
 }
 
+namespace std {
+
 string::string(char * data)
 {
     str = data;
-    length = std::len(data);
+    length = len(data);
 }
 
 void string::append_string(char * data)
@@ -606,7 +547,7 @@ void string::append_string(char * data)
 void string::operator=(char * s)
 {
     str = s;
-    length = std::len(s);
+    length = len(s);
 }
 
 void string::operator=(string s)
@@ -630,7 +571,7 @@ bool string::operator==(string s)
 
 bool string::operator==(char * s)
 {
-    if (s == this->get() && std::len(s) == this->length)
+    if (s == this->get() && len(s) == this->length)
         return true;
 
     return false;
@@ -646,7 +587,7 @@ bool string::operator!=(string s)
 
 bool string::operator!=(char * s)
 {
-    if (s == this->get() && std::len(s) == this->length)
+    if (s == this->get() && len(s) == this->length)
         return false;
 
     return true;
@@ -662,7 +603,7 @@ bool string::operator<(string s)
 
 bool string::operator<(char * s)
 {
-    if (this->length < std::len(s))
+    if (this->length < len(s))
         return true;
 
     return false;
@@ -678,7 +619,7 @@ bool string::operator>(string s)
 
 bool string::operator>(char * s)
 {
-    if (this->length > std::len(s))
+    if (this->length > len(s))
         return true;
 
     return false;

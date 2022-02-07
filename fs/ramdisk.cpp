@@ -8,7 +8,7 @@ using namespace std;
 
 path_t parse_name(char * path)
 {
-    int length = std::len(path);
+    int length = len(path);
     char folder[length];
     int fdz = 0;
     char fname[length];
@@ -55,10 +55,10 @@ path_t parse_name(char * path)
         _path.foldername[z] = 0;
     }
 
-    for (int z = 0; z < std::len(fname); z++)
+    for (int z = 0; z < len(fname); z++)
         _path.filename[z] = fname[z];
 
-    for (int z = 0; z < std::len(folder); z++)
+    for (int z = 0; z < len(folder); z++)
         _path.foldername[z] = folder[z];
 
     return _path;
@@ -114,7 +114,7 @@ FOLDER create_folder(char * name)
     }
     FOLDER folder;
     folder.name = name;
-    folder.path = std::get("/%s", name);
+    folder.path = get("/%s", name);
     folder.id = Filesystem::Ramdisk::folder_count;
 
     Filesystem::Ramdisk::folders[folder.id] = folder;
@@ -133,7 +133,7 @@ FILE create_file(char * name, char * folder, char * contents, uint32_t size)
     file.name = name;
     file.parent = folder;
     file.contents = contents;
-    file.path = std::get("/%s/%s", folder, name);
+    file.path = get("/%s/%s", folder, name);
     file.size = size;
 
     FOLDER parent = get_folder(folder);
@@ -160,7 +160,7 @@ FILE create_file(char * name, char * folder, char *( *_read)(char *), void (*_wr
 
     file.name = name;
     file.parent = folder;
-    file.path = std::get("/%s/%s", folder, name);
+    file.path = get("/%s/%s", folder, name);
 
     file.read = _read;
     file.write = _write;
@@ -267,6 +267,12 @@ FILE * fopen(char * name)
     path_t path = parse_name(name);
     FILE * file = (FILE *)malloc(sizeof(file));
     FILE orig = get_file(path.filename, path.foldername);
+
+    if (orig.null)
+    {
+        free(file);
+        return NULL;
+    }
 
     file->name = orig.name;
     file->contents = orig.contents;

@@ -4,6 +4,7 @@ typedef struct
 {
     char name[20];
     char version[10];
+    bool dev;
 } info_t;
 
 #ifdef __cplusplus

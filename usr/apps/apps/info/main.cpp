@@ -6,7 +6,7 @@ int main(int argc, char const *argv[])
     info_t *info = get_sys_info();
 
     printf("OS: %s\n", info->name);
-    printf("Version: %s\n", info->version);
+    printf("Version: %s%s\n", info->version, (char *)(info->dev ? " Dev" : ""));
 
     return 0;
 }

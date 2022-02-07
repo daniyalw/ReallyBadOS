@@ -31,7 +31,7 @@ bool Tar::parse(unsigned int address)
     {
         TarFile block;
 
-        //std::memcpy(headers[z].name, block.name, 100);
+        //memcpy(headers[z].name, block.name, 100);
         block.name = headers[z]->name;
         block.size = headers[z]->file_size();
         block.typeflag = headers[z]->typeflag;

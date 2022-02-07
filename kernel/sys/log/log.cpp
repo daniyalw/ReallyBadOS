@@ -17,7 +17,7 @@ void system_log_string(char *text, va_list va)
 {
     char *out = vsprintf("", text, va);
 
-    for (int z = 0; z < std::len(out); z++)
+    for (int z = 0; z < len(out); z++)
         Kernel::system_log_char(out[z]);
 }
 
