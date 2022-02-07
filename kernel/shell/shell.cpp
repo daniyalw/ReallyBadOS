@@ -60,27 +60,37 @@ int run_command(char * command)
 
     FILE *file = fopen(fname);
 
-    if (file->null)
+    if (file == NULL)
     {
-        printf("Error: command not found: %s\n", args.argv[0]);
-        return 1;
+        fclose(file);
+
+        // if we fail, try searching the usr folder
+        fname = get("", "/usr/%s.o", executable);
+        file = fopen(fname);
+
+        if (file == NULL)
+        {
+            printf("Error: command not found: %s\n", args.argv[0]);
+            return 1;
+        }
     }
-    else
-    {
 #ifdef DEBUG
-        printf("found app!\n");
-        printf("Arg count: %d\n", args.argc);
+    printf("found app!\n");
+    printf("Arg count: %d\n", args.argc);
 #endif
 
-        char *argv[args.argc];
+    char *argv[args.argc];
 
-        for (int z = 0; z < args.argc; z++)
-        {
-            argv[z] = args.argv[z];
-        }
-
-        return load_app_from_file(file, args.argc, argv);
+    for (int z = 0; z < args.argc; z++)
+    {
+        argv[z] = args.argv[z];
     }
+
+    int ret = load_app_from_file(file, args.argc, argv);
+
+    fclose(file);
+
+    return ret;
 }
 
 int execute_script(char *text)
