@@ -87,7 +87,7 @@ FOLDER null_folder()
 FOLDER get_folder(char * name)
 {
     for (int z = 0; z < Filesystem::Ramdisk::folder_count; z++)
-        if (strcmp(Filesystem::Ramdisk::folders[z].name, name))
+        if (strcmp(Filesystem::Ramdisk::folders[z].name, name) == 0)
             return Filesystem::Ramdisk::folders[z];
 
     return null_folder();
@@ -101,7 +101,7 @@ FILE get_file(char * name, char * folder)
         return null_file();
 
     for (int z = 0; z < parent.file_count; z++)
-        if (strcmp(parent.files[z].name, name))
+        if (strcmp(parent.files[z].name, name) == 0)
             return parent.files[z];
 
     return null_file();

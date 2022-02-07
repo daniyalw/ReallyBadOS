@@ -97,7 +97,7 @@ bool task_exists(char *proc)
 {
     for (int z = 0; z < task_count; z++)
     {
-        if (strcmp(tasks[z].name, proc))
+        if (strcmp(tasks[z].name, proc) == 0)
             return true;
     }
 
@@ -110,7 +110,7 @@ int task_id(char *proc)
 
     for (int z = 0; z < task_count; z++)
     {
-        if (strcmp(tasks[z].name, proc))
+        if (strcmp(tasks[z].name, proc) == 0)
             return z;
     }
 

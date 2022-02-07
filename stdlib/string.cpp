@@ -123,12 +123,12 @@ bool strcmp(char * str1, char * str2) {
     int total = strlen(str1);
     int sec = strlen(str2);
 
-    if (total != sec) return false;
+    if (total != sec) return true;
 
     for (int z = 0; z < total; z++)
-        if (str1[z] != str2[z]) return false;
+        if (str1[z] != str2[z]) return true;
 
-    return true;
+    return false;
 }
 
 char * shift_left(char * out, char * str, int loc, int begin) {
