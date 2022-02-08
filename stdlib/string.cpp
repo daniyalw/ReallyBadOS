@@ -22,13 +22,13 @@ uint32_t uint_atoi(char *str)
     return num;
 }
 
-void memcpy(char *dest, char * source, int begin, int end)
+void memcpy(void *dest, void * source, int begin, int end)
 {
     //ASSERT(begin < end);
 
     for (int z = begin; z < end; z++)
     {
-        dest[z] = source[z];
+        ((short *)dest)[z] = ((short *)source)[z];
     }
 }
 

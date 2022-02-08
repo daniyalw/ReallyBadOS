@@ -94,6 +94,16 @@ using namespace Ramdisk;
 using namespace Time;
 using namespace Cooperative;
 
+void test()
+{
+    printf("Hello!");
+}
+
+void test1()
+{
+    test();
+}
+
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         Kernel::system_log("Invalid magic.\n"); // we could use printf, but that's text-mode only
@@ -144,6 +154,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Graphic::init_graphics(mbd);
 
     init_mem(mbd, beginning);
+
 
     for (int z = 0; z < tar.block_count; z++)
     {

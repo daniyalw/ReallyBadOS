@@ -116,7 +116,7 @@ static void mouse_handler(registers_t regs)
             }
 
             if (mouse_y > height - 1) {
-                mouse_y = 0;
+                mouse_y = height;
             } else if (mouse_y < 1) {
                 mouse_y = 0;
             }
@@ -136,7 +136,6 @@ static void mouse_handler(registers_t regs)
             return;
     }
 
-    if (!r || (mouse_x == 0 && mouse_y == 0)) return;
 
     int col;
     for (int z = 0; z < cursor_height; z++)

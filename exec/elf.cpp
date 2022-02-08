@@ -13,13 +13,16 @@ bool elf_verify(uint8_t *buf)
 int elf_start(uint8_t *buf, int argc, char **argv)
 {
 	elf_header_t *header = (elf_header_t *)buf;
-	if(header->e_type != 2)
+
+	if (header->e_type != 2)
 	{
 		Kernel::system_log("File is not executable!\n");
 		return 0;
 	}
+
 	elf_program_header_t *ph = (elf_program_header_t *)(buf + header->e_phoff);
-	for(int i = 0; i < header->e_phnum; i++, ph++)
+
+	for (int i = 0; i < header->e_phnum; i++, ph++)
 	{
 		switch(ph->p_type)
 		 {
