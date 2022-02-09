@@ -3,8 +3,6 @@
 #include <mouse/cursor.h>
 #include <fs.h>
 
-using namespace Filesystem;
-using namespace Ramdisk;
 
 void clear() {
     short * vidmem = (short *)0xb8000;
@@ -313,11 +311,11 @@ FILE stderr;
 
 void init_error()
 {
-    stderr = create_file("stderr", "dev", read_error, write_error);
+    //stderr = create_file("stderr", "dev", read_error, write_error);
 }
 
 void init_vga()
 {
-    stdout = create_file("stdout", "dev", read_vga, write_vga);
-    init_error();
+    //stdout = create_file("stdout", "dev", read_vga, write_vga);
+    //init_error();
 }

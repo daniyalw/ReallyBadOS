@@ -52,7 +52,7 @@ void init_serial(int port)
 	outb(port + 2, 0xC7);  // Enable FIFO, clear them, with 14-byte threshold
 	outb(port + 4, 0x0B);  // IRQs enabled, RTS/DSR set
 
-	create_file("serial", "dev", serial_read, serial_write_string);
+	//create_file("serial", "dev", serial_read, serial_write_string);
 }
 
 }

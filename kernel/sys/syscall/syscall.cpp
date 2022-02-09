@@ -99,10 +99,7 @@ void exec_file(char *contents, int *ret)
 
 void s_ls(char *path)
 {
-    if (!path)
-        ls("/");
-    else
-        ls(path);
+    fs_ls(find_id(path), 0);
 }
 
 DEFN_SYSCALL1(print, 0, char *);

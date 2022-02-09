@@ -117,7 +117,7 @@ uint8_t * ata_init(uint8_t *bytes) {
             bytes[i] = inw(0x1F0);
         }
 
-        create_file("ata", "dev", fs_ata_read, fs_ata_write);
+        //create_file("ata", "dev", fs_ata_read, fs_ata_write);
 
         return bytes;
     } else {
@@ -143,7 +143,7 @@ uint8_t * ata_init(uint8_t *bytes) {
             bytes[i] = inw(0x1F0);
         }
 
-        create_file("ata", "dev", fs_ata_read, fs_ata_write);
+        //create_file("ata", "dev", fs_ata_read, fs_ata_write);
 
         return bytes;
     }

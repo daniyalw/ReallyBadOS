@@ -6,9 +6,6 @@
 #include <fs.h>
 #include <sys/pci/pci.h>
 
-using namespace Filesystem;
-using namespace Ramdisk;
-
 namespace Graphic {
 
 void bga_write_register(uint16_t addr, uint16_t data)

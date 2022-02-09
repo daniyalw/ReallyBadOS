@@ -4,8 +4,6 @@
 #include <sound/sound.h>
 #include <fs.h>
 
-using namespace Filesystem;
-using namespace Ramdisk;
 
 namespace Kernel {
 
@@ -51,16 +49,17 @@ void sound_write(char *data)
 
 void beep()
 {
+    /*
     FILE *file = fopen("/dev/sound");
     file->write("1000"); // there's a difference between 1000 int and 1000 string
-
+    */
     for (int z = 0; z < 4000000; z++)
         io_wait();
     nosound();
 }
 
 void init_sound() {
-    create_file("sound", "dev", sound_input, sound_write);
+    //create_file("sound", "dev", sound_input, sound_write);
 }
 
 }

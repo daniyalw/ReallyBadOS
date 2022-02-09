@@ -68,7 +68,7 @@ int load_app_from_name(char *name, int argc, char **argv)
         return 1;
     }
 
-    uint8_t *buf = (uint8_t *)file->contents;
+    uint8_t *buf = (uint8_t *)file->node.contents;
 
     if (!elf_verify(buf))
     {
@@ -81,7 +81,7 @@ int load_app_from_name(char *name, int argc, char **argv)
 
 int load_app_from_file(FILE *file, int argc, char **argv)
 {
-    uint8_t *buf = (uint8_t *)file->contents;
+    uint8_t *buf = (uint8_t *)file->node.contents;
 
     if (!elf_verify(buf))
     {

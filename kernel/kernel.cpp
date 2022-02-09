@@ -66,8 +66,8 @@ extern "C" {
 #include "sys/panic.cpp"
 #include "sys/cpu/halt.cpp"
 #include "sys/syscall/syscalls.h" // this is external
-#include "../fs/tar.cpp"
-#include "../fs/ramdisk.cpp"
+#include "../filesystem/tar.cpp"
+#include "../filesystem/ramdisk.cpp"
 #include "sys/syscall/usermode.cpp"
 #include "../drivers/disk/ata.cpp"
 #include "sys/mem/mem.cpp"
@@ -83,26 +83,17 @@ extern "C" {
 #include "../drivers/keyboard/scanf.cpp"
 #include "../gui/gui.h"
 #include "../exec/elf.cpp"
-#include "../fs/utilities.cpp"
 #include "../exec/argparse.cpp"
 #include "../gui/label.cpp"
 #include "../gui/window.cpp"
 #include "../stdlib/ctype.cpp"
+#include "../filesystem/fs.cpp"
+#include "../filesystem/file.cpp"
+#include "../filesystem/node.cpp"
+#include "../filesystem/parse.cpp"
 
-using namespace Filesystem;
-using namespace Ramdisk;
 using namespace Time;
 using namespace Cooperative;
-
-void test()
-{
-    printf("Hello!");
-}
-
-void test1()
-{
-    test();
-}
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -111,12 +102,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     }
 
     Kernel::system_log("Entered %s kernel.\n", System::SYSTEM);
-
-    create_folder("dev");
-    create_folder("usr");
-    create_folder("trash");
-    create_folder("apps");
-    create_folder("fonts");
 
     Kernel::init_serial(SERIAL_PORT);
     Kernel::init_logging();
@@ -215,15 +200,20 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     init_mem(mbd, beginning);
 
+    init_fs();
+
+
     for (int z = 0; z < tar.block_count; z++)
     {
         if (endswith(tar.blocks[z].name, "o"))
         {
-            create_file(tar.blocks[z].name, "apps", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+            char *par;
+            create_file(tar.blocks[z].name, "/apps/", tar.blocks[z].contents);
         }
         else
         {
-            create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+            char *par;
+            create_file(tar.blocks[z].name, "/usr/", tar.blocks[z].contents);
         }
     }
 

@@ -6,7 +6,7 @@
 #include <video/video.h>
 #include <keyboard.h>
 #include <sys/mem/memory.h>
-#include <fs/fs.h>
+#include <fs.h>
 #include <exec/argparse.h>
 #include <exec/elf.h>
 #include <sys/multitasking/cooperative.h>

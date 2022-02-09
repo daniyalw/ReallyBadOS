@@ -3,9 +3,6 @@
 #include <mouse/mouse.h>
 #include <fs.h>
 
-using namespace Filesystem;
-using namespace Ramdisk;
-
 //https://forum.osdev.org/viewtopic.php?t=10247
 
 void mouse_wait(unsigned char at)
