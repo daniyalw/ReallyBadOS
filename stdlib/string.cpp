@@ -200,6 +200,8 @@ bool endswith(char * words, char * end)
     {
         if (words[z] != end[x])
             return false;
+
+        x++;
     }
 
     return true;
