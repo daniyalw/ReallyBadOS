@@ -2,7 +2,7 @@
 #include <random.h>
 #include <sys/power/power.h>
 #include <mouse/cursor.h>
-#include <fs.h>
+#include <filesystem.h>
 #include <shell/shell.h>
 
 void set_string(char * string, char * newvalue)
@@ -78,9 +78,18 @@ void s_info(info_t *info)
 
 void s_file(char *path, uint32_t *addr)
 {
-    FILE *file = fopen(path);
+    if (path[0] != '/')
+    {
+        path = get("", "/%s", path);
+    }
 
-    uint32_t address = (uint32_t)file;
+    FILE *file = fopen(path);
+    uint32_t address;
+
+    if (file == NULL || file->null)
+        address = NULL;
+    else
+        address = (uint32_t)file;
 
     addr[0] = address;
 }
@@ -99,7 +108,22 @@ void exec_file(char *contents, int *ret)
 
 void s_ls(char *path)
 {
-    fs_ls(find_id(path), 0);
+    // automatically attach slash if user does not do it
+    if (path[0] != '/')
+    {
+        path = get("", "/%s/", path);
+    }
+    fs_ls(path);
+}
+
+void s_create_folder(char *folder, char *parent_dir, int *result)
+{
+    result[0] = mkdir(folder, parent_dir);
+}
+
+void s_create_file(char *name, char *folder, char *contents, int *res)
+{
+    res[0] = create_file(name, folder, contents);
 }
 
 DEFN_SYSCALL1(print, 0, char *);
@@ -123,6 +147,10 @@ DEFN_SYSCALL1(s_fclose, 8, FILE*);
 DEFN_SYSCALL2(exec_file, 9, char*, int*);
 
 DEFN_SYSCALL1(s_ls, 10, char*);
+
+DEFN_SYSCALL3(s_create_folder, 11, char*, char*, int*);
+
+DEFN_SYSCALL4(s_create_file, 12, char*, char*, char*, int);
 
 // ----------------------------- //
 
@@ -225,6 +253,8 @@ void init_syscalls()
     syscall_append((void *)s_fclose);
     syscall_append((void *)exec_file);
     syscall_append((void *)s_ls);
+    syscall_append((void *)s_create_folder);
+    syscall_append((void *)s_create_file);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     Kernel::system_log("Syscalls initialized at interrupt 48!\n");
 }

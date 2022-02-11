@@ -4,6 +4,7 @@
 
 extern "C" char getch()
 {
+    // read files
     FILE *file = fopen("/dev/getch");
     char *buff;
     buff = file->read(buff);

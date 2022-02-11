@@ -1,8 +1,7 @@
 #pragma once
 #include <video/video.h>
 #include <mouse/cursor.h>
-#include <fs.h>
-
+#include <filesystem/ramdisk.h>
 
 void clear() {
     short * vidmem = (short *)0xb8000;
@@ -306,16 +305,24 @@ char *read_error(char *data)
     return NULL;
 }
 
-FILE stdout;
-FILE stderr;
+FILE *stdout;
+FILE *stderr;
 
 void init_error()
 {
-    //stderr = create_file("stderr", "dev", read_error, write_error);
+    create_file("stderr", "/dev/", read_error, write_error);
+
+    stderr = fopen("/dev/stderr");
 }
 
 void init_vga()
 {
-    //stdout = create_file("stdout", "dev", read_vga, write_vga);
-    //init_error();
+    create_file("stdout", "/dev/", read_vga, write_vga);
+    stdout = fopen("/dev/stdout");
+
+    if (stdout->null)
+    {
+        printf("Error: stdout not properly initialized!\n");
+    }
+    init_error();
 }

@@ -5,20 +5,35 @@
 typedef void (*__write)(char *);
 typedef char * (*__read)(char *);
 
-typedef struct
+struct fs_node
 {
-    char * name;
-    char * contents;
-    char * path;
-    char * parent;
+    char name[20];
+    char path[100];
     int id;
-    uint32_t size;
+    int parent_id;
+    int flags;
     bool null = false;
+    int size;
 
-    bool operator!() { return null; }
+    int children_id[10]; // if the node is a folder
+    int children_count = 0;
+
+    char *contents; // if it is a file
 
     __write write;
     __read read;
+};
+
+typedef struct
+{
+    fs_node node;
+
+    __write write;
+    __read read;
+
+    char name[20];
+
+    bool null;
 } FILE;
 
 #ifdef __cplusplus
@@ -29,6 +44,7 @@ extern FILE *fopen(char *path);
 extern void fclose(FILE *file);
 extern int fexec(char *contents);
 extern void ls(char *path);
+extern int mkfile(char *name, char *dir, char *contents);
 
 #ifdef __cplusplus
 }

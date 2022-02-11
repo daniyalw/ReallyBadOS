@@ -67,7 +67,6 @@ extern "C" {
 #include "sys/cpu/halt.cpp"
 #include "sys/syscall/syscalls.h" // this is external
 #include "../filesystem/tar.cpp"
-#include "../filesystem/ramdisk.cpp"
 #include "sys/syscall/usermode.cpp"
 #include "../drivers/disk/ata.cpp"
 #include "sys/mem/mem.cpp"
@@ -91,6 +90,8 @@ extern "C" {
 #include "../filesystem/file.cpp"
 #include "../filesystem/node.cpp"
 #include "../filesystem/parse.cpp"
+#include "../filesystem/folder.cpp"
+#include "dev.cpp"
 
 using namespace Time;
 using namespace Cooperative;
@@ -108,14 +109,11 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Kernel::init_isr();
     Kernel::init_gdt();
     Kernel::init_tss();
-    Kernel::init_sound();
     Kernel::read_rtc();
     Kernel::init_timer(1000);
     Kernel::init_keyboard(false, "/");
     Kernel::init_mouse();
     Kernel::init_syscalls();
-
-    init_vga();
 
     u32 location = *((u32*)mbd->mods_addr); // load modules with GRUB
 
@@ -201,18 +199,21 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     init_mem(mbd, beginning);
 
     init_fs();
-
+    init_vga();
+    init_all_devs();
 
     for (int z = 0; z < tar.block_count; z++)
     {
         if (endswith(tar.blocks[z].name, "o"))
         {
-            char *par;
             create_file(tar.blocks[z].name, "/apps/", tar.blocks[z].contents);
+        }
+        else if (endswith(tar.blocks[z].name, "txt"))
+        {
+            create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
         }
         else
         {
-            char *par;
             create_file(tar.blocks[z].name, "/usr/", tar.blocks[z].contents);
         }
     }

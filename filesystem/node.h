@@ -39,3 +39,4 @@ char *node_read_basic(int id);
 char *find_name(int id);
 int find_id(char *path);
 void ls_root();
+void fs_ls(char *path);

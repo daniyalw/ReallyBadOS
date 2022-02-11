@@ -8,18 +8,28 @@ int main(int argc, char **argv)
         printf("Help: test <file-name>\n");
         return 1;
     }
-    
+
     FILE *file = fopen(argv[1]);
 
-    if (file->null)
+    if (file->null || file == NULL)
     {
         printf("File is null.\n");
     }
     else
     {
         printf("Name: %s\n", file->name);
-        printf("Size: %d\n", file->size);
-        printf("Contents: %s", file->contents);
+
+        if (!file->node.size && file->read)
+        {
+            char *out = file->read(out);
+
+            printf("Read: %s\n", out);
+        }
+        else
+        {
+            printf("Size: %d bytes\n", file->node.size);
+            printf("Contents: \n%s", file->node.contents);
+        }
     }
 
     fclose(file);

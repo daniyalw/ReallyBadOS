@@ -16,3 +16,5 @@ typedef struct
 
 FILE *fopen(char *path);
 void fclose(FILE *file);
+int create_file(char *path, char *folder, char *contents);
+int create_file(char *path, char *folder, __read read, __write write);

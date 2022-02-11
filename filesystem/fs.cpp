@@ -15,5 +15,5 @@ void init_fs()
     fs_node home = create_node("home", root.id, FS_NODE_FOLDER);
     fs_node trash = create_node("trash", root.id, FS_NODE_FOLDER);
 
-    fs_node configs = create_node("configs", usr.id, FS_NODE_FOLDER);
+    fs_node docs = create_node("documents", usr.id, FS_NODE_FOLDER);
 }

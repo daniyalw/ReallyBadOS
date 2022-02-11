@@ -1,5 +1,6 @@
 #include <disk/ata.h>
 #include <string.h>
+#include <filesystem/ramdisk.h>
 
 using namespace std;
 
@@ -117,8 +118,6 @@ uint8_t * ata_init(uint8_t *bytes) {
             bytes[i] = inw(0x1F0);
         }
 
-        //create_file("ata", "dev", fs_ata_read, fs_ata_write);
-
         return bytes;
     } else {
         outb(0x1F6, 0xA1);
@@ -142,8 +141,6 @@ uint8_t * ata_init(uint8_t *bytes) {
         for (int i = 0; i < 256; i++) {
             bytes[i] = inw(0x1F0);
         }
-
-        //create_file("ata", "dev", fs_ata_read, fs_ata_write);
 
         return bytes;
     }

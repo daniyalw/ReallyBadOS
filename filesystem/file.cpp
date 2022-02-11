@@ -30,17 +30,39 @@ void fclose(FILE *file)
     free(file);
 }
 
-void create_file(char *path, char *folder, char *contents)
+int create_file(char *path, char *folder, char *contents)
 {
     int id = find_id(folder);
 
     if (id < 0)
-        return;
+        return 1;
 
     fs_node node = create_node(path, id, FS_NODE_FILE);
 
     if (node.null)
-        return;
+        return 1;
 
     node_write_basic(node.id, contents);
+
+    return 0;
+}
+
+int create_file(char *path, char *folder, __read read, __write write)
+{
+    int parent_id = find_id(folder);
+
+    if (parent_id < 0)
+        return 1;
+
+    fs_node node = create_node(path, parent_id, FS_NODE_FILE);
+
+    if (node.null)
+        return 1;
+
+    node.write = write;
+    node.read = read;
+
+    nodes[node.id] = node;
+
+    return 0;
 }

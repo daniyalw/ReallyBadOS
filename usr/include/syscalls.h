@@ -11,3 +11,5 @@
 #define FCLOSE 8
 #define FEXEC 9
 #define FLS 10
+#define MKDIR 11
+#define MKFILE 12

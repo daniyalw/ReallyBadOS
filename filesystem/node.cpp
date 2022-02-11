@@ -1,4 +1,5 @@
 #include <filesystem/node.h>
+#include <string.h>
 
 fs_node null_node()
 {
@@ -20,6 +21,17 @@ fs_node find_node(int id)
 
 fs_node create_node(char *name, int parent, int flags)
 {
+    fs_node throwaway = find_node(parent);
+    char *par;
+    fs_node test = find_node(find_id(get(par, "%s%s", throwaway.path, name)));
+    if (!test.null)
+    {
+        char *a;
+        test = find_node(find_id(get(a, "%s%s/", throwaway.path, name)));
+
+        if (!test.null)
+            return null_node();
+    }
     fs_node node;
 
     strcpy(node.name, name);
@@ -66,6 +78,11 @@ void fs_ls(int id, int index)
         return;
 
     for (int z = 0; z < index; z++)
+        Kernel::system_log("    ");
+
+    Kernel::system_log("%s%s\n", node.name, (char *)(node.flags == FS_NODE_FILE ? " (file)" : " (folder)"));
+
+    for (int z = 0; z < index; z++)
         printf("    ");
 
     printf("%s%s\n", node.name, (char *)(node.flags == FS_NODE_FILE ? " (file)" : " (folder)"));
@@ -74,6 +91,18 @@ void fs_ls(int id, int index)
 
     for (int z = 0; z < node.children_count; z++)
         fs_ls(node.children_id[z], index);
+}
+
+void fs_ls(char *path)
+{
+    fs_node node = find_node(find_id(path));
+
+    if (node.null)
+    {
+        return;
+    }
+    else
+        fs_ls(node.id, 0);
 }
 
 void ls_root()

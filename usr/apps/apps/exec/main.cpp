@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
         return 1;
     }
 
-    int res = fexec(file->contents);
+    int res = fexec(file->node.contents);
 
     fclose(file);
 

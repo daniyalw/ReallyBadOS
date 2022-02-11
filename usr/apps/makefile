@@ -8,6 +8,8 @@ EXTERNAL := ../../../src/itoa.o \
 			../../../src/info.o \
 			../../../src/file.o \
 			../../../src/keyboard.o \
-			../../../src/atoi.o
+			../../../src/atoi.o \
+			../../../src/ctype.o \
+			../../../src/folder.o
 
 LINKER = i686-elf-ld

@@ -41,6 +41,11 @@ bool contains(char *str, char c)
     return false;
 }
 
+char strgetlast(char *c)
+{
+    return c[strlen(c)-1];
+}
+
 static void itoa(char *buf, int base, int d)
 {
   char *p = buf;

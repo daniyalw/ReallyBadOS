@@ -3,6 +3,7 @@
 #include <drivers/keyboard/keyboard.h>
 #include <sys/log/log.h>
 #include "keys.cpp"
+#include <filesystem/ramdisk.h>
 
 void get_key(unsigned char code);
 
@@ -147,8 +148,6 @@ void init_keyboard(bool on, char * cd) {
     // register the interrupt
     Kernel::register_interrupt_handler(IRQ1, scan_key);
 
-    //create_file("stdin", "dev", read_keyboard, write_keyboard);
-    //create_file("getch", "dev", read_getch, write_keyboard);
 }
 
 }

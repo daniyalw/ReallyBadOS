@@ -49,6 +49,8 @@ bool Tar::parse(unsigned int address)
 
         block.contents = (char *)headers[z] + 512;
 
+        block.type = headers[z]->typeflag;
+
         blocks[z] = block;
         block_count++;
     }

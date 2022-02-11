@@ -1,5 +1,8 @@
 #pragma once
 
+#define TAR_FILE '0'
+#define TAR_DIR '5'
+
 struct TarFile
 {
     char *name;
@@ -10,6 +13,8 @@ struct TarFile
 
     char gid[8];
     char uid[8];
+
+    char type;
 };
 
 struct __attribute__((packed)) RawTar
