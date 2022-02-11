@@ -5,7 +5,7 @@
 extern "C" char getch()
 {
     // read files
-    FILE *file = fopen("/dev/getch");
+    FILE *file = fopen("/dev/stdin"); // dunno why but getch doesn't work
     char *buff;
     buff = file->read(buff);
 
