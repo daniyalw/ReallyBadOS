@@ -113,7 +113,11 @@ void s_ls(char *path)
     {
         path = get("", "/%s/", path);
     }
-    fs_ls(path);
+    int id = find_id(path);
+    if (id < 0)
+        printf("Invalid folder/file!\n");
+    else
+        fs_ls(path);
 }
 
 void s_create_folder(char *folder, char *parent_dir, int *result)
