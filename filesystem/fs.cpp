@@ -16,4 +16,5 @@ void init_fs()
     fs_node trash = create_node("trash", root.id, FS_NODE_FOLDER);
 
     fs_node docs = create_node("documents", usr.id, FS_NODE_FOLDER);
+    fs_node fonts = create_node("fonts", usr.id, FS_NODE_FOLDER);
 }

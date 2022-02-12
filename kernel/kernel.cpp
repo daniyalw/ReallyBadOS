@@ -5,7 +5,6 @@ extern "C" {
     extern void main();
     extern unsigned int stack_top;
     extern unsigned int kernel_end;
-    extern unsigned int read_eip();
 }
 
 //#define DEBUG
@@ -96,7 +95,9 @@ extern "C" {
 using namespace Time;
 using namespace Cooperative;
 
-extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stack) {
+std::list<char *> abc;
+
+extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         Kernel::system_log("Invalid magic.\n"); // we could use printf, but that's text-mode only
         return; // stop any more kernel code running since it's not multiboot
@@ -137,17 +138,26 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
     Graphic::init_graphics(mbd);
 
     init_mem(mbd, beginning);
-
+    init_fs();
+    init_all_devs();
 
     for (int z = 0; z < tar.block_count; z++)
     {
         if (endswith(tar.blocks[z].name, "o"))
         {
-            create_file(tar.blocks[z].name, "apps", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+            create_file(tar.blocks[z].name, "/apps/", tar.blocks[z].contents);
+        }
+        else if (endswith(tar.blocks[z].name, "txt"))
+        {
+            create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
+        }
+        else if (endswith(tar.blocks[z].name, "sfn"))
+        {
+            create_file(tar.blocks[z].name, "/usr/fonts/", tar.blocks[z].contents);
         }
         else
         {
-            create_file(tar.blocks[z].name, "usr", tar.blocks[z].contents, tar.blocks[z].size * sizeof(char));
+            create_file(tar.blocks[z].name, "/usr/", tar.blocks[z].contents);
         }
     }
 
@@ -159,16 +169,18 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint stac
 
     win.draw();
 
-    FILE *file = fopen("/usr/._Vera.sfn");
+    FILE *file = fopen("/usr/fonts/Vera.sfn");
 
     if (file->null)
     {
-        Kernel::system_log("Eror: vera font not found!\n");
+        Kernel::system_log("Error: vera font not found!\n");
         return;
     }
 
+    Kernel::system_log("File size: %d\n", file->node.size);
+
     /* set up context by global variables */
-    ssfn_src = (ssfn_font_t *)file->contents;      /* the bitmap font to use */
+    ssfn_src = (ssfn_font_t *)file->node.contents;      /* the bitmap font to use */
     ssfn_dst.ptr = (uint8_t *)&framebuffer_addr;                  /* framebuffer address and bytes per line */
     ssfn_dst.w = 1024;                          /* width */
     ssfn_dst.h = 768;                           /* height */

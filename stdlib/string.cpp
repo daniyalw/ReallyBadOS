@@ -368,7 +368,7 @@ inline void memcpy(char *dest, const char *source, const int nb)
     #endif
 }
 
-inline void memcpy_int(const int *source, int *dest, const int nb)
+inline void memcpy_int(const uint32_t *source, uint32_t *dest, const int nb)
 {
     #if defined(__x86_64__) || defined(__x86_32__)
 
@@ -482,30 +482,6 @@ void swap(int num1, int num2)
     int num3 = num1;
     num1 = num2;
     num2 = num3;
-}
-
-int findMinIndex(std::list<int> A, int start) {
-    int min_index = start;
-
-    ++start;
-
-    while(start < (int)A.size()) {
-        if(A.get(start) < A.get(min_index))
-            min_index = start;
-
-        ++start;
-    }
-
-    return min_index;
-}
-
-void sort(std::list<int> A) {
-    for(int i = 0; i < (int)A.size(); ++i) {
-        int min_index = findMinIndex(A, i);
-
-        if(i != min_index)
-            A.swap(i, min_index);
-    }
 }
 
 int findMinIndex(int * A, int start, int sz) {

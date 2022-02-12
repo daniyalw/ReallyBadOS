@@ -1,16 +1,21 @@
 #pragma once
 
 #include <stdio.h>
+#include <string.h>
 
 namespace std {
 
 template <typename T>
 class list {
 private:
-    T * arr;
     int length = 0;
+    T * arr;
 
 public:
+    list()
+    {
+        arr = (T *)malloc(length);
+    }
 
     bool operator==(list other)
     {
@@ -98,6 +103,7 @@ public:
     // elements in array after pushing the data
     void push_back(T data)
     {
+        arr = (T *)realloc(arr, length + 1);
         arr[length] = data;
         length++;
     }
@@ -114,7 +120,7 @@ public:
 
     void remove(int value)
     {
-        T * newarr;
+        T newarr[length];
         int nz = 0;
 
         for (int z = 0; z < length; z++)
@@ -126,7 +132,8 @@ public:
             nz++;
         }
         length = nz;
-        arr = newarr;
+        memcpy_int(newarr, arr, length);
+        arr = (T *)realloc(arr, length);
     }
 
     void clear_all()
@@ -138,7 +145,7 @@ public:
     void pop()
     {
         length--;
-        T * newarr;
+        T newarr[length];
         int nz = 0;
 
         for (int z = 0; z < length; z++)
@@ -147,7 +154,8 @@ public:
             nz++;
         }
         length = nz;
-        arr = newarr;
+        memcpy_int((uint32_t *)&newarr, (uint32_t *)&arr, length);
+        arr = (T *)realloc(arr, length); // free a bit of memory
     }
 
     T get_last()
@@ -161,6 +169,7 @@ public:
 
     void insert_at(T insert, int pos)
     {
+        arr = (T *)realloc(arr, length + 1);
         if (pos > length)
             return;
 
