@@ -45,6 +45,7 @@ extern void fclose(FILE *file);
 extern int fexec(char *contents);
 extern void ls(char *path);
 extern int mkfile(char *name, char *dir, char *contents);
+extern int write_file(char *name, char *contents);
 
 #ifdef __cplusplus
 }

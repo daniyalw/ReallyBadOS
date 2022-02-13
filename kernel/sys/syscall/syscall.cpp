@@ -130,64 +130,39 @@ void s_create_file(char *name, char *folder, char *contents, int *res)
     res[0] = create_file(name, folder, contents);
 }
 
-DEFN_SYSCALL1(print, 0, char *);
-
-DEFN_SYSCALL1(s_putchar, 1, char);
-
-DEFN_SYSCALL1(get_num, 2, int *);
-
-DEFN_SYSCALL1(s_get_time, 3, time_t *);
-
-DEFN_SYSCALL3(s_putpixel, 4, int, int, int);
-
-DEFN_SYSCALL0(s_update_mouse, 5);
-
-DEFN_SYSCALL1(s_info, 6, info_t*);
-
-DEFN_SYSCALL2(s_file, 7, char*, uint32_t*);
-
-DEFN_SYSCALL1(s_fclose, 8, FILE*);
-
-DEFN_SYSCALL2(exec_file, 9, char*, int*);
-
-DEFN_SYSCALL1(s_ls, 10, char*);
-
-DEFN_SYSCALL3(s_create_folder, 11, char*, char*, int*);
-
-DEFN_SYSCALL4(s_create_file, 12, char*, char*, char*, int);
-
-// ----------------------------- //
-
-void sys_putchar(char text)
+void s_write_file(char *name, char *contents, int *res)
 {
-    syscall_s_putchar(text);
+    FILE *file = fopen(name);
+
+    if (file == NULL || file->null)
+    {
+        printf("Error: file not found.\n");
+        res[0] = 1;
+    }
+    else
+    {
+        res[0] = 0;
+
+        if (file->write)
+        {
+            file->write(contents);
+        }
+        else
+        {
+            node_write_basic(file->node.id, contents);
+            fclose(file);
+        }
+    }
 }
 
-void sys_print(char *text, ...)
+void s_malloc(int *size, uint32_t *addr)
 {
-    va_list va;
-    va_start(va, text);
-    vprintf(text, va);
-    va_end(va);
+    addr[0] = malloc(size[0]);
 }
 
-int sys_rand()
+void s_free(void *buf)
 {
-    int a[1];
-    syscall_get_num(a);
-    return a[0];
-}
-
-time_t sys_get_time()
-{
-    time_t time[1];
-    syscall_s_get_time(time);
-    return time[0];
-}
-
-void sys_putpixel(int x, int y, int color)
-{
-    syscall_s_putpixel(x, y, color);
+    free(buf);
 }
 
 // ----------------------------- //
@@ -259,6 +234,9 @@ void init_syscalls()
     syscall_append((void *)s_ls);
     syscall_append((void *)s_create_folder);
     syscall_append((void *)s_create_file);
+    syscall_append((void *)s_write_file);
+    syscall_append((void *)s_malloc);
+    syscall_append((void *)s_free);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     Kernel::system_log("Syscalls initialized at interrupt 48!\n");
 }

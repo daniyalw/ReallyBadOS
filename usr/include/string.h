@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 extern int strlen(char * text);
+extern void strcpy(char *dest, char *orig);
 
 #ifdef __cplusplus
 }

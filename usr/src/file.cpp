@@ -80,3 +80,12 @@ extern "C" int mkfile(char *name, char *dir, char *contents)
 
     return res[0];
 }
+
+extern "C" int write_file(char *name, char *contents)
+{
+    void *a;
+    int res[1];
+    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (name), "c" (contents), "d" (res));
+
+    return res[0];
+}

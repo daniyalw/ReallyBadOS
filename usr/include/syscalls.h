@@ -13,3 +13,6 @@
 #define FLS 10
 #define MKDIR 11
 #define MKFILE 12
+#define WRITE_FILE 13
+#define MALLOC 14
+#define FREE 15

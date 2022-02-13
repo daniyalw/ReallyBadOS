@@ -21,8 +21,8 @@ struct fs_node
 
     char *contents; // if it is a file
 
-    __write write;
-    __read read;
+    __write write = NULL;
+    __read read = NULL;
 };
 
 fs_node nodes[1000];
