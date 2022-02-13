@@ -12,6 +12,7 @@
 #include <sys/multitasking/cooperative.h>
 #include <sys/syscall/user.h>
 #include <ctype.h>
+#include <keyboard/keys.cpp>
 
 using namespace std;
 using namespace Time;
@@ -164,6 +165,7 @@ void shell()
 #ifdef DEBUG
         Kernel::system_log(command);
 #endif
+
         if (check_name(command, "exec"))
         {
             printf("Warning: %s\n", "executable not properly working...\n");
@@ -183,6 +185,9 @@ void shell()
             break;
         }
 
+        memset(last_command, NULL, 100);
+        strcpy(last_command, command);
+
         run_command(command);
 
         putchar('\n');
@@ -197,5 +202,9 @@ void shell()
     if (result == 'y')
     {
         Kernel::shutdown_os();
+    }
+    else
+    {
+        printf("\nWelp, now you're stuck. And I don't care");
     }
 }

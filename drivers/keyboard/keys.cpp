@@ -15,6 +15,9 @@ unsigned char shifted_codes[] = {
     0x3A, 0x2A, 0x36, 0xBA, 0xAA, 0xB6
 };
 
+unsigned char key_up = 0x48;
+unsigned char key_down = 0x50;
+
 char letters_lower[] = {
     '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', ' ',
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 'a',

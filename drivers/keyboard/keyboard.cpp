@@ -5,8 +5,6 @@
 #include "keys.cpp"
 #include <filesystem/ramdisk.h>
 
-void get_key(unsigned char code);
-
 bool keyboard_lock()
 {
     if (!keyboard_locked)

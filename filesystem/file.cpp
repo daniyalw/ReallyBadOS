@@ -66,3 +66,42 @@ int create_file(char *path, char *folder, __read read, __write write)
 
     return 0;
 }
+
+void fprintf(FILE *file, char *data)
+{
+    if (file->write != NULL)
+    {
+        file->write(data);
+    }
+    else
+    {
+        node_write_basic(file->node.id, data);
+        file->node = nodes[file->node.id];
+    }
+}
+
+void fprintf(FILE file, char *data)
+{
+    if (file.write != NULL)
+    {
+        file.write(data);
+    }
+    else
+    {
+        node_write_basic(file.node.id, data);
+        file.node = nodes[file.node.id];
+    }
+}
+
+void fprintf(fs_node node, char *data)
+{
+    if (node.write != NULL)
+    {
+        node.write(data);
+    }
+    else
+    {
+        node_write_basic(node.id, data);
+        node = nodes[node.id];
+    }
+}

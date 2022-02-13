@@ -6,7 +6,7 @@ int seed;
 
 int get_random_number()
 {
-    int num = seed * 1103515245 + 12345 + (seconds * minute - hour);
+    int num = seed * 1103515245 + 12345 - (seconds * minute - hour);
     seed++;
     return num/345643;
 }

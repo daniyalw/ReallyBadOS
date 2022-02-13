@@ -305,24 +305,18 @@ char *read_error(char *data)
     return NULL;
 }
 
-FILE *stdout;
-FILE *stderr;
+fs_node stdout;
+fs_node stderr;
 
 void init_error()
 {
     create_file("stderr", "/dev/", read_error, write_error);
-
-    stderr = fopen("/dev/stderr");
+    stderr = find_node(find_id("/dev/stderr"));
 }
 
 void init_vga()
 {
     create_file("stdout", "/dev/", read_vga, write_vga);
-    stdout = fopen("/dev/stdout");
-
-    if (stdout->null)
-    {
-        printf("Error: stdout not properly initialized!\n");
-    }
+    stdout = find_node(find_id("/dev/stdout"));
     init_error();
 }

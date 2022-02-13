@@ -18,3 +18,6 @@ FILE *fopen(char *path);
 void fclose(FILE *file);
 int create_file(char *path, char *folder, char *contents);
 int create_file(char *path, char *folder, __read read, __write write);
+void fprintf(FILE *file, char *data);
+void fprintf(FILE file, char *data);
+void fprintf(fs_node node, char *data);
