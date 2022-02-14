@@ -41,6 +41,58 @@ bool contains(char *str, char c)
     return false;
 }
 
+auto tokenize(char *s, char sep, char **buff, int beg_index, int end_index)
+{
+    const int total_length = strlen(s);
+    int length = 0;
+    int count = 1;
+    char *str = (char *)malloc(total_length);
+    uint32_t orig_addr = (uint32_t)&str;
+
+    str[total_length] = sep;
+    str[total_length] = NULL;
+    strcpy(str, s);
+
+    for (int z = 0; z < total_length; z++)
+    {
+        if (str[z] == sep)
+        {
+            char *ss = (char *)malloc(strlen(str));
+            strcpy(ss, str);
+            ss[length] = 0;
+            str = (char *)&str[length + 1];
+            length = 0;
+
+            buff[count-1] = ss;
+
+            free(ss);
+
+            count++;
+        }
+        else
+        {
+            length++;
+        }
+    }
+
+    char *ss = (char *)malloc(strlen(str));
+    strcpy(ss, str);
+
+    ss = (char *)&ss[beg_index];
+    ss[strlen(ss)-end_index] = 0;
+
+    buff[count-1] = ss;
+
+    free(ss);
+
+    return count;
+}
+
+int tokenize(char *str, char sep, char **buff)
+{
+    return tokenize(str, sep, buff, 0, 0);
+}
+
 char strgetlast(char *c)
 {
     return c[strlen(c)-1];
