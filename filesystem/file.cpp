@@ -32,6 +32,7 @@ void fclose(FILE *file)
 
 int create_file(char *path, char *folder, char *contents)
 {
+    folder = format_folder(folder);
     int id = find_id(folder);
 
     if (id < 0)
@@ -49,6 +50,7 @@ int create_file(char *path, char *folder, char *contents)
 
 int create_file(char *path, char *folder, __read read, __write write)
 {
+    folder = format_folder(folder);
     int parent_id = find_id(folder);
 
     if (parent_id < 0)

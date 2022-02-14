@@ -76,3 +76,23 @@ char *parse_current_name(char *path, char *out)
 
     return out;
 }
+
+char *format_folder(char *path)
+{
+    if (path[0] != '/')
+    {
+        path = get("", "/%s", path);
+    }
+    
+    return path;
+}
+
+char *format_file(char *path)
+{
+    if (path[0] != '/')
+    {
+        path = get("", "/%s", path);
+    }
+
+    return path;
+}

@@ -224,6 +224,14 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
         {
             create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
         }
+        else if (endswith(tar.blocks[z].name, "r"))
+        {
+            create_file(tar.blocks[z].name, "/usr/scripts/", tar.blocks[z].contents);
+        }
+        else if (endswith(tar.blocks[z].name, "sfn"))
+        {
+            create_file(tar.blocks[z].name, "/usr/fonts/", tar.blocks[z].contents);
+        }
         else
         {
             create_file(tar.blocks[z].name, "/usr/", tar.blocks[z].contents);

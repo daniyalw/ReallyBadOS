@@ -1,4 +1,5 @@
 #include <filesystem/folder.h>
+#include <filesystem/parse.h>
 
 bool no_more_after(char *name, int index)
 {
@@ -11,6 +12,7 @@ bool no_more_after(char *name, int index)
 
 int mkdir(char *name, char *parent)
 {
+    parent = format_folder(parent);
     int id = find_id(parent);
 
     if (id < 0)
