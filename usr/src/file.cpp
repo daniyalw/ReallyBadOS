@@ -89,3 +89,9 @@ extern "C" int write_file(char *name, char *contents)
 
     return res[0];
 }
+
+extern "C" void append_file(char *name, char *contents)
+{
+    void *a;
+    asm volatile("int $48" : "=a" (a) : "0" (APPEND_FILE), "b" (name), "c" (contents));
+}

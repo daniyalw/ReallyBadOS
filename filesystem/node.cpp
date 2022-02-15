@@ -125,6 +125,19 @@ void node_write_basic(int id, char *contents)
     nodes[node.id] = node;
 }
 
+void node_write_append(int id, char *contents)
+{
+    fs_node node = find_node(id);
+
+    if (node.null || node.flags != FS_NODE_FILE)
+        return;
+
+    get(node.contents, "%s%s", node.contents, contents);
+    node.size = strlen(contents) + node.size;
+
+    nodes[node.id] = node;
+}
+
 char *node_read_basic(int id)
 {
     fs_node node = find_node(id);

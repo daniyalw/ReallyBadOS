@@ -165,6 +165,18 @@ void s_free(void *buf)
     free(buf);
 }
 
+void s_append_file(char *name, char *contents)
+{
+    FILE *file = fopen(name);
+
+    if (file == NULL)
+        return;
+
+    node_write_append(file->node.id, contents);
+
+    fclose(file);
+}
+
 // ----------------------------- //
 
 
@@ -237,6 +249,7 @@ void init_syscalls()
     syscall_append((void *)s_write_file);
     syscall_append((void *)s_malloc);
     syscall_append((void *)s_free);
+    syscall_append((void *)s_append_file);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     Kernel::system_log("Syscalls initialized at interrupt 48!\n");
 }

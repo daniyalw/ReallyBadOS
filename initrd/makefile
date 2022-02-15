@@ -1,4 +1,4 @@
-FILES := read.o echo.o hello.txt time.o info.o Vera.sfn exec.o test.r ls.o test.o mkdir.o mkfile.o write.o
+FILES := read.o echo.o hello.txt time.o info.o Vera.sfn exec.o test.r ls.o test.o mkdir.o mkfile.o write.o append.o help.txt
 OUT = out.tar
 
 build:

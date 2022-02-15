@@ -16,3 +16,4 @@
 #define WRITE_FILE 13
 #define MALLOC 14
 #define FREE 15
+#define APPEND_FILE 16
