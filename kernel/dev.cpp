@@ -9,4 +9,7 @@ void init_all_devs()
 
     // ata
     create_file("ata", "/dev/", fs_ata_read, fs_ata_write);
+
+    // serial
+    create_file("serial", "/dev/", Kernel::get_log, Kernel::log);
 }

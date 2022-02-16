@@ -5,7 +5,7 @@ int main(int argc, char **argv)
 {
     if (argc <= 1)
     {
-        printf("Help: test <file-name>\n");
+        printf("Help: read <file-name>\n");
         return 1;
     }
 

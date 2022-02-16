@@ -16,7 +16,7 @@ struct fs_node
     bool null = false;
     int size;
 
-    int children_id[10]; // if the node is a folder
+    int children_id[12]; // if the node is a folder
     int children_count = 0;
 
     char *contents; // if it is a file

@@ -132,8 +132,8 @@ void node_write_append(int id, char *contents)
     if (node.null || node.flags != FS_NODE_FILE)
         return;
 
-    get(node.contents, "%s%s", node.contents, contents);
-    node.size = strlen(contents) + node.size;
+    node.contents = append(node.contents, contents, node.contents);
+    node.size += strlen(contents);
 
     nodes[node.id] = node;
 }

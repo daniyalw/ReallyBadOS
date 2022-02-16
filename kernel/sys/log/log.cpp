@@ -46,7 +46,6 @@ void log(char * data)
 
 void init_logging()
 {
-    //create_file("tty1", "dev", Kernel::get_log, Kernel::log);
 }
 
 }

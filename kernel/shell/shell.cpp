@@ -66,7 +66,7 @@ int run_command(char * command)
         fclose(file);
 
         // if we fail, try searching the usr folder
-        fname = get("", "/usr/%s.o", executable);
+        fname = get("", "/usr/%s/%s.o", executable, executable);
         file = fopen(fname);
 
         if (file == NULL)
