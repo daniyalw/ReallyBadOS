@@ -87,7 +87,7 @@ char * fs_ata_read(char * num)
     return data;
 }
 
-uint8_t * ata_init(uint8_t *bytes) {
+uint16_t * ata_init(uint16_t *bytes) {
     uint8_t abc = inb(0x1F5);
     bool non_packet = false;
 
@@ -105,7 +105,7 @@ uint8_t * ata_init(uint8_t *bytes) {
         uint8_t res = inb(0x1F7);
 
         if (res == 0) {
-            printf("Drive does not exist!\n");
+            log::error("Drive does not exist!\n");
             return NULL;
         }
 
@@ -129,7 +129,7 @@ uint8_t * ata_init(uint8_t *bytes) {
         uint8_t res = inb(0x1F7);
 
         if (res == 0) {
-            printf("Non-existent drive!\n");
+            log::error("Non-existent drive!\n");
             return NULL;
         }
 
@@ -144,6 +144,22 @@ uint8_t * ata_init(uint8_t *bytes) {
 
         return bytes;
     }
+}
+
+uint32_t total_sectors()
+{
+    uint16_t *bytes;
+    uint32_t sectors;
+
+    bytes = ata_init(bytes);
+    sectors = (uint32_t)bytes[60];
+
+    return sectors;
+}
+
+uint32_t total_bytes()
+{
+    return total_sectors() * 512;
 }
 
 FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)

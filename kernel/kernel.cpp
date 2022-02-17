@@ -9,6 +9,7 @@ extern "C" {
 
 //#define DEBUG
 //#define GRAPHICS
+#define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
 
@@ -242,7 +243,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     time_t time = get_time();
 
-    uint8_t *bytes;
+    uint16_t *bytes;
     bytes = ata_init(bytes);
 
     printf("%s Shell\n", System::SYSTEM);
