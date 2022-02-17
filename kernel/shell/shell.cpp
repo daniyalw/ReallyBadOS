@@ -34,7 +34,7 @@ void print_both(char *text, ...)
 void putchar_both(char text, ...)
 {
     putchar(text);
-    log::info((char *)text);
+    Kernel::output_serial_char(text);
 }
 
 bool check_name(char * name, char * check_against)

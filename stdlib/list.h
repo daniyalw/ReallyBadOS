@@ -72,7 +72,6 @@ public:
 
         if (length != 0)
         {
-            error("Could not copy lists.");
             return;
         }
 

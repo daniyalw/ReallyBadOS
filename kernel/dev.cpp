@@ -10,6 +10,11 @@ void write_serial_(char *data)
     Kernel::serial_write_string(data);
 }
 
+void write_info(char *data)
+{
+    log::info(data);
+}
+
 void init_all_devs()
 {
     // sound
@@ -23,5 +28,5 @@ void init_all_devs()
     create_file("ata", "/dev/", fs_ata_read, fs_ata_write);
 
     // serial
-    create_file("serial", "/dev/", null_read, log::info);
+    create_file("serial", "/dev/", null_read, write_info);
 }

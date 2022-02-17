@@ -74,7 +74,6 @@ public:
 
         if (arr.size() != 0)
         {
-            error("Could not pop all values in map.");
             return;
         }
 
