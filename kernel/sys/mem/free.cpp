@@ -21,7 +21,7 @@ void free(void *buff)
 
     if (!found)
     {
-        error("Attempted to free invalid buffer!\n");
+        log::error("Attempted to free invalid buffer!");
         return;
     }
 

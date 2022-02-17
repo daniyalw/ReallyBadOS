@@ -82,19 +82,19 @@ void init_mem(auto mbd, uint32_t beginning_addr)
 
 void print_lists()
 {
-    Kernel::system_log("\n\nPrinting 'mem_blocks' list:\n");
+    log::warning("\n\nPrinting 'mem_blocks' list:\n");
 
     for (int z = 0; z < block_count_mem; z++)
     {
-        Kernel::system_log("Address: %d\nSize: %d\n\n", mem_blocks[z].addr, mem_blocks[z].size);
+        log::warning("Address: %d\nSize: %d\n\n", mem_blocks[z].addr, mem_blocks[z].size);
     }
 
-    Kernel::system_log("\nPrinting 'used' list:\n");
+    log::warning("\nPrinting 'used' list:\n");
 
     for (int z = 0; z < total_used; z++)
     {
         if (used[z].null == false)
-            Kernel::system_log("Address: %d\nSize: %d\n\n", used[z].addr, used[z].size);
+            log::warning("Address: %d\nSize: %d", used[z].addr, used[z].size);
     }
 }
 
@@ -107,30 +107,30 @@ void __mem_test()
 
     free((void *)addr);
 
-    Kernel::system_log("%d\n", addr);
-    Kernel::system_log("%d\n", next);
+    log::warning("%d", addr);
+    log::warning("%d", next);
 
     print_lists();
 
     print_lists();
 
-    Kernel::system_log("============\n");
+    log::warning("============");
 
     addr = malloc(10);
 
-    Kernel::system_log("%d\n", addr);
+    log::warning("%d\n", addr);
 
-    Kernel::system_log("============b\n");
+    log::warning("============b");
 
     print_lists();
 
     addr = realloc((void *)addr, 20);
 
-    Kernel::system_log("a============\n");
+    log::warning("a============");
 
-    Kernel::system_log("%d\n", addr);
+    log::warning("%d\n", addr);
 
-    Kernel::system_log("============\n");
+    log::warning("============");
 
     print_lists();
 }

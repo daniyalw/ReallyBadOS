@@ -199,7 +199,7 @@ void init_mouse()
 
     if (res != MOUSE_ACK)
     {
-        Kernel::system_log("Error: PS/2 mouse returned command other than 0xFA: 0x%x\n", res);
+        log::error("PS/2 mouse returned command other than 0xFA: 0x%x", res);
     }
 
     mouse_write(0xF4);
@@ -207,7 +207,7 @@ void init_mouse()
 
     if (res != MOUSE_ACK)
     {
-        Kernel::system_log("Error: PS/2 mouse returned command other than 0xFA: 0x%x\n", res);
+        log::error("Error: PS/2 mouse returned command other than 0xFA: 0x%x", res);
     }
 
 

@@ -3,46 +3,47 @@
 #include <sys/serial.h>
 #include <string.h>
 
-namespace Kernel {
-
-void system_log_char(char ch)
+namespace log
 {
-    Kernel::output_serial_char(ch);
-
-    Kernel::buffer[Kernel::buffer_size] = ch;
-    Kernel::buffer_size++;
-}
-
-void system_log_string(char *text, va_list va)
-{
-    char *out = vsprintf("", text, va);
-
-    for (int z = 0; z < len(out); z++)
-        Kernel::system_log_char(out[z]);
-}
-
-void system_log(char * text, ...)
-{
-    va_list va;
-    va_start(va, text);
-    system_log_string(text, va);
-    va_end(va);
-}
-
-char * get_log(char * buff)
-{
-    for (int z = 0; z < Kernel::buffer_size; z++)
+    void info(char *data, ...)
     {
-        buff[z] = Kernel::buffer[z];
+        va_list va;
+        auto light_blue = get_color("40", "36");
+
+        va_start(va, data);
+        p_template(light_blue, "Info: ", data, va);
+        va_end(va);
+
+        Kernel::output_serial_char('\n');
     }
 
-    return buff;
+    void error(char *data, ...)
+    {
+        va_list va;
+        auto red = get_color("40", "1;31");
+
+        va_start(va, data);
+        p_template(red, "Error: ", data, va);
+        va_end(va);
+
+        Kernel::output_serial_char('\n');
+    }
+
+    void warning(char *data, ...)
+    {
+        va_list va;
+        auto yellow = get_color("40", "1;33");
+
+        va_start(va, data);
+        p_template(yellow, "Warning: ", data, va);
+        va_end(va);
+
+        Kernel::output_serial_char('\n');
+    }
 }
 
-void log(char * data)
+namespace Kernel
 {
-    Kernel::system_log(data);
-}
 
 void init_logging()
 {

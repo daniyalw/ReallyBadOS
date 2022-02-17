@@ -49,7 +49,7 @@ void timer_int(registers_t regs) {
 namespace Kernel {
 
 void init_timer(uint frequency) {
-    Kernel::system_log("Timer enabled.\n");
+    log::info("Timer enabled.");
     hz = frequency;
 
     Kernel::register_interrupt_handler(IRQ0, timer_int);

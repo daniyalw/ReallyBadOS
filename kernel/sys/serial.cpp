@@ -31,15 +31,26 @@ void output_serial_char(char a)
 	output_serial_char(SERIAL_PORT, a);
 }
 
-void serial_write_string(char *buf)
-{
-	serial_write(SERIAL_PORT, buf);
-}
-
 char *serial_read(char *buf)
 {
 	UNUSED(buf);
 	return NULL;
+}
+
+void serial_write_string(char *buf, va_list va)
+{
+	char *ret = vsprintf("", buf, va);
+
+	serial_write(SERIAL_PORT, ret);
+}
+
+void serial_write_string(char *buf, ...)
+{
+	va_list va;
+
+	va_start(va, buf);
+	serial_write_string(buf, va);
+	va_end(va);
 }
 
 void init_serial(int port)

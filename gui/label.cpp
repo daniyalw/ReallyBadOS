@@ -6,6 +6,8 @@ using namespace Graphic;
 
 void draw_label(Widget label)
 {
+    int offset = 0;
+
     if (label.bg != BG_TRANSPARENT)
         draw_rect(label.x - label.padding/2, label.y - label.padding/2, label.w + label.padding/2, label.h + label.padding/2, label.bg);
     draw_string((char *)(label.extras[0]), label.x, label.y, label.fg);
@@ -27,7 +29,7 @@ Widget create_label(Window win, int bg, int fg, int x, int y, int padding, char 
     widget.setx(x);
     widget.sety(y);
     widget.setw(len(text) * font_width);
-    widget.seth(font_height);
+    widget.seth(font_height + 2);
 
     widget.set_draw(draw_label);
 

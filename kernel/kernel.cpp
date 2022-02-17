@@ -99,11 +99,11 @@ std::list<char *> abc;
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
-        Kernel::system_log("Invalid magic.\n"); // we could use printf, but that's text-mode only
+        log::error("Invalid magic."); // we could use printf, but that's text-mode only
         return; // stop any more kernel code running since it's not multiboot
     }
 
-    Kernel::system_log("Entered %s kernel.\n", System::SYSTEM);
+    log::info("Entered %s kernel.", System::SYSTEM);
 
     Kernel::init_serial(SERIAL_PORT);
     Kernel::init_logging();
@@ -173,11 +173,11 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     if (file->null)
     {
-        Kernel::system_log("Error: vera font not found!\n");
+        log::warning("vera font not found!");
         return;
     }
 
-    Kernel::system_log("File size: %d\n", file->node.size);
+    log::info("File size: %d", file->node.size);
 
     /* set up context by global variables */
     ssfn_src = (ssfn_font_t *)file->node.contents;      /* the bitmap font to use */

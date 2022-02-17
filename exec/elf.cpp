@@ -16,7 +16,7 @@ int elf_start(uint8_t *buf, int argc, char **argv)
 
 	if (header->e_type != 2)
 	{
-		Kernel::system_log("File is not executable!\n");
+		log::warning("File is not executable!");
 		return 0;
 	}
 
@@ -29,12 +29,12 @@ int elf_start(uint8_t *buf, int argc, char **argv)
 		 	case NULL:
 		 		break;
 		 	case ELF_LOAD:
-		 		Kernel::system_log("LOAD: offset:0x%x virtual:0x%x physical:0x%x filesize:0x%x memsize:0x%x\n",
+		 		log::info("LOADING EXECUTABLE: offset:0x%x virtual:0x%x physical:0x%x filesize:0x%x memsize:0x%x",
 		 				ph->p_offset, ph->p_vaddr, ph->p_paddr, ph->p_filesz, ph->p_memsz);
 		 		memcpy((char *)ph->p_paddr, (char *)(buf + ph->p_offset), ph->p_filesz);
 		 		break;
 		 	default:
-		 	 Kernel::system_log("Unsupported type!\n");
+		 	 log::warning("Unsupported type!");
 		 	 return 0;
 		 }
 	}
@@ -51,7 +51,7 @@ int load_app(uint32_t location, int argc, char **argv)
 
     if (!elf_verify(buf))
     {
-        Kernel::system_log("non-ELF file\n");
+        log::warning("non-ELF file\n");
         return 1; // if we return 0 it'll be taken as success
     }
 
@@ -64,7 +64,7 @@ int load_app_from_name(char *name, int argc, char **argv)
 
     if (file->null)
     {
-        error("ELF file not found.\n");
+        log::warning("ELF file not found.\n");
         return 1;
     }
 
@@ -72,7 +72,7 @@ int load_app_from_name(char *name, int argc, char **argv)
 
     if (!elf_verify(buf))
     {
-        error("Invalid ELF file.\n");
+        log::warning("Invalid ELF file.\n");
         return 1;
     }
 
@@ -85,7 +85,7 @@ int load_app_from_file(FILE *file, int argc, char **argv)
 
     if (!elf_verify(buf))
     {
-        error("Invalid ELF file.\n");
+        log::warning("Invalid ELF file.\n");
         return 1;
     }
 

@@ -53,7 +53,6 @@ void pic_remap() {
 }
 
 void init_isr() {
-    Kernel::system_log("Enabled interrupts.\n");
     set_idt_gate(0, (u32)isr0);
     set_idt_gate(1, (u32)isr1);
     set_idt_gate(2, (u32)isr2);
@@ -109,6 +108,8 @@ void init_isr() {
     set_idt_gate(49, (u32)irq17);
 
     set_idt();
+
+    log::info("Enabled interrupts.");
 }
 
 char *exception_messages[] = {
@@ -158,10 +159,10 @@ extern "C" void isr_handler(registers_t r) {
         isr_t handler = interrupt_handlers[r.int_no];
         handler(r);
     } else {
-        error("Interrupt received: %d\nMessage: %s", r.int_no, exception_messages[r.int_no]);
+        log::error("Interrupt received: %d\nMessage: %s", r.int_no, exception_messages[r.int_no]);
     }
 
-    Kernel::system_log("Interrupt received");
+    log::warning("Interrupt received");
 
     asm("cli");
     asm("hlt");
@@ -183,7 +184,7 @@ extern "C" void irq_handler(registers_t r) {
     }
     else
     {
-        error("unknown IRQ: %d\n", r.int_no);
+        log::error("unknown IRQ: %d", r.int_no);
     }
 }
 

@@ -18,4 +18,6 @@ void init_fs()
     fs_node docs = create_node("documents", usr.id, FS_NODE_FOLDER);
     fs_node fonts = create_node("fonts", usr.id, FS_NODE_FOLDER);
     fs_node scripts = create_node("scripts", usr.id, FS_NODE_FOLDER);
+
+    log::info("Initialized virtual filesystem");
 }

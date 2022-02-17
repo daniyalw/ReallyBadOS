@@ -5,6 +5,8 @@
 #define TERMINAL_HEIGHT 25
 #define TERMINAL_WIDTH 80
 
+#define REG_SERIAL_OUT "\033[32;40m"
+
 bool scroll_on = true;
 bool written_on[80*25];
 char vga_back[80*25];
@@ -30,9 +32,13 @@ void vaprintf(char *text, va_list va);
 void printf(char *a, ...);
 void cprintf(int color, char *a, ...);
 void printf_centered(char * s, int line_no);
-void warning(char * text, ...);
-void info(char * text, ...);
-void error(char * text, ...);
+
+void p_template(char * color, char *text, char *buf, va_list va);
+void p_warning(char * text, ...);
+void p_info(char * text, ...);
+void p_error(char * text, ...);
+
+char *get_color(char *bg, char *fg);
 
 struct output
 {

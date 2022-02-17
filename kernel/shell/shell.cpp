@@ -13,6 +13,7 @@
 #include <sys/syscall/user.h>
 #include <ctype.h>
 #include <keyboard/keys.cpp>
+#include <kernel/sys/serial.h>
 
 using namespace std;
 using namespace Time;
@@ -22,7 +23,7 @@ void print_both(char *text, ...)
     va_list va;
 
     va_start(va, text);
-    Kernel::system_log_string(text, va);
+    log::info(text, va);
     va_end(va);
 
     va_start(va, text);
@@ -33,7 +34,7 @@ void print_both(char *text, ...)
 void putchar_both(char text, ...)
 {
     putchar(text);
-    Kernel::system_log_char(text);
+    log::info((char *)text);
 }
 
 bool check_name(char * name, char * check_against)
@@ -139,14 +140,14 @@ void shell()
         if (current_display_len != 0 && current_display_len != 1)
         {
 #ifdef DEBUG
-            Kernel::system_log("/%s/> ", current_display);
+            log::info("/%s/> ", current_display);
 #endif
             printf("/%s/> ", current_display);
         }
         else
         {
 #ifdef DEBUG
-            Kernel::system_log("/> ");
+            log::info("/> ");
 #endif
             printf("/> ");
         }
@@ -156,14 +157,14 @@ void shell()
         if (strisempty(command) || command == "")
         {
 #ifdef DEBUG
-            Kernel::system_log("String is NULL.\n");
+            log::info("String is NULL.");
 #endif
             putchar('\n');
             continue;
         }
 
 #ifdef DEBUG
-        Kernel::system_log(command);
+        log::info(command);
 #endif
 
         if (check_name(command, "exec"))

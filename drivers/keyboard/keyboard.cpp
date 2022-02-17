@@ -142,7 +142,7 @@ void init_keyboard(bool on, char * cd) {
         printf("\n/> ");
     }
     terminal_on = on;
-    Kernel::system_log("Enabled keyboard.\n");
+    log::info("Enabled keyboard.");
     // register the interrupt
     Kernel::register_interrupt_handler(IRQ1, scan_key);
 

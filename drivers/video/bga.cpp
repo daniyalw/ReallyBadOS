@@ -75,16 +75,16 @@ void init_graphics(auto mbd)
 
     if (bga_available())
     {
-        Kernel::system_log("\nBGA available!\n");
+        log::info("\nBGA available!\n");
     }
     else
     {
-        Kernel::system_log("\nBGA NOT available!\n");
+        log::warning("\nBGA NOT available!\n");
     }
 
     char * out;
-    out = get(out, "\nPitch: %d\nWidth: %d\nHeight: %d\nBPP: %d\n", pitch, width, height, bpp);
-    Kernel::system_log(out);
+    out = get(out, "Pitch: %d\nWidth: %d\nHeight: %d\nBPP: %d", pitch, width, height, bpp);
+    log::info(out);
 }
 
 }

@@ -140,7 +140,6 @@ void exit()
 
 void idle_task()
 {
-    Kernel::system_log("This task got run!\n");
     yield();
 }
 

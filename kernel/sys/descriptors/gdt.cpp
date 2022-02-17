@@ -22,7 +22,7 @@ void _init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp)
    tss.fs = 0x13;
    tss.gs = 0x13;
 
-   Kernel::system_log("Initialized TSS.\n");
+   log::info("Initialized TSS.");
 
    flush_tss();
 }
@@ -46,7 +46,7 @@ static void init_gdt()
    Kernel::gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); // User mode data segment
 
    gdt_flush((u32)&gdt_ptr);
-   Kernel::system_log("Enabled GDT.\n");
+   log::info("Enabled GDT.");
 }
 
 static void gdt_set_gate(s32 num, u32 base, u32 limit, u8 access, u8 gran)

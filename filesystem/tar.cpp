@@ -69,6 +69,6 @@ void __tar_test(int location)
     for (int z = 0; z < tar.block_count; z++)
     {
         printf("Name: %s\nContents: %s\n", tar.blocks[z].name, tar.blocks[z].contents);
-        Kernel::system_log("Name: %s\n", tar.blocks[z].name);
+        log::warning("Name: %s", tar.blocks[z].name);
     }
 }

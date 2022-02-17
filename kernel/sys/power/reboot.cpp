@@ -8,6 +8,8 @@ namespace Kernel {
 
 void reboot()
 {
+    log::warning("Rebooting...");
+
     asm("cli");
     uint8_t good = 0x02;
     while (good & 0x02)

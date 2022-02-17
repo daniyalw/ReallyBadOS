@@ -1,3 +1,15 @@
+char *null_read(char *buf)
+{
+    UNUSED(buf);
+    log::warning("Read was attempted on /dev/serial\n");
+    return NULL;
+}
+
+void write_serial_(char *data)
+{
+    Kernel::serial_write_string(data);
+}
+
 void init_all_devs()
 {
     // sound
@@ -11,5 +23,5 @@ void init_all_devs()
     create_file("ata", "/dev/", fs_ata_read, fs_ata_write);
 
     // serial
-    create_file("serial", "/dev/", Kernel::get_log, Kernel::log);
+    create_file("serial", "/dev/", null_read, log::info);
 }

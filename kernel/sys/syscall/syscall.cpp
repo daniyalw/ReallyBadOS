@@ -201,13 +201,13 @@ void syscall_handler(registers_t regs)
 {
    if (regs.eax >= syscall_count)
    {
-       error("Syscall outside of initialized syscalls range.\n");
+      log::error("Syscall outside of initialized syscalls range.");
        return;
    }
 
    void *location = syscalls[regs.eax];
 
-   info("Syscall: %d\nLocations: %x:%x\n", regs.eax, location, (void *)s_info);
+   log::info("Syscall: %d\nLocations: %x:%x\n", regs.eax, location, (void *)s_info);
 
    //syscall_print_syscalls();
 
@@ -251,7 +251,7 @@ void init_syscalls()
     syscall_append((void *)s_free);
     syscall_append((void *)s_append_file);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
-    Kernel::system_log("Syscalls initialized at interrupt 48!\n");
+    log::info("Syscalls initialized at interrupt 48!");
 }
 
 }

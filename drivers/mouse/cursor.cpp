@@ -17,7 +17,7 @@ void update_hardware_cursor(int cursor_x, int cursor_y)
 // we don't need an enable function as it is enabled by default
 void disable_hardware_cursor()
 {
-	Kernel::system_log("Disabled hardware cursor.\n");
+	log::warning("Disabled hardware cursor.\n");
 	outb(0x3D4, 0x0A);
 	outb(0x3D5, 0x20);
 }

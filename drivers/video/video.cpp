@@ -2,6 +2,7 @@
 #include <video/video.h>
 #include <mouse/cursor.h>
 #include <filesystem/ramdisk.h>
+#include <sys/serial.h>
 
 void clear() {
     short * vidmem = (short *)0xb8000;
@@ -247,39 +248,49 @@ void printf_centered(char *s, int line_no)
     }
 }
 
-void warning(char *text, ...)
+char *get_color(char *bg, char *fg)
 {
-    int yellow = 0x0E00;
+    return get("", "\033[%s;%sm", fg, bg);
+}
+
+void p_template(char *color, char *text, char *buf, va_list va)
+{
+    Kernel::serial_write_string(color); // change the color to whatever is specified
+
+    Kernel::serial_write_string(text);
+
+    Kernel::serial_write_string(REG_SERIAL_OUT); // change the color to regular
+
+    Kernel::serial_write_string(buf, va);
+}
+
+void p_warning(char *text, ...)
+{
+    auto yellow = get_color("40", "1;33");
     va_list va;
 
-    Kernel::system_log("Warning: ");
-
     va_start(va, text);
-    Kernel::system_log_string(text, va);
+    p_template(yellow, "Warning: ", text, va);
     va_end(va);
 }
 
-void error(char *text, ...)
+void p_error(char *text, ...)
 {
-    int red = 0x0400;
+    auto red = get_color("40", "1;31");
     va_list va;
 
-    Kernel::system_log("Error: ");
-
     va_start(va, text);
-    Kernel::system_log_string(text, va);
+    p_template(red, "Error: ", text, va);
     va_end(va);
 }
 
-void info(char *text, ...)
+void p_info(char *text, ...)
 {
-    int light_blue = 0x0300;
+    auto light_blue = get_color("40", "36");
     va_list va;
 
-    Kernel::system_log("Info: ");
-
     va_start(va, text);
-    Kernel::system_log_string(text, va);
+    p_template(light_blue, "Info: ", text, va);
     va_end(va);
 }
 
@@ -295,7 +306,7 @@ char * read_vga(char * data)
 
 void write_error(char *data)
 {
-    error(data);
+    p_error(data);
 }
 
 char *read_error(char *data)

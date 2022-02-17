@@ -94,7 +94,7 @@ void read_rtc() {
             if(year < CURRENT_YEAR) year += 100;
       }
 
-    Kernel::system_log("Read RTC.\n");
+    log::info("Read RTC.");
 }
 
 }
