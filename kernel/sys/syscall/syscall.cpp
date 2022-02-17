@@ -207,7 +207,7 @@ void syscall_handler(registers_t regs)
 
    void *location = syscalls[regs.eax];
 
-   log::info("Syscall: %d\nLocations: %x:%x\n", regs.eax, location, (void *)s_info);
+   log::info("Syscall: %d\nLocations: %x:%x", regs.eax, location, (void *)s_info);
 
    //syscall_print_syscalls();
 

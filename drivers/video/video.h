@@ -33,13 +33,6 @@ void printf(char *a, ...);
 void cprintf(int color, char *a, ...);
 void printf_centered(char * s, int line_no);
 
-void p_template(char * color, char *text, char *buf, va_list va);
-void p_warning(char * text, ...);
-void p_info(char * text, ...);
-void p_error(char * text, ...);
-
-char *get_color(char *bg, char *fg);
-
 struct output
 {
     void operator<<(char * text)

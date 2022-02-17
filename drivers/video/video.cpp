@@ -248,52 +248,6 @@ void printf_centered(char *s, int line_no)
     }
 }
 
-char *get_color(char *bg, char *fg)
-{
-    return get("", "\033[%s;%sm", fg, bg);
-}
-
-void p_template(char *color, char *text, char *buf, va_list va)
-{
-    Kernel::serial_write_string(color); // change the color to whatever is specified
-
-    Kernel::serial_write_string(text);
-
-    Kernel::serial_write_string(REG_SERIAL_OUT); // change the color to regular
-
-    Kernel::serial_write_string(buf, va);
-}
-
-void p_warning(char *text, ...)
-{
-    auto yellow = get_color("40", "1;33");
-    va_list va;
-
-    va_start(va, text);
-    p_template(yellow, "Warning: ", text, va);
-    va_end(va);
-}
-
-void p_error(char *text, ...)
-{
-    auto red = get_color("40", "1;31");
-    va_list va;
-
-    va_start(va, text);
-    p_template(red, "Error: ", text, va);
-    va_end(va);
-}
-
-void p_info(char *text, ...)
-{
-    auto light_blue = get_color("40", "36");
-    va_list va;
-
-    va_start(va, text);
-    p_template(light_blue, "Info: ", text, va);
-    va_end(va);
-}
-
 void write_vga(char *data)
 {
     printf(data);
