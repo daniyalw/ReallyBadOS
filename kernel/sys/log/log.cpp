@@ -40,6 +40,18 @@ namespace log
 
         Kernel::output_serial_char('\n');
     }
+
+    void warn(char *data, ...)
+    {
+        va_list va;
+        auto yellow = get_color("40", "1;33");
+
+        va_start(va, data);
+        p_template(yellow, "Warning: ", data, va);
+        va_end(va);
+
+        Kernel::output_serial_char('\n');
+    }
 }
 
 namespace Kernel

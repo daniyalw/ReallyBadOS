@@ -34,14 +34,14 @@ static void nosound() {
 }
 
 
-char *sound_input(char *data)
+char *sound_input(fs_node node, int offset, int size, char *data)
 {
     UNUSED(data);
     // not implemented
     return NULL;
 }
 
-void sound_write(char *data)
+void sound_write(fs_node node, int offset, int size, char *data)
 {
     uint32_t frequency = uint_atoi(data);
     play_sound(frequency);

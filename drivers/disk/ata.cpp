@@ -67,22 +67,26 @@ void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes) {
     }
 }
 
-void fs_ata_write(char * str)
+void fs_ata_write(fs_node node, int offset, int size, char * str)
 {
-    fs_ata_t ata = get_from_str(str);
-
-    ata_write_one(ata.lba, ata.bytes);
+    if (size < 512)
+        ata_write_one(offset, (uint8_t *)str);
+    else
+        ata_write(offset, size/512 + 1, (uint8_t *)str);
 }
 
-char * fs_ata_read(char * num)
+char * fs_ata_read(fs_node node, int offset, int size, char * num)
 {
-    char * data = (char *)malloc(SECTOR_SIZE);
-    uint32_t sector = (uint32_t)atoi(num);
+    char *data = (char *)malloc(size);
     uint8_t *bytes;
 
-    ata_read(bytes, sector, 1);
+    if (size < 512)
+        ata_read(bytes, offset, 1);
+    else
+        ata_read(bytes, offset, size/512 + 1);
 
-    for (int z = 0; z < SECTOR_SIZE; z++) data[z] = (char)bytes[z];
+    for (int z = 0; z < size; z++)
+        data[z] = (char)bytes[z];
 
     return data;
 }
@@ -172,45 +176,4 @@ FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
     file = (FILE *)bytes;
 
     return file;
-}
-
-fs_ata_t get_from_str(char * str)
-{
-    uint8_t bytes[strlen(str)];
-    int bz = 0;
-    uint32_t lba;
-    fs_ata_t ata;
-
-    char slba[strlen(str)];
-    int sz = 0;
-
-    for (int z = 0; z < strlen(str); z++)
-    {
-        if (str[z] == ':')
-        {
-            break;
-        }
-        else
-        {
-            slba[sz] = str[z];
-            sz++;
-        }
-    }
-
-    slba[sz] = 0;
-
-    for (int z = sz+1; z < strlen(str); z++)
-    {
-        bytes[bz] = (uint8_t)str[z];
-        bz++;
-    }
-
-    bytes[bz] = 0;
-
-    lba = (uint32_t)atoi(slba);
-
-    ata.bytes = bytes;
-    ata.lba = lba;
-
-    return ata;
 }

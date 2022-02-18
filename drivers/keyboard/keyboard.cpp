@@ -105,7 +105,7 @@ void get_key(unsigned char code)
     }
 }
 
-char *read_keyboard(char *buff) {
+char *read_keyboard(fs_node node, int offset, int size, char *buff) {
     char *k = scanf();
     printf("done");
     buff = k;
@@ -114,14 +114,14 @@ char *read_keyboard(char *buff) {
     return buff;
 }
 
-char *read_getch(char *buff) {
+char *read_getch(fs_node node, int offset, int size, char *buff) {
     char k = getch();
     buff[0] = k;
 
     return buff;
 }
 
-void write_keyboard(char *buff) {}
+void write_keyboard(fs_node node, int offset, int size, char *buff) {}
 
 namespace Kernel {
 

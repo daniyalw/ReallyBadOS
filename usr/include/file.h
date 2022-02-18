@@ -1,9 +1,12 @@
 #pragma once
 
 #include <stdint.h>
+#include <string.h>
 
-typedef void (*__write)(char *);
-typedef char * (*__read)(char *);
+struct fs_node;
+
+typedef void (*__write)(fs_node, int offset, int size, char *);
+typedef char * (*__read)(fs_node, int offset, int size, char *);
 
 struct fs_node
 {
@@ -24,17 +27,7 @@ struct fs_node
     __read read;
 };
 
-typedef struct
-{
-    fs_node node;
-
-    __write write;
-    __read read;
-
-    char name[20];
-
-    bool null;
-} FILE;
+struct FILE;
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,9 +38,22 @@ extern void fclose(FILE *file);
 extern int fexec(char *contents);
 extern void ls(char *path);
 extern int mkfile(char *name, char *dir, char *contents);
-extern int write_file(char *name, char *contents);
+extern int write_file(FILE *file, char *contents);
 extern void append_file(char *name, char *contents);
+extern char *read_file(FILE *file, char *out);
 
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct FILE
+{
+    fs_node node;
+
+    int write(char *buf) { return write_file(this, buf); }
+    char *read(char *buf) { buf = read_file(this, buf); return buf; }
+
+    char name[20];
+
+    bool null;
+} FILE;

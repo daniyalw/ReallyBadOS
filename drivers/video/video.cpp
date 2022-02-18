@@ -248,22 +248,22 @@ void printf_centered(char *s, int line_no)
     }
 }
 
-void write_vga(char *data)
+void write_vga(fs_node node, int offset, int size, char *data)
 {
     printf(data);
 }
 
-char * read_vga(char * data)
+char * read_vga(fs_node node, int offset, int size, char * data)
 {
     return vga_back;
 }
 
-void write_error(char *data)
+void write_error(fs_node node, int offset, int size, char *data)
 {
     p_error(data);
 }
 
-char *read_error(char *data)
+char *read_error(fs_node node, int offset, int size, char *data)
 {
     UNUSED(data);
     // not implemented

@@ -2,40 +2,7 @@
 #include <stdarg.h>
 #include <syscalls.h>
 #include <stdint.h>
-
-typedef void (*__write)(char *);
-typedef char * (*__read)(char *);
-
-struct fs_node
-{
-    char name[20];
-    char path[100];
-    int id;
-    int parent_id;
-    int flags;
-    bool null = false;
-    int size;
-
-    int children_id[12]; // if the node is a folder
-    int children_count = 0;
-
-    char *contents; // if it is a file
-
-    __write write;
-    __read read;
-};
-
-typedef struct
-{
-    fs_node node;
-
-    __write write;
-    __read read;
-
-    char name[20];
-
-    bool null;
-} FILE;
+#include <file.h>
 
 extern "C" FILE *fopen(char *path)
 {
@@ -81,11 +48,11 @@ extern "C" int mkfile(char *name, char *dir, char *contents)
     return res[0];
 }
 
-extern "C" int write_file(char *name, char *contents)
+extern "C" int write_file(FILE *file, char *contents)
 {
     void *a;
     int res[1];
-    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (name), "c" (contents), "d" (res));
+    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (file), "c" (contents), "d" (res));
 
     return res[0];
 }
@@ -94,4 +61,13 @@ extern "C" void append_file(char *name, char *contents)
 {
     void *a;
     asm volatile("int $48" : "=a" (a) : "0" (APPEND_FILE), "b" (name), "c" (contents));
+}
+
+
+extern "C" char *read_file(FILE *file, char *out)
+{
+    void *a;
+    asm volatile("int $48" : "=a" (a) : "0" (READ_FILE), "b" (file), "c" (out));
+
+    return out;
 }

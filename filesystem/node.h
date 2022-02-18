@@ -3,8 +3,10 @@
 #define FS_NODE_FOLDER 2
 #define FS_NODE_FILE 3
 
-typedef void (*__write)(char *);
-typedef char * (*__read)(char *);
+struct fs_node;
+
+typedef void (*__write)(fs_node, int offset, int size, char *);
+typedef char * (*__read)(fs_node, int offset, int size, char *);
 
 struct fs_node
 {

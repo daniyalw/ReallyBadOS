@@ -4,6 +4,7 @@
 #include <mouse/cursor.h>
 #include <filesystem.h>
 #include <shell/shell.h>
+#include <sys/log/log.h>
 
 void set_string(char * string, char * newvalue)
 {
@@ -130,28 +131,17 @@ void s_create_file(char *name, char *folder, char *contents, int *res)
     res[0] = create_file(name, folder, contents);
 }
 
-void s_write_file(char *name, char *contents, int *res)
+void s_write_file(FILE *file, char *contents, int *res)
 {
-    FILE *file = fopen(name);
-
     if (file == NULL || file->null)
     {
-        printf("Error: file not found.\n");
+        log::error("File '%s' not found", file->node.path);
         res[0] = 1;
     }
     else
     {
         res[0] = 0;
-
-        if (file->write)
-        {
-            file->write(contents);
-        }
-        else
-        {
-            node_write_basic(file->node.id, contents);
-            fclose(file);
-        }
+        file->write(contents);
     }
 }
 
@@ -177,11 +167,27 @@ void s_append_file(char *name, char *contents)
     fclose(file);
 }
 
+void s_read_file(FILE *file, char *buf)
+{
+    if (file == NULL)
+    {
+        log::warn("file is null: %s", file->node.path);
+        return;
+    }
+
+    strcpy(buf, file->read(buf));
+}
+
 // ----------------------------- //
 
 
 void syscall_append(void *func)
 {
+    if (syscall_count >= max_syscalls)
+    {
+        log::warning("Max syscalls reached!");
+        return;
+    }
     syscalls[syscall_count] = func;
     syscall_count++;
 }
@@ -250,6 +256,7 @@ void init_syscalls()
     syscall_append((void *)s_malloc);
     syscall_append((void *)s_free);
     syscall_append((void *)s_append_file);
+    syscall_append((void *)s_read_file);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }

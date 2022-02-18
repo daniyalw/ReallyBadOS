@@ -18,17 +18,15 @@ int main(int argc, char **argv)
     else
     {
         printf("Name: %s\n", file->name);
-
-        if (!file->node.size && file->read)
+        printf("Size: %d bytes\n", file->node.size);
+        
+        if ((file->read(""))[0] == 0)
         {
-            char *out = file->read(out);
-
-            printf("Read: %s\n", out);
+            printf("Read: NULL");
         }
         else
         {
-            printf("Size: %d bytes\n", file->node.size);
-            printf("Contents: \n%s", file->node.contents);
+            printf("Read: %s\n", file->read(""));
         }
     }
 

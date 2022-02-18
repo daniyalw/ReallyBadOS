@@ -16,8 +16,6 @@ FILE *fopen(char *path)
     FILE *file = (FILE *)malloc(sizeof(FILE *));
 
     file->node = node;
-    file->write = node.write;
-    file->read = node.read;
     file->null = node.null;
 
     strcpy(file->name, node.name);
@@ -71,39 +69,46 @@ int create_file(char *path, char *folder, __read read, __write write)
 
 void fprintf(FILE *file, char *data)
 {
-    if (file->write != NULL)
-    {
-        file->write(data);
-    }
-    else
-    {
-        node_write_basic(file->node.id, data);
-        file->node = nodes[file->node.id];
-    }
+    file->write(data);
 }
 
 void fprintf(FILE file, char *data)
 {
-    if (file.write != NULL)
-    {
-        file.write(data);
-    }
-    else
-    {
-        node_write_basic(file.node.id, data);
-        file.node = nodes[file.node.id];
-    }
+    file.write(data);
 }
 
 void fprintf(fs_node node, char *data)
 {
     if (node.write != NULL)
     {
-        node.write(data);
+        node.write(node, 0, node.size, data);
     }
     else
     {
         node_write_basic(node.id, data);
         node = nodes[node.id];
     }
+}
+
+int file_write(FILE *file, char *buf)
+{
+    if (file == NULL) return 1;
+
+    if (file->node.write)
+        file->node.write(file->node, 0, file->node.size, buf);
+    else
+        node_write_basic(file->node.id, buf);
+
+    file->node = find_node(file->node.id);
+
+    return 0;
+}
+
+char * file_read(FILE *file, char *buf)
+{
+    if (file->node.read)
+        buf = file->node.read(file->node, 0, file->node.size, buf);
+    else
+        buf = node_read_basic(file->node.id);
+    return buf;
 }
