@@ -10,34 +10,41 @@ bool elf_verify(uint8_t *buf)
     return true;
 }
 
+elf_header_t *load_elf_memory(uint8_t *buf)
+{
+    elf_header_t *header = (elf_header_t *)buf;
+
+    if (header->e_type != 2)
+    {
+        log::warning("File is not executable!");
+        return 0;
+    }
+
+    elf_program_header_t *ph = (elf_program_header_t *)(buf + header->e_phoff);
+
+    for (int i = 0; i < header->e_phnum; i++, ph++)
+    {
+        switch(ph->p_type)
+         {
+            case NULL:
+                break;
+            case ELF_LOAD:
+                log::info("LOADING EXECUTABLE: offset:0x%x virtual:0x%x physical:0x%x filesize:0x%x memsize:0x%x",
+                        ph->p_offset, ph->p_vaddr, ph->p_paddr, ph->p_filesz, ph->p_memsz);
+                memcpy((char *)ph->p_paddr, (char *)(buf + ph->p_offset), ph->p_filesz);
+                break;
+            default:
+             log::warning("Unsupported type!");
+             return 0;
+         }
+    }
+
+    return header;
+}
+
 int elf_start(uint8_t *buf, int argc, char **argv)
 {
-	elf_header_t *header = (elf_header_t *)buf;
-
-	if (header->e_type != 2)
-	{
-		log::warning("File is not executable!");
-		return 0;
-	}
-
-	elf_program_header_t *ph = (elf_program_header_t *)(buf + header->e_phoff);
-
-	for (int i = 0; i < header->e_phnum; i++, ph++)
-	{
-		switch(ph->p_type)
-		 {
-		 	case NULL:
-		 		break;
-		 	case ELF_LOAD:
-		 		log::info("LOADING EXECUTABLE: offset:0x%x virtual:0x%x physical:0x%x filesize:0x%x memsize:0x%x",
-		 				ph->p_offset, ph->p_vaddr, ph->p_paddr, ph->p_filesz, ph->p_memsz);
-		 		memcpy((char *)ph->p_paddr, (char *)(buf + ph->p_offset), ph->p_filesz);
-		 		break;
-		 	default:
-		 	 log::warning("Unsupported type!");
-		 	 return 0;
-		 }
-	}
+    elf_header_t *header = load_elf_memory(buf);
 
     call_t func = (call_t)header->e_entry;
     int result = func(argc, argv);

@@ -18,7 +18,6 @@ void create_task(char * name, void (*func)())
 
 void switch_task()
 {
-
     int id = current_id;
 
     id++;

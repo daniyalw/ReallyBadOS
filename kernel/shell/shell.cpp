@@ -133,6 +133,14 @@ int execute_script(char *text)
     return 0;
 }
 
+void shell_quit()
+{
+    putchar('\n');
+    printf("Exited application\n");
+    log::info("User exited application using Ctrl+C");
+    shell();
+}
+
 void shell()
 {
     while (true)

@@ -4,10 +4,10 @@ COMPILER_FLAGS = -m32 -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mn
 QEMU_FLAGS = -soundhw pcspk -m 1G -serial stdio -rtc base=localtime  \
 			 -accel tcg -net nic,model=rtl8139 -net user -boot d -device bochs-display -device virtio-serial-pci -hda out.img
 OUT = reallybados-x86_32.iso
+QEMU = qemu-system-x86_64
 
 run:
-
-	qemu-system-x86_64 -cdrom reallybados-x86_32.iso ${QEMU_FLAGS}
+	${QEMU} -cdrom reallybados-x86_32.iso ${QEMU_FLAGS}
 
 bootloader:
 	i686-elf-as -o built/loader.o ${boot}
