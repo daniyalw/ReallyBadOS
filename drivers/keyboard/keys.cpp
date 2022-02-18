@@ -2,6 +2,7 @@
 
 int keycode_length = 50;
 int shift_code_length = 6;
+int ctrl_codes_length = 2;
 
 unsigned char keycodes[] = {
     0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D,
@@ -13,6 +14,11 @@ unsigned char keycodes[] = {
 
 unsigned char shifted_codes[] = {
     0x3A, 0x2A, 0x36, 0xBA, 0xAA, 0xB6
+};
+
+// same codes sent by right and left ctrl
+unsigned char ctrl_codes[] = {
+    0x1D, 0x9D
 };
 
 unsigned char key_up = 0x48;
