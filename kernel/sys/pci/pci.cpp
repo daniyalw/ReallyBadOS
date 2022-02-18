@@ -97,6 +97,16 @@ void go_through_and_print()
                 devices[z]->deviceID,
                 devices[z]->vendorID
             );
+
+        if (devices[z]->interrupt != NULL)
+            printf("\tInterrupt: %d", devices[z]->interrupt + 32);
+
+        if (devices[z]->interrupt == NULL)
+        {
+            printf("             ");
+            putchar('\t');
+        }
+        printf("\tinterface: %x\n", devices[z]->interfaceID);
     }
 
     printf("\n\nTotal devices: %d\n", device_count);
