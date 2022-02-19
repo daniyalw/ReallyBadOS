@@ -36,6 +36,8 @@ extern "C" {
 #include <assert.h>
 #include <va_list.h>
 #include <operator.h>
+#include <net/arp.h>
+#include <net/ethernet.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
@@ -92,6 +94,10 @@ extern "C" {
 #include "../filesystem/parse.cpp"
 #include "../filesystem/folder.cpp"
 #include "dev.cpp"
+#include "../drivers/net/rtl.cpp"
+#include "../net/ethernet.cpp"
+#include "../net/utils.cpp"
+#include "../net/arp.cpp"
 
 using namespace Time;
 using namespace Cooperative;
@@ -254,6 +260,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
         printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
     else
         printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+
+    Net::rtl8139::start();
 
     switch_to_user_mode();
     shell();

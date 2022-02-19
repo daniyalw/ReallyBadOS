@@ -32,6 +32,11 @@ void memcpy(void *dest, void * source, int begin, int end)
     }
 }
 
+void memcpy(void *dest, void *source, int length)
+{
+    memcpy(dest, source, 0, length);
+}
+
 bool contains(char *str, char c)
 {
     for (int z = 0; z < strlen(str); z++)
