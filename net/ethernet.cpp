@@ -1,13 +1,9 @@
 #include <net/ethernet.h>
 #include <drivers/net/rtl.h>
+#include <net/utils.h>
 
 using namespace Net;
 using namespace Ethernet;
-
-void get_src_mac(uint8_t mac_addr[6])
-{
-    memcpy(mac_addr, rtl8139::mac_addr, 6);
-}
 
 namespace Net
 {

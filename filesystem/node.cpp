@@ -78,9 +78,9 @@ void fs_ls(int id, int index)
         return;
 
     for (int z = 0; z < index; z++)
-        log::info("    ");
+        Kernel::serial_write_string("    ");
 
-    log::info("%s%s", node.name, (char *)(node.flags == FS_NODE_FILE ? " (file)" : " (folder)"));
+    Kernel::serial_write_string("%s%s\n", node.name, (char *)(node.flags == FS_NODE_FILE ? " (file)" : " (folder)"));
 
     for (int z = 0; z < index; z++)
         printf("    ");

@@ -77,7 +77,7 @@ extern "C" {
 #include "sys/mem/free.cpp"
 #include "sys/mem/realloc.cpp"
 #include "sys/mem/calloc.cpp"
-#include "sys/multitasking/cooperative.cpp"
+#include "sys/multitasking/task.cpp"
 #include "../stdlib/tree.cpp"
 #include "sys/pci/pci.cpp"
 #include "../drivers/keyboard/getch.cpp"
@@ -100,9 +100,6 @@ extern "C" {
 #include "../net/arp.cpp"
 
 using namespace Time;
-using namespace Cooperative;
-
-std::list<char *> abc;
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -261,7 +258,16 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     else
         printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
 
+    /*
+    uint8_t addr[] = {
+        10, 0, 0, 199
+    };
+
     Net::rtl8139::start();
+    Net::ARP::send_request(addr);
+    */
+
+    //init_tasking();
 
     switch_to_user_mode();
     shell();

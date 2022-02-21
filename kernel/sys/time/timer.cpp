@@ -3,6 +3,10 @@
 #include <sys/time/timer.h>
 #include <sys/io.h>
 #include <sys/log/log.h>
+#include <sys/multitasking/task.h>
+
+int task_counter = 0;
+const int task_counter_limit = 200;
 
 void timer_int(registers_t regs) {
     tick++;
@@ -26,6 +30,17 @@ void timer_int(registers_t regs) {
     if (hour >= 12) {
         if (hour > 12) hour -= 12;
         pm_on = true;
+    }
+
+    if (tasking_on)
+    {
+        task_counter++;
+
+        if (task_counter == task_counter_limit)
+        {
+            task_counter = 0;
+            switch_task(regs);
+        }
     }
 
     /*

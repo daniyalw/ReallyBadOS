@@ -9,7 +9,6 @@
 #include <fs.h>
 #include <exec/argparse.h>
 #include <exec/elf.h>
-#include <sys/multitasking/cooperative.h>
 #include <sys/syscall/user.h>
 #include <ctype.h>
 #include <keyboard/keys.cpp>

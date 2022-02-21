@@ -141,7 +141,8 @@ void s_write_file(FILE *file, char *contents, int *res)
     else
     {
         res[0] = 0;
-        file->write(contents);
+        FILE *f = fopen(file->node.path);
+        //f->write(contents);
     }
 }
 
@@ -175,7 +176,9 @@ void s_read_file(FILE *file, char *buf)
         return;
     }
 
-    strcpy(buf, file->read(buf));
+    FILE *f = fopen(file->node.path);
+
+    strcpy(buf, f->read(buf));
 }
 
 // ----------------------------- //

@@ -1,4 +1,8 @@
 #include <net/arp.h>
+#include <net/utils.h>
+#include <net/ethernet.h>
+
+using namespace Net;
 
 namespace Net
 {
@@ -6,33 +10,26 @@ namespace Net
 namespace ARP
 {
 
-void send_arp_packet(uint8_t *dst_hd, uint8_t *dst_p)
+void send_request(uint8_t ip_addr[4])
 {
     arp_t *arp = (arp_t *)malloc(sizeof(arp_t *));
 
-    // TODO: yes, what a great idea to hardcode the IP
-    arp->src_protocol[0] = 10;
-    arp->src_protocol[1] = 0;
-    arp->src_protocol[2] = 2;
-    arp->src_protocol[3] = 14;
+    arp->hardware_type = ARP_ETHERNET;
+    arp->protocol_type = ARP_IP;
 
-    memcpy(arp->dst_hardware_type, dst_hd, 6);
-    memcpy(arp->dst_protocol, dst_p, 4);
+    arp->opcode = ARP_REQUEST;
 
-    arp->opcode = to_short(ARP_REQUEST);
+    memset(arp->dst_hardware_addr, 0, 6);
+    memcpy(arp->dst_protocol_addr, ip_addr, 4);
 
-    arp->opcode = to_short(ARP_REQUEST);
+    get_src_mac(arp->src_hardware_addr);
 
-    arp->hardware_addr_len = 6;
-    arp->protocol_addr_len = 4;
+    arp->src_protocol_addr[0] = 10;
+    arp->src_protocol_addr[1] = 0;
+    arp->src_protocol_addr[2] = 2;
+    arp->src_protocol_addr[3] = 14;
 
-    arp->hardware_type = to_short(HARDWARE_ETHERNET);
-
-    arp->protocol = to_short(ETHERNET_IP);
-
-    Net::Ethernet::send_ethernet_packet(arp->dst_hardware_type, ETHERNET_ARP, (uint8_t *)&arp);
-
-    free(arp);
+    send_ethernet_packet(arp->dst_hardware_addr, ETHERNET_ARP, (uint8_t *)arp);
 }
 
 }

@@ -33,7 +33,7 @@ kernel:
 
 textmode:
 	make bootloader
-	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o built/regs.o -o built/main.o -T linker.ld
 	make iso
 	make run
 

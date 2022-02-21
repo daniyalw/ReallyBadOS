@@ -38,15 +38,7 @@ int main(int argc, char *argv[])
 
     FILE *file = fopen(argv[1]);
 
-    if (file == NULL)
-    {
-        printf("File '%s' not found!\n", argv[1]);
-        return 1;
-    }
-
     int result = file->write(contents);
-
-    fclose(file);
 
     if (result == 0)
     {
