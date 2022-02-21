@@ -1,13 +1,14 @@
 #include <disk/ata.h>
 #include <string.h>
 #include <filesystem/ramdisk.h>
+#include "disk.h"
 
 using namespace std;
 
 // target_address = your variable to where to store
 // lba = which sector
 // sector_count = how many sectors to read
-void ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count) {
+uint8_t *ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count) {
     while (inb(0x1F7) & STATUS_BSY)
         ;
     outb(0x1F1, 0x00);
@@ -33,6 +34,8 @@ void ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count) {
 
         target += 256;
     }
+
+    return target_address;
 }
 
 void ata_write_one(uint32_t LBA, uint8_t *bytes) {
@@ -91,7 +94,7 @@ char * fs_ata_read(fs_node node, int offset, int size, char * num)
     return data;
 }
 
-uint16_t * ata_init(uint16_t *bytes) {
+uint16_t * ata_send_identify(uint16_t *bytes) {
     uint8_t abc = inb(0x1F5);
     bool non_packet = false;
 
@@ -110,7 +113,8 @@ uint16_t * ata_init(uint16_t *bytes) {
 
         if (res == 0) {
             log::error("Drive does not exist!\n");
-            return NULL;
+            bytes[0] = -1;
+            return bytes;
         }
 
         while (inb(0x1F7) & STATUS_BSY)
@@ -134,7 +138,8 @@ uint16_t * ata_init(uint16_t *bytes) {
 
         if (res == 0) {
             log::error("Non-existent drive!\n");
-            return NULL;
+            bytes[0] = -1;
+            return bytes;
         }
 
         while (inb(0x1F7) & STATUS_BSY)
@@ -176,4 +181,26 @@ FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
     file = (FILE *)bytes;
 
     return file;
+}
+
+uint16_t *ata_init(uint16_t *bytes)
+{
+    bytes = ata_send_identify(bytes);
+
+    if (bytes[0] != -1)
+    {
+        disk_t *disk = (disk_t *)malloc(sizeof(disk_t *));
+
+        disk->total_sectors = total_sectors;
+        disk->read = ata_read;
+        disk->write = ata_write_one;
+
+        load_disk(disk);
+    }
+    else
+    {
+        log::error("ata: bytes are null");
+    }
+
+    return bytes;
 }

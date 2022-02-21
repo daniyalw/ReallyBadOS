@@ -98,6 +98,7 @@ extern "C" {
 #include "../net/ethernet.cpp"
 #include "../net/utils.cpp"
 #include "../net/arp.cpp"
+#include "../drivers/disk/disk.cpp"
 
 using namespace Time;
 

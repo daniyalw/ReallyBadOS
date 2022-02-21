@@ -10,9 +10,11 @@ typedef struct
     uint8_t *bytes;
 } fs_ata_t;
 
-uint16_t * ata_init(uint16_t *bytes);
+uint16_t *ata_init(uint16_t *bytes);
 
-void ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count);
+uint16_t * ata_send_identify(uint16_t *bytes);
+
+uint8_t *ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count);
 void ata_write_one(uint32_t LBA, uint8_t *bytes);
 void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes);
 

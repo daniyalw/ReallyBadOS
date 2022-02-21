@@ -13,7 +13,7 @@ void create_process(char *name, uint32_t begin)
     task.regs.eip = begin;
     task.regs.eflags = 0x206;;
 
-    task.stack = (void*)allocate_stack();
+    task.stack = allocate_stack();
     task.regs.esp = (task.stack - 4 * 1024);
 
     save_task(task);
