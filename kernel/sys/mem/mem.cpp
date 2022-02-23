@@ -19,7 +19,7 @@ void init_mem(auto mbd, uint32_t beginning_addr)
     int bz = 0;
 
     if(!(mbd->flags >> 6 & 0x1)) {
-        PANIC("invalid memory map given by GRUB bootloader\n");
+        log::error("invalid memory map given by GRUB bootloader\n");
     }
 
     int i;
@@ -30,7 +30,7 @@ void init_mem(auto mbd, uint32_t beginning_addr)
             (multiboot_memory_map_t*) (mbd->mmap_addr + i);
 
             #ifdef DEBUG
-            printf("TT: Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+            log::info("TT: Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
                 mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
             #endif
 
@@ -46,7 +46,7 @@ void init_mem(auto mbd, uint32_t beginning_addr)
                 total_usable += mmmt->len_low;
 
                 #ifdef DEBUG
-                printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+                log::info("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
                     addr, mmmt->len_low - (addr - 0x100000), mmmt->size, mmmt->type);
                 #endif
 
@@ -76,7 +76,7 @@ void init_mem(auto mbd, uint32_t beginning_addr)
     total_memory = total;
 
 #ifdef DEBUG
-    printf("Total: %d\n", total);
+    log::info("Total: %d\n", total);
 #endif
 }
 

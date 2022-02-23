@@ -4,6 +4,7 @@
 #include <sys/log/log.h>
 #include "keys.cpp"
 #include <filesystem/ramdisk.h>
+#include <gui/gui.h>
 
 bool keyboard_lock()
 {
@@ -102,6 +103,8 @@ void get_key(unsigned char code)
         buffer_size++;
         entered_len++;
         keyboard_unlock();
+
+        handle_key_entry(key);
     }
 }
 

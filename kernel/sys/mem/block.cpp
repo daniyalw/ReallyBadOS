@@ -5,7 +5,7 @@ void set_new_used(mem_t m)
 {
     for (int z = 0; z < total_used; z++)
     {
-        if (!used[z])
+        if (used[z].null)
         {
             used[z] = m;
             return;
@@ -20,7 +20,7 @@ uint32_t get_free_block(int size)
 {
     for (int z = 0; z < block_count_mem; z++)
     {
-        if (!mem_blocks[z])
+        if (mem_blocks[z].null)
         {
             continue;
         }
@@ -62,7 +62,7 @@ void free_block(uint32_t addr, int size)
     // update the used list
     for (int z = 0; z < total_used; z++)
     {
-        if (!used[z]) continue;
+        if (used[z].null) continue;
         else
         {
             if (used[z].addr == addr)
@@ -80,7 +80,7 @@ void free_block(uint32_t addr, int size)
     // tell the main list that the address is free for use
     for (int z = 0; z < block_count_mem; z++)
     {
-        if (!mem_blocks[z]) continue;
+        if (mem_blocks[z].null) continue;
         else
         {
             if (mem_blocks[z].addr + mem_blocks[z].size == addr)
@@ -94,7 +94,7 @@ void free_block(uint32_t addr, int size)
         }
     }
 
-    if (!found_in_list)
+    if (found_in_list)
     {
         mem_t m;
         m.addr = addr;
@@ -110,7 +110,7 @@ uint32_t move_block_with_new_size(uint32 old, int newsize)
 
     for (int z = 0; z < total_used; z++)
     {
-        if (!used[z]) continue;
+        if (used[z].null) continue;
         else
         {
             if (used[z].addr == old)

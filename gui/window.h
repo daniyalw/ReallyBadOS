@@ -1,32 +1,33 @@
 #pragma once
 
+#define MAX_WINDOWS 10
+
+#include <gui/coords.h>
 #include <gui/widget.h>
-#include <video/graphics.h>
-#include <fs.h>
 
-struct Window
+typedef struct
 {
-    int x, y, w, h;
-    int bg = rgb(100, 100, 100);
-
-    int title_x, title_y;
-    char title[100];
-
-    Widget widgets[100];
+    char name[20];
+    widget_t widgets[10];
     int widget_count = 0;
-
+    coords_t coords;
     int id;
 
-    void draw();
-    void set_coords(int _x, int _y) { x = _x; y = _y; }
+    bool dragged = false;
+    bool null = false;
 
-    void set_dimensions(int _w, int _h) { w = _w; h = _h; }
-    void set_title(char *_title) { for (int z = 0; z < 100; z++) title[z] = 0; for (int z = 0; z < len(_title); z++) title[z] = _title[z];}
+    int bg;
+} window_t;
 
-    void add_widget(Widget widget);
-
-    void set_id(int _id) { id = _id; }
-};
-
-Window windows[100];
+window_t windows[MAX_WINDOWS];
+int windows_z[MAX_WINDOWS];
 int window_count = 0;
+
+window_t window_create(int x, int y, int bg, char *title, ...);
+void win_draw(window_t win);
+
+void add_new_window(window_t win);
+void remove_window_z(int _z);
+void remove_window_id(int id);
+void add_window_at_location(int _z, int id);
+void update_window_z(int id, int new_z);

@@ -32,7 +32,7 @@ void memcpy(void *dest, void * source, int begin, int end)
     }
 }
 
-void memcpy(void *dest, void *source, int length)
+extern "C" void memcpy(void *dest, void *source, int length)
 {
     memcpy(dest, source, 0, length);
 }
@@ -397,7 +397,7 @@ static inline void __movsb_copy_str(char *from, const char *to, int size) {
 #endif
 
 #if defined(__x86_64__) || defined(__x86_32__)
-static inline void __movsb_copy_int(int *from, const int *to, int size) {
+static inline void __movsb_copy_int(int *to, const int *from, int size) {
   asm volatile ("rep movsb"
                 : "=D" (from),
                   "=S" (to),
@@ -425,7 +425,7 @@ inline void memcpy(char *dest, const char *source, const int nb)
     #endif
 }
 
-inline void memcpy_int(const uint32_t *source, uint32_t *dest, const int nb)
+inline void memcpy_int(const int *source, int *dest, const int nb)
 {
     #if defined(__x86_64__) || defined(__x86_32__)
 
@@ -508,7 +508,7 @@ void memset(int * dest, int val, int len) {
     }
 }
 
-void memset(char *dest, char val, u32 len) {
+extern "C" void memset(char *dest, char val, u32 len) {
     char *temp = (char *)dest;
 
     for (; len != 0; len--)

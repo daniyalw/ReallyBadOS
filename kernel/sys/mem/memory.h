@@ -5,8 +5,6 @@ typedef struct
     uint32_t addr;
     int size;
     bool null = false;
-
-    bool operator!() { return null; }
 } mem_t;
 
 #define BLOCK_SIZE 4096

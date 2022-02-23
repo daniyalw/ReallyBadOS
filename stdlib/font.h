@@ -27,3 +27,4 @@ uint8_t font[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x
 
 void draw_char(char character, int x, int y, uint32_t color);
 void draw_string(char *string, int x, int y, uint32_t color);
+void draw_string(int x, int y, uint color, char *text, ...);

@@ -1,7 +1,7 @@
 #pragma once
-#include <colors.h>
 #include <mouse/mouse.h>
 #include <fs.h>
+#include <gui/gui.h>
 
 //https://forum.osdev.org/viewtopic.php?t=10247
 
@@ -46,7 +46,6 @@ unsigned char mouse_read()
 
 void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
 {
-
     int bx = x;
     int by = y;
     int color;
@@ -71,6 +70,13 @@ void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
         bx -= 12;
         by++;
     }
+
+#ifdef GRAPHICS
+    coords_t coords;
+    coords.x = x;
+    coords.y = y;
+    handle_mouse_click(coords, right_c, left, middle);
+#endif
 }
 
 static void mouse_handler(registers_t regs)

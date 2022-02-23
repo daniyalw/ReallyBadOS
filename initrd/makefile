@@ -3,7 +3,7 @@ FILES := read.o echo.o hello.txt time.o info.o Vera.sfn test.r ls.o mkdir.o mkfi
 OUT = out.tar
 
 build:
-	tar -cf out.tar ${FILES}
+	tar -cf ${OUT} ${FILES}
 	make copy-to-iso
 
 copy-to-iso:

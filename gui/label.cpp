@@ -1,44 +1,70 @@
-#include <gui/widget.h>
-#include <drivers/video/video.h>
-#include <font.h>
+#include <gui/label.h>
+#include <gui/window.h>
 
-using namespace Graphic;
-
-void draw_label(Widget label)
+void draw_label(widget_t label, coords_t coords)
 {
-    int offset = 0;
+    int x = coords.x + label.coords.x;
+    const int orig_x = x;
+    int y = coords.y + label.coords.y;
+    const int orig_y = y;
+    int max_w = coords.x + coords.w;
+    int max_h = coords.y + coords.h;
+    char *text = (char *)label.data[0];
+    int *wrap = (int *)label.data[1];
 
-    if (label.bg != BG_TRANSPARENT)
-        draw_rect(label.x - label.padding/2, label.y - label.padding/2, label.w + label.padding/2, label.h + label.padding/2, label.bg);
-    draw_string((char *)(label.extras[0]), label.x, label.y, label.fg);
+    int limit_x = max_w - x;
+    int limit_y = max_h - y;
+
+    if (x >= max_w || y >= max_h)
+        if (wrap[0] != 1) return;
+
+    draw_rect(x, y, limit_x, limit_y, label.bg);
+
+    for (int z = 0; z < strlen(text); z++)
+    {
+        draw_char(text[z], x, y, label.fg);
+
+        x += font_width;
+
+        if (x >= max_w || y >= max_h)
+        {
+            if (wrap[0]) return;
+
+            y += font_height + 1;
+            x = orig_x;
+        }
+    }
 }
 
-Widget create_label(Window win, int bg, int fg, int x, int y, int padding, char *text, ...)
+// if wrap is 1, wrap is true
+// else no wrap
+label_t create_label(auto win, char *text, int x, int y, int wrap, int bg, int fg)
 {
-    Widget widget;
-    va_list va;
+    label_t label;
 
-    va_start(va, text);
-    text = vsprintf("", text, va);
-    va_end(va);
+    label.id = win.widget_count;
+    label.parent_id = win.id;
+    label.data[0] = text;
 
-    widget.set_extra(0, text);
+    int w[] = {wrap, 0};
+    label.data[1] = w;
 
-    widget.extras = (void **)malloc(sizeof(void **) * 10);
+    label.coords.x = x;
+    label.coords.y = y;
+    label.coords.w = strlen(text) * font_width;
+    label.coords.h = font_height;
 
-    widget.setx(x);
-    widget.sety(y);
-    widget.setw(len(text) * font_width);
-    widget.seth(font_height + 2);
+    label.bg = bg;
+    label.fg = fg;
 
-    widget.set_draw(draw_label);
+    label.mouse_click = default_mouse_click;
+    label.key_click = default_key_click;
+    label.draw_widget = draw_label;
 
-    widget.setbg(bg);
-    widget.setfg(fg);
+    return label;
+}
 
-    widget.set_padding(padding);
-
-    win.add_widget(widget);
-
-    return widget;
+label_t create_label(auto win, char *text, int x, int y, int wrap)
+{
+    return create_label(win, text, x, y, wrap, DEFAULT_BG, DEFAULT_FG);
 }

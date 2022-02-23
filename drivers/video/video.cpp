@@ -48,7 +48,7 @@ void putchar(char text, int color) {
         text_x = 0;
         return;
     } else if (text == '\t') {
-        for (int z = 0; z < 4; z++) next_char();
+        for (int z = 0; z < 4; z++) putchar(' ');
         return;
     } else if (text == '\b') {
         text_x--;
@@ -72,57 +72,57 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
 
     for (int z = 0; z < max; z++)
     {
-        if (format[z] == '%')
+        if (format[z] != '%')
         {
-            z++;
-            if (format[z] == 's')
-            {
-                char *str = (char *)va_arg(va, char*);
+            s[sz] = format[z];
+            sz++;
+            continue;
+        }
 
-                for (int b = 0; b < len(str); b++)
-                {
-                    s[sz] = str[b];
-                    sz++;
-                }
-            }
-            else if (format[z] == 'c')
+        z++;
+
+        if (format[z] == 's')
+        {
+            char *str = (char *)va_arg(va, char*);
+
+            for (int b = 0; b < len(str); b++)
             {
-                int ch = (int)va_arg(va, int);
-                s[sz] = ch;
+                s[sz] = str[b];
                 sz++;
             }
-            else if (format[z] == 'd')
+        }
+        else if (format[z] == 'c')
+        {
+            int ch = (int)va_arg(va, int);
+            s[sz] = ch;
+            sz++;
+        }
+        else if (format[z] == 'd')
+        {
+            int i = (int)va_arg(va, int);
+            for (int b = 0; b < 20; b++) buffer[b] = 0;
+            itoa(buffer, 'd', i);
+            for (int b = 0; b < len(buffer); b++)
             {
-                int i = (int)va_arg(va, int);
-                for (int b = 0; b < 20; b++) buffer[b] = 0;
-                itoa(buffer, 'd', i);
-                for (int b = 0; b < len(buffer); b++)
-                {
-                    s[sz] = buffer[b];
-                    sz++;
-                }
-            }
-            else if (format[z] == 'x')
-            {
-                int arg = (int)va_arg(va, int);
-                for (int b = 0; b < 20; b++) buffer[b] = 0;
-                itoa(buffer, 'x', arg);
-                for (int b = 0; b < len(buffer); b++)
-                {
-                    s[sz] = buffer[b];
-                    sz++;
-                }
-            }
-            else
-            {
-                s[sz] = '%';
+                s[sz] = buffer[b];
                 sz++;
-                s[sz] = format[z];
+            }
+        }
+        else if (format[z] == 'x')
+        {
+            int arg = (int)va_arg(va, int);
+            for (int b = 0; b < 20; b++) buffer[b] = 0;
+            itoa(buffer, 'x', arg);
+            for (int b = 0; b < len(buffer); b++)
+            {
+                s[sz] = buffer[b];
                 sz++;
             }
         }
         else
         {
+            s[sz] = '%';
+            sz++;
             s[sz] = format[z];
             sz++;
         }
@@ -207,7 +207,7 @@ void printf(char *a, ...)
     char * out = vsprintf("", a, va);
     va_end(va);
 
-    for (int z = 0; z < len(out); z++)
+    for (int z = 0; z < strlen(out); z++)
         putchar(out[z]);
 
     Kernel::update_hardware_cursor(text_x, text_y);

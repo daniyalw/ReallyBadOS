@@ -8,6 +8,12 @@ unsigned int bpp;
 
 bool blit_right_away = false;
 
+typedef struct {
+    int red;
+    int green;
+    int blue;
+} colors_t;
+
 namespace Graphic {
 
 inline void SetPixel(int x, int y, int color);
@@ -48,4 +54,9 @@ void rounded_rectangle(int x, int y, int w, int h, int r, int color);
 void fill_rounded_rectangle(int x, int y, int w, int h, int r, int color);
 void tint(int * arr, int w, int h, int color);
 
+// colors
+colors_t get_colors(int color);
+int mix(int color1, int color2);
+int get_color(int red, int green, int blue);
+int rgb(int red, int green, int blue);
 }

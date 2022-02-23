@@ -8,7 +8,7 @@ extern "C" {
 }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -60,7 +60,6 @@ extern "C" {
 #include "../drivers/mouse/mouse.cpp"
 #include "sys/time/time.cpp"
 #include "sys/time/timer.cpp"
-#include "../stdlib/colors.cpp"
 #include "../drivers/video/bga.cpp"
 #include "sys/serial.cpp"
 #include "sys/syscall/syscall.cpp"
@@ -85,8 +84,6 @@ extern "C" {
 #include "../gui/gui.h"
 #include "../exec/elf.cpp"
 #include "../exec/argparse.cpp"
-#include "../gui/label.cpp"
-#include "../gui/window.cpp"
 #include "../stdlib/ctype.cpp"
 #include "../filesystem/fs.cpp"
 #include "../filesystem/file.cpp"
@@ -99,8 +96,19 @@ extern "C" {
 #include "../net/utils.cpp"
 #include "../net/arp.cpp"
 #include "../drivers/disk/disk.cpp"
+#include "../stdlib/utils.cpp"
+
+#ifdef GRAPHICS
+#include "../gui/widget.cpp"
+#include "../gui/button.cpp"
+#include "../gui/gui.cpp"
+#include "../gui/label.cpp"
+#include "../gui/window.cpp"
+#include "../gui/entry.cpp"
+#endif
 
 using namespace Time;
+using namespace Graphic;
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -118,7 +126,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Kernel::read_rtc();
     Kernel::init_timer(1000);
     Kernel::init_keyboard(false, "/");
+#ifdef GRAPHICS
     Kernel::init_mouse();
+#endif
     Kernel::init_syscalls();
 
     u32 location = *((u32*)mbd->mods_addr); // load modules with GRUB
@@ -130,7 +140,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     // parse the tar file
     tar.parse(location);
 
-    // loop through the files in the tar block and create the files in the vfs
     for (int z = 0; z < tar.block_count; z++)
     {
         beginning += 512;
@@ -143,6 +152,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Graphic::init_graphics(mbd);
 
     init_mem(mbd, beginning);
+
     init_fs();
     init_all_devs();
 
@@ -156,6 +166,10 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
         {
             create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
         }
+        else if (endswith(tar.blocks[z].name, "r"))
+        {
+            create_file(tar.blocks[z].name, "/usr/scripts/", tar.blocks[z].contents);
+        }
         else if (endswith(tar.blocks[z].name, "sfn"))
         {
             create_file(tar.blocks[z].name, "/usr/fonts/", tar.blocks[z].contents);
@@ -168,48 +182,19 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     Graphic::redraw_background_picture(array);
 
-    Window win;
-    win.set_coords(100, 100);
-    win.set_dimensions(300, 300);
+    window_t win = window_create(100, 100, DEFAULT_BG, "Settings");
 
-    win.draw();
+    entry_t entry = create_entry(win, 10, 10);
+    win = add_widget(win, entry);
+    win = entry.draw();
 
-    FILE *file = fopen("/usr/fonts/Vera.sfn");
-
-    if (file->null)
-    {
-        log::warning("vera font not found!");
-        return;
-    }
-
-    log::info("File size: %d", file->node.size);
-
-    /* set up context by global variables */
-    ssfn_src = (ssfn_font_t *)file->node.contents;      /* the bitmap font to use */
-    ssfn_dst.ptr = (uint8_t *)&framebuffer_addr;                  /* framebuffer address and bytes per line */
-    ssfn_dst.w = 1024;                          /* width */
-    ssfn_dst.h = 768;                           /* height */
-    ssfn_dst.p = 4096;                          /* bytes per line */
-    ssfn_dst.x = ssfn_dst.y = 0;                /* pen position */
-    ssfn_dst.bg = 0;
-    ssfn_dst.fg = 0xFFFFFF;
-
-
-    /* render text directly to the screen and then adjust ssfn_dst.x and ssfn_dst.y */
-    int res = ssfn_putc('H');
-
-    if (res != SSFN_OK)
-        Kernel::system_log("Error: result is not SSFN_OK %d\n", res);
-    ssfn_putc('e');
-    ssfn_putc('l');
-    ssfn_putc('l');
-    ssfn_putc('o');
-
-    //draw_string(100, 100, Graphic::rgb(255, 255, 255), "Framebuffer data:\n\tHeight: %d\n\tWidth: %d\n\tBPP: %d", height, width, bpp);
+    win_draw(win);
 
     Graphic::blit_changes();
 
-    while (true);
+    while (true)
+    {
+    }
 
 #else
 

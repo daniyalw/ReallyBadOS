@@ -1,37 +1,42 @@
 #pragma once
 
-using namespace Graphic;
+#include <gui/coords.h>
 
-struct Widget
+typedef struct widget_t
 {
-    int win_id;
     int id;
-    int x, y, bg, fg;
-    int w, h;
-    int padding;
+    void *data[10];
+    int *extra[10];
+    int parent_id;
 
-    void **extras;
+    int bg, fg;
 
-    void (*draw)(Widget widget);
-    void (*hide)(Widget widget);
+    bool to_draw = false;
+    bool active = false;
 
-    void set_draw(void (*func)(Widget widget))
-    {
-        draw = func;
-    }
+    coords_t coords;
 
-    void setx(int _x) { x = _x; }
-    void sety(int _y) { y = _y; }
+    void (*mouse_click)(int, widget_t, coords_t, bool, bool, bool);
+    void (*key_click)(widget_t, char);
+    void (*draw_widget)(widget_t, coords_t);
 
-    void setw(int _w) { w = _w; }
-    void seth(int _h) { h = _h; }
+    auto draw();
+    auto hide();
+} widget_t;
 
-    void setbg(int _bg) { bg = _bg; }
-    void setfg(int _fg) { fg = _fg; }
+void default_mouse_click(int win_id, widget_t widget, coords_t coords, bool right, bool left, bool middle)
+{
+}
 
-    void set_extra(int index, void *data) { extras[index] = data; }
-    void set_padding(int _padding) { padding = _padding; }
+void default_key_click(widget_t widget, char key)
+{
+}
 
-    void set_id(int _id) { id = _id; }
-    void set_winid(int _win) { win_id = _win; }
-};
+void default_draw(widget_t widget, coords_t coords)
+{
+}
+
+auto add_widget(auto win, widget_t widget);
+auto widget_save(auto win, widget_t widget);
+
+auto to_widget_draw_hide(widget_t *_widget);
