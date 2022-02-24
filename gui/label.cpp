@@ -40,26 +40,40 @@ void draw_label(widget_t label, coords_t coords)
 // else no wrap
 label_t create_label(auto win, char *text, int x, int y, int wrap, int bg, int fg)
 {
+    log::warning("Part A");
+
     label_t label;
+
+    log::warning("Part B");
 
     label.id = win.widget_count;
     label.parent_id = win.id;
     label.data[0] = text;
 
+    log::warning("Part C");
+
     int w[] = {wrap, 0};
     label.data[1] = w;
+
+    log::warning("Part D");
 
     label.coords.x = x;
     label.coords.y = y;
     label.coords.w = strlen(text) * font_width;
     label.coords.h = font_height;
 
+    log::warning("Part E");
+
     label.bg = bg;
     label.fg = fg;
+
+    log::warning("Part F");
 
     label.mouse_click = default_mouse_click;
     label.key_click = default_key_click;
     label.draw_widget = draw_label;
+
+    log::warning("Part G");
 
     return label;
 }

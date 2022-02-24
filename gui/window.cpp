@@ -72,7 +72,7 @@ void remove_window_id(int id)
 
 void add_window_at_location(int _z, int id)
 {
-    for (int b = window_count; b > _z; b--)
+    for (int b = window_count; b >= _z; b--)
     {
         windows_z[b + 1] = windows_z[b];
     }

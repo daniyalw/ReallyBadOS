@@ -104,7 +104,9 @@ void get_key(unsigned char code)
         entered_len++;
         keyboard_unlock();
 
+#ifdef GRAPHICS
         handle_key_entry(key);
+#endif
     }
 }
 

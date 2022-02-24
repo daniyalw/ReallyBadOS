@@ -5,7 +5,7 @@ void handle_entry_key(entry_t entry, char key)
     char *keys = (char *)entry.data[0];
     int *count = (int *)entry.extra[0];
 
-    keys = get("", "%s%s\0", keys, key);
+    keys = get(keys, "%s%c\0", keys, key);
     int c = count[0];
     c += 1;
     log::info("Count 0: %d", c);
@@ -21,7 +21,7 @@ void handle_entry_key(entry_t entry, char key)
     win.widgets[entry.id] = entry;
     windows[win.id] = win;
 
-    log::info("Count 2: window %d and widget %d", entry.parent_id, entry.id);
+    log::info("Count 2: %d", vc);
 
     entry_t a = windows[entry.parent_id].widgets[entry.id];
     log::info("Count: %d", ((int *)a.extra[0])[0]);

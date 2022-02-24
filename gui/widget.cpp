@@ -34,11 +34,3 @@ auto add_widget(auto win, widget_t widget)
 
     return win;
 }
-
-auto widget_save(auto win, widget_t widget)
-{
-    win.widgets[widget.id] = widget;
-    windows[win.id] = win;
-
-    return win;
-}

@@ -8,7 +8,7 @@ extern "C" {
 }
 
 //#define DEBUG
-#define GRAPHICS
+//#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -110,6 +110,22 @@ extern "C" {
 using namespace Time;
 using namespace Graphic;
 
+#ifdef GRAPHICS
+void call(int id, widget_t widget, bool right, bool left, bool middle)
+{
+    log::info("Called!");
+
+    if (false)
+    {
+        widget.bg = Graphic::rgb(255, 255, 255);
+        window_t win = windows[widget.parent_id];
+        win.widgets[widget.id] = widget;
+        windows[win.id] = win;
+        win_draw(win);
+    }
+}
+#endif
+
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         log::error("Invalid magic."); // we could use printf, but that's text-mode only
@@ -184,9 +200,14 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     window_t win = window_create(100, 100, DEFAULT_BG, "Settings");
 
+
     entry_t entry = create_entry(win, 10, 10);
     win = add_widget(win, entry);
     win = entry.draw();
+
+    button_t b = create_button(win, "heh", 10, 25, call);
+    win = add_widget(win, b);
+    win = b.draw();
 
     win_draw(win);
 
@@ -206,7 +227,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     for (int z = 0; z < tar.block_count; z++)
     {
-        if (endswith(tar.blocks[z].name, "o"))
+        if (endswith(tar.blocks[z].name, "o") && !endswith(tar.blocks[z].name, "write.o"))
         {
             create_file(tar.blocks[z].name, "/apps/", tar.blocks[z].contents);
         }

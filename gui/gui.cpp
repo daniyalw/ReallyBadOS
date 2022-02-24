@@ -22,6 +22,9 @@ void handle_mouse_click(coords_t coords, bool right, bool left, bool middle)
             {
                 if ((widget.coords.y + win.coords.y) <= coords.y && (widget.coords.h + (widget.coords.y + win.coords.y)) >= coords.y)
                 {
+                    if (z > 0)
+                        update_window_z(id, 0);
+
                     if (right || left || middle)
                     {
                         for (int c = 0; c < window_count; c++)
@@ -47,6 +50,7 @@ void handle_mouse_click(coords_t coords, bool right, bool left, bool middle)
                     }
 
                     done = true;
+                    win_draw(win);
                     widget.mouse_click(id, widget, coords, right, left, middle);
                     break;
                 }
@@ -79,6 +83,7 @@ void handle_key_entry(char key)
             if (widget.active)
             {
                 log::info("Widget found for key click: %d of window %d", widget.id, win.id);
+                win_draw(win);
                 widget.key_click(widget, key);
                 done = true;
             }

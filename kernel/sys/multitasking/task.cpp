@@ -21,6 +21,7 @@ void create_process(char *name, uint32_t begin)
 
 void load_new_task(task_t task)
 {
+    // TODO: properly switch task here
    asm volatile("iret");
 }
 

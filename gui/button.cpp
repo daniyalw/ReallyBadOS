@@ -33,6 +33,8 @@ void draw_button(button_t button, coords_t coords)
             return;
         }
     }
+
+    //Graphic::blit_changes();
 }
 
 button_t create_button(auto win, char *text, int x, int y, auto callback, int bg, int fg)
