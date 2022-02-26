@@ -2,8 +2,8 @@
 
 typedef struct
 {
-    char name[20];
-    char version[10];
+    char *name;
+    char *version;
     bool dev;
 } info_t;
 
@@ -11,7 +11,7 @@ typedef struct
 extern "C" {
 #endif
 
-extern info_t *get_sys_info();
+extern info_t get_sys_info();
 
 #ifdef __cplusplus
 }

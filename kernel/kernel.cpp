@@ -115,7 +115,7 @@ void call(int id, widget_t widget, bool right, bool left, bool middle)
 {
     log::info("Called!");
 
-    if (false)
+    if (left)
     {
         widget.bg = Graphic::rgb(255, 255, 255);
         window_t win = windows[widget.parent_id];

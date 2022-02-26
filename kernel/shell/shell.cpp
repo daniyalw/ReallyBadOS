@@ -57,16 +57,30 @@ int run_command(char * command)
 {
     args_t args = parse_args(command);
     char *executable = args.argv[0];
-    char *fname = get("", "/apps/%s.o", executable);
+    char *fname;
+    bool is_exec_slash = false;
 
-    FILE *file = fopen(fname);
+    if (startswith(executable, "/") && endswith(executable, "o"))
+    {
+        is_exec_slash = true;
+    }
+    {
+        fname = get("", "/apps/%s.o", executable);
+    }
+
+    FILE *file;
+
+    if (is_exec_slash)
+        file = fopen(executable);
+    else
+        file = fopen(fname);
 
     if (file == NULL)
     {
         fclose(file);
 
         // if we fail, try searching the usr folder
-        fname = get("", "/usr/%s/%s.o", executable, executable);
+        fname = get("", "/usr/%s.o", executable, executable);
         file = fopen(fname);
 
         if (file == NULL)
@@ -186,6 +200,13 @@ void shell()
 
             if (res != 'y')
                 continue;
+        }
+        else if (check_name(command, "ddd"))
+        {
+            FILE *file = fopen("/usr/documents/hello.txt");
+            printf("Contents: %s\n", file->read(""));
+            fclose(file);
+            continue;
         }
         else if (check_name(command, "exit"))
         {

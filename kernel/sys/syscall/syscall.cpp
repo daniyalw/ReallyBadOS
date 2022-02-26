@@ -65,16 +65,16 @@ void s_test()
 
 typedef struct
 {
-    char name[20];
-    char version[10];
+    char *name;
+    char *version;
     bool dev;
 } info_t;
 
 void s_info(info_t *info)
 {
-    strcpy(info->name, (char *)System::SYSTEM);
-    strcpy(info->version, (char *)System::VERSION);
-    info->dev = System::dev;
+    info[0].name = (char *)System::SYSTEM;
+    info[0].version = (char *)System::VERSION;
+    info[0].dev = System::dev;
 }
 
 void s_file(char *path, uint32_t *addr)
@@ -131,18 +131,20 @@ void s_create_file(char *name, char *folder, char *contents, int *res)
     res[0] = create_file(name, folder, contents);
 }
 
-void s_write_file(FILE *file, char *contents, int *res)
+void s_write_file(char *file, char *contents, int *res)
 {
-    if (file == NULL || file->null)
+    res[0] = 0;
+    FILE *f = fopen(file);
+
+    if (f != NULL)
     {
-        log::error("File '%s' not found", file->node.path);
-        res[0] = 1;
+        f->write(contents);
+        fclose(f);
     }
     else
     {
-        res[0] = 0;
-        FILE *f = fopen(file->node.path);
-        //f->write(contents);
+        res[0] = 1;
+        log::error("File null: '%s'", file);
     }
 }
 
@@ -168,15 +170,15 @@ void s_append_file(char *name, char *contents)
     fclose(file);
 }
 
-void s_read_file(FILE *file, char *buf)
+void s_read_file(char *file, char *buf)
 {
-    if (file == NULL)
+    FILE *f = fopen(file);
+
+    if (f == NULL)
     {
-        log::warn("file is null: %s", file->node.path);
+        printf("File '%s' is null.", file);
         return;
     }
-
-    FILE *f = fopen(file->node.path);
 
     strcpy(buf, f->read(buf));
 }

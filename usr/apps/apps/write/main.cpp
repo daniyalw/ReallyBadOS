@@ -2,7 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define START 2
+int getlength(int start, int argc, char *args[])
+{
+    int length = 0;
+
+    for (int z = start; z < argc; z++)
+        length += strlen(args[z]);
+
+    return length;
+}
 
 int main(int argc, char *argv[])
 {
@@ -12,42 +20,33 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int length = argc;
+    const int length = getlength(2, argc, argv);
 
-    for (int z = START; z < argc; z++)
-        length += strlen(argv[z]);
+    char contents[length];
+    int cz = 4;
+    memset(contents, 0, length);
 
-    char *contents;
-    int cz = 0;
-
-    for (int z = 0; z < length; z++)
-    {
-        contents[z] = 0;
-    }
-
-    for (int z = START; z < argc; z++)
+    for (int z = 2; z < argc; z++)
     {
         for (int b = 0; b < strlen(argv[z]); b++)
         {
             contents[cz] = argv[z][b];
             cz++;
         }
+
+        contents[cz] = ' ';
+        cz++;
     }
 
-    printf("To write: %s\n", contents);
+    contents[cz] = 0;
+
+    char *c = (char *)&contents[4];
+
+    printf("To write: '%s'", c);
 
     FILE *file = fopen(argv[1]);
-
-    int result = file->write(contents);
-
-    if (result == 0)
-    {
-        printf("Successfully wrote to file!\n");
-    }
-    else
-    {
-        printf("Failed to write to file %s!\n", argv[1]);
-    }
+    file->write(c);
+    fclose(file);
 
     return 0;
 }

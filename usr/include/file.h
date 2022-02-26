@@ -38,9 +38,9 @@ extern void fclose(FILE *file);
 extern int fexec(char *contents);
 extern void ls(char *path);
 extern int mkfile(char *name, char *dir, char *contents);
-extern int write_file(FILE *file, char *contents);
+extern int write_file(char *file, char *contents);
 extern void append_file(char *name, char *contents);
-extern char *read_file(FILE *file, char *out);
+extern char *read_file(char *file, char *out);
 
 #ifdef __cplusplus
 }
@@ -50,8 +50,8 @@ typedef struct FILE
 {
     fs_node node;
 
-    int write(char *buf) { return write_file(this, buf); }
-    char *read(char *buf) { buf = read_file(this, buf); return buf; }
+    int write(char *buf) { return write_file(node.path, buf); }
+    char *read(char *buf) { buf = read_file(node.path, buf); return buf; }
 
     char name[20];
 

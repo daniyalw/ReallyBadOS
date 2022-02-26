@@ -12,6 +12,7 @@ extern "C" {
 
 extern int strlen(char * text);
 extern void strcpy(char *dest, char *orig);
+extern void memset(void *dest, char val, int length);
 
 #ifdef __cplusplus
 }

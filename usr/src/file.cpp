@@ -48,7 +48,7 @@ extern "C" int mkfile(char *name, char *dir, char *contents)
     return res[0];
 }
 
-extern "C" int write_file(FILE *file, char *contents)
+extern "C" int write_file(char *file, char *contents)
 {
     void *a;
     int res[1];
@@ -64,7 +64,7 @@ extern "C" void append_file(char *name, char *contents)
 }
 
 
-extern "C" char *read_file(FILE *file, char *out)
+extern "C" char *read_file(char *file, char *out)
 {
     void *a;
     asm volatile("int $48" : "=a" (a) : "0" (READ_FILE), "b" (file), "c" (out));

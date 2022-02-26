@@ -1,8 +1,15 @@
 #include <stdio.h>
+#include <filesystem.h>
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
     printf("Test printf!\n");
+
+    FILE *file = fopen(argv[1]);
+
+    file->write(argv[2]);
+
+    fclose(file);
 
     char *result = scanf();
 
