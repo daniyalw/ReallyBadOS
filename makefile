@@ -6,6 +6,12 @@ QEMU_FLAGS = -soundhw pcspk -m 1G -serial stdio -rtc base=localtime -drive forma
 OUT = reallybados-x86_32.iso
 QEMU = qemu-system-x86_64
 
+all:
+	make kernel
+	make user
+	make ramdisk
+	make textmode
+
 run:
 	${QEMU} -cdrom reallybados-x86_32.iso ${QEMU_FLAGS}
 
@@ -22,6 +28,13 @@ jmp:
 	nasm -f elf32 kernel/jmp.asm -o built/jmp.o
 tss:
 	nasm -f elf32 kernel/sys/descriptors/tss.asm -o built/tss.o
+
+ramdisk:
+	cd initrd && make build && cd ..
+
+user:
+	cd usr/src && make && cd ../..
+	cd usr/apps/apps/write && make && cd ../read && make && cd ../echo && make && cd ../exec && make && cd ../info && make && cd ../ls && make && cd ../mkdir && make && cd ../mkfile && make && cd ../test && make && cd ../time && make && cd ../../../..
 
 kernel:
 	make gdt

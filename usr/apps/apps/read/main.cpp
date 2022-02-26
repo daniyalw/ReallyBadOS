@@ -20,7 +20,7 @@ int main(int argc, char **argv)
         printf("Name: %s\n", file->name);
         printf("Size: %d bytes\n", file->node.size);
         printf("Read: ");
-        printf(file->read("      "));
+        printf(file->read(""));
     }
 
     fclose(file);
