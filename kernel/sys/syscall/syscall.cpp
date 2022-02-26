@@ -128,6 +128,7 @@ void s_create_folder(char *folder, char *parent_dir, int *result)
 
 void s_create_file(char *name, char *folder, char *contents, int *res)
 {
+    log::warning("Creating file %s in folder %s", name, folder);
     res[0] = create_file(name, folder, contents);
 }
 

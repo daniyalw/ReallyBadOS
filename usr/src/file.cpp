@@ -43,7 +43,7 @@ extern "C" int mkfile(char *name, char *dir, char *contents)
 {
     void * a;
     int res[1];
-    asm volatile("int $48" : "=a" (a) : "0" (MKDIR), "b" (name), "c" (dir), "d" (contents), "S" (res));
+    asm volatile("int $48" : "=a" (a) : "0" (MKFILE), "b" (name), "c" (dir), "d" (contents), "S" (res));
 
     return res[0];
 }

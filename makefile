@@ -33,8 +33,17 @@ ramdisk:
 	cd initrd && make build && cd ..
 
 user:
-	cd usr/src && make && cd ../..
-	cd usr/apps/apps/write && make && cd ../read && make && cd ../echo && make && cd ../exec && make && cd ../info && make && cd ../ls && make && cd ../mkdir && make && cd ../mkfile && make && cd ../test && make && cd ../time && make && cd ../../../..
+	make -C usr/src
+	make -C usr/apps/apps/write
+	make -C usr/apps/apps/read
+	make -C usr/apps/apps/echo
+	make -C usr/apps/apps/exec
+	make -C usr/apps/apps/info
+	make -C usr/apps/apps/ls
+	make -C usr/apps/apps/mkdir
+	make -C usr/apps/apps/mkfile
+	make -C usr/apps/apps/test
+	make -C usr/apps/apps/time
 
 kernel:
 	make gdt
