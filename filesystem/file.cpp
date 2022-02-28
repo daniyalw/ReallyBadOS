@@ -17,6 +17,8 @@ FILE *fopen(char *path)
 
     file->node = node;
     file->null = node.null;
+    file->eof = NULL;
+    file->ptr = NULL;
 
     strcpy(file->name, node.name);
 
@@ -69,12 +71,12 @@ int create_file(char *path, char *folder, __read read, __write write)
 
 void fprintf(FILE *file, char *data)
 {
-    file->write(data);
+    fprintf(file->node, data);
 }
 
 void fprintf(FILE file, char *data)
 {
-    file.write(data);
+    fprintf(file.node, data);
 }
 
 void fprintf(fs_node node, char *data)
@@ -90,12 +92,12 @@ void fprintf(fs_node node, char *data)
     }
 }
 
-int file_write(FILE *file, char *buf)
+int fwrite(int offset, int size, char *buf, FILE *file)
 {
     if (file == NULL) return 1;
 
     if (file->node.write)
-        file->node.write(file->node, 0, file->node.size, buf);
+        file->node.write(file->node, offset, size, buf);
     else
         node_write_basic(file->node.id, buf);
 
@@ -104,11 +106,94 @@ int file_write(FILE *file, char *buf)
     return 0;
 }
 
-char * file_read(FILE *file, char *buf)
+char * fread(char *buf, int offset, int size, FILE *file)
 {
     if (file->node.read)
-        buf = file->node.read(file->node, 0, file->node.size, buf);
+        buf = file->node.read(file->node, offset, size, buf);
     else
-        buf = node_read_basic(file->node.id);
+    {
+        char *tmp = node_read_basic(file->node.id);
+        strcpy(buf, &tmp[offset]);
+        buf[size] = 0;
+    }
     return buf;
+}
+
+char *fread(char *buf, FILE *file)
+{
+    return fread(buf, 0, file->node.size, file);
+}
+
+int fgetc(FILE *file)
+{
+    char *str = fread(str, file->ptr, 1, file);
+    file->ptr++;
+
+    if (file->ptr == file->node.size)
+        file->eof = EOF;
+
+    return str[0];
+}
+
+int feof(FILE *file)
+{
+    return file->eof < 0;
+}
+
+char *fgets(char *str, int n, FILE *file)
+{
+    char c;
+    int z = 0;
+
+    while (true)
+    {
+        if (z == n || feof(file))
+            break;
+
+        c = fgetc(file);
+
+        str[z] = c;
+        z++;
+    }
+
+    str[z] = NULL;
+
+    if (z == 0)
+        return NULL;
+
+    return str;
+}
+
+int fgetpos(FILE *file, fpos_t *pos)
+{
+    *pos = file->ptr;
+
+    return *pos;
+}
+
+int fseek(FILE *file, int offset, int w)
+{
+    if (file == NULL)
+        return 1;
+
+    file->ptr = offset + w;
+    return 0;
+}
+
+int ftell(FILE *file)
+{
+    int offset[1];
+    offset[0] = fgetpos(file, offset);
+    return offset[0];
+}
+
+void rewind(FILE *file)
+{
+    fseek(file, 0, 0);
+}
+
+int fsetpos(FILE *file, fpos_t *pos)
+{
+    file->ptr = *pos;
+    return file->ptr;
 }

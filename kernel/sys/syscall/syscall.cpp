@@ -139,7 +139,7 @@ void s_write_file(char *file, char *contents, int *res)
 
     if (f != NULL)
     {
-        f->write(contents);
+        fwrite(0, f->node.size, contents, f);
         fclose(f);
     }
     else
@@ -181,7 +181,7 @@ void s_read_file(char *file, char *buf)
         return;
     }
 
-    strcpy(buf, f->read(buf));
+    strcpy(buf, f->read(0, f->node.size, buf));
 }
 
 // ----------------------------- //

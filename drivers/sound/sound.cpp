@@ -50,7 +50,7 @@ void sound_write(fs_node node, int offset, int size, char *data)
 void beep()
 {
     FILE *file = fopen("/dev/sound");
-    file->write("1000"); // there's a difference between 1000 int and 1000 string
+    file->write(0, file->node.size, "1000"); // there's a difference between 1000 int and 1000 string
 
     for (int z = 0; z < 4000000; z++)
         io_wait();
