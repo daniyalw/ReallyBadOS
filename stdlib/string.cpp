@@ -233,6 +233,91 @@ char * append_int(char * j1, int num, char * dest)
     return append(j1, textnum, dest);
 }
 
+char *strstr(char *s, char *d)
+{
+	for (int i = 0; s[i]; i++)
+    {
+		bool found = false;
+
+		for (int j = 0; d[j]; j++)
+        {
+			if (!d[j] || s[i + j] == d[j])
+				continue;
+
+			found = true;
+			break;
+		}
+
+		if (!found)
+			return (char *)&s[i];
+	}
+
+	return NULL;
+}
+
+char *strtok_r(char *s, char *del, char **m)
+{
+	char *tok;
+
+	if (s)
+		tok = s;
+	else if (*m)
+		tok = *m;
+	else
+		return NULL;
+
+	while (*tok && strchr(del, *tok))
+		tok++;
+
+	auto p = tok;
+
+	while (*p && !strchr(del, *p))
+		p++;
+
+	if (*p)
+    {
+		*p = 0;
+		*m = p + 1;
+	}
+    else
+    {
+		*m = NULL;
+	}
+
+	if (p == tok)
+		return NULL;
+
+	return tok;
+}
+
+char *strtok(char *s, char *del)
+{
+        static char *saved;
+        return strtok_r(s, del, &saved);
+}
+
+int tokenize(char * str, char * d, char **buf)
+{
+	char *p;
+	char *s;
+	int args = 0;
+
+	p = strtok_r(str, d, &s);
+
+	if (!p)
+        return 0;
+
+	while (p != NULL)
+    {
+		buf[args] = (char *)p;
+		args++;
+		p = strtok_r(NULL, d, &s);
+	}
+
+	buf[args] = NULL;
+	return args;
+}
+
 bool startswith(char * words, char * start)
 {
     int cl = len(start);
