@@ -204,7 +204,8 @@ void shell()
         else if (check_name(command, "ddd"))
         {
             FILE *file = fopen("/usr/documents/hello.txt");
-            printf("Contents: %s\n", fread("", file));
+            printf("Contents: \n");
+            printf(file->read("", 0, file->node.size));
             fclose(file);
             continue;
         }

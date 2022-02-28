@@ -132,14 +132,15 @@ void s_create_file(char *name, char *folder, char *contents, int *res)
     res[0] = create_file(name, folder, contents);
 }
 
-void s_write_file(char *file, char *contents, int *res)
+void s_write_file(char *contents, int *offset, int *size, char *file, int *res)
 {
     res[0] = 0;
     FILE *f = fopen(file);
 
     if (f != NULL)
     {
-        fwrite(0, f->node.size, contents, f);
+        log::warning("Writing '%s' into file '%s'", contents, file);
+        node_write_basic(f->node.id, contents);
         fclose(f);
     }
     else
@@ -171,7 +172,7 @@ void s_append_file(char *name, char *contents)
     fclose(file);
 }
 
-void s_read_file(char *file, char *buf)
+void s_read_file(char *buf, int *offset, int *size, char *file)
 {
     FILE *f = fopen(file);
 
@@ -181,7 +182,7 @@ void s_read_file(char *file, char *buf)
         return;
     }
 
-    strcpy(buf, f->read(0, f->node.size, buf));
+    buf = fread(buf, offset[0], size[0], f);
 }
 
 // ----------------------------- //

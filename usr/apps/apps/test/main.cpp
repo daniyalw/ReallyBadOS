@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 
     FILE *file = fopen(argv[1]);
 
-    file->write(argv[2]);
+    file->write(argv[2], 0, 10);
 
     fclose(file);
 

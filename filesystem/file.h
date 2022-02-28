@@ -7,15 +7,15 @@ struct FILE;
 #define EOF -1
 #define SEEK_SET 0
 
-int fwrite(int offset, int size, char *buf, FILE *file);
+int fwrite(char *buf, int offset, int size, FILE *file);
 char * fread(char *buf, int offset, int size, FILE *file);
 
 typedef struct FILE
 {
     fs_node node;
 
-    int write(int offset, int size, char *buf) { return fwrite(offset, size, buf, this); }
-    char *read(int offset, int size, char *buf) { buf = fread(buf, offset, size, this); return buf; }
+    int write(char *buf, int offset, int size) { return fwrite(buf, offset, size, this); }
+    char *read(char *buf, int offset, int size) { buf = fread(buf, offset, size, this); return buf; }
 
     char name[20];
 
@@ -44,3 +44,7 @@ char *fgets(char *str, int n, FILE *file);
 int feof(FILE *file);
 
 int fgetpos(FILE *file, fpos_t *pos);
+int fseek(FILE *file, int offset, int w);
+int ftell(FILE *file);
+void rewind(FILE *file);
+int fsetpos(FILE *file, fpos_t *pos);

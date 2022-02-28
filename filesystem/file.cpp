@@ -92,7 +92,7 @@ void fprintf(fs_node node, char *data)
     }
 }
 
-int fwrite(int offset, int size, char *buf, FILE *file)
+int fwrite(char *buf, int offset, int size, FILE *file)
 {
     if (file == NULL) return 1;
 
