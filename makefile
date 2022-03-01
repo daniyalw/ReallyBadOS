@@ -7,7 +7,10 @@ OUT = reallybados-x86_32.iso
 QEMU = qemu-system-x86_64
 
 all:
-	make kernel
+	make gdt
+	make interrupts
+	make jmp
+	make tss
 	make user
 	make ramdisk
 	make textmode
@@ -45,24 +48,20 @@ user:
 	make -C usr/apps/apps/test
 	make -C usr/apps/apps/time
 
-kernel:
-	make gdt
-	make interrupts
-	make jmp
-	make usermode
-	make tss
-
 textmode:
 	make bootloader
-	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o built/regs.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o -o built/main.o -T linker.ld
 	make iso
 	make run
 
 clean:
 	rm *.iso
-	rm *.o
 	rm built/*.o
-	rm isodir/*.cfg
+	rm isodir/boot/grub/*.cfg
+	rm usr/src/*.o
+	rm initrd/*.o
+	rm isodir/boot/main.o
+	rm isodir/boot/out.tar
 
 iso:
 	cp built/main.o isodir/boot/main.o
