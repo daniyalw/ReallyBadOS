@@ -47,7 +47,7 @@ void edit_buffer_size(int change)
     buffer_size += change;
 }
 
-static void scan_key(registers_t regs)
+static void scan_key(registers_t *regs)
 {
     current_key = inb(KEYBOARD_CODE);
     get_key(current_key);

@@ -157,7 +157,7 @@ extern "C" void isr_handler(registers_t r) {
 
     if (interrupt_handlers[r.int_no] != NULL) {
         isr_t handler = interrupt_handlers[r.int_no];
-        handler(r);
+        handler(&r);
     } else {
         log::error("Interrupt received: %d\nMessage: %s", r.int_no, exception_messages[r.int_no]);
     }
@@ -180,7 +180,7 @@ extern "C" void irq_handler(registers_t r) {
 
     if (interrupt_handlers[r.int_no] != NULL) {
         isr_t handler = interrupt_handlers[r.int_no];
-        handler(r);
+        handler(&r);
     }
     else
     {

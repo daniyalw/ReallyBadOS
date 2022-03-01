@@ -79,7 +79,7 @@ void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
 #endif
 }
 
-static void mouse_handler(registers_t regs)
+static void mouse_handler(registers_t *regs)
 {
     int r = 0;
     int mx = 0;

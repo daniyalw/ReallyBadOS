@@ -64,7 +64,7 @@ void find_mac();
 void send_packet(void *data, int length);
 
 void init_irq();
-void handle_irq(registers_t regs);
+void handle_irq(registers_t *regs);
 
 void start();
 

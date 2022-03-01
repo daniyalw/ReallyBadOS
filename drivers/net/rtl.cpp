@@ -67,7 +67,7 @@ void enable_recv()
     outb(device->base + RTL_CMD, 0x0C);
 }
 
-void handle_irq(registers_t regs)
+void handle_irq(registers_t *regs)
 {
     ASSERT(device != NULL);
 

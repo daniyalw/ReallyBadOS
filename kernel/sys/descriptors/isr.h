@@ -115,7 +115,7 @@ typedef struct {
    u32 eip, cs, eflags, useresp, ss; /* Pushed by the processor automatically */
 } registers_t;
 
-typedef void (*isr_t)(registers_t);
+typedef void (*isr_t)(registers_t*);
 
 namespace Kernel {
 

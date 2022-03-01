@@ -210,17 +210,17 @@ void syscall_print_syscalls()
                                         (void *)s_putpixel, (void *)s_update_mouse, (void *)s_info);
 }
 
-void syscall_handler(registers_t regs)
+void syscall_handler(registers_t *regs)
 {
-   if (regs.eax >= syscall_count)
+   if (regs->eax >= syscall_count)
    {
       log::error("Syscall outside of initialized syscalls range.");
        return;
    }
 
-   void *location = syscalls[regs.eax];
+   void *location = syscalls[regs->eax];
 
-   log::info("Syscall: %d\nLocations: %x:%x", regs.eax, location, (void *)s_info);
+   log::info("Syscall: %d\nLocations: %x:%x", regs->eax, location, (void *)s_info);
 
    //syscall_print_syscalls();
 
@@ -238,7 +238,7 @@ void syscall_handler(registers_t regs)
      pop %%ebx; \
      pop %%ebx; \
      pop %%ebx; \
-   " : "=a" (ret) : "r" (regs.edi), "r" (regs.esi), "r" (regs.edx), "r" (regs.ecx), "r" (regs.ebx), "r" (location));
+   " : "=a" (ret) : "r" (regs->edi), "r" (regs->esi), "r" (regs->edx), "r" (regs->ecx), "r" (regs->ebx), "r" (location));
    //regs.eax = ret;
 }
 
