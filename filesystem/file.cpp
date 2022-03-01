@@ -1,5 +1,7 @@
 #include <filesystem/node.h>
 #include <filesystem/file.h>
+#include <ctype.h>
+#include <string.h>
 
 FILE *fopen(char *path)
 {
@@ -196,4 +198,147 @@ int fsetpos(FILE *file, fpos_t *pos)
 {
     file->ptr = *pos;
     return file->ptr;
+}
+
+int fvsscanf(FILE *file, char *fmt, va_list va)
+{
+	int cz = 0;
+    char *str = file->read("", file->ptr, file->node.size);
+
+	while (*fmt)
+	{
+		if (*fmt == ' ')
+		{
+			while (*str && isspace(*str))
+            {
+				str++;
+                file->ptr++;
+            }
+		}
+		else if (*fmt == '%')
+		{
+			fmt++;
+			int _long = 0;
+
+			if (*fmt == 'l')
+			{
+				fmt++;
+
+				if (*fmt == 'l')
+				{
+					_long = 1;
+					fmt++;
+				}
+			}
+
+			if (*fmt == 'd')
+			{
+				int z = 0;
+				int negative = 1;
+
+				while (isspace(*str))
+                {
+                    str++;
+                    file->ptr++;
+                }
+
+                // see if the first is a minus sign
+				if (*str == '-')
+				{
+					negative = -1;
+					str++;
+                    file->ptr++;
+				}
+
+				while (*str && *str >= '0' && *str <= '9')
+				{
+					z = z * 10 + *str - '0';
+					str++;
+                    file->ptr++;
+				}
+
+				int * out = (int *)va_arg(va, int*);
+				cz++;
+				*out = z * negative;
+			}
+			else if (*fmt == 'u')
+			{
+				uint32_t z = 0;
+
+				while (isspace(*str))
+                {
+                    str++;
+                    file->ptr++;
+                }
+
+				while (*str && *str >= '0' && *str <= '9')
+				{
+					z = z * 10 + *str - '0';
+					str++;
+                    file->ptr++;
+				}
+
+				uint32_t *out = (uint32_t *)va_arg(va, uint32_t*);
+				cz++;
+				*out = z;
+			}
+            else if (*fmt == 's')
+            {
+                char **out = (char **)va_arg(va, char**);
+                char *s = (char *)&out[0];
+                int sz = 0;
+
+                while (isspace(*str))
+                {
+                    str++;
+                    file->ptr++;
+                }
+
+                while (isalpha(*str))
+                {
+                    s[sz] = *str;
+                    *str++;
+                    file->ptr++;
+                    sz++;
+                }
+
+                s[sz] = 0;
+                cz++;
+
+                if (strisempty(s))
+                {
+                    s = NULL;
+                    cz--;
+                }
+            }
+		}
+		else
+		{
+			if (*str == *fmt)
+            {
+				str++;
+                file->ptr++;
+            }
+			else
+				break;
+		}
+
+		fmt++;
+	}
+
+	if (cz <= 0)
+        return EOF;
+    else
+        return cz;
+}
+
+int fscanf(FILE *file, char *fmt, ...)
+{
+    va_list va;
+
+    va_start(va, fmt);
+    int ret = fvsscanf(file, fmt, va);
+    va_end(va);
+
+    return ret;
 }

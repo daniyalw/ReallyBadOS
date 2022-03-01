@@ -1,5 +1,6 @@
 #pragma once
 #include <string.h>
+#include <ctype.h>
 #include <list.h>
 
 int atoi(char * str)
@@ -146,7 +147,7 @@ void itoa(int num, char * out)
     itoa(out, 10, num);
 }
 
-void itoa(unsigned int num, char * out)
+void itoa(uint32_t num, char * out)
 {
     itoa(out, 10, num);
 }
@@ -231,6 +232,106 @@ char * append_int(char * j1, int num, char * dest)
     char * textnum;
     itoa(num, textnum);
     return append(j1, textnum, dest);
+}
+
+int vsscanf(char *str, char *fmt, va_list va)
+{
+	int cz = 0;
+
+	while (*fmt)
+	{
+		if (*fmt == ' ')
+		{
+			while (*str && isspace(*str))
+				str++;
+		}
+		else if (*fmt == '%')
+		{
+			fmt++;
+
+			if (*fmt == 'd')
+			{
+				int z = 0;
+				int negative = 1;
+
+				while (isspace(*str)) str++;
+
+                // see if the first is a minus sign
+				if (*str == '-')
+				{
+					negative = -1;
+					str++;
+				}
+
+				while (*str && *str >= '0' && *str <= '9')
+				{
+					z = z * 10 + *str - '0';
+					str++;
+				}
+
+				int * out = (int *)va_arg(va, int*);
+				cz++;
+				*out = z * negative;
+			}
+			else if (*fmt == 'u')
+			{
+				uint32_t z = 0;
+
+				while (isspace(*str)) str++;
+
+				while (*str && *str >= '0' && *str <= '9')
+				{
+					z = z * 10 + *str - '0';
+					str++;
+				}
+
+				uint32_t *out = (uint32_t *)va_arg(va, uint32_t*);
+				cz++;
+				*out = z;
+			}
+            else if (*fmt == 's')
+            {
+                char **out = (char **)va_arg(va, char**);
+                char *s = (char *)&out[0];
+                int sz = 0;
+
+                while (isspace(*str)) str++;
+
+                while (isalpha(*str))
+                {
+                    s[sz] = *str;
+                    *str++;
+                    sz++;
+                }
+
+                s[sz] = 0;
+                cz++;
+            }
+		}
+		else
+		{
+			if (*str == *fmt)
+				str++;
+			else
+				break;
+		}
+
+		fmt++;
+	}
+
+	return cz;
+}
+
+int sscanf(char *s, char *fmt, ...)
+{
+	va_list va;
+    int out;
+
+	va_start(va, fmt);
+	out = vsscanf(s, fmt, va);
+	va_end(va);
+
+	return out;
 }
 
 char *strstr(char *s, char *d)

@@ -275,11 +275,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     */
 
     //init_tasking();
-    char **buf;
-    int ret = tokenize("elfmonsterelfkiller", "elf", buf);
-
-    for (int z = 0; z < ret; z++)
-        printf("Token: %s\n", buf[z]);
 
     switch_to_user_mode();
     shell();

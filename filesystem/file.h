@@ -48,3 +48,6 @@ int fseek(FILE *file, int offset, int w);
 int ftell(FILE *file);
 void rewind(FILE *file);
 int fsetpos(FILE *file, fpos_t *pos);
+
+int fvsscanf(FILE *file, char *fmt, va_list va);
+int fscanf(FILE *file, char *fmt, ...);
