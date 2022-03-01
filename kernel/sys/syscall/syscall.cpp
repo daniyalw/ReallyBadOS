@@ -22,9 +22,9 @@ void set_string(char * string, char * newvalue)
 
 // ----------------------------- //
 
-void print(char * text)
+void print(char * text, int *ret)
 {
-    printf(text);
+    ret[0] = printf(text);
 }
 
 void s_putchar(char text)

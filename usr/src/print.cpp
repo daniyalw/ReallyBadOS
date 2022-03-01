@@ -77,9 +77,9 @@ extern "C" char * vsprintf(char *s, char *format, va_list va)
     return vnprintf(s, strlen(format), format, va);
 }
 
-extern "C" void vprintf(char *f, va_list va)
+extern "C" int vprintf(char *f, va_list va)
 {
-    printf(vsprintf("", f, va));
+    return printf(vsprintf("", f, va));
 }
 
 extern "C" void sprintf(char *s, char *fmt, ...)
@@ -103,15 +103,20 @@ extern "C" void putchar(char text) {
     asm volatile("int $48" : "=a" (a) : "0" (PUTCHAR), "b" (text));
 }
 
-extern "C" void printf(char *a, ...)
+extern "C" int printf(char *a, ...)
 {
     va_list va;
+    char *out;
+    int count[1];
+    void *b;
+
     va_start(va, a);
-    char * out = vsprintf("", a, va);
+    out = vsprintf("", a, va);
     va_end(va);
 
-    void * b;
-    asm volatile("int $48" : "=a" (b) : "0" (PRINT), "b" (out));
+    asm volatile("int $48" : "=a" (b) : "0" (PRINT), "b" (out), "c" (count));
+
+    return count[0];
 }
 
 void test_print()

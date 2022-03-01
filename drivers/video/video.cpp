@@ -138,9 +138,9 @@ char * vsprintf(char *s, char *format, va_list va)
     return vsnprintf(s, len(format), format, va);
 }
 
-void vprintf(char *f, va_list va)
+int vprintf(char *f, va_list va)
 {
-    printf(vsprintf("", f, va));
+    return printf(vsprintf("", f, va));
 }
 
 void sprintf(char *s, char *fmt, ...)
@@ -200,9 +200,10 @@ void scroll()
    }
 }
 
-void printf(char *a, ...)
+int printf(char *a, ...)
 {
     va_list va;
+
     va_start(va, a);
     char * out = vsprintf("", a, va);
     va_end(va);
@@ -211,19 +212,23 @@ void printf(char *a, ...)
         putchar(out[z]);
 
     Kernel::update_hardware_cursor(text_x, text_y);
+
+    return strlen(out);
 }
 
-void cprintf(int color, char *a, ...)
+int cprintf(int color, char *a, ...)
 {
     custom_color_on = true;
     custom_color = color;
 
     va_list va;
     va_start(va, a);
-    vprintf(a, va);
+    int count = vprintf(a, va);
     va_end(va);
 
     custom_color_on = false;
+
+    return count;
 }
 
 void putchar_at(int x, int y, char c)
@@ -236,16 +241,19 @@ void putchar_at(int x, int y, char c)
         vidmem[x+y*80] = custom_color | c;
 }
 
-void printf_centered(char *s, int line_no)
+int printf_centered(char *s, int line_no)
 {
-    int half = len(s)/2;
+    const int length = strlen(s);
+    int half = length/2;
     int start = 40 - half;
 
-    for (int z = 0; z < len(s); z++)
+    for (int z = 0; z < length; z++)
     {
         putchar_at(start, line_no, s[z]);
         start++;
     }
+
+    return length;
 }
 
 void write_vga(fs_node node, int offset, int size, char *data)

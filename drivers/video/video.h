@@ -24,14 +24,14 @@ void putchar_with_cursor_move(char text);
 void putchar(char text);
 void snprintf(char *s, int max, char *fmt, ...);
 void sprintf(char *s, char *fmt, ...);
-void vprintf(char *f, va_list va);
+int vprintf(char *f, va_list va);
 char * vsprintf(char *s, char *format, va_list va);
 char * vsnprintf(char *s, int max, char *format, va_list va);
 void scroll();
 void vaprintf(char *text, va_list va);
-void printf(char *a, ...);
-void cprintf(int color, char *a, ...);
-void printf_centered(char * s, int line_no);
+int printf(char *a, ...);
+int cprintf(int color, char *a, ...);
+int printf_centered(char * s, int line_no);
 
 struct output
 {
