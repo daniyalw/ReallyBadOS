@@ -97,6 +97,7 @@ extern "C" {
 #include "../net/arp.cpp"
 #include "../drivers/disk/disk.cpp"
 #include "../stdlib/utils.cpp"
+#include "diskfs.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"

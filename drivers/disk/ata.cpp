@@ -61,6 +61,11 @@ void ata_write_one(uint32_t LBA, uint8_t *bytes) {
     }
 }
 
+void ata_irq_handler(registers_t *regs)
+{
+    // just so we don't get an unknown interrupt error
+}
+
 // Calculate sectors needed by a file: "(file size in bytes / bytes by sector) +
 // 1"
 void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes) {
@@ -185,6 +190,8 @@ FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
 
 uint16_t *ata_init(uint16_t *bytes)
 {
+    Kernel::register_interrupt_handler(32 + 14, ata_irq_handler);
+
     bytes = ata_send_identify(bytes);
 
     if (bytes[0] != -1)
