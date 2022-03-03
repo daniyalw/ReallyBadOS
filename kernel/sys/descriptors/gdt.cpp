@@ -34,6 +34,12 @@ void init_tss()
     Kernel::_init_tss(5, 0x10, esp);
 }
 
+void set_kernel_stack(uint32_t stack)
+{
+    tss.esp0 = stack;
+    flush_tss();
+}
+
 static void init_gdt()
 {
    gdt_ptr.limit = (sizeof(gdt_entry_t) * 6) - 1;

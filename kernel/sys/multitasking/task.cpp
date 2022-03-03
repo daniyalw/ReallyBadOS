@@ -1,98 +1,109 @@
 #include <sys/descriptors/isr.h>
 #include <sys/multitasking/task.h>
+#include <sys/descriptors/gdt.h>
 
 void create_process(char *name, uint32_t begin)
 {
-    task_t task;
+    task_t *task = (task_t *)&tasks[task_count];
 
-    strcpy(task.name, name);
+    strcpy(task->name, name);
 
-    task.pid = task_count;
+    task->pid = task_count;
     task_count++;
 
-    task.regs.eip = begin;
-    task.regs.eflags = 0x206;;
+    task->eip = begin;
+    task->eflags = 0x202;
 
-    task.stack = allocate_stack();
-    task.regs.esp = (task.stack - 4 * 1024);
+    uint32_t stack_addr = allocate_stack();
+    uint32_t *stack = (uint32_t *)stack_addr + (4 * 1024);
 
-    save_task(task);
+    *--stack = task->eflags; // eflags
+    *--stack = 0x0b; // cs
+    *--stack = (uint32_t)begin; // eip
+    *--stack = 0; // eax
+    *--stack = 0; // ebx
+    *--stack = 0; // ecx;
+    *--stack = 0; //edx
+    *--stack = 0; //esi
+    *--stack = 0; //edi
+    *--stack = stack_addr + (4 * 1024); //ebp
+    *--stack = 0x13; // ds
+    *--stack = 0x13; // fs
+    *--stack = 0x13; // es
+    *--stack = 0x13; // gs
+
+    task->stack_top = (uint32_t)stack;
+    task->esp = task->stack_top;
+    task->stack = stack_addr;
 }
 
-void load_new_task(task_t task)
+void load_new_task(task_t *task)
 {
-    // TODO: properly switch task here
-   asm volatile("iret");
+    uint32_t esp, eip, ebp;
+    esp = task->esp;
+    eip = task->eip;
+    ebp = task->ebp;
+
+    perform_task_switch(eip, ebp, esp);
 }
 
 uint32_t allocate_stack()
 {
-    uint32_t stack = beginning_stack;
-    beginning_stack += 4 * 1024;
-    return stack;
+    return malloc(4 * 1024);
 }
 
-void save_task(task_t task)
+void switch_task(registers_t *regs)
 {
-    tasks[task.pid] = task;
-}
+    uint32_t eip = regs->eip;
 
-void save_task_context(task_t task, registers_t regs)
-{
-    task.regs.eax = regs.eax;
-    task.regs.ebx = regs.ebx;
-    task.regs.ecx = regs.ecx;
-    task.regs.edx = regs.edx;
-    task.regs.esp = regs.esp;
-    task.regs.ebp = regs.ebp;
-    task.regs.esi = regs.esi;
-    task.regs.edi = regs.edi;
-    task.regs.eflags = regs.eflags;
-    task.regs.eip = regs.eip;
-    save_task(task);
-}
+    if (eip == 0x12344)
+        return;
 
-void switch_task(registers_t regs)
-{
-    task_t current = tasks[current_task];
-    save_task_context(current, regs);
+    task_t *current = (task_t *)&tasks[current_task];
 
-    if (current_task - 1 >= task_count)
+    uint32_t stack_bottom = allocate_stack();
+    uint32_t *stack = (uint32_t *)stack_bottom + 4096;
+
+    *--stack = current->eflags; // eflags
+    *--stack = 0x0b; // cs
+    *--stack = current->eip; // eip
+    *--stack = 0; // eax
+    *--stack = 0; // ebx
+    *--stack = 0; // ecx;
+    *--stack = 0; //edx
+    *--stack = 0; //esi
+    *--stack = 0; //edi
+    *--stack = stack_bottom + (4 * 1024); //ebp
+    *--stack = 0x13; // ds
+    *--stack = 0x13; // fs
+    *--stack = 0x13; // es
+    *--stack = 0x13; // gs
+
+#ifdef DEBUG
+    log::info("Note: eip: %d\n", current->eip);
+#endif
+
+    free(current->stack);
+
+    current->stack = stack_bottom;
+    current->stack_top = (uint32_t)stack;
+    current->esp = current->stack_top;
+
+    current_task++;
+
+    if (current_task >= task_count)
         current_task = 0;
 
-    task_t load = tasks[current_task];
+    task_t *load = (task_t *)&tasks[current_task];
+#ifdef DEBUG
+    log::warning("Current task: %d\nNew task load: %s\nNew task eip: %d\ntest2(): %d\n", current_task, load->name, load->eip, (uint32_t)&test3);
+#endif
     load_new_task(load);
-}
-
-void test1()
-{
-    while (true)
-    {
-        printf("1");
-    }
-}
-
-void test2()
-{
-    while (true)
-    {
-        printf("2");
-    }
-}
-
-void test3()
-{
-    while (true)
-    {
-        printf("3");
-    }
 }
 
 void init_tasking()
 {
-    create_process("test1", (uint32_t)&test1);
-    create_process("test2", (uint32_t)&test2);
-    create_process("test3", (uint32_t)&test3);
+    create_process("idle", (uint32_t)&idle_task);
 
     tasking_on = true;
 }

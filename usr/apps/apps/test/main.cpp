@@ -13,7 +13,9 @@ int main(int argc, char *argv[])
 
     char *result = scanf();
 
-    printf("Read from scanf(): %s\n", result);
+    printf("Read from scanf(): %s\n", result);;
+
+
 
     char k = getch();
 
