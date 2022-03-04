@@ -6,6 +6,9 @@ int seconds = 0;
 u32 ctick;
 u32 hz;
 
+int task_counter = 0;
+const int task_counter_limit = 500;
+
 typedef struct
 {
     int remaining_ms;

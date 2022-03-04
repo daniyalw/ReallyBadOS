@@ -5,9 +5,6 @@
 #include <sys/log/log.h>
 #include <sys/multitasking/task.h>
 
-int task_counter = 0;
-const int task_counter_limit = 500;
-
 void timer_int(registers_t *regs) {
     tick++;
     ctick++;

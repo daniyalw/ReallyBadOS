@@ -33,3 +33,6 @@ void switch_task(registers_t *regs);
 
 task_t *find_first_null_task();
 task_t *first_free_task();
+
+void yield();
+void exit(int ret);

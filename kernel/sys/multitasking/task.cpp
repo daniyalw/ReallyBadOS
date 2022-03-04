@@ -10,11 +10,18 @@ void idle_task()
     }
 }
 
+void yield()
+{
+    task_counter = 0; // the timer will switch to a new task when it sees that the counter is 0
+}
+
 void exit(int ret)
 {
     task_t *task = (task_t *)&tasks[current_task];
     task->null = true;
     free((void *)task->stack);
+
+    yield();
 }
 
 task_t *find_first_null_task()
