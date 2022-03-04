@@ -17,8 +17,7 @@ Make sure you have the following tools installed: `nasm i686-elf-g++ i686-elf-ld
 
 Then run:
 ```
-make kernel
-make textmode
+make all
 ```
 
 It should compile, and automatically run QEMU for you.
