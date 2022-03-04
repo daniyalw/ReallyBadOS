@@ -28,3 +28,34 @@ int mkdir(char *name, char *parent)
 
     return 0;
 }
+
+int mkdir(char *path)
+{
+    if (startswith(path, "/"))
+        path = &path[1];
+
+    if (endswith(path, "/"))
+        path[strlen(path)-1] = 0;
+
+    char **buf;
+    int ret;
+    char *parent = NULL;
+    int z = 0;
+    char *folder = NULL;
+
+    ret = tokenize(path, '/', buf);
+
+    folder = buf[ret-1];
+
+    while (z < ret - 1)
+    {
+        if (z == 0)
+            parent = get(parent, "/%s/", buf[z]);
+        else
+            parent = get(parent, "%s%s/", parent, buf[z]);
+
+        z++;
+    }
+
+    return mkdir(folder, parent);
+}

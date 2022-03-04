@@ -229,19 +229,19 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     for (int z = 0; z < tar.block_count; z++)
     {
-        if (endswith(tar.blocks[z].name, "o") && !endswith(tar.blocks[z].name, "write.o"))
+        if (endswith(tar.blocks[z].name, ".o"))
         {
             create_file(tar.blocks[z].name, "/apps/", tar.blocks[z].contents);
         }
-        else if (endswith(tar.blocks[z].name, "txt"))
+        else if (endswith(tar.blocks[z].name, ".txt"))
         {
             create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
         }
-        else if (endswith(tar.blocks[z].name, "r"))
+        else if (endswith(tar.blocks[z].name, ".r"))
         {
             create_file(tar.blocks[z].name, "/usr/scripts/", tar.blocks[z].contents);
         }
-        else if (endswith(tar.blocks[z].name, "sfn"))
+        else if (endswith(tar.blocks[z].name, ".sfn"))
         {
             create_file(tar.blocks[z].name, "/usr/fonts/", tar.blocks[z].contents);
         }
