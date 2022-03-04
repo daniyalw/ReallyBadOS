@@ -12,7 +12,7 @@ typedef struct
     int pid;
     uint32_t stack;
     uint32_t stack_top;
-    bool null;
+    bool null, blocked;
 } task_t;
 
 task_t tasks[30];

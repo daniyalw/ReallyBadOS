@@ -45,6 +45,42 @@ task_t *first_free_task()
     return task;
 }
 
+void block_task(int task_id)
+{
+    if (task_id >= task_count || task_id < 0)
+        return;
+
+    task_t *task = (task_t *)&tasks[task_id];
+
+    if (!task->null)
+    {
+        task->blocked = true;
+    }
+}
+
+void unblock_task(int task_id)
+{
+    if (task_id >= task_count || task_id < 0)
+        return;
+
+    task_t *task = (task_t *)&tasks[task_id];
+
+    if (!task->null)
+    {
+        task->blocked = false;
+    }
+}
+
+void block_current_task()
+{
+    block_task(current_task);
+}
+
+void unblock_current_task()
+{
+    unblock_task(current_task);
+}
+
 void create_process(char *name, uint32_t begin)
 {
     task_t *task = first_free_task();
@@ -130,14 +166,25 @@ void switch_task(registers_t *regs)
     current->stack_top = (uint32_t)stack;
     current->esp = current->stack_top;
 
+    int current = current_task;
+
     current_task++;
 
     if (current_task >= task_count)
         current_task = 0;
 
-    while (tasks[current_task].null)
+    while (tasks[current_task].null || tasks[current_task].blocked)
     {
         current_task++;
+
+        if (current_task >= task_count)
+            current_task = 0;
+
+        if (current_task == current)
+        {
+            // one full circle, all tasks blocked or null
+            PANIC("All tasks, including idle, blocked or null!");
+        }
     }
 
     task_t *load = (task_t *)&tasks[current_task];
