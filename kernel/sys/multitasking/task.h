@@ -12,6 +12,7 @@ typedef struct
     int pid;
     uint32_t stack;
     uint32_t stack_top;
+    bool null;
 } task_t;
 
 task_t tasks[30];
@@ -29,3 +30,6 @@ uint32_t allocate_stack();
 
 void init_tasking();
 void switch_task(registers_t *regs);
+
+task_t *find_first_null_task();
+task_t *first_free_task();

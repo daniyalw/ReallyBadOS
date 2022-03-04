@@ -2,17 +2,53 @@
 #include <sys/multitasking/task.h>
 #include <sys/descriptors/gdt.h>
 
+void idle_task()
+{
+    while (true)
+    {
+
+    }
+}
+
+void exit(int ret)
+{
+    task_t *task = (task_t *)&tasks[current_task];
+    task->null = true;
+    free((void *)task->stack);
+}
+
+task_t *find_first_null_task()
+{
+    for (int z = 0; z < task_count; z++)
+    {
+        if (tasks[z].null)
+            return (task_t *)&tasks[z];
+    }
+
+    return NULL;
+}
+
+task_t *first_free_task()
+{
+    task_t *task = find_first_null_task();
+
+    if (task == NULL)
+        task = (task_t *)&tasks[task_count];
+
+    return task;
+}
+
 void create_process(char *name, uint32_t begin)
 {
-    task_t *task = (task_t *)&tasks[task_count];
+    task_t *task = first_free_task();
 
     strcpy(task->name, name);
-
     task->pid = task_count;
     task_count++;
 
     task->eip = begin;
     task->eflags = 0x202;
+    task->null = false;
 
     uint32_t stack_addr = allocate_stack();
     uint32_t *stack = (uint32_t *)stack_addr + (4 * 1024);
@@ -61,7 +97,7 @@ void switch_task(registers_t *regs)
 
     task_t *current = (task_t *)&tasks[current_task];
 
-    uint32_t stack_bottom = allocate_stack();
+    uint32_t stack_bottom = current->stack;
     uint32_t *stack = (uint32_t *)stack_bottom + 4096;
 
     *--stack = current->eflags; // eflags
@@ -83,8 +119,6 @@ void switch_task(registers_t *regs)
     log::info("Note: eip: %d\n", current->eip);
 #endif
 
-    free(current->stack);
-
     current->stack = stack_bottom;
     current->stack_top = (uint32_t)stack;
     current->esp = current->stack_top;
@@ -93,6 +127,11 @@ void switch_task(registers_t *regs)
 
     if (current_task >= task_count)
         current_task = 0;
+
+    while (tasks[current_task].null)
+    {
+        current_task++;
+    }
 
     task_t *load = (task_t *)&tasks[current_task];
 #ifdef DEBUG
