@@ -33,6 +33,7 @@ jmp:
 
 tasking:
 	nasm -f elf32 kernel/sys/multitasking/switch.asm -o built/switch.o
+	i686-elf-as kernel/sys/multitasking/eip.asm -o built/eip.o
 
 tss:
 	nasm -f elf32 kernel/sys/descriptors/tss.asm -o built/tss.o
@@ -55,7 +56,7 @@ user:
 
 textmode:
 	make bootloader
-	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o  built/switch.o -o built/main.o -T linker.ld
+	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o built/switch.o built/eip.o -o built/main.o -T linker.ld
 	make iso
 	make run
 

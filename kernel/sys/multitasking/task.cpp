@@ -1,6 +1,7 @@
 #include <sys/descriptors/isr.h>
 #include <sys/multitasking/task.h>
 #include <sys/descriptors/gdt.h>
+#include "message.h"
 
 void idle_task()
 {
@@ -12,14 +13,21 @@ void idle_task()
 
 void yield()
 {
-    task_counter = 0; // the timer will switch to a new task when it sees that the counter is 0
+    task_counter = task_counter_limit - 1;
+    asm volatile("int $32"); // call the timer interrupt
 }
 
 void exit(int ret)
 {
+    asm("cli");
     task_t *task = (task_t *)&tasks[current_task];
     task->null = true;
     free((void *)task->stack);
+
+    for (int z = 0; z < task->message_count; z++)
+        free(task->messages[z]);
+
+    asm("sti");
 
     yield();
 }
@@ -56,6 +64,8 @@ void block_task(int task_id)
     {
         task->blocked = true;
     }
+
+    log::error("Blocked task %s\n", task->name);
 }
 
 void unblock_task(int task_id)
@@ -69,6 +79,8 @@ void unblock_task(int task_id)
     {
         task->blocked = false;
     }
+
+    log::error("Unblocked task %s\n", task->name);
 }
 
 void block_current_task()
@@ -86,12 +98,15 @@ void create_process(char *name, uint32_t begin)
     task_t *task = first_free_task();
 
     strcpy(task->name, name);
+    task->name[strlen(name)] = 0;
     task->pid = task_count;
     task_count++;
 
     task->eip = begin;
     task->eflags = 0x202;
     task->null = false;
+
+    task->message_count = 0;
 
     uint32_t stack_addr = allocate_stack();
     uint32_t *stack = (uint32_t *)stack_addr + (4 * 1024);
@@ -131,7 +146,7 @@ uint32_t allocate_stack()
     return malloc(4 * 1024);
 }
 
-void switch_task(registers_t *regs)
+void switch_task(registers_t *regs, bool save_last)
 {
     uint32_t eip = regs->eip;
 
@@ -140,33 +155,34 @@ void switch_task(registers_t *regs)
 
     task_t *current = (task_t *)&tasks[current_task];
 
-    uint32_t stack_bottom = current->stack;
-    uint32_t *stack = (uint32_t *)stack_bottom + 4096;
+    if (save_last)
+    {
+        current->eip = eip;
 
-    *--stack = current->eflags; // eflags
-    *--stack = 0x0b; // cs
-    *--stack = current->eip; // eip
-    *--stack = 0; // eax
-    *--stack = 0; // ebx
-    *--stack = 0; // ecx;
-    *--stack = 0; //edx
-    *--stack = 0; //esi
-    *--stack = 0; //edi
-    *--stack = stack_bottom + (4 * 1024); //ebp
-    *--stack = 0x13; // ds
-    *--stack = 0x13; // fs
-    *--stack = 0x13; // es
-    *--stack = 0x13; // gs
+        uint32_t stack_bottom = current->stack;
+        uint32_t *stack = (uint32_t *)stack_bottom + 4096;
 
-#ifdef DEBUG
-    log::info("Note: eip: %d\n", current->eip);
-#endif
+        *--stack = current->eflags; // eflags
+        *--stack = 0x0b; // cs
+        *--stack = current->eip; // eip
+        *--stack = 0; // eax
+        *--stack = 0; // ebx
+        *--stack = 0; // ecx;
+        *--stack = 0; //edx
+        *--stack = 0; //esi
+        *--stack = 0; //edi
+        *--stack = stack_bottom + (4 * 1024); //ebp
+        *--stack = 0x13; // ds
+        *--stack = 0x13; // fs
+        *--stack = 0x13; // es
+        *--stack = 0x13; // gs
 
-    current->stack = stack_bottom;
-    current->stack_top = (uint32_t)stack;
-    current->esp = current->stack_top;
+        current->stack = stack_bottom;
+        current->stack_top = (uint32_t)stack;
+        current->esp = current->stack_top;
+    }
 
-    int current = current_task;
+    int _current = current_task;
 
     current_task++;
 
@@ -180,7 +196,7 @@ void switch_task(registers_t *regs)
         if (current_task >= task_count)
             current_task = 0;
 
-        if (current_task == current)
+        if (current_task == _current)
         {
             // one full circle, all tasks blocked or null
             PANIC("All tasks, including idle, blocked or null!");
@@ -189,7 +205,7 @@ void switch_task(registers_t *regs)
 
     task_t *load = (task_t *)&tasks[current_task];
 #ifdef DEBUG
-    log::warning("Current task: %d\nNew task load: %s\nNew task eip: %d\ntest2(): %d\n", current_task, load->name, load->eip, (uint32_t)&test3);
+    log::warning("Current task: %d\nNew task load: %s\nNew task eip: %d\n", current_task, load->name, load->eip);
 #endif
     load_new_task(load);
 }

@@ -99,6 +99,7 @@ extern "C" {
 #include "../drivers/disk/disk.cpp"
 #include "../stdlib/utils.cpp"
 #include "diskfs.cpp"
+#include "sys/multitasking/message.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -276,8 +277,10 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Net::ARP::send_request(addr);
     */
 
-    switch_to_user_mode();
-    shell();
+    init_tasking();
+
+    //switch_to_user_mode();
+    //shell();
 
     Kernel::serial_write_string("\n");
     while (true) {}

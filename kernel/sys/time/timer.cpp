@@ -36,7 +36,7 @@ void timer_int(registers_t *regs) {
         if (task_counter == task_counter_limit)
         {
             task_counter = 0;
-            switch_task(regs);
+            switch_task(regs, true);
         }
     }
 
