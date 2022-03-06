@@ -8,41 +8,27 @@
 #define FS_NULL 2
 #define FS_NOT_NULL 1
 
+#define FS_BEGINNING_SECTOR 3 // leave 2 sectors for boot
+
 typedef struct
 {
-    // should always be FS_MAGIC
-    int magic;
+    int magic; // should always be FS_MAGIC
     int state;
-    int null; // should always be 0
-    int first_available_sector;
-} __attribute__((packed)) fs_first_sector_t;
+    int free_sector; // first free sector
+
+    char padding[509];
+} disk_fs_master_t;
 
 typedef struct
 {
     char name[20];
-    char path[100];
+    int type; // type of node
+    int magic; // again, always should be FS_MAGIC
+    int state;
+    int contents_sectors; // how many sectors does the contents take up
 
-    int sector_beginning; // offset from beginning of eleventh sector (the sector where this tracker does not track)
-
-    char padding[7]; // to make 128 bytes
-    int null;
-} __attribute__((packed)) fs_node_tracker_t;
-
-typedef struct
-{
-    char name[20];
-    char path[100];
-    int contents_sectors;
-
-    char padding[390]; // leave one byte off
-} __attribute__((packed)) fs_disk_file_t;
-
-typedef struct
-{
-    fs_node_tracker_t nodes[4 * 10]; // 4 node trackers per sector, 10 sectors
-    int node_count = 0;
-    char padding[39];
-} __attribute__((packed)) fs_global_tracker_t;
+    char padding[488];
+} disk_fs_node_t;
 
 void format();
-int create_file(char *name, char *path, char *contents);
+int write_new_file_disk(auto disk_write_function, auto disk_read_function, char *name, char *contents, int type);
