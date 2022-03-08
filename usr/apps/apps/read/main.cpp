@@ -11,16 +11,15 @@ int main(int argc, char **argv)
 
     FILE *file = fopen(argv[1]);
 
-    if (file->null || file == NULL)
+    if (file == NULL)
     {
         printf("File is null.\n");
     }
     else
     {
-        printf("Name: %s\n", file->name);
-        printf("Size: %d bytes\n", file->node.size);
-        printf("Read: ");
-        printf(file->read("", 0, file->node.size));
+        printf("Name: %s\n", file->node->name);
+        printf("Size: %d bytes\n", file->node->size);
+        printf("Read: %s\n", fread("", 0, file->node->size, file));
     }
 
     fclose(file);

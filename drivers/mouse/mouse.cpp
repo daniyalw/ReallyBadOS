@@ -1,6 +1,5 @@
 #pragma once
 #include <mouse/mouse.h>
-#include <fs.h>
 #include <gui/gui.h>
 
 //https://forum.osdev.org/viewtopic.php?t=10247

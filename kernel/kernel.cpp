@@ -86,11 +86,6 @@ extern "C" {
 #include "../exec/elf.cpp"
 #include "../exec/argparse.cpp"
 #include "../stdlib/ctype.cpp"
-#include "../filesystem/fs.cpp"
-#include "../filesystem/file.cpp"
-#include "../filesystem/node.cpp"
-#include "../filesystem/parse.cpp"
-#include "../filesystem/folder.cpp"
 #include "dev.cpp"
 #include "../drivers/net/rtl.cpp"
 #include "../net/ethernet.cpp"
@@ -100,6 +95,9 @@ extern "C" {
 #include "../stdlib/utils.cpp"
 #include "diskfs.cpp"
 #include "sys/multitasking/message.cpp"
+#include "../filesystem/node.cpp"
+#include "../filesystem/file.cpp"
+#include "../filesystem/dir.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -225,6 +223,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     init_mem(mbd, beginning);
 
     init_fs();
+
     init_vga();
     init_all_devs();
 
@@ -232,7 +231,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     {
         if (endswith(tar.blocks[z].name, ".o"))
         {
-            create_file(tar.blocks[z].name, "/apps/", tar.blocks[z].contents);
+            create_file(tar.blocks[z].name, "/bin/", tar.blocks[z].contents);
         }
         else if (endswith(tar.blocks[z].name, ".txt"))
         {

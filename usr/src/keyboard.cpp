@@ -7,7 +7,7 @@ extern "C" char getch()
     // read files
     FILE *file = fopen("/dev/stdin"); // dunno why but getch doesn't work
     char *buff;
-    buff = file->read(buff, 0, 100);
+    buff = fread(buff, 0, 100, file);
 
 
     fclose(file);
@@ -20,7 +20,7 @@ extern "C" char *scanf()
     FILE *file = fopen("/dev/stdin");
     char *buff;
 
-    buff = file->read(buff, 0, 1000);
+    buff = fread(buff, 0, 1000, file);
 
     fclose(file);
 

@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     printf("To write: '%s'", c);
 
     FILE *file = fopen(argv[1]);
-    file->write(c, 0, 10);
+    fwrite(c, 0, 10, file);
     fclose(file);
 
     return 0;

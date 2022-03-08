@@ -2,7 +2,7 @@
 
 #include <sys/io.h>
 #include <sound/sound.h>
-#include <filesystem/ramdisk.h>
+//#include <filesystem/ramdisk.h>
 
 
 namespace Kernel {
@@ -33,7 +33,7 @@ static void nosound() {
    outb(0x61, tmp);
 }
 
-
+/*
 char *sound_input(fs_node node, int offset, int size, char *data)
 {
     UNUSED(data);
@@ -46,15 +46,11 @@ void sound_write(fs_node node, int offset, int size, char *data)
     uint32_t frequency = uint_atoi(data);
     play_sound(frequency);
 }
+*/
 
 void beep()
 {
-    FILE *file = fopen("/dev/sound");
-    file->write("1000", 0, file->node.size); // there's a difference between 1000 int and 1000 string
 
-    for (int z = 0; z < 4000000; z++)
-        io_wait();
-    nosound();
 }
 
 }

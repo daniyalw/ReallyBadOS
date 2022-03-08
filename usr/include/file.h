@@ -8,26 +8,37 @@
 
 struct fs_node;
 
-typedef void (*__write)(fs_node, int offset, int size, char *);
-typedef char * (*__read)(fs_node, int offset, int size, char *);
+#define FILENAME_LIMIT 20
+#define CHILDREN_LIMIT 20
 
-struct fs_node
+#define FS_FOLDER 0x1
+#define FS_FILE 0x2
+
+struct fs_node_t;
+
+typedef int (*__write)(fs_node_t*, int offset, int size, char *);
+typedef char * (*__read)(fs_node_t*, int offset, int size, char *);
+
+struct fs_node_t
 {
-    char name[20];
-    char path[100];
-    int id;
-    int parent_id;
+    char name[FILENAME_LIMIT];
+    char path[FILENAME_LIMIT * 10];
+
+    int id, parent_id;
     int flags;
+
+    int permission;
+
     bool null = false;
-    int size;
 
-    int children_id[12]; // if the node is a folder
-    int children_count = 0;
+    int size = 0;
+    char *contents;
 
-    char *contents; // if it is a file
+    __write write = NULL;
+    __read read = NULL;
 
-    __write write;
-    __read read;
+    int children[CHILDREN_LIMIT];
+    int children_count = NULL;
 };
 
 struct FILE;
@@ -44,7 +55,7 @@ extern void ls(char *path);
 extern int mkfile(char *name, char *dir, char *contents);
 
 extern int fwrite(char *buf, int offset, int size, FILE *file);
-extern char * fread(char *buf, int offset, int size, FILE *file);
+extern char * fread(char *buffer, int offset, int size, FILE *file);
 
 extern int fgetc(FILE *file);
 extern int feof(FILE *file);
@@ -59,17 +70,10 @@ extern int fsetpos(FILE *file, fpos_t *pos);
 }
 #endif
 
-typedef struct FILE
+struct FILE
 {
-    fs_node node;
+    fs_node_t *node;
 
-    int write(char *buf, int offset, int size) { return fwrite(buf, offset, size, this); }
-    char *read(char *buf, int offset, int size) { buf = fread(buf, offset, size, this); return buf; }
-
-    char name[20];
-
-    int ptr = 0;
-    int eof = 0;
-
-    bool null;
-} FILE;
+    int ptr;
+    int eof;
+};

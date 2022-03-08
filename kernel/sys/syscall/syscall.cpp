@@ -2,9 +2,10 @@
 #include <random.h>
 #include <sys/power/power.h>
 #include <mouse/cursor.h>
-#include <filesystem.h>
 #include <shell/shell.h>
 #include <sys/log/log.h>
+#include <filesystem/file.h>
+#include <filesystem/dir.h>
 
 void set_string(char * string, char * newvalue)
 {
@@ -79,75 +80,48 @@ void s_info(info_t *info)
 
 void s_file(char *path, uint32_t *addr)
 {
-    if (path[0] != '/')
-    {
-        path = get("", "/%s", path);
-    }
-
     FILE *file = fopen(path);
-    uint32_t address;
 
-    if (file == NULL || file->null)
-        address = NULL;
+    if (file == NULL)
+        addr[0] = NULL;
     else
-        address = (uint32_t)file;
-
-    addr[0] = address;
+        addr[0] = (uint32_t)file;
 }
 
 void s_fclose(FILE *file)
 {
-    fclose(file);
+    free(file);
 }
 
 void exec_file(char *contents, int *ret)
 {
-    int r = execute_script(contents);
 
-    ret[0] = r;
 }
 
 void s_ls(char *path)
 {
-    // automatically attach slash if user does not do it
-    if (path[0] != '/')
-    {
-        path = get("", "/%s/", path);
-    }
-    int id = find_id(path);
-    if (id < 0)
-        printf("Invalid folder/file!\n");
-    else
-        fs_ls(path);
+    list_dir(path);
 }
 
 void s_create_folder(char *folder, char *parent_dir, int *result)
 {
-    result[0] = mkdir(folder, parent_dir);
+    result[0] = make_dir_user(folder, parent_dir);
 }
 
 void s_create_file(char *name, char *folder, char *contents, int *res)
 {
-    log::warning("Creating file %s in folder %s", name, folder);
     res[0] = create_file(name, folder, contents);
 }
 
-void s_write_file(char *contents, int *offset, int *size, char *file, int *res)
+void s_write_file(char *contents, int *offset, int *size, FILE *file, int *res)
 {
-    res[0] = 0;
-    FILE *f = fopen(file);
+    if (file == NULL)
+    {
+        res[0] = NULL;
+        return;
+    }
 
-    if (f != NULL)
-    {
-        log::warning("Writing '%s' into file '%s'", contents, file);
-        node_write_basic(f->node.id, contents);
-        fclose(f);
-    }
-    else
-    {
-        res[0] = 1;
-        log::error("File null: '%s'", file);
-    }
+    res[0] = fwrite(file, offset[0], size[0], contents);
 }
 
 void s_malloc(int *size, uint32_t *addr)
@@ -162,27 +136,15 @@ void s_free(void *buf)
 
 void s_append_file(char *name, char *contents)
 {
-    FILE *file = fopen(name);
-
-    if (file == NULL)
-        return;
-
-    node_write_append(file->node.id, contents);
-
-    fclose(file);
 }
 
-void s_read_file(char *buf, int *offset, int *size, char *file)
+void s_read_file(char *buf, int *offset, int *size, FILE *file)
 {
-    FILE *f = fopen(file);
-
-    if (f == NULL)
+    if (file == NULL)
     {
-        printf("File '%s' is null.", file);
+        buf = NULL;
         return;
     }
-
-    buf = fread(buf, offset[0], size[0], f);
 }
 
 // ----------------------------- //

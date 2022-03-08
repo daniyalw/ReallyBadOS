@@ -6,7 +6,7 @@
 #include <video/video.h>
 #include <keyboard.h>
 #include <sys/mem/memory.h>
-#include <fs.h>
+#include <filesystem/file.h>
 #include <exec/argparse.h>
 #include <exec/elf.h>
 #include <sys/syscall/user.h>
@@ -65,7 +65,7 @@ int run_command(char * command)
         is_exec_slash = true;
     }
     {
-        fname = get("", "/apps/%s.o", executable);
+        fname = get("", "/bin/%s.o", executable);
     }
 
     FILE *file;
@@ -80,7 +80,7 @@ int run_command(char * command)
         fclose(file);
 
         // if we fail, try searching the usr folder
-        fname = get("", "/usr/%s.o", executable, executable);
+        fname = get("", "/usr/bin/%s.o", executable, executable);
         file = fopen(fname);
 
         if (file == NULL)
@@ -105,7 +105,7 @@ int run_command(char * command)
 
     fclose(file);
 
-    return ret;
+    return 0;
 }
 
 int execute_script(char *text)
@@ -203,10 +203,12 @@ void shell()
         }
         else if (check_name(command, "ddd"))
         {
+            /*
             FILE *file = fopen("/usr/documents/hello.txt");
             printf("Contents: \n");
-            printf(file->read("", 0, file->node.size));
+            printf(fread("", 0, file->node.size, file));
             fclose(file);
+            */
             continue;
         }
         else if (check_name(command, "exit"))

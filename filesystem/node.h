@@ -1,48 +1,57 @@
 #pragma once
 
-#define FS_NODE_FOLDER 2
-#define FS_NODE_FILE 3
+#define FILENAME_LIMIT 20
+#define CHILDREN_LIMIT 20
 
-struct fs_node;
+#define ROOT_PERMISSION 0
+#define USER_PERMISSION 1
 
-typedef void (*__write)(fs_node, int offset, int size, char *);
-typedef char * (*__read)(fs_node, int offset, int size, char *);
+#define NODE_LIMIT 1000
 
-struct fs_node
+#define FS_FOLDER 0x1
+#define FS_FILE 0x2
+
+struct fs_node_t;
+
+typedef int (*__write)(fs_node_t*, int offset, int size, char *);
+typedef char * (*__read)(fs_node_t*, int offset, int size, char *);
+
+struct fs_node_t
 {
-    char name[20];
-    char path[100];
-    int id;
-    int parent_id;
+    char name[FILENAME_LIMIT];
+    char path[FILENAME_LIMIT * 10];
+
+    int id, parent_id;
     int flags;
+
+    int permission;
+
     bool null = false;
-    int size;
 
-    int children_id[12]; // if the node is a folder
-    int children_count = 0;
-
-    char *contents; // if it is a file
+    int size = 0;
+    char *contents;
 
     __write write = NULL;
     __read read = NULL;
+
+    int children[CHILDREN_LIMIT];
+    int children_count = NULL;
 };
 
-fs_node nodes[1000];
+fs_node_t *nodes[NODE_LIMIT];
 int node_count = 0;
 
-fs_node root;
+fs_node_t *root;
 
-fs_node null_node();
-fs_node create_node(char *name, int parent, int flags);
 
-void node_write_basic(int id, char *contents);
-char *node_read_basic(int id);
-void node_write_append(int id, char *contents);
+fs_node_t *find_node(char *path);
+void close_node(fs_node_t *node);
+int write_node(fs_node_t *node, int offset, int size, char *contents);
+char *read_node(fs_node_t *node, int offset, int size, char *buffer);
+fs_node_t *create_node(char *name, char *parent_path, int type, int permission);
 
-char *find_name(int id);
-int find_id(char *path);
-fs_node find_node(int id);
+int list_dir(fs_node_t *node, int index);
+int list_dir(char *dir);
 
-void ls_root();
-void fs_ls(int id, int index);
-void fs_ls(char *path);
+void create_root();
+void init_fs();

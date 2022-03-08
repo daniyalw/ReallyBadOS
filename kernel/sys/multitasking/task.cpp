@@ -29,7 +29,7 @@ void exit(int ret)
 
     asm("sti");
 
-    yield();
+    switch_task(NULL, false);
 }
 
 task_t *find_first_null_task()

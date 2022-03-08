@@ -57,7 +57,7 @@ extern "C" int fwrite(char *buf, int offset, int size, FILE *file)
 
     off[0] = offset;
     s[1] = size;
-    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (buf), "c" (off), "d" (s), "S" (file->node.path), "D" (res));
+    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (buf), "c" (off), "d" (s), "S" (file), "D" (res));
 
     return res[0];
 }
@@ -69,29 +69,32 @@ extern "C" void append_file(char *name, char *contents)
 }
 
 
-extern "C" char * fread(char *buf, int offset, int size, FILE *file)
+extern "C" char * fread(char *buffer, int offset, int size, FILE *file)
 {
-    void *a;
-    int off[1];
-    int s[1];
+    if (file->node->read != NULL)
+        buffer = file->node->read(file->node, offset, size, buffer);
+    else if (file->node->flags != FS_FOLDER)
+        buffer = file->node->contents;
+    else
+        return NULL;
 
-    off[0] = offset;
-    s[0] = size;
+    for (int z = 0; z < size; z++)
+    {
+        buffer[z] = buffer[z + offset];
+    }
 
-    asm volatile("int $48" : "=a" (a) : "0" (READ_FILE), "b" (buf), "c" (off), "d" (s), "S" (file->node.path));
-
-    return buf;
+    return buffer;
 }
 
 extern "C" int fgetc(FILE *file)
 {
-    char *str = fread(str, file->ptr, 1, file);
+    char c = fread("", file->ptr, 1, file)[0];
     file->ptr++;
 
-    if (file->ptr == file->node.size)
+    if (file->ptr == file->node->size)
         file->eof = EOF;
 
-    return str[0];
+    return c;
 }
 
 extern "C" int feof(FILE *file)
@@ -101,26 +104,7 @@ extern "C" int feof(FILE *file)
 
 extern "C" char *fgets(char *str, int n, FILE *file)
 {
-    char c;
-    int z = 0;
-
-    while (true)
-    {
-        if (z == n || feof(file))
-            break;
-
-        c = fgetc(file);
-
-        str[z] = c;
-        z++;
-    }
-
-    str[z] = NULL;
-
-    if (z == 0)
-        return NULL;
-
-    return str;
+    return fread(str, file->ptr, n, file);
 }
 
 extern "C" int fgetpos(FILE *file, fpos_t *pos)

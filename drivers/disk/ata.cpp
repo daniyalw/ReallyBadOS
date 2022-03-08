@@ -1,6 +1,5 @@
 #include <disk/ata.h>
 #include <string.h>
-#include <filesystem/ramdisk.h>
 #include "disk.h"
 
 using namespace std;
@@ -75,6 +74,7 @@ void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes) {
     }
 }
 
+/*
 void fs_ata_write(fs_node node, int offset, int size, char * str)
 {
     if (size < 512)
@@ -98,6 +98,7 @@ char * fs_ata_read(fs_node node, int offset, int size, char * num)
 
     return data;
 }
+*/
 
 uint16_t * ata_send_identify(uint16_t *bytes) {
     uint8_t abc = inb(0x1F5);
@@ -176,6 +177,7 @@ uint32_t total_bytes()
     return total_sectors() * 512;
 }
 
+/*
 FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
 {
     FILE * file;
@@ -187,6 +189,7 @@ FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
 
     return file;
 }
+*/
 
 uint16_t *ata_init(uint16_t *bytes)
 {

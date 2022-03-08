@@ -1,167 +1,148 @@
 #include <filesystem/node.h>
-#include <string.h>
 
-fs_node null_node()
-{
-    fs_node node;
-    node.null = true;
-    return node;
-}
-
-fs_node find_node(int id)
+fs_node_t *find_node(char *path)
 {
     for (int z = 0; z < node_count; z++)
     {
-        if (nodes[z].id == id)
-            return nodes[z];
+        fs_node_t *node = nodes[z];
+
+        if (strcmp(node->path, path) == 0)
+            return node;
     }
 
-    return null_node();
+    return NULL;
 }
 
-fs_node create_node(char *name, int parent, int flags)
+fs_node_t *create_node(char *name, char *parent_path, int type, int permission)
 {
-    fs_node throwaway = find_node(parent);
-    char *par;
-    fs_node test = find_node(find_id(get(par, "%s%s", throwaway.path, name)));
-    if (!test.null)
-    {
-        char *a;
-        test = find_node(find_id(get(a, "%s%s/", throwaway.path, name)));
+    fs_node_t *parent = find_node(parent_path);
 
-        if (!test.null)
-            return null_node();
-    }
-    fs_node node;
+    if (parent == NULL || parent->flags != FS_FOLDER)
+        return NULL;
 
-    strcpy(node.name, name);
+    fs_node_t *node = new fs_node_t(); // yes, i know
 
-    node.parent_id = parent;
-    node.id = node_count;
+    memset(node->name, 0, FILENAME_LIMIT);
+    memset(node->path, 0, FILENAME_LIMIT * 10);
 
-    node.flags = flags;
-
-    if (parent < 0)
-    {
-        strcpy(node.path, name);
-    }
+    strcpy(node->name, name);
+    if (type == FS_FILE)
+        strcpy(node->path, get("", "%s%s", parent_path, name));
     else
-    {
-        fs_node par = find_node(parent);
+        strcpy(node->path, get("", "%s%s/", parent_path, name));
+    node->id = node_count;
+    node->parent_id = parent->id;
+    node->flags = type;
 
-        // if the parent specified is not a folder
-        if (par.flags != FS_NODE_FOLDER)
-            return null_node();
+    node->permission = permission;
 
-        if (flags == FS_NODE_FOLDER)
-            strcpy(node.path, get("", "%s%s/", par.path, name));
-        else
-            strcpy(node.path, get("", "%s%s", par.path, name));
+    parent->children[parent->children_count] = node->id;
+    parent->children_count++;
 
-        par.children_id[par.children_count] = node.id;
-        par.children_count++;
-
-        nodes[par.id] = par;
-    }
-
+    nodes[parent->id] = parent;
     nodes[node_count] = node;
     node_count++;
 
     return node;
 }
 
-void fs_ls(int id, int index)
+void close_node(fs_node_t *node)
 {
-    fs_node node = find_node(id);
+    free(node);
+}
 
-    if (node.null)
-        return;
+int write_node(fs_node_t *node, int offset, int size, char *contents)
+{
+    int ret = 0;
 
-    for (int z = 0; z < index; z++)
-        Kernel::serial_write_string("    ");
+    if (node->write != NULL)
+        ret = node->write(node, offset, size, contents);
+    else if (node->flags != FS_FOLDER)
+        node->contents = contents;
+    else
+        ret = 1;
 
-    Kernel::serial_write_string("%s%s\n", node.name, (char *)(node.flags == FS_NODE_FILE ? " (file)" : " (folder)"));
+    nodes[node->id] = node;
+
+    return ret;
+}
+
+char *read_node(fs_node_t *node, int offset, int size, char *buffer)
+{
+    if (node->read != NULL)
+        buffer = node->read(node, offset, size, buffer);
+    else if (node->flags != FS_FOLDER)
+        buffer = node->contents;
+
+    for (int z = 0; z < size; z++)
+    {
+        buffer[z] = buffer[z + offset];
+    }
+
+    return buffer;
+}
+
+int list_dir(fs_node_t *node, int index)
+{
+    if (node == NULL)
+        return 1;
 
     for (int z = 0; z < index; z++)
         printf("    ");
 
-    printf("%s%s\n", node.name, (char *)(node.flags == FS_NODE_FILE ? " (file)" : " (folder)"));
+    printf("%s\n", node->name);
 
-    index++;
+    for (int z = 0; z < node->children_count; z++)
+        list_dir(nodes[node->children[z]], index + 1);
 
-    for (int z = 0; z < node.children_count; z++)
-        fs_ls(node.children_id[z], index);
+    return 0;
 }
 
-void fs_ls(char *path)
+int list_dir(char *dir)
 {
-    fs_node node = find_node(find_id(path));
+    fs_node_t *node = find_node(dir);
 
-    if (node.null)
-    {
-        return;
-    }
-    else
-        fs_ls(node.id, 0);
+    if (node == NULL || node->flags == FS_FILE)
+        return 1;
+
+    int ret = list_dir(node, 0);
+
+    return ret;
 }
 
-void ls_root()
+void create_root()
 {
-    fs_ls(find_id("/"), 0);
+    root = new fs_node_t();
+
+    memset(root->name, 0, FILENAME_LIMIT);
+    memset(root->path, 0, FILENAME_LIMIT * 10);
+
+    strcpy(root->name, "/");
+    strcpy(root->path, "/");
+
+    root->id = 0;
+    root->parent_id = -1;
+
+    root->flags = FS_FOLDER;
+
+    nodes[0] = root;
+
+    node_count++;
 }
 
-// the next two functions are basic handlers for usual files
-// in case the file isn't a device or something like that
-void node_write_basic(int id, char *contents)
+void init_fs()
 {
-    fs_node node = find_node(id);
+    create_root();
 
-    if (node.null || node.flags != FS_NODE_FILE)
-        return;
+    make_dir("bin", "/");
+    make_dir("usr", "/");
+    make_dir("dev", "/");
+    make_dir("apps", "/");
 
-    node.contents = contents;
-    node.size = strlen(contents) * sizeof(char);
+    make_dir("bin", "/usr/");
+    make_dir("documents", "/usr/");
+    make_dir("scripts", "/usr/");
+    make_dir("fonts", "/usr/");
 
-    nodes[node.id] = node;
-}
-
-void node_write_append(int id, char *contents)
-{
-    fs_node node = find_node(id);
-
-    if (node.null || node.flags != FS_NODE_FILE)
-        return;
-
-    node.contents = append(node.contents, contents, node.contents);
-    node.size += strlen(contents);
-
-    nodes[node.id] = node;
-}
-
-char *node_read_basic(int id)
-{
-    fs_node node = find_node(id);
-
-    if (node.null || node.flags != FS_NODE_FILE)
-        return NULL;
-
-    return node.contents;
-}
-
-char *find_name(int id)
-{
-    for (int z = 0; z < node_count; z++)
-        if (nodes[z].id == id)
-            return nodes[z].name;
-
-    return NULL;
-}
-
-int find_id(char *path)
-{
-    for (int z = 0; z < node_count; z++)
-        if (strcmp(nodes[z].path, path) == 0)
-            return z;
-
-    return -1;
+    log::info("Initialized virtual file system");
 }

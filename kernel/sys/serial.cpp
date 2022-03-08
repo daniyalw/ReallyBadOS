@@ -2,7 +2,6 @@
 
 #include <sys/serial.h>
 #include <sys/io.h>
-#include <fs.h>
 
 namespace Kernel {
 

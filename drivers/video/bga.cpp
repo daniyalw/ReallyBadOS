@@ -3,7 +3,6 @@
 #include <sys/io.h>
 #include <video/graphics.h>
 #include <video/bga.h>
-#include <fs.h>
 #include <sys/pci/pci.h>
 #include <string.h>
 

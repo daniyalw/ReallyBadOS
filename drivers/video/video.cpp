@@ -1,7 +1,7 @@
 #pragma once
 #include <video/video.h>
 #include <mouse/cursor.h>
-#include <filesystem/ramdisk.h>
+#include <filesystem/file.h>
 #include <sys/serial.h>
 
 void clear() {
@@ -256,40 +256,41 @@ int printf_centered(char *s, int line_no)
     return length;
 }
 
-void write_vga(fs_node node, int offset, int size, char *data)
+int write_vga(fs_node_t * node, int offset, int size, char *data)
 {
-    printf(data);
+    return printf(data);
 }
 
-char * read_vga(fs_node node, int offset, int size, char * data)
+char * read_vga(fs_node_t *node, int offset, int size, char * data)
 {
     return vga_back;
 }
 
-void write_error(fs_node node, int offset, int size, char *data)
+int write_error(fs_node_t * node, int offset, int size, char *data)
 {
     p_error(data);
+    return 1;
 }
 
-char *read_error(fs_node node, int offset, int size, char *data)
+char *read_error(fs_node_t * node, int offset, int size, char *data)
 {
     UNUSED(data);
     // not implemented
     return NULL;
 }
 
-fs_node stdout;
-fs_node stderr;
+fs_node_t *stdout;
+fs_node_t *stderr;
 
 void init_error()
 {
     create_file("stderr", "/dev/", read_error, write_error);
-    stderr = find_node(find_id("/dev/stderr"));
+    stderr = find_node("/dev/stderr");
 }
 
 void init_vga()
 {
     create_file("stdout", "/dev/", read_vga, write_vga);
-    stdout = find_node(find_id("/dev/stdout"));
+    stdout = find_node("/dev/stdout");
     init_error();
 }

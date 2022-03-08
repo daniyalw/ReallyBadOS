@@ -19,13 +19,13 @@ int main(int argc, char const *argv[])
 
     FILE *file = fopen((char *)argv[1]);
 
-    if (file->null)
+    if (file == NULL)
     {
         printf("Cannot open file.\n");
         return 1;
     }
 
-    int res = fexec(file->node.contents);
+    int res = fexec(file->node->contents);
 
     fclose(file);
 

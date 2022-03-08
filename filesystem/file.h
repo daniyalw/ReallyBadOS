@@ -2,42 +2,34 @@
 
 #include <filesystem/node.h>
 
-struct FILE;
-
 #define EOF -1
 #define SEEK_SET 0
 
-int fwrite(char *buf, int offset, int size, FILE *file);
-char * fread(char *buf, int offset, int size, FILE *file);
-
-typedef struct FILE
+typedef struct
 {
-    fs_node node;
+    fs_node_t *node;
 
-    int write(char *buf, int offset, int size) { return fwrite(buf, offset, size, this); }
-    char *read(char *buf, int offset, int size) { buf = fread(buf, offset, size, this); return buf; }
-
-    char name[20];
-
-    int ptr = 0;
-    int eof = 0;
-
-    bool null;
+    int ptr;
+    int eof;
 } FILE;
 
 typedef int fpos_t;
 
+int create_file(char *name, char *path, char *contents, int permission);
+int create_file(char *name, char *path, char *contents);
+int kcreate_file(char *name, char *path, char *contents);
+
+int create_file(char *name, char *path, __read read, __write write, int permission);
+int create_file(char *name, char *path, __read read, __write write);
+int kcreate_file(char *name, char *path, __read read, __write write);
+
+char *fread(FILE *file, int offset, int size, char *buffer);
+
+int fwrite(FILE *file, int offset, int size, char *buffer);
+
 FILE *fopen(char *path);
 void fclose(FILE *file);
 
-int create_file(char *path, char *folder, char *contents);
-int create_file(char *path, char *folder, __read read, __write write);
-
-void fprintf(FILE *file, char *data);
-void fprintf(FILE file, char *data);
-void fprintf(fs_node node, char *data);
-
-char *fread(char *buf, FILE *file);
 int fgetc(FILE *file);
 char *fgets(char *str, int n, FILE *file);
 

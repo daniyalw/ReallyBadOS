@@ -3,7 +3,6 @@
 #include <drivers/keyboard/keyboard.h>
 #include <sys/log/log.h>
 #include "keys.cpp"
-#include <filesystem/ramdisk.h>
 #include <gui/gui.h>
 
 bool keyboard_lock()
@@ -110,7 +109,7 @@ void get_key(unsigned char code)
     }
 }
 
-char *read_keyboard(fs_node node, int offset, int size, char *buff) {
+char *read_keyboard(fs_node_t * node, int offset, int size, char *buff) {
     char *k = scanf();
     printf("done");
     buff = k;
@@ -119,14 +118,14 @@ char *read_keyboard(fs_node node, int offset, int size, char *buff) {
     return buff;
 }
 
-char *read_getch(fs_node node, int offset, int size, char *buff) {
+char *read_getch(fs_node_t * node, int offset, int size, char *buff) {
     char k = getch();
     buff[0] = k;
 
     return buff;
 }
 
-void write_keyboard(fs_node node, int offset, int size, char *buff) {}
+int write_keyboard(fs_node_t * node, int offset, int size, char *buff) { return 1; }
 
 namespace Kernel {
 
