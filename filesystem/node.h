@@ -15,6 +15,7 @@ struct fs_node_t;
 
 typedef int (*__write)(fs_node_t*, int offset, int size, char *);
 typedef char * (*__read)(fs_node_t*, int offset, int size, char *);
+typedef int (*__mkfile)(fs_node_t*, __read, __write);
 
 struct fs_node_t
 {
@@ -31,6 +32,12 @@ struct fs_node_t
     int size = 0;
     char *contents;
 
+    bool is_mountpoint;
+    char mount_dir[FILENAME_LIMIT];
+    int mount_parent;
+    bool is_mount;
+    __mkfile mkfile = NULL;
+
     __write write = NULL;
     __read read = NULL;
 
@@ -43,6 +50,7 @@ int node_count = 0;
 
 fs_node_t *root;
 
+fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, int permission);
 
 fs_node_t *find_node(char *path);
 void close_node(fs_node_t *node);

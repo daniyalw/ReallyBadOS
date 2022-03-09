@@ -13,6 +13,26 @@ fs_node_t *find_node(char *path)
     return NULL;
 }
 
+fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, int permission)
+{
+    fs_node_t *node = create_node(name, parent, FS_FOLDER, permission);
+
+    if (node == NULL)
+        return NULL;
+
+    node->is_mountpoint = true;
+    node->is_mount = true;
+    node->mount_parent = node->id;
+    node->write = write;
+    node->read = read;
+    node->mkfile = mkfile;
+    strcpy(node->mount_dir, name);
+
+    nodes[node->id] = node;
+
+    return node;
+}
+
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission)
 {
     fs_node_t *parent = find_node(parent_path);
@@ -20,21 +40,42 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission)
     if (parent == NULL || parent->flags != FS_FOLDER)
         return NULL;
 
-    fs_node_t *node = new fs_node_t(); // yes, i know
+    fs_node_t *node = new fs_node_t();
 
     memset(node->name, 0, FILENAME_LIMIT);
     memset(node->path, 0, FILENAME_LIMIT * 10);
 
     strcpy(node->name, name);
+
     if (type == FS_FILE)
         strcpy(node->path, get("", "%s%s", parent_path, name));
     else
         strcpy(node->path, get("", "%s%s/", parent_path, name));
+
     node->id = node_count;
     node->parent_id = parent->id;
     node->flags = type;
-
     node->permission = permission;
+
+    if (parent->is_mount)
+    {
+        node->mount_parent = parent->mount_parent;
+        node->is_mount = true;
+        strcpy(node->mount_dir, parent->mount_dir);
+
+        node->write = parent->write;
+        node->read = parent->read;
+        node->mkfile = parent->mkfile;
+
+        int ret = node->mkfile(node, node->read, node->write);
+
+        if (ret != 0)
+        {
+            free(node);
+            printf("Error creating node");
+            return NULL;
+        }
+    }
 
     parent->children[parent->children_count] = node->id;
     parent->children_count++;
