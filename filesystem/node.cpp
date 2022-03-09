@@ -13,6 +13,93 @@ fs_node_t *find_node(char *path)
     return NULL;
 }
 
+// parse file/dir name and get parent id
+// good for when the file/dir doesn't exist (or is assumed not to)
+int parse_path_file_parent(char *path, char *target)
+{
+    char **buf;
+    int ret = tokenize(path, PATH_SEP, buf);
+    int b = 0;
+
+    fs_node_t *node;
+    fs_node_t *parent;
+    node = root;
+    parent = root;
+
+    target = buf[ret-1];
+
+    if ((ret - 1) == 0)
+        return 0; // root id
+
+    for (int z = 0; z < ret - 1; z++)
+    {
+        if (strcmp(buf[z], PATH_UP) == 0)
+        {
+            if (z == 0)
+                continue;
+
+            node = parent;
+            parent = nodes[parent->parent_id];
+        }
+        else if (strcmp(buf[z], PATH_DOT) == 0)
+        {
+            continue;
+        }
+        for (int c = 0; c < node->children_count; c++)
+        {
+            if (strcmp(nodes[node->children[c]]->name, buf[z]) == 0)
+            {
+                parent = node;
+                node = nodes[node->children[c]];
+                break;
+            }
+        }
+    }
+
+    return node->id;
+}
+
+// parse file/dir name and get current file id
+// good for when the file/dir exists (or is assumed to)
+int parse_path_file(char *path)
+{
+    char **buf;
+    int ret = tokenize(path, PATH_SEP, buf);
+    int b = 0;
+
+    fs_node_t *node;
+    fs_node_t *parent;
+    node = root;
+    parent = root;
+
+    for (int z = 0; z < ret; z++)
+    {
+        if (strcmp(buf[z], PATH_UP) == 0)
+        {
+            if (z == 0)
+                continue;
+
+            node = parent;
+            parent = nodes[parent->parent_id];
+        }
+        else if (strcmp(buf[z], PATH_DOT) == 0)
+        {
+            continue;
+        }
+        for (int c = 0; c < node->children_count; c++)
+        {
+            if (strcmp(nodes[node->children[c]]->name, buf[z]) == 0)
+            {
+                parent = node;
+                node = nodes[node->children[c]];
+                break;
+            }
+        }
+    }
+
+    return node->id;
+}
+
 fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, int permission)
 {
     fs_node_t *node = create_node(name, parent, FS_FOLDER, permission);
@@ -131,7 +218,11 @@ int list_dir(fs_node_t *node, int index)
     for (int z = 0; z < index; z++)
         printf("    ");
 
+    for (int z = 0; z < index; z++)
+        Kernel::serial_write_string("    ");
+
     printf("%s\n", node->name);
+    Kernel::serial_write_string("%s\n", node->name);
 
     for (int z = 0; z < node->children_count; z++)
         list_dir(nodes[node->children[z]], index + 1);

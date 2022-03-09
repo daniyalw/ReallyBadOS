@@ -6,6 +6,10 @@
 #define ROOT_PERMISSION 0
 #define USER_PERMISSION 1
 
+#define PATH_UP ".."
+#define PATH_DOT "."
+#define PATH_SEP "/"
+
 #define NODE_LIMIT 1000
 
 #define FS_FOLDER 0x1
@@ -63,3 +67,6 @@ int list_dir(char *dir);
 
 void create_root();
 void init_fs();
+
+int parse_path_file(char *path);
+int parse_path_file_parent(char *path);
