@@ -60,6 +60,8 @@ fs_node_t *find_node(char *path);
 void close_node(fs_node_t *node);
 int write_node(fs_node_t *node, int offset, int size, char *contents);
 char *read_node(fs_node_t *node, int offset, int size, char *buffer);
+fs_node_t *create_node_ignore(char *name, char *parent_path, int type, int permission);
+fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount);
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission);
 
 int list_dir(fs_node_t *node, int index);

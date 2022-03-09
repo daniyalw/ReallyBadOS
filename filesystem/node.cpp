@@ -120,7 +120,7 @@ fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfi
     return node;
 }
 
-fs_node_t *create_node(char *name, char *parent_path, int type, int permission)
+fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount)
 {
     fs_node_t *parent = find_node(parent_path);
 
@@ -144,7 +144,7 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission)
     node->flags = type;
     node->permission = permission;
 
-    if (parent->is_mount)
+    if (parent->is_mount && ignore_mount == false)
     {
         node->mount_parent = parent->mount_parent;
         node->is_mount = true;
@@ -172,6 +172,16 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission)
     node_count++;
 
     return node;
+}
+
+fs_node_t *create_node_ignore(char *name, char *parent_path, int type, int permission)
+{
+    return create_node(name, parent_path, type, permission, true);
+}
+
+fs_node_t *create_node(char *name, char *parent_path, int type, int permission)
+{
+    return create_node(name, parent_path, type, permission, false);
 }
 
 void close_node(fs_node_t *node)

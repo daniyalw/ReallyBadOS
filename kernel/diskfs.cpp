@@ -211,7 +211,69 @@ disk_fs_node_t *disk_file_open(char *path)
     return NULL;
 }
 
+int write_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
+{
+    disk_fs_node_t *_node = disk_file_open(node->path);
+
+    if (_node == NULL)
+        return 1;
+
+    edit_disk_file(_node, buf);
+
+    return 0;
+}
+
+char *read_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
+{
+    disk_fs_node_t *_node = disk_file_open(node->path);
+
+    if (_node == NULL)
+        return (buf = NULL);
+
+    buf = read_file_sectors(_node, offset/512, size/512 + 1, buf, size);
+    return buf;
+}
+
+int true_mkfile_vfs_disk(fs_node_t *node, __read read, __write write)
+{
+    return write_new_file_disk(node->name, node->path, "", 1);
+}
+
+int tmp_mkfile_vfs_disk(fs_node_t *node, __read read, __write write)
+{
+    return 0;
+}
+
 void disk_init()
 {
     disk_write(0, 1, (uint8_t *)"fuck");
+    // if we don't do this, the fucking thing will just division-by-zero fault
+    printf("a");
+
+    fs_node_t *disk0 = mount_fs("disk0", "/", write_vfs_disk, read_vfs_disk, tmp_mkfile_vfs_disk, USER_PERMISSION);
+
+    if (disk0 == NULL)
+    {
+        printf("Failed to mount disk.\n");
+        return;
+    }
+
+    disk_fs_master_t *master = get_master();
+    int sector = FS_BEGINNING_SECTOR + 1;
+
+    while (true)
+    {
+        if (sector >= master->free_sector)
+            break;
+
+        uint8_t *bytes;
+        bytes = disk_read(bytes, sector, 1);
+        disk_fs_node_t *node = (disk_fs_node_t *)bytes;
+        printf("File found: %s\n", node->path);
+
+        sector += 1 + node->contents_sectors;
+    }
+
+    disk0->mkfile = true_mkfile_vfs_disk;
+    nodes[disk0->id] = disk0;
 }
