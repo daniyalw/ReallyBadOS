@@ -210,3 +210,8 @@ disk_fs_node_t *disk_file_open(char *path)
 
     return NULL;
 }
+
+void disk_init()
+{
+    disk_write(0, 1, (uint8_t *)"fuck");
+}
