@@ -1,5 +1,6 @@
 #include "dir.h"
 #include "node.h"
+#include "file.h"
 
 int make_dir(char *name, char *dir, int permission)
 {
@@ -37,4 +38,15 @@ DIR *opendir(char *name)
     dir->node = node;
 
     return dir;
+}
+
+fs_node_t *readdir(DIR *dir)
+{
+    if (dir->ptr == dir->node->children_count)
+        return NULL;
+
+    fs_node_t *node = nodes[dir->node->children[dir->ptr]];
+    dir->ptr++;
+
+    return node;
 }

@@ -278,6 +278,11 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     //init_tasking();
 
+    fs_node_t *disk0 = mount_fs("disk0", "/", write_vfs_disk, read_vfs_disk, tmp_mkfile_vfs_disk, USER_PERMISSION);
+    disk_init(disk0);
+
+    //disk_init();
+
     switch_to_user_mode();
     shell();
 

@@ -244,13 +244,12 @@ int tmp_mkfile_vfs_disk(fs_node_t *node, __read read, __write write)
     return 0;
 }
 
-void disk_init()
+void disk_init(fs_node_t *disk0)
 {
+    printf("b");
     disk_write(0, 1, (uint8_t *)"fuck");
     // if we don't do this, the fucking thing will just division-by-zero fault
     printf("a");
-
-    fs_node_t *disk0 = mount_fs("disk0", "/", write_vfs_disk, read_vfs_disk, tmp_mkfile_vfs_disk, USER_PERMISSION);
 
     if (disk0 == NULL)
     {

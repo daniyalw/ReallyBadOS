@@ -202,6 +202,13 @@ void scroll()
 
 int printf(char *a, ...)
 {
+    if (a == NULL)
+    {
+        for (int z = 0; z < strlen("(null)"); z++)
+            putchar("(null)"[z]);
+
+        return 1;
+    }
     va_list va;
 
     va_start(va, a);

@@ -57,7 +57,7 @@ extern "C" int fwrite(char *buf, int offset, int size, FILE *file)
 
     off[0] = offset;
     s[1] = size;
-    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (buf), "c" (off), "d" (s), "S" (file), "D" (res));
+    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (buf), "c" (off), "d" (s), "S" (file->node->path), "D" (res));
 
     return res[0];
 }
@@ -71,17 +71,14 @@ extern "C" void append_file(char *name, char *contents)
 
 extern "C" char * fread(char *buffer, int offset, int size, FILE *file)
 {
-    if (file->node->read != NULL)
-        buffer = file->node->read(file->node, offset, size, buffer);
-    else if (file->node->flags != FS_FOLDER)
-        buffer = file->node->contents;
-    else
-        return NULL;
+    int off[1];
+    void *a;
+    int s[1];
 
-    for (int z = 0; z < size; z++)
-    {
-        buffer[z] = buffer[z + offset];
-    }
+    off[0] = offset;
+    s[0] = size;
+
+    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (buffer), "c" (off), "d" (s), "S" (file));
 
     return buffer;
 }
