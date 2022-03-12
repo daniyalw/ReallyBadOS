@@ -184,6 +184,11 @@ char *read_file_sectors(disk_fs_node_t *node, int sector, int sectors_to_read, c
     return buf;
 }
 
+char *read_file_sectors(disk_fs_node_t *node, char *buf)
+{
+    return read_file_sectors(node, 0, node->contents_sectors, buf, node->contents_sectors * 512);
+}
+
 disk_fs_node_t *disk_file_open(char *path)
 {
     disk_fs_master_t *master = get_master();
@@ -213,7 +218,9 @@ disk_fs_node_t *disk_file_open(char *path)
 
 int write_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
 {
-    disk_fs_node_t *_node = disk_file_open(node->path);
+    char target[100];
+    sscanf(node->path, "/disk0%s", &target);
+    disk_fs_node_t *_node = disk_file_open(target);
 
     if (_node == NULL)
         return 1;
@@ -225,12 +232,15 @@ int write_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
 
 char *read_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
 {
-    disk_fs_node_t *_node = disk_file_open(node->path);
+    disk_fs_node_t *_node = disk_file_open("/hello.txt");
 
     if (_node == NULL)
-        return (buf = NULL);
+    {
+        printf("_node is null.\n");
+        return NULL;
+    }
 
-    buf = read_file_sectors(_node, offset/512, size/512 + 1, buf, size);
+    read_file_sectors(_node, 0, 1, buf, size);
     return buf;
 }
 
@@ -258,6 +268,13 @@ void disk_init(fs_node_t *disk0)
     }
 
     disk_fs_master_t *master = get_master();
+
+    if (master->magic != FS_MAGIC)
+    {
+        printf("Master magic != FS magic!\n");
+        return;
+    }
+
     int sector = FS_BEGINNING_SECTOR + 1;
 
     while (true)
@@ -271,6 +288,8 @@ void disk_init(fs_node_t *disk0)
         printf("File found: %s\n", node->path);
 
         sector += 1 + node->contents_sectors;
+
+        create_file(node->name, "/disk0/");
     }
 
     disk0->mkfile = true_mkfile_vfs_disk;

@@ -15,6 +15,9 @@ typedef struct
 
 typedef int fpos_t;
 
+int create_file(char *name, char *path, int permission);
+int create_file(char *name, char *path);
+
 int create_file(char *name, char *path, char *contents, int permission);
 int create_file(char *name, char *path, char *contents);
 int kcreate_file(char *name, char *path, char *contents);

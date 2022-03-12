@@ -19,7 +19,8 @@ int main(int argc, char **argv)
     {
         printf("Name: %s\n", file->node->name);
         printf("Size: %d bytes\n", file->node->size);
-        printf("Read: %s\n", fread("", 0, file->node->size, file));
+        printf("Read: ");
+        printf(fread("", 0, file->node->size, file));
     }
 
     fclose(file);

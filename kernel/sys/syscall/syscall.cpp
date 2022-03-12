@@ -113,17 +113,33 @@ void s_create_file(char *name, char *folder, char *contents, int *res)
     res[0] = create_file(name, folder, contents);
 }
 
-void s_write_file(char *contents, int *offset, int *size, char *file, int *res)
+void s_write_file(char *contents, int *offset, int *size, FILE *file, int *res)
 {
-    FILE *f = fopen(file);
-
-    if (f == NULL)
+    if (file == NULL)
     {
         res[0] = 1;
         return;
     }
 
-    res[0] = fwrite(f, offset[0], size[0], contents);
+    if (file->node->write)
+        res[0] = file->node->write(file->node, offset[0], size[0], contents);
+    else
+    {
+        fs_node_t *node = find_node(file->node->path);
+
+        if (!node)
+        {
+            res[0] = 1;
+            return;
+        }
+
+        node->contents = contents;
+
+        nodes[node->id] = node;
+        file->node = node;
+
+        res[0] = 0;
+    }
 }
 
 void s_malloc(int *size, uint32_t *addr)
@@ -142,13 +158,12 @@ void s_append_file(char *name, char *contents)
 
 void s_read_file(char *buf, int *offset, int *size, FILE *file)
 {
-    set_string(buf, "FUCK");
-    
     if (file == NULL)
     {
-
         return;
     }
+
+    set_string(buf, fread(file, offset[0], size[0], buf));
 }
 
 // ----------------------------- //

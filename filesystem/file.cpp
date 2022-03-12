@@ -1,6 +1,21 @@
 #include "file.h"
 #include "node.h"
 
+int create_file(char *name, char *path, int permission)
+{
+    fs_node_t *node = create_node(name, path, FS_FILE, permission);
+
+    if (node == NULL)
+        return 1;
+
+    return 0;
+}
+
+int create_file(char *name, char *path)
+{
+    return create_file(name, path, USER_PERMISSION);
+}
+
 int create_file(char *name, char *path, char *contents, int permission)
 {
     fs_node_t *node = create_node(name, path, FS_FILE, permission);
@@ -88,16 +103,6 @@ void fclose(FILE *file)
 int fwrite(FILE *file, int offset, int size, char *buffer)
 {
     int ret = write_node(file->node, offset, size, buffer);
-
-    if (ret != 0)
-        return ret;
-
-    fs_node_t *node = find_node(file->node->path);
-
-    if (node == NULL)
-        return 1;
-
-    file->node = node;
 
     return ret;
 }
