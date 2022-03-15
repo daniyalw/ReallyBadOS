@@ -281,20 +281,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     fs_node_t *disk0 = mount_fs("disk0", "/", write_vfs_disk, read_vfs_disk, tmp_mkfile_vfs_disk, USER_PERMISSION);
     disk_init(disk0);
 
-    FILE *file = fopen("/disk0/hello.txt");
-
-    if (file == NULL)
-    {
-        printf("Node is null.\n");
-    }
-    else
-    {
-        printf("Path: %s\n", file->node->path);
-        char contents[100];
-        read_vfs_disk(file->node, 0, 100, contents);
-        printf("Contents: %s\n", contents);
-    }
-
     switch_to_user_mode();
     shell();
 

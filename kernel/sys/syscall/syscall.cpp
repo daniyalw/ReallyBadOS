@@ -113,33 +113,23 @@ void s_create_file(char *name, char *folder, char *contents, int *res)
     res[0] = create_file(name, folder, contents);
 }
 
-void s_write_file(char *contents, int *offset, int *size, FILE *file, int *res)
+void s_write_file(char *contents, int *offset, int *size, int fd, int *res)
 {
-    if (file == NULL)
+    if (fd < 0)
     {
         res[0] = 1;
         return;
     }
 
-    if (file->node->write)
-        res[0] = file->node->write(file->node, offset[0], size[0], contents);
-    else
+    fs_node_t *node = find_node(fd);
+
+    if (node == NULL)
     {
-        fs_node_t *node = find_node(file->node->path);
-
-        if (!node)
-        {
-            res[0] = 1;
-            return;
-        }
-
-        node->contents = contents;
-
-        nodes[node->id] = node;
-        file->node = node;
-
-        res[0] = 0;
+        res[0] = 1;
+        return;
     }
+
+    res[0] = write_node(node, offset[0], size[0], contents);
 }
 
 void s_malloc(int *size, uint32_t *addr)
@@ -156,14 +146,30 @@ void s_append_file(char *name, char *contents)
 {
 }
 
-void s_read_file(char *buf, int *offset, int *size, FILE *file)
+void s_read_file(char *buf, int *offset, int *size, int fd)
 {
-    if (file == NULL)
+    if (fd < 0)
     {
+        set_string(buf, "ERROR");
         return;
     }
 
-    set_string(buf, fread(file, offset[0], size[0], buf));
+    fs_node_t *node = find_node(fd);
+
+    if (node == NULL)
+    {
+        set_string(buf, "AAA");
+        return;
+    }
+
+    FILE *file = fopen(node->path);
+
+    if (file == NULL)
+        printf("NU\n");
+    else
+        fread(file, offset[0], size[0], buf);
+
+    fclose(file);
 }
 
 // ----------------------------- //

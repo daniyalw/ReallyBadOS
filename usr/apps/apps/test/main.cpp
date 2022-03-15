@@ -5,11 +5,6 @@ int main(int argc, char *argv[])
 {
     printf("Test printf!\n");
 
-    FILE *file = fopen(argv[1]);
-
-    fwrite(argv[2], 0, 10, file);
-
-    fclose(file);
 
     char *result = scanf();
 

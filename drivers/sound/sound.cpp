@@ -33,24 +33,29 @@ static void nosound() {
    outb(0x61, tmp);
 }
 
-/*
-char *sound_input(fs_node node, int offset, int size, char *data)
+char *sound_input(fs_node_t *node, int offset, int size, char *data)
 {
     UNUSED(data);
     // not implemented
     return NULL;
 }
 
-void sound_write(fs_node node, int offset, int size, char *data)
+int sound_write(fs_node_t *node, int offset, int size, char *data)
 {
     uint32_t frequency = uint_atoi(data);
     play_sound(frequency);
+    return 0;
 }
-*/
 
 void beep()
 {
+    FILE *file = fopen("/dev/sound");
+    sound_write(file->node, 0, 10, "1000");
 
+    for (int z = 0; z < 1000; z++)
+        io_wait();
+
+    nosound();
 }
 
 }

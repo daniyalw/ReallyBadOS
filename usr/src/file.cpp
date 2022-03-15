@@ -57,7 +57,7 @@ extern "C" int fwrite(char *buf, int offset, int size, FILE *file)
 
     off[0] = offset;
     s[1] = size;
-    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (buf), "c" (off), "d" (s), "S" (file), "D" (res));
+    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (buf), "c" (off), "d" (s), "S" (file->node->id), "D" (res));
 
     return res[0];
 }
@@ -78,7 +78,7 @@ extern "C" char * fread(char *buffer, int offset, int size, FILE *file)
     off[0] = offset;
     s[0] = size;
 
-    asm volatile("int $48" : "=a" (a) : "0" (READ_FILE), "b" (buffer), "c" (off), "d" (s), "S" (file));
+    asm volatile("int $48" : "=a" (a) : "0" (READ_FILE), "b" (buffer), "c" (off), "d" (s), "S" (file->node->id));
 
     return buffer;
 }

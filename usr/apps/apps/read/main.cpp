@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <file.h>
+#include <stdlib.h>
 
 int main(int argc, char **argv)
 {
@@ -17,10 +17,15 @@ int main(int argc, char **argv)
     }
     else
     {
+        char buf[100];
+        memset(buf, 0, 100);
+
         printf("Name: %s\n", file->node->name);
         printf("Size: %d bytes\n", file->node->size);
+
+        fread(buf, 0, file->node->size, file);
         printf("Read: ");
-        printf(fread("", 0, file->node->size, file));
+        printf(buf);
     }
 
     fclose(file);

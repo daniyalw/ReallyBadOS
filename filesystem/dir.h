@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem/node.h>
+
 typedef struct
 {
     fs_node_t *node;

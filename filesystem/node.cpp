@@ -13,6 +13,11 @@ fs_node_t *find_node(char *path)
     return NULL;
 }
 
+fs_node_t *find_node(int fd)
+{
+    return nodes[fd];
+}
+
 // parse file/dir name and get parent id
 // good for when the file/dir doesn't exist (or is assumed not to)
 int parse_path_file_parent(char *path, char *target)
@@ -196,10 +201,11 @@ int write_node(fs_node_t *node, int offset, int size, char *contents)
     if (node->write != NULL)
         ret = node->write(node, offset, size, contents);
     else if (node->flags != FS_FOLDER)
-        node->contents = contents;
+        strcpy(node->contents, contents); // THiS WORKS YAY
     else
         ret = 1;
 
+    node->size = strlen(contents);
     nodes[node->id] = node;
 
     return ret;
@@ -208,14 +214,9 @@ int write_node(fs_node_t *node, int offset, int size, char *contents)
 char *read_node(fs_node_t *node, int offset, int size, char *buffer)
 {
     if (node->read != NULL)
-        buffer = node->read(node, offset, size, buffer);
+        node->read(node, offset, size, buffer);
     else if (node->flags != FS_FOLDER)
-        buffer = node->contents;
-
-    for (int z = 0; z < size; z++)
-    {
-        buffer[z] = buffer[z + offset];
-    }
+        strcpy(buffer, node->contents);
 
     return buffer;
 }

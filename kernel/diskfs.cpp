@@ -171,8 +171,8 @@ int find_sector(disk_fs_node_t *node)
 // sectors start at 0
 char *read_file_sectors(disk_fs_node_t *node, int sector, int sectors_to_read, char *buf, int bufsize)
 {
-    uint8_t *bytes;
-    bytes = disk_read(bytes, node->offset, 1);
+    uint8_t *bytes = (uint8_t *)malloc(512 * sizeof(uint8_t));
+    disk_read(bytes, node->offset, 1);
 
     disk_fs_node_t *_node = (disk_fs_node_t *)bytes;
 
@@ -180,6 +180,8 @@ char *read_file_sectors(disk_fs_node_t *node, int sector, int sectors_to_read, c
 
     for (int z = 0; z < bufsize; z++)
         buf[z] = (char)bytes[z];
+
+    free(bytes);
 
     return buf;
 }

@@ -74,16 +74,17 @@ void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes) {
     }
 }
 
-/*
-void fs_ata_write(fs_node node, int offset, int size, char * str)
+int fs_ata_write(fs_node_t *node, int offset, int size, char * str)
 {
     if (size < 512)
         ata_write_one(offset, (uint8_t *)str);
     else
         ata_write(offset, size/512 + 1, (uint8_t *)str);
+
+    return 0;
 }
 
-char * fs_ata_read(fs_node node, int offset, int size, char * num)
+char * fs_ata_read(fs_node_t *node, int offset, int size, char * num)
 {
     char *data = (char *)malloc(size);
     uint8_t *bytes;
@@ -98,7 +99,6 @@ char * fs_ata_read(fs_node node, int offset, int size, char * num)
 
     return data;
 }
-*/
 
 uint16_t * ata_send_identify(uint16_t *bytes) {
     uint8_t abc = inb(0x1F5);

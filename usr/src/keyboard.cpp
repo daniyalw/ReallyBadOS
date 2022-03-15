@@ -1,28 +1,36 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <file.h>
+#include <stdlib.h>
 
 extern "C" char getch()
 {
     // read files
-    FILE *file = fopen("/dev/stdin"); // dunno why but getch doesn't work
-    char *buff;
-    buff = fread(buff, 0, 100, file);
+    FILE *file = fopen("/dev/stdin");
 
+    if (file == NULL)
+        return NULL;
+
+    char buf[100];
+
+    file->node->read(file->node, 0, 100, buf);
 
     fclose(file);
 
-    return buff[0];
+    return buf[0];
 }
 
 extern "C" char *scanf()
 {
     FILE *file = fopen("/dev/stdin");
-    char *buff;
+    char *buf = (char *)malloc(100);
 
-    buff = fread(buff, 0, 1000, file);
+    if (file == NULL)
+        return NULL;
+
+    file->node->read(file->node, 0, 100, buf);
 
     fclose(file);
 
-    return buff;
+    return buf;
 }
