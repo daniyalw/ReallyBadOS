@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <list.h>
+#include <memory.h>
 
 int atoi(char * str)
 {
@@ -879,4 +880,13 @@ void memset(char * dest, char *val, int len)
     {
         dest[z] = val[z];
     }
+}
+
+char *strdup(char *str)
+{
+    const int length = strlen(str);
+    char *text = (char *)malloc(length + 1);
+    memset(text, 0, length + 1);
+    strcpy(text, str);
+    return text;
 }
