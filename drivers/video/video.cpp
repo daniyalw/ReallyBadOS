@@ -268,9 +268,9 @@ int write_vga(fs_node_t * node, int offset, int size, char *data)
     return printf(data);
 }
 
-char * read_vga(fs_node_t *node, int offset, int size, char * data)
+int read_vga(fs_node_t *node, int offset, int size, char * data)
 {
-    return vga_back;
+    return NULL;
 }
 
 int write_error(fs_node_t * node, int offset, int size, char *data)
@@ -279,7 +279,7 @@ int write_error(fs_node_t * node, int offset, int size, char *data)
     return 1;
 }
 
-char *read_error(fs_node_t * node, int offset, int size, char *data)
+int read_error(fs_node_t * node, int offset, int size, char *data)
 {
     UNUSED(data);
     // not implemented

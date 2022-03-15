@@ -232,7 +232,7 @@ int write_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
     return 0;
 }
 
-char *read_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
+int read_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
 {
     disk_fs_node_t *_node = disk_file_open("/hello.txt");
 
@@ -243,7 +243,7 @@ char *read_vfs_disk(fs_node_t *node, int offset, int size, char *buf)
     }
 
     read_file_sectors(_node, 0, 1, buf, size);
-    return buf;
+    return 0;
 }
 
 int true_mkfile_vfs_disk(fs_node_t *node, __read read, __write write)

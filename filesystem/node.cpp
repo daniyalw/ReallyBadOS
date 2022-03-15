@@ -211,14 +211,16 @@ int write_node(fs_node_t *node, int offset, int size, char *contents)
     return ret;
 }
 
-char *read_node(fs_node_t *node, int offset, int size, char *buffer)
+int read_node(fs_node_t *node, int offset, int size, char *buffer)
 {
+    int ret = 0;
+
     if (node->read != NULL)
-        node->read(node, offset, size, buffer);
+        ret = node->read(node, offset, size, buffer);
     else if (node->flags != FS_FOLDER)
         strcpy(buffer, node->contents);
 
-    return buffer;
+    return ret;
 }
 
 int list_dir(fs_node_t *node, int index)

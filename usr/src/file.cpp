@@ -69,29 +69,31 @@ extern "C" void append_file(char *name, char *contents)
 }
 
 
-extern "C" char * fread(char *buffer, int offset, int size, FILE *file)
+extern "C" int fread(char *buffer, int offset, int size, FILE *file)
 {
     int off[1];
     void *a;
     int s[1];
+    int ret;
 
     off[0] = offset;
     s[0] = size;
 
-    asm volatile("int $48" : "=a" (a) : "0" (READ_FILE), "b" (buffer), "c" (off), "d" (s), "S" (file->node->id));
+    asm volatile("int $48" : "=a" (a) : "0" (READ_FILE), "b" (buffer), "c" (off), "d" (s), "S" (file->node->id), "D" (ret));
 
-    return buffer;
+    return ret;
 }
 
 extern "C" int fgetc(FILE *file)
 {
-    char c = fread("", file->ptr, 1, file)[0];
+    char buf[1];
+    fread(buf, file->ptr, 1, file);
     file->ptr++;
 
     if (file->ptr == file->node->size)
         file->eof = EOF;
 
-    return c;
+    return buf[0];
 }
 
 extern "C" int feof(FILE *file)
@@ -101,7 +103,8 @@ extern "C" int feof(FILE *file)
 
 extern "C" char *fgets(char *str, int n, FILE *file)
 {
-    return fread(str, file->ptr, n, file);
+    fread(str, file->ptr, n, file);
+    return str;
 }
 
 extern "C" int fgetpos(FILE *file, fpos_t *pos)

@@ -84,7 +84,7 @@ int fs_ata_write(fs_node_t *node, int offset, int size, char * str)
     return 0;
 }
 
-char * fs_ata_read(fs_node_t *node, int offset, int size, char * num)
+int fs_ata_read(fs_node_t *node, int offset, int size, char * num)
 {
     char *data = (char *)malloc(size);
     uint8_t *bytes;
@@ -97,7 +97,7 @@ char * fs_ata_read(fs_node_t *node, int offset, int size, char * num)
     for (int z = 0; z < size; z++)
         data[z] = (char)bytes[z];
 
-    return data;
+    return 0;
 }
 
 uint16_t * ata_send_identify(uint16_t *bytes) {

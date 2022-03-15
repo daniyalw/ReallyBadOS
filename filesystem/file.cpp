@@ -109,19 +109,19 @@ int fwrite(FILE *file, int offset, int size, char *buffer)
 
 int fgetc(FILE *file)
 {
-    char c = fread(file, file->ptr, 1, "")[0];
+    char buf[1];
+    fread(file, file->ptr, 1, buf);
     file->ptr++;
 
     if (file->ptr == file->node->size)
         file->eof = EOF;
 
-    return c;
+    return buf[0];
 }
 
-char *fread(FILE *file, int offset, int size, char *buffer)
+int fread(FILE *file, int offset, int size, char *buffer)
 {
-    buffer = read_node(file->node, offset, size, buffer);
-    return buffer;
+    return read_node(file->node, offset, size, buffer);
 }
 
 int feof(FILE *file)
@@ -131,7 +131,8 @@ int feof(FILE *file)
 
 char *fgets(char *str, int n, FILE *file)
 {
-    return fread(file, file->ptr, n, str);
+    fread(file, file->ptr, n, str);
+    return str;
 }
 
 int fgetpos(FILE *file, fpos_t *pos)
@@ -171,7 +172,8 @@ int fsetpos(FILE *file, fpos_t *pos)
 int fvsscanf(FILE *file, char *fmt, va_list va)
 {
 	int cz = 0;
-    char *str = fread(file, file->ptr, file->node->size - file->ptr, "");
+    char *str = (char *)malloc(file->node->size - file->ptr + 1);
+    fread(file, file->ptr, file->node->size - file->ptr, str);
 
 	while (*fmt)
 	{

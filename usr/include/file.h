@@ -17,7 +17,7 @@ struct fs_node;
 struct fs_node_t;
 
 typedef int (*__write)(fs_node_t*, int offset, int size, char *);
-typedef char * (*__read)(fs_node_t*, int offset, int size, char *);
+typedef int (*__read)(fs_node_t*, int offset, int size, char *);
 
 struct fs_node_t
 {
@@ -55,7 +55,7 @@ extern void ls(char *path);
 extern int mkfile(char *name, char *dir, char *contents);
 
 extern int fwrite(char *buf, int offset, int size, FILE *file);
-extern char * fread(char *buffer, int offset, int size, FILE *file);
+extern int fread(char *buffer, int offset, int size, FILE *file);
 
 extern int fgetc(FILE *file);
 extern int feof(FILE *file);

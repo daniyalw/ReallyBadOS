@@ -33,7 +33,7 @@ static void nosound() {
    outb(0x61, tmp);
 }
 
-char *sound_input(fs_node_t *node, int offset, int size, char *data)
+int sound_input(fs_node_t *node, int offset, int size, char *data)
 {
     UNUSED(data);
     // not implemented

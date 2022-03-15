@@ -1,4 +1,4 @@
-char *null_read(fs_node_t * node, int offset, int size, char *buf)
+int null_read(fs_node_t * node, int offset, int size, char *buf)
 {
     UNUSED(buf);
     log::warning("Read was attempted on /dev/serial\n");

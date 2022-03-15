@@ -26,7 +26,7 @@ int create_file(char *name, char *path, __read read, __write write, int permissi
 int create_file(char *name, char *path, __read read, __write write);
 int kcreate_file(char *name, char *path, __read read, __write write);
 
-char *fread(FILE *file, int offset, int size, char *buffer);
+int fread(FILE *file, int offset, int size, char *buffer);
 
 int fwrite(FILE *file, int offset, int size, char *buffer);
 

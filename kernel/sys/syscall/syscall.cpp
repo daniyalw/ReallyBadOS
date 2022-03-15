@@ -146,11 +146,12 @@ void s_append_file(char *name, char *contents)
 {
 }
 
-void s_read_file(char *buf, int *offset, int *size, int fd)
+void s_read_file(char *buf, int *offset, int *size, int fd, int res)
 {
     if (fd < 0)
     {
         set_string(buf, "ERROR");
+        res = 1;
         return;
     }
 
@@ -159,15 +160,16 @@ void s_read_file(char *buf, int *offset, int *size, int fd)
     if (node == NULL)
     {
         set_string(buf, "AAA");
+        res = 1;
         return;
     }
 
     FILE *file = fopen(node->path);
 
     if (file == NULL)
-        printf("NU\n");
+        res = 1;
     else
-        fread(file, offset[0], size[0], buf);
+        res = fread(file, offset[0], size[0], buf);
 
     fclose(file);
 }

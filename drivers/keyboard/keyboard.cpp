@@ -109,13 +109,13 @@ void get_key(unsigned char code)
     }
 }
 
-char *read_keyboard(fs_node_t * node, int offset, int size, char *buff) {
+int read_keyboard(fs_node_t * node, int offset, int size, char *buff) {
     char *k = scanf();
     printf("done");
     buff = k;
     free(k);
 
-    return buff;
+    return 0;
 }
 
 char *read_getch(fs_node_t * node, int offset, int size, char *buff) {

@@ -18,7 +18,7 @@
 struct fs_node_t;
 
 typedef int (*__write)(fs_node_t*, int offset, int size, char *);
-typedef char * (*__read)(fs_node_t*, int offset, int size, char *);
+typedef int (*__read)(fs_node_t*, int offset, int size, char *);
 typedef int (*__mkfile)(fs_node_t*, __read, __write);
 
 struct fs_node_t
@@ -61,7 +61,7 @@ fs_node_t *find_node(int fd);
 
 void close_node(fs_node_t *node);
 int write_node(fs_node_t *node, int offset, int size, char *contents);
-char *read_node(fs_node_t *node, int offset, int size, char *buffer);
+int read_node(fs_node_t *node, int offset, int size, char *buffer);
 
 fs_node_t *create_node_ignore(char *name, char *parent_path, int type, int permission);
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount);
