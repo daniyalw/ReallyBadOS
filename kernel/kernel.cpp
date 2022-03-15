@@ -98,6 +98,7 @@ extern "C" {
 #include "../filesystem/node.cpp"
 #include "../filesystem/file.cpp"
 #include "../filesystem/dir.cpp"
+#include "../filesystem/test.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -277,6 +278,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     */
 
     //init_tasking();
+
+    test_install();
 
     fs_node_t *disk0 = mount_fs("disk0", "/", write_vfs_disk, read_vfs_disk, tmp_mkfile_vfs_disk, USER_PERMISSION);
     disk_init(disk0);
