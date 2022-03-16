@@ -21,3 +21,28 @@ void panic(char * msg, char * file, char * function, int line, ...)
     Kernel::disable_interrupts();
     Kernel::halt_system();
 }
+
+void traceback(int limit)
+{
+    uint32_t *ebp = (uint32_t *)__builtin_frame_address(0);
+    int z = 0;
+
+    for (;;) {
+        if (z == limit)
+            break;
+
+        uint32_t old_ebp = ebp[0];
+        uint32_t ret_address = ebp[1];
+
+        if (!ret_address)
+            break;
+
+        printf("0x%x\n", ret_address);
+
+        if (!old_ebp)
+            break;
+
+        ebp = (uint32_t *)old_ebp;
+        z++;
+    }
+}
