@@ -23,3 +23,16 @@ extern "C" void memcpy(void *dest, void *orig, int length)
     for (int z = 0; z < length; z++)
         d[z] = s[z];
 }
+
+extern "C" int strcmp(char * str1, char * str2)
+{
+    int total = strlen(str1);
+    int sec = strlen(str2);
+
+    if (total != sec) return 1;
+
+    for (int z = 0; z < total; z++)
+        if (str1[z] != str2[z]) return 1;
+
+    return 0;
+}

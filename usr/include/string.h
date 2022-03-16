@@ -14,6 +14,7 @@ extern int strlen(char * text);
 extern void strcpy(char *dest, char *orig);
 extern void memset(void *dest, char val, int length);
 extern void memcpy(void *dest, void *orig, int length);
+extern int strcmp(char * str1, char * str2);
 
 #ifdef __cplusplus
 }
