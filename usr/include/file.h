@@ -5,6 +5,8 @@
 
 #define EOF -1
 #define SEEK_SET 0
+#define SEEK_END -1
+#define SEEK_CUR -2
 
 struct fs_node;
 
@@ -61,7 +63,8 @@ extern int fgetc(FILE *file);
 extern int feof(FILE *file);
 extern char *fgets(char *str, int n, FILE *file);
 extern int fgetpos(FILE *file, fpos_t *pos);
-extern int fseek(FILE *file, int offset, int w);
+extern int fseek(FILE *file, int offset, int whence);
+extern int fsize(FILE *file);
 extern int ftell(FILE *file);
 extern void rewind(FILE *file);
 extern int fsetpos(FILE *file, fpos_t *pos);

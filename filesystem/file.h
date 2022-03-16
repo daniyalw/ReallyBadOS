@@ -4,6 +4,8 @@
 
 #define EOF -1
 #define SEEK_SET 0
+#define SEEK_END -1
+#define SEEK_CUR -2
 
 typedef struct
 {
@@ -39,10 +41,11 @@ char *fgets(char *str, int n, FILE *file);
 int feof(FILE *file);
 
 int fgetpos(FILE *file, fpos_t *pos);
-int fseek(FILE *file, int offset, int w);
+int fseek(FILE *file, int offset, int whence);
 int ftell(FILE *file);
 void rewind(FILE *file);
 int fsetpos(FILE *file, fpos_t *pos);
+int fsize(FILE *file);
 
 int fvsscanf(FILE *file, char *fmt, va_list va);
 int fscanf(FILE *file, char *fmt, ...);

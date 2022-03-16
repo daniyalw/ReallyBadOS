@@ -149,8 +149,23 @@ int fgetpos(FILE *file, fpos_t *pos)
     return *pos;
 }
 
-int fseek(FILE *file, int offset, int w)
+int fseek(FILE *file, int offset, int whence)
 {
+    int w = 0;
+
+    switch (whence)
+    {
+        case SEEK_SET:
+            w = 0;
+            break;
+        case SEEK_CUR:
+            w = file->ptr;
+            break;
+        case SEEK_END:
+            w = file->node->size;
+            break;
+    }
+
     if (file == NULL)
         return 1;
 
@@ -163,6 +178,14 @@ int ftell(FILE *file)
     int offset[1];
     offset[0] = fgetpos(file, offset);
     return offset[0];
+}
+
+int fsize(FILE *file)
+{
+    fseek(file, 0, SEEK_END);
+    int ret = ftell(file);
+    fseek(file, 0, 0);
+    return ret;
 }
 
 void rewind(FILE *file)
