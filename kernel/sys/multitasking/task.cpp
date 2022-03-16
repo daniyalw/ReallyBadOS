@@ -5,9 +5,23 @@
 
 void idle_task()
 {
+    int z = 0;
+
     while (true)
     {
+        printf("A: %d\n", z);
+        z++;
+    }
+}
 
+void test1()
+{
+    int z = 0;
+
+    while (true)
+    {
+        printf("Z: %d\n", z);
+        z++;
     }
 }
 
@@ -148,7 +162,7 @@ uint32_t allocate_stack()
 
 void switch_task(registers_t *regs, bool save_last)
 {
-    uint32_t eip = regs->eip;
+    uint32_t eip = read_eip();
 
     if (eip == 0x12344)
         return;
@@ -196,6 +210,9 @@ void switch_task(registers_t *regs, bool save_last)
         if (current_task >= task_count)
             current_task = 0;
 
+        if (tasks[current_task].eip == 0)
+            current_task++;
+
         if (current_task == _current)
         {
             // one full circle, all tasks blocked or null
@@ -205,7 +222,7 @@ void switch_task(registers_t *regs, bool save_last)
 
     task_t *load = (task_t *)&tasks[current_task];
 #ifdef DEBUG
-    log::warning("Current task: %d\nNew task load: %s\nNew task eip: %d\n", current_task, load->name, load->eip);
+    log::warning("Current task: %d\nNew task load: %s\nNew task eip: 0x%x\n", current_task, load->name, load->eip);
 #endif
     load_new_task(load);
 }
@@ -213,6 +230,8 @@ void switch_task(registers_t *regs, bool save_last)
 void init_tasking()
 {
     create_process("idle", (uint32_t)&idle_task);
+    create_process("test", (uint32_t)&test1);
 
     tasking_on = true;
+    switch_task(NULL, false);
 }

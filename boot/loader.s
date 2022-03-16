@@ -13,10 +13,12 @@
 
 .section .text
 .global _start
+.global _end
 
 _start:
     .extern kernel_main
     mov $kernel_stack, %esp
+    push %ebx
     push %eax
     push %ebx
     call kernel_main # kernel
