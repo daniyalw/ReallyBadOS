@@ -3,7 +3,24 @@
 
 int main(int argc, char **argv)
 {
-    if (argc <= 1)
+    if (argc >= 2)
+    {
+        if (strcmp(argv[1], "-h") == 0)
+        {
+            printf("Help: read <file-name>\n");
+            printf("Options: \n"
+                    " -h help\n"
+                    " -v version info");
+            return 0;
+        }
+        else if (strcmp(argv[1], "-v") == 0)
+        {
+            printf("Version: 0.2");
+            return 0;
+        }
+    }
+
+    if (argc < 2)
     {
         printf("Help: read <file-name>\n");
         return 1;

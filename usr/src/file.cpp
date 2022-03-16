@@ -89,7 +89,6 @@ extern "C" int fgetc(FILE *file)
 {
     char buf[1];
     fread(buf, 1, 1, file);
-    file->ptr++;
 
     if (file->ptr == file->node->size)
         file->eof = EOF;

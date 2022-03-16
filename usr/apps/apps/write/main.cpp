@@ -14,6 +14,23 @@ int getlength(int start, int argc, char *args[])
 
 int main(int argc, char *argv[])
 {
+    if (argc >= 2)
+    {
+        if (strcmp(argv[1], "-h") == 0)
+        {
+            printf("Help: write <file-path> <contents>\n");
+            printf("Options: \n"
+                    " -h help\n"
+                    " -v version info");
+            return 0;
+        }
+        else if (strcmp(argv[1], "-v") == 0)
+        {
+            printf("Version: 0.2");
+            return 0;
+        }
+    }
+
     if (argc < 3)
     {
         printf("Help: write <file-path> <contents>");
