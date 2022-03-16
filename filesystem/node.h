@@ -17,8 +17,8 @@
 
 struct fs_node_t;
 
-typedef int (*__write)(fs_node_t*, int offset, int size, char *);
-typedef int (*__read)(fs_node_t*, int offset, int size, char *);
+typedef int (*__write)(fs_node_t*, int, int, char *);
+typedef int (*__read)(fs_node_t*, int, int, char *);
 typedef int (*__mkfile)(fs_node_t*, __read, __write);
 
 struct fs_node_t

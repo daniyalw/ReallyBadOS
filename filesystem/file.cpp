@@ -100,9 +100,9 @@ void fclose(FILE *file)
     free(file);
 }
 
-int fwrite(FILE *file, int offset, int size, char *buffer)
+int fwrite(FILE *file, int size, int n, char *buffer)
 {
-    int ret = write_node(file->node, offset, size, buffer);
+    int ret = write_node(file->node, file->ptr, size * n, buffer);
 
     return ret;
 }
@@ -110,7 +110,7 @@ int fwrite(FILE *file, int offset, int size, char *buffer)
 int fgetc(FILE *file)
 {
     char buf[1];
-    fread(file, file->ptr, 1, buf);
+    fread(file, 1, 1, buf);
     file->ptr++;
 
     if (file->ptr == file->node->size)
@@ -119,9 +119,16 @@ int fgetc(FILE *file)
     return buf[0];
 }
 
-int fread(FILE *file, int offset, int size, char *buffer)
+int fread(FILE *file, int size, int n, char *buffer)
 {
-    return read_node(file->node, offset, size, buffer);
+    int ret = read_node(file->node, file->ptr, size * n, buffer);
+
+    file->ptr += size * n;
+
+    if (file->ptr >= file->node->size)
+        file->ptr = EOF;
+
+    return ret;
 }
 
 int feof(FILE *file)
@@ -131,7 +138,7 @@ int feof(FILE *file)
 
 char *fgets(char *str, int n, FILE *file)
 {
-    fread(file, file->ptr, n, str);
+    fread(file, 1, n, str);
     return str;
 }
 
@@ -173,7 +180,7 @@ int fvsscanf(FILE *file, char *fmt, va_list va)
 {
 	int cz = 0;
     char *str = (char *)malloc(file->node->size - file->ptr + 1);
-    fread(file, file->ptr, file->node->size - file->ptr, str);
+    fread(file, 1, file->node->size - file->ptr, str);
 
 	while (*fmt)
 	{

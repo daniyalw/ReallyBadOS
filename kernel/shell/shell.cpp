@@ -201,16 +201,6 @@ void shell()
             if (res != 'y')
                 continue;
         }
-        else if (check_name(command, "ddd"))
-        {
-            /*
-            FILE *file = fopen("/usr/documents/hello.txt");
-            printf("Contents: \n");
-            printf(fread("", 0, file->node.size, file));
-            fclose(file);
-            */
-            continue;
-        }
         else if (check_name(command, "exit"))
         {
             printf("Exiting...\n");

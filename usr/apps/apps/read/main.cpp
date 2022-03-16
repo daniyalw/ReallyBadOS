@@ -23,7 +23,7 @@ int main(int argc, char **argv)
         printf("Name: %s\n", file->node->name);
         printf("Size: %d bytes\n", file->node->size);
 
-        fread(buf, 0, file->node->size, file);
+        fread(buf, file->node->size, 1, file);
         printf("Read: ");
         printf(buf);
     }
