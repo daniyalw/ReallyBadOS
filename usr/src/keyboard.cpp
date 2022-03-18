@@ -20,10 +20,9 @@ extern "C" char getch()
     return buf[0];
 }
 
-extern "C" char *scanf()
+extern "C" char *scanf(char *buf)
 {
     FILE *file = fopen("/dev/stdin");
-    char *buf = (char *)malloc(100);
 
     if (file == NULL)
         return NULL;

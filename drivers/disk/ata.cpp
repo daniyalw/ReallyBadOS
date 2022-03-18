@@ -100,7 +100,33 @@ int fs_ata_read(fs_node_t *node, int offset, int size, char * num)
     return 0;
 }
 
-uint16_t * ata_send_identify(uint16_t *bytes) {
+void select_drive(uint8_t drive)
+{
+    outb(0x1F6, drive);
+}
+
+char *model(char *str, uint16_t *id_data)
+{
+    for (int i = 0; i < 40; i += 2)
+    {
+        str[i] = id_data[OFFSET_MODEL + i + 1];
+        str[i + 1] = id_data[OFFSET_MODEL + i];
+    }
+
+    for (int i = 39; i >= 0; i--)
+    {
+        if (!isspace(str[i]))
+            break;
+
+        str[i] = NULL;
+    }
+
+    return str;
+}
+
+uint16_t * ata_send_identify(uint16_t *bytes)
+{
+    // check the kind of drive
     uint8_t abc = inb(0x1F5);
     bool non_packet = false;
 
@@ -109,7 +135,7 @@ uint16_t * ata_send_identify(uint16_t *bytes) {
     }
 
     if (!non_packet) {
-        outb(0x1F6, 0xA0);
+        select_drive(DRIVE_MASTER);
         outb(0x1F2, 0);
         outb(0x1F3, 0);
         outb(0x1F4, 0);
@@ -119,7 +145,6 @@ uint16_t * ata_send_identify(uint16_t *bytes) {
 
         if (res == 0) {
             log::error("Drive does not exist!\n");
-            bytes[0] = -1;
             return bytes;
         }
 

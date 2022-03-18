@@ -110,10 +110,8 @@ void get_key(unsigned char code)
 }
 
 int read_keyboard(fs_node_t * node, int offset, int size, char *buff) {
-    char *k = scanf();
+    buff = scanf();
     printf("done");
-    buff = k;
-    free(k);
 
     return 0;
 }

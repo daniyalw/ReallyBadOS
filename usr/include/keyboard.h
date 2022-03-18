@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-extern char *scanf();
+extern char *scanf(char *buf);
 extern char getch();
 
 #ifdef __cplusplus

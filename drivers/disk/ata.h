@@ -4,6 +4,12 @@
 #define STATUS_RDY 0x40
 #define SECTOR_SIZE 512
 
+#define DRIVE_MASTER 0xA0
+#define DRIVE_SLAVE 0xB0
+
+#define OFFSET_MODEL 27
+#define OFFSET_MODEL_SERIAL 176
+
 typedef struct
 {
     uint32_t lba;
@@ -17,6 +23,8 @@ uint16_t * ata_send_identify(uint16_t *bytes);
 uint8_t *ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count);
 void ata_write_one(uint32_t LBA, uint8_t *bytes);
 void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes);
+
+void select_drive();
 
 //FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors);
 fs_ata_t get_from_str(char * str);

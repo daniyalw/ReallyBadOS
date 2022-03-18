@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
     printf("Test printf!\n");
 
 
-    char *result = scanf();
+    char *result = scanf("");
 
     printf("Read from scanf(): %s\n", result);;
 
