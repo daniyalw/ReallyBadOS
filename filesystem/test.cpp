@@ -13,22 +13,24 @@ int test_read(fs_node_t *node, int offset, int size, char *buf)
     return 0;
 }
 
-int test_mkfile(fs_node_t *node, __read read, __write write)
+int test_mkfile(fs_node_t *node)
 {
     log::info("Creating file '%s'\n", node->path);
     return 0;
 }
 
+int test_mkdir(fs_node_t *node, char *path)
+{
+    log::info("Creating new folder %s\n", path);
+    return 0;
+}
+
 void test_install()
 {
-    fs_node_t *node = mount_fs("test", "/", test_write, test_read, test_mkfile, USER_PERMISSION);
+    fs_node_t *node = mount_fs("test", "/", test_write, test_read, test_mkfile, test_mkdir, USER_PERMISSION);
 
     if (node == NULL)
-    {
         log::info("Failed to mount 'test' at '/'\n");
-    }
     else
-    {
         log::info("Successfully mounted '%s' at '%s'!\n", node->name, nodes[node->parent_id]->path);
-    }
 }

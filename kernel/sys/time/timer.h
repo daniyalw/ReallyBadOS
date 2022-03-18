@@ -9,6 +9,14 @@ u32 hz;
 int task_counter = 0;
 const int task_counter_limit = 500;
 
+typedef struct
+{
+    int remaining_ms;
+    void (*func)(); // function to run when timer is up
+} timer_t;
+
+std::list<timer_t> timers;
+
 static void timer_callback(registers_t regs);
 void timer_wait(int ticks);
 void sleep(int secs);

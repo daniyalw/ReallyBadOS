@@ -100,7 +100,6 @@ extern "C" {
 #include "../filesystem/dir.cpp"
 #include "../filesystem/test.cpp"
 #include "../stdlib/errno.cpp"
-#include "../stdlib/list.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"

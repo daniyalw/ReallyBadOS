@@ -105,7 +105,7 @@ int parse_path_file(char *path)
     return node->id;
 }
 
-fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, int permission)
+fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, __mkdir mkdir, int permission)
 {
     fs_node_t *node = create_node(name, parent, FS_FOLDER, permission);
 
@@ -118,6 +118,7 @@ fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfi
     node->write = write;
     node->read = read;
     node->mkfile = mkfile;
+    node->mkdir = mkdir;
     strcpy(node->mount_dir, name);
 
     nodes[node->id] = node;
@@ -159,7 +160,12 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
         node->read = parent->read;
         node->mkfile = parent->mkfile;
 
-        int ret = node->mkfile(node, node->read, node->write);
+        int ret = -1;
+
+        if (type == FS_FILE)
+            ret = node->mkfile(node);
+        else if (type == FS_FOLDER)
+            ret = node->mkdir(node, node->path);
 
         if (ret != 0)
         {
@@ -201,7 +207,12 @@ int write_node(fs_node_t *node, int offset, int size, char *contents)
     if (node->write != NULL)
         ret = node->write(node, offset, size, contents);
     else if (node->flags != FS_FOLDER)
-        strcpy(node->contents, contents); // THiS WORKS YAY
+    {
+        free(node->contents);
+        node->contents = (char *)malloc(strlen(contents) + 1);
+        memset(node->contents, 0, strlen(contents) + 1);
+        strcpy(node->contents, contents);
+    }
     else
         ret = 1;
 
