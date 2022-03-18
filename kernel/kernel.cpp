@@ -100,6 +100,7 @@ extern "C" {
 #include "../filesystem/dir.cpp"
 #include "../filesystem/test.cpp"
 #include "../stdlib/errno.cpp"
+#include "../stdlib/list.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -279,8 +280,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     */
 
     //init_tasking();
-
-    printf(strerror(ENOENT));
 
     test_install();
 
