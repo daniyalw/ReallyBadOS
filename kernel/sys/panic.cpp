@@ -18,6 +18,8 @@ void panic(char * msg, char * file, char * function, int line, ...)
     log::error("\n\nPANIC:\n\tMessage: %s\n\n\tFile: %s\n\tFunction: %s\n\tLine: %d\n\n", msg, file, function, line);
     printf("\n\nPANIC:\n\tMessage: %s\n\n\tFile: %s\n\tFunction: %s\n\tLine: %d\n\n", msg, file, function, line);
 
+    traceback(5);
+
     Kernel::disable_interrupts();
     Kernel::halt_system();
 }
