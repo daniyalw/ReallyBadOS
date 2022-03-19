@@ -2,15 +2,24 @@
 
 void idle_task()
 {
+    while (true) {}
+}
+
+void efddsfds()
+{
+    int z = 0;
+
     while (true)
     {
+        printf("Z:%d\n", z++);
     }
 }
 
 void create_process(char *name, uint32_t begin)
 {
-    task_t *task = (task_t *)&tasks[task_count];
+    task_t *task = (task_t *)malloc(sizeof(task_t *));
 
+    memset(task->name, 0, 20);
     strcpy(task->name, name);
 
     task->pid = task_count;
@@ -40,6 +49,9 @@ void create_process(char *name, uint32_t begin)
     task->stack_top = (uint32_t)stack;
     task->esp = task->stack_top;
     task->stack = stack_addr;
+
+    tasks[task_count] = task;
+    task_count++;
 }
 
 void load_new_task(task_t *task)
@@ -49,7 +61,14 @@ void load_new_task(task_t *task)
     eip = task->eip;
     ebp = task->ebp;
 
-    perform_task_switch(eip, ebp, esp);
+    asm volatile (
+			"mov %0, %%ebx\n"
+			"mov %1, %%esp\n"
+			"mov %2, %%ebp\n"
+			"mov $0x12344, %%eax\n"
+			"jmp *%%ebx"
+			: : "r" (eip), "r" (esp), "r" (ebp)
+			: "%ebx", "%esp", "%eax");
 }
 
 uint32_t allocate_stack()
@@ -61,13 +80,13 @@ void switch_task(registers_t *regs, bool save)
 {
     uint32_t esp, ebp;
     asm volatile ("mov %%esp, %0" : "=r" (esp));
-    asm volatile ("mov %%ebp, %0" : "=r" (ebp));
+	asm volatile ("mov %%ebp, %0" : "=r" (ebp));
     uint32_t eip = read_eip();
 
     if (eip == 0x12344)
         return;
 
-    task_t *current = (task_t *)&tasks[current_task];
+    task_t *current = tasks[current_task];
 
     if (save)
     {
@@ -76,20 +95,18 @@ void switch_task(registers_t *regs, bool save)
         current->ebp = ebp;
 
         current->stack_top = current->esp;
-    }
 
-#ifdef DEBUG
-    log::info("Note: eip: %d\n", current->eip);
-#endif
+        tasks[current->pid] = current;
+    }
 
     current_task++;
 
     if (current_task >= task_count)
         current_task = 0;
 
-    task_t *load = (task_t *)&tasks[current_task];
+    task_t *load = tasks[current_task];
 #ifdef DEBUG
-    log::warning("Current task: %d\nNew task load: %s\nNew task eip: %d\n", current_task, load->name, load->eip);
+    log::warning("Current task: %d\nNew task load: %s\nNew task eip: 0x%x\n", current_task, load->name, load->eip);
 #endif
     load_new_task(load);
 }
@@ -97,6 +114,7 @@ void switch_task(registers_t *regs, bool save)
 void init_tasking()
 {
     create_process("idle", (uint32_t)&idle_task);
+    create_process("test", (uint32_t)&efddsfds);
 
     tasking_on = true;
     switch_task(NULL, false);
