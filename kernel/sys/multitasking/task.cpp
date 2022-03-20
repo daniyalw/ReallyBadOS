@@ -23,7 +23,6 @@ void create_process(char *name, uint32_t begin)
     strcpy(task->name, name);
 
     task->pid = task_count;
-    task_count++;
 
     task->eip = begin;
     task->eflags = 0x202;
@@ -61,14 +60,7 @@ void load_new_task(task_t *task)
     eip = task->eip;
     ebp = task->ebp;
 
-    asm volatile (
-			"mov %0, %%ebx\n"
-			"mov %1, %%esp\n"
-			"mov %2, %%ebp\n"
-			"mov $0x12344, %%eax\n"
-			"jmp *%%ebx"
-			: : "r" (eip), "r" (esp), "r" (ebp)
-			: "%ebx", "%esp", "%eax");
+    perform_task_switch(eip, ebp, esp);
 }
 
 uint32_t allocate_stack()

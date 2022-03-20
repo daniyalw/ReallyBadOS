@@ -7,7 +7,7 @@ extern "C" {
     extern unsigned int kernel_end;
 }
 
-//#define DEBUG
+#define DEBUG
 //#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
@@ -276,6 +276,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Net::rtl8139::start();
     Net::ARP::send_request(addr);
     */
+
+    init_tasking();
+    return;
 
     test_install();
 
