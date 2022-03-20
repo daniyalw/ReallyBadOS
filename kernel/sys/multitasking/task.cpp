@@ -21,6 +21,15 @@ void mdasd()
     exit(0);
 }
 
+void yd()
+{
+    printf("Yielding");
+    while (true)
+    {
+        yield();
+    }
+}
+
 void exit(int ret)
 {
     task_t *task = tasks[current_task];
@@ -35,6 +44,12 @@ void exit(int ret)
 
     task_counter = 0;
     switch_task(NULL, false);
+}
+
+void yield()
+{
+    task_counter = 0;
+    switch_task(NULL, true);
 }
 
 void create_process(char *name, uint32_t begin)
@@ -140,6 +155,7 @@ void init_tasking()
     create_process("idle", (uint32_t)&idle_task);
     create_process("test", (uint32_t)&efddsfds);
     create_process("md", (uint32_t)&mdasd);
+    create_process("yd", (uint32_t)&yd);
 
     tasking_on = true;
     switch_task(NULL, false);

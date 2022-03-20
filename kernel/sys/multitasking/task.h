@@ -34,3 +34,4 @@ void init_tasking();
 void switch_task(registers_t *regs, bool save);
 
 void exit(int ret);
+void yield();
