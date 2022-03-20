@@ -23,6 +23,8 @@ int task_count = 0;
 
 int tasking_on = false;
 
+typedef int pid_t;
+
 void create_process(char *name, uint32_t begin);
 void load_new_task(task_t *task);
 
@@ -35,3 +37,10 @@ void switch_task(registers_t *regs, bool save);
 
 void exit(int ret);
 void yield();
+
+void block_task(task_t *task);
+void block_task_id(int taskid);
+void unblock_task(task_t *task);
+void unblock_task_id(int taskid);
+
+int wait_retcode(pid_t pid);

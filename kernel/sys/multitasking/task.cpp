@@ -11,7 +11,6 @@ void efddsfds()
 
     while (true)
     {
-        printf("Z:%d\n", z++);
     }
 }
 
@@ -27,6 +26,69 @@ void yd()
     while (true)
     {
         yield();
+    }
+}
+
+void nmc()
+{
+    int code = wait_retcode(5);
+
+    printf("Code: %d\n", code);
+
+    exit(0);
+}
+
+void abc()
+{
+    exit(4);
+}
+
+void block_task(task_t *task)
+{
+    task->blocked = true;
+    tasks[task->pid] = task;
+}
+
+void block_task_id(int taskid)
+{
+    ASSERT(taskid >= 0 && taskid < task_count);
+    task_t *task = tasks[taskid];
+    block_task(task);
+}
+
+void unblock_task(task_t *task)
+{
+    task->blocked = false;
+    tasks[task->pid] = task;
+}
+
+void unblock_task_id(int taskid)
+{
+    ASSERT(taskid >= 0 && taskid < task_count);
+    task_t *task = tasks[taskid];
+    unblock_task(task);
+}
+
+int find_retcode(pid_t pid)
+{
+    ASSERT(pid >= 0 && pid < task_count);
+
+    if (tasks[pid]->null)
+        return tasks[pid]->ret;
+    else
+        return -1;
+}
+
+int wait_retcode(pid_t pid)
+{
+    ASSERT(pid >= 0 && pid < task_count);
+
+    while (true)
+    {
+        if (tasks[pid]->null)
+            return tasks[pid]->ret;
+        else
+            yield();
     }
 }
 
@@ -156,6 +218,8 @@ void init_tasking()
     create_process("test", (uint32_t)&efddsfds);
     create_process("md", (uint32_t)&mdasd);
     create_process("yd", (uint32_t)&yd);
+    create_process("nmc", (uint32_t)&nmc);
+    create_process("abc", (uint32_t)&abc);
 
     tasking_on = true;
     switch_task(NULL, false);
