@@ -761,36 +761,49 @@ namespace std {
 
 string::string(char * data)
 {
-    str = data;
-    length = len(data);
+    length = strlen(data);
+    str = (char *)malloc(length + 1);
+
+    if (!str)
+        return;
+
+    memset(str, 0, length + 1);
+    strcpy(str, data);
 }
 
 void string::append_string(char * data)
 {
     append(str, data, str);
-    length += len(data);
+    length += strlen(data);
 }
 
 void string::operator=(char * s)
 {
-    str = s;
-    length = len(s);
+    length = strlen(s);
+    str = (char *)realloc(str, length + 1);
+
+    if (!str)
+        return;
+
+    memset(str, 0, length + 1);
+    strcpy(str, s);
 }
 
 void string::operator=(string s)
 {
-    str = s.get();
     length = s.size();
-}
+    str = (char *)realloc(str, length + 1);
 
-char * string::get()
-{
-    return str;
+    if (!str)
+        return;
+
+    memset(str, 0, length + 1);
+    strcpy(str, s.c_str());
 }
 
 bool string::operator==(string s)
 {
-    if (s.get() == this->get() && s.size() == this->length)
+    if (strcmp(s.c_str(), this->c_str()) == 0 && s.size() == this->length)
         return true;
 
     return false;
@@ -798,7 +811,7 @@ bool string::operator==(string s)
 
 bool string::operator==(char * s)
 {
-    if (s == this->get() && len(s) == this->length)
+    if (strcmp(s, this->c_str()) == 0 && strlen(s) == this->length)
         return true;
 
     return false;
@@ -806,7 +819,7 @@ bool string::operator==(char * s)
 
 bool string::operator!=(string s)
 {
-    if (s.get() == this->get() && s.size() == this->length)
+    if (strcmp(s.c_str(), this->c_str()) && s.size() == this->length)
         return false;
 
     return true;
@@ -814,7 +827,7 @@ bool string::operator!=(string s)
 
 bool string::operator!=(char * s)
 {
-    if (s == this->get() && len(s) == this->length)
+    if (strcmp(s, this->c_str()) && len(s) == this->length)
         return false;
 
     return true;
@@ -854,7 +867,7 @@ bool string::operator>(char * s)
 
 void string::operator+(string s)
 {
-    append(this->get(), s.get(), this->str);
+    append(this->c_str(), s.c_str(), this->str);
 }
 
 void string::operator+(char * s)

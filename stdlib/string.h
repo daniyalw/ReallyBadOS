@@ -9,7 +9,6 @@ class string
     char * str;
     int length;
 public:
-    char * get();
     string(char * data);
     int size() { return length; };
     void append_string(char * data);
