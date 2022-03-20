@@ -15,6 +15,28 @@ void efddsfds()
     }
 }
 
+void mdasd()
+{
+    printf("EEEEEE");
+    exit(0);
+}
+
+void exit(int ret)
+{
+    task_t *task = tasks[current_task];
+
+    if (task == NULL)
+        return;
+
+    task->ret = ret;
+    // we can't free the task because we save task->ret
+    free((void *)task->stack);
+    task->null = true;
+
+    task_counter = 0;
+    switch_task(NULL, false);
+}
+
 void create_process(char *name, uint32_t begin)
 {
     task_t *task = (task_t *)malloc(sizeof(task_t *));
@@ -26,6 +48,8 @@ void create_process(char *name, uint32_t begin)
 
     task->eip = begin;
     task->eflags = 0x202;
+    task->null = false;
+    task->blocked = false;
 
     uint32_t stack_addr = allocate_stack();
     uint32_t *stack = (uint32_t *)stack_addr + (4 * 1024);
@@ -96,6 +120,14 @@ void switch_task(registers_t *regs, bool save)
     if (current_task >= task_count)
         current_task = 0;
 
+    while (tasks[current_task]->null || tasks[current_task]->blocked)
+    {
+        current_task++;
+
+        if (current_task >= task_count)
+            current_task = 0;
+    }
+
     task_t *load = tasks[current_task];
 #ifdef DEBUG
     log::warning("Current task: %d\nNew task load: %s\nNew task eip: 0x%x\n", current_task, load->name, load->eip);
@@ -107,6 +139,7 @@ void init_tasking()
 {
     create_process("idle", (uint32_t)&idle_task);
     create_process("test", (uint32_t)&efddsfds);
+    create_process("md", (uint32_t)&mdasd);
 
     tasking_on = true;
     switch_task(NULL, false);

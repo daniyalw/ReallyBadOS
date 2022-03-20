@@ -14,6 +14,7 @@ typedef struct
     uint32_t stack;
     uint32_t stack_top;
     bool null, blocked;
+    int ret;
 } task_t;
 
 task_t *tasks[30];
@@ -31,3 +32,5 @@ uint32_t allocate_stack();
 
 void init_tasking();
 void switch_task(registers_t *regs, bool save);
+
+void exit(int ret);
