@@ -66,7 +66,7 @@ int kcreate_file(char *name, char *path, __read read, __write write)
     return create_file(name, path, read, write, ROOT_PERMISSION);
 }
 
-FILE *fopen(char *path, int permission)
+FILE *fopen(char *path, char *mode, int permission)
 {
     fs_node_t *node = find_node(path);
 
@@ -81,22 +81,24 @@ FILE *fopen(char *path, int permission)
     file->ptr = 0;
     file->eof = 0;
     file->node = node;
+    file->mode = strdup(mode);
 
     return file;
 }
 
-FILE *fopen(char *path)
+FILE *fopen(char *path, char *mode)
 {
-    return fopen(path, USER_PERMISSION);
+    return fopen(path, mode, USER_PERMISSION);
 }
 
-FILE *kopen(char *path)
+FILE *kopen(char *path, char *mode)
 {
-    return fopen(path, ROOT_PERMISSION);
+    return fopen(path, mode, ROOT_PERMISSION);
 }
 
 void fclose(FILE *file)
 {
+    free(file->mode);
     free(file);
 }
 

@@ -13,6 +13,7 @@ typedef struct
 
     int ptr;
     int eof;
+    char *mode;
 } FILE;
 
 typedef int fpos_t;
@@ -32,7 +33,7 @@ int fread(FILE *file, int size, int n, char *buffer);
 
 int fwrite(FILE *file, int size, int n, char *buffer);
 
-FILE *fopen(char *path);
+FILE *fopen(char *path, char *mode);
 void fclose(FILE *file);
 
 int fgetc(FILE *file);

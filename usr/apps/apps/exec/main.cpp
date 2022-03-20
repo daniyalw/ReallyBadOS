@@ -17,7 +17,7 @@ int main(int argc, char const *argv[])
         return 1;
     }
 
-    FILE *file = fopen((char *)argv[1]);
+    FILE *file = fopen((char *)argv[1], "r");
 
     if (file == NULL)
     {

@@ -50,7 +50,7 @@ typedef int fpos_t;
 extern "C" {
 #endif
 
-extern FILE *fopen(char *path);
+extern FILE *fopen(char *path, char *mode);
 extern void fclose(FILE *file);
 extern int fexec(char *contents);
 extern void ls(char *path);

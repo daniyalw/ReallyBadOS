@@ -71,9 +71,9 @@ int run_command(char * command)
     FILE *file;
 
     if (is_exec_slash)
-        file = fopen(executable);
+        file = fopen(executable, "r");
     else
-        file = fopen(fname);
+        file = fopen(fname, "r");
 
     if (file == NULL)
     {
@@ -81,7 +81,7 @@ int run_command(char * command)
 
         // if we fail, try searching the usr folder
         fname = get("", "/usr/bin/%s.o", executable, executable);
-        file = fopen(fname);
+        file = fopen(fname, "r");
 
         if (file == NULL)
         {

@@ -78,9 +78,9 @@ void s_info(info_t *info)
     info[0].dev = System::dev;
 }
 
-void s_file(char *path, uint32_t *addr)
+void s_file(char *path, char *mode, uint32_t *addr)
 {
-    FILE *file = fopen(path);
+    FILE *file = fopen(path, mode);
 
     if (file == NULL)
         addr[0] = NULL;
@@ -129,7 +129,7 @@ void s_write_file(char *contents, int *size, int *n, int fd, int *res)
         return;
     }
 
-    FILE *file = fopen(node->path);
+    FILE *file = fopen(node->path, "r");
 
     res[0] = fwrite(file, size[0], n[0], contents);
 
@@ -168,7 +168,7 @@ void s_read_file(char *buf, int *size, int *n, int fd, int res)
         return;
     }
 
-    FILE *file = fopen(node->path);
+    FILE *file = fopen(node->path, "r");
 
     if (file == NULL)
         res = 1;

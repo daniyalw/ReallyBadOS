@@ -67,7 +67,7 @@ int load_app(uint32_t location, int argc, char **argv)
 
 int load_app_from_name(char *name, int argc, char **argv)
 {
-    FILE *file = fopen(name);
+    FILE *file = fopen(name, "r");
 
     if (file == NULL)
     {

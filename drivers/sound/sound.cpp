@@ -49,7 +49,7 @@ int sound_write(fs_node_t *node, int offset, int size, char *data)
 
 void beep()
 {
-    FILE *file = fopen("/dev/sound");
+    FILE *file = fopen("/dev/sound", "rw");
     sound_write(file->node, 0, 10, "1000");
 
     for (int z = 0; z < 1000; z++)

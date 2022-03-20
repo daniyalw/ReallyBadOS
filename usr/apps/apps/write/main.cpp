@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 
     printf("To write: '%s'", c);
 
-    FILE *file = fopen(argv[1]);
+    FILE *file = fopen(argv[1], "w");
     fwrite(c, 1, 10, file);
     fclose(file);
 

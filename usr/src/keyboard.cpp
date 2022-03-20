@@ -6,7 +6,7 @@
 extern "C" char getch()
 {
     // read files
-    FILE *file = fopen("/dev/stdin");
+    FILE *file = fopen("/dev/stdin", "r");
 
     if (file == NULL)
         return NULL;
@@ -22,7 +22,7 @@ extern "C" char getch()
 
 extern "C" char *scanf(char *buf)
 {
-    FILE *file = fopen("/dev/stdin");
+    FILE *file = fopen("/dev/stdin", "r");
 
     if (file == NULL)
         return NULL;

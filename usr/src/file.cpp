@@ -4,12 +4,12 @@
 #include <stdint.h>
 #include <file.h>
 
-extern "C" FILE *fopen(char *path)
+extern "C" FILE *fopen(char *path, char *mode)
 {
     void *a;
     uint32_t *addr;
 
-    asm volatile("int $48" : "=a" (a) : "0" (FOPEN), "b" (path), "c" (addr));
+    asm volatile("int $48" : "=a" (a) : "0" (FOPEN), "b" (path), "c" (mode), "d" (addr));
 
     FILE *file = (FILE *)(addr[0]);
 
