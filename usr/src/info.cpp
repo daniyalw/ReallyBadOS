@@ -12,7 +12,7 @@ extern "C" info_t get_sys_info()
 {
     info_t info[1];
     void * a;
-    asm volatile("int $48" : "=a" (a) : "0" (INFO), "b" (info));
+    CALL_SYS1(a, INFO, info);
 
     return info[0];
 }

@@ -8,7 +8,7 @@ typedef struct {
 extern "C" time_t get_time()
 {
     time_t time[1];
-    void * a;
-    asm volatile("int $48" : "=a" (a) : "0" (TIME), "b" (time));
+    void *a;
+    CALL_SYS1(a, TIME, time);
     return time[0];
 }

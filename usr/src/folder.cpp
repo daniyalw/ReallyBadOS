@@ -4,7 +4,7 @@ extern "C" int mkdir(char *name, char *parent)
 {
     int ret;
 
-    asm volatile("int $48" : "=a" (ret) : "0" (MKDIR), "b" (name), "c" (parent));
+    CALL_SYS2(ret, MKDIR, name, parent);
 
     return ret;
 }

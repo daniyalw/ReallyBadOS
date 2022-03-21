@@ -100,7 +100,7 @@ extern "C" void snprintf(char *s, int max, char *fmt, ...)
 
 extern "C" void putchar(char text) {
     void * a;
-    asm volatile("int $48" : "=a" (a) : "0" (PUTCHAR), "b" (text));
+    CALL_SYS1(a, PUTCHAR, text);
 }
 
 extern "C" int printf(char *a, ...)
@@ -113,7 +113,7 @@ extern "C" int printf(char *a, ...)
     out = vsprintf("", a, va);
     va_end(va);
 
-    asm volatile("int $48" : "=a" (ret) : "0" (PRINT), "b" (out));
+    CALL_SYS1(ret, PRINT, out);
 
     return ret;
 }
