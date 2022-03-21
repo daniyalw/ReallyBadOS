@@ -26,11 +26,11 @@ extern "C" void fclose(FILE *file)
 extern "C" int fexec(char *contents)
 {
     void *a;
-    int *ret;
+    int ret;
 
-    asm volatile("int $48" : "=a" (a) : "0" (FEXEC), "b" (contents), "c" (ret));
+    asm volatile("int $48" : "=a" (ret) : "0" (FEXEC), "b" (contents));
 
-    return ret[0];
+    return ret;
 }
 
 extern "C" void ls(char *path)
@@ -42,24 +42,24 @@ extern "C" void ls(char *path)
 extern "C" int mkfile(char *name, char *dir, char *contents)
 {
     void * a;
-    int res[1];
-    asm volatile("int $48" : "=a" (a) : "0" (MKFILE), "b" (name), "c" (dir), "d" (contents), "S" (res));
+    int ret;
+    asm volatile("int $48" : "=a" (ret) : "0" (MKFILE), "b" (name), "c" (dir), "d" (contents));
 
-    return res[0];
+    return ret;
 }
 
 extern "C" int fwrite(char *buf, int size, int n, FILE *file)
 {
     void *a;
-    int res[1];
+    int ret;
     int off[1];
     int s[1];
 
     off[0] = size;
     s[1] = n;
-    asm volatile("int $48" : "=a" (a) : "0" (WRITE_FILE), "b" (buf), "c" (off), "d" (s), "S" (file->node->id), "D" (res));
+    asm volatile("int $48" : "=a" (ret) : "0" (WRITE_FILE), "b" (buf), "c" (off), "d" (s), "S" (file->node->id));
 
-    return res[0];
+    return ret;
 }
 
 extern "C" void append_file(char *name, char *contents)
@@ -79,7 +79,7 @@ extern "C" int fread(char *buffer, int size, int n, FILE *file)
     off[0] = size;
     s[0] = n;
 
-    asm volatile("int $48" : "=a" (a) : "0" (READ_FILE), "b" (buffer), "c" (off), "d" (s), "S" (file->node->id), "D" (ret));
+    asm volatile("int $48" : "=a" (ret) : "0" (READ_FILE), "b" (buffer), "c" (off), "d" (s), "S" (file->node->id));
     file->ptr += size * n;
 
     return ret;

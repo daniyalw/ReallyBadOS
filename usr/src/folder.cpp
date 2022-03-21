@@ -2,10 +2,9 @@
 
 extern "C" int mkdir(char *name, char *parent)
 {
-    int result[1];
-    void * a;
+    int ret;
 
-    asm volatile("int $48" : "=a" (a) : "0" (MKDIR), "b" (name), "c" (parent), "d" (result));
+    asm volatile("int $48" : "=a" (ret) : "0" (MKDIR), "b" (name), "c" (parent));
 
-    return result[0];
+    return ret;
 }

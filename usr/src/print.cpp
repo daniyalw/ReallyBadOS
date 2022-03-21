@@ -107,16 +107,15 @@ extern "C" int printf(char *a, ...)
 {
     va_list va;
     char *out;
-    int count[1];
-    void *b;
+    int ret;
 
     va_start(va, a);
     out = vsprintf("", a, va);
     va_end(va);
 
-    asm volatile("int $48" : "=a" (b) : "0" (PRINT), "b" (out), "c" (count));
+    asm volatile("int $48" : "=a" (ret) : "0" (PRINT), "b" (out));
 
-    return count[0];
+    return ret;
 }
 
 void test_print()

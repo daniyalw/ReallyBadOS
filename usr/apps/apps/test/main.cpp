@@ -3,18 +3,8 @@
 
 int main(int argc, char *argv[])
 {
-    printf("Test printf!\n");
-
-
-    char *result = scanf("");
-
-    printf("Read from scanf(): %s\n", result);;
-
-
-
-    char k = getch();
-
-    printf("Read from getch(): %c\n", k);
+    int ret = printf("AAAAB");
+    printf("Ret: %d\n", ret);
 
     return 0;
 }

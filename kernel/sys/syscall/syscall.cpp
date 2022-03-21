@@ -23,45 +23,46 @@ void set_string(char * string, char * newvalue)
 
 // ----------------------------- //
 
-void print(char * text, int *ret)
+int print(char * text)
 {
-    ret[0] = printf(text);
+    return printf(text);
 }
 
-void s_putchar(char text)
+int s_putchar(char text)
 {
     putchar(text);
+    return 0;
 }
 
-void get_num(int * num)
+int get_num()
 {
-    num[0] = get_random_number();
+    return get_random_number();
 }
 
-void s_get_time(time_t time[1])
+int s_get_time(time_t time[1])
 {
     time[0] = Time::get_time();
+    return 0;
 }
 
-void s_putpixel(int x, int y, int color)
+int s_putpixel(int x, int y, int color)
 {
     Graphic::SetPixel(x, y, color);
+    return 0;
 }
 
-void test(int num)
-{
-    num = 105;
-}
-
-void s_update_mouse()
+int s_update_mouse()
 {
     next_char();
     Kernel::update_hardware_cursor(text_x, text_y);
+    return 0;
 }
 
-void s_test()
+int s_test(int chocolate)
 {
+    chocolate = 5;
     printf("Hello!");
+    return 9;
 }
 
 typedef struct
@@ -71,14 +72,16 @@ typedef struct
     bool dev;
 } info_t;
 
-void s_info(info_t *info)
+int s_info(info_t *info)
 {
     info[0].name = (char *)System::SYSTEM;
     info[0].version = (char *)System::VERSION;
     info[0].dev = System::dev;
+
+    return 0;
 }
 
-void s_file(char *path, char *mode, uint32_t *addr)
+int s_file(char *path, char *mode, uint32_t *addr)
 {
     FILE *file = fopen(path, mode);
 
@@ -86,77 +89,84 @@ void s_file(char *path, char *mode, uint32_t *addr)
         addr[0] = NULL;
     else
         addr[0] = (uint32_t)file;
+
+    return 0;
 }
 
-void s_fclose(FILE *file)
+int s_fclose(FILE *file)
 {
     free(file);
+    return 0;
 }
 
-void exec_file(char *contents, int *ret)
+int exec_file(char *contents)
 {
-
+    return 0;
 }
 
-void s_ls(char *path)
+int s_ls(char *path)
 {
     list_dir(path);
+    return 0;
 }
 
-void s_create_folder(char *folder, char *parent_dir, int *result)
+int s_create_folder(char *folder, char *parent_dir)
 {
-    result[0] = make_dir_user(folder, parent_dir);
+    return make_dir_user(folder, parent_dir);
 }
 
-void s_create_file(char *name, char *folder, char *contents, int *res)
+int s_create_file(char *name, char *folder, char *contents)
 {
-    res[0] = create_file(name, folder, contents);
+    return create_file(name, folder, contents);
 }
 
-void s_write_file(char *contents, int *size, int *n, int fd, int *res)
+int s_write_file(char *contents, int *size, int *n, int fd)
 {
     if (fd < 0)
-    {
-        res[0] = 1;
-        return;
-    }
+        return 1;
 
     fs_node_t *node = find_node(fd);
 
     if (node == NULL)
-    {
-        res[0] = 1;
-        return;
-    }
+        return 1;
 
     FILE *file = fopen(node->path, "r");
 
-    res[0] = fwrite(file, size[0], n[0], contents);
+    if (file == NULL)
+        return 1;
+
+    int ret = fwrite(file, size[0], n[0], contents);
 
     fclose(file);
+
+    return ret;
 }
 
-void s_malloc(int *size, uint32_t *addr)
+int s_malloc(int *size, uint32_t *addr)
 {
     addr[0] = malloc(size[0]);
+    return 0;
 }
 
-void s_free(void *buf)
+int s_free(void *buf)
 {
     free(buf);
+    return 0;
 }
 
-void s_append_file(char *name, char *contents)
+int s_append_file(char *name, char *contents)
 {
+    return 0;
 }
 
-void s_read_file(char *buf, int *size, int *n, int fd, int res)
+int s_read_file(char *buf, int *size, int *n, int fd)
 {
+    int ret = 0;
+
     if (fd < 0)
     {
         set_string(buf, "ERROR");
-        res = 1;
-        return;
+        return 1;
     }
 
     fs_node_t *node = find_node(fd);
@@ -164,18 +174,24 @@ void s_read_file(char *buf, int *size, int *n, int fd, int res)
     if (node == NULL)
     {
         set_string(buf, "AAA");
-        res = 1;
-        return;
+        return 1;
     }
 
     FILE *file = fopen(node->path, "r");
 
     if (file == NULL)
-        res = 1;
+        return 1;
     else
-        res = fread(file, size[0], n[0], buf);
+        ret = fread(file, size[0], n[0], buf);
 
     fclose(file);
+
+    return ret;
+}
+
+int s_create_proc(char *name, uint32_t addr)
+{
+    return create_process(name, addr);
 }
 
 // ----------------------------- //
@@ -232,7 +248,7 @@ void syscall_handler(registers_t *regs)
      pop %%ebx; \
      pop %%ebx; \
    " : "=a" (ret) : "r" (regs->edi), "r" (regs->esi), "r" (regs->edx), "r" (regs->ecx), "r" (regs->ebx), "r" (location));
-   //regs.eax = ret;
+  regs->eax = ret;
 }
 
 namespace Kernel {
@@ -257,6 +273,7 @@ void init_syscalls()
     syscall_append((void *)s_free);
     syscall_append((void *)s_append_file);
     syscall_append((void *)s_read_file);
+    syscall_append((void *)s_create_proc);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }
