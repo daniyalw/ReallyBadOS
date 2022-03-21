@@ -53,11 +53,7 @@ void sort(int * A, int sz);
 int findMinIndex(int * A, int start, int sz);
 void swap(int num1, int num2);
 
-inline void memcpy(char *dest, const char *source, const int nb);
 void memcpy(void *dest, void * source, int begin, int end);
-void memcpy(char *dest, char * source, int begin, int end);
-static inline void __movsb_copy_int(int *to, const int *from, int size);
-inline void memcpy_int(const int *source, int *dest, const int nb);
 extern "C" void memcpy(void *dest, void *source, int length);
 
 char * get(char * out, char *text, ...);

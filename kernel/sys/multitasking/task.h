@@ -12,7 +12,6 @@ typedef struct
     int eip, esp, ebp, eflags;
     int pid;
     uint32_t stack;
-    uint32_t stack_top;
     bool null, blocked;
     int ret;
 } task_t;
@@ -25,7 +24,7 @@ int tasking_on = false;
 
 typedef int pid_t;
 
-void create_process(char *name, uint32_t begin);
+int create_process(char *name, uint32_t begin);
 void load_new_task(task_t *task);
 
 void save_task_context(task_t *task, registers_t *regs);

@@ -131,7 +131,8 @@ public:
             nz++;
         }
         length = nz;
-        memcpy_int(newarr, arr, length);
+        for (int z = 0; z < length; z++)
+            newarr[z] = arr[z];
         arr = (T *)realloc(arr, length);
     }
 
@@ -153,7 +154,10 @@ public:
             nz++;
         }
         length = nz;
-        memcpy_int((uint32_t *)&newarr, (uint32_t *)&arr, length);
+
+        for (int z = 0; z < length; z++)
+            newarr[z] = arr[z];
+
         arr = (T *)realloc(arr, length); // free a bit of memory
     }
 

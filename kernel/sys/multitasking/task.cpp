@@ -1,46 +1,52 @@
 #include "task.h"
 
-void idle_task()
+int idle_task()
 {
     while (true) {}
+    return 0;
 }
 
-void efddsfds()
+int efddsfds()
 {
     int z = 0;
 
     while (true)
     {
     }
+    return 0;
 }
 
-void mdasd()
+int mdasd()
 {
     printf("EEEEEE");
     exit(0);
+    return 0;
 }
 
-void yd()
+int yd()
 {
     printf("Yielding");
     while (true)
     {
         yield();
     }
+    return 0;
 }
 
-void nmc()
+int nmc()
 {
     int code = wait_retcode(5);
 
     printf("Code: %d\n", code);
 
     exit(0);
+    return 0;
 }
 
-void abc()
+int abc()
 {
     exit(4);
+    return 0;
 }
 
 void block_task(task_t *task)
@@ -114,7 +120,7 @@ void yield()
     switch_task(NULL, true);
 }
 
-void create_process(char *name, uint32_t begin)
+int create_process(char *name, uint32_t begin)
 {
     task_t *task = (task_t *)malloc(sizeof(task_t *));
 
@@ -129,6 +135,13 @@ void create_process(char *name, uint32_t begin)
     task->blocked = false;
 
     uint32_t stack_addr = allocate_stack();
+
+    if (!stack_addr)
+    {
+        free(task);
+        return 1;
+    }
+
     uint32_t *stack = (uint32_t *)stack_addr + (4 * 1024);
 
     *--stack = task->eflags; // eflags
@@ -146,12 +159,13 @@ void create_process(char *name, uint32_t begin)
     *--stack = 0x13; // es
     *--stack = 0x13; // gs
 
-    task->stack_top = (uint32_t)stack;
-    task->esp = task->stack_top;
+    task->esp = (uint32_t)stack;
     task->stack = stack_addr;
 
     tasks[task_count] = task;
     task_count++;
+
+    return 0;
 }
 
 void load_new_task(task_t *task)
@@ -186,8 +200,6 @@ void switch_task(registers_t *regs, bool save)
         current->eip = eip;
         current->esp = esp;
         current->ebp = ebp;
-
-        current->stack_top = current->esp;
 
         tasks[current->pid] = current;
     }
