@@ -120,8 +120,17 @@ void yield()
     switch_task(NULL, true);
 }
 
-int create_process(char *name, uint32_t begin)
+pid_t create_process(char *name, uint32_t begin)
 {
+    for (int z = 0; z < task_count; z++)
+    {
+        if (tasks[z]->null)
+            continue;
+
+        if (strcmp(tasks[z]->name, name) == 0)
+            return 0;
+    }
+    
     task_t *task = (task_t *)malloc(sizeof(task_t *));
 
     memset(task->name, 0, 20);
@@ -139,7 +148,7 @@ int create_process(char *name, uint32_t begin)
     if (!stack_addr)
     {
         free(task);
-        return 1;
+        return 0;
     }
 
     uint32_t *stack = (uint32_t *)stack_addr + (4 * 1024);
@@ -165,7 +174,7 @@ int create_process(char *name, uint32_t begin)
     tasks[task_count] = task;
     task_count++;
 
-    return 0;
+    return task->pid;
 }
 
 void load_new_task(task_t *task)
