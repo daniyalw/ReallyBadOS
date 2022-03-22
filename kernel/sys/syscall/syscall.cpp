@@ -194,6 +194,18 @@ int s_create_proc(char *name, uint32_t addr)
     return create_process(name, addr);
 }
 
+int s_yield()
+{
+    yield();
+    return 0;
+}
+
+int s_exit(int ret)
+{
+    exit(ret);
+    return 0;
+}
+
 // ----------------------------- //
 
 
@@ -221,6 +233,8 @@ void syscall_print_syscalls()
 
 void syscall_handler(registers_t *regs)
 {
+    asm("cli");
+
    if (regs->eax >= syscall_count)
    {
       log::error("Syscall outside of initialized syscalls range.");
@@ -249,6 +263,8 @@ void syscall_handler(registers_t *regs)
      pop %%ebx; \
    " : "=a" (ret) : "r" (regs->edi), "r" (regs->esi), "r" (regs->edx), "r" (regs->ecx), "r" (regs->ebx), "r" (location));
   regs->eax = ret;
+
+  asm("sti");
 }
 
 namespace Kernel {
@@ -274,6 +290,8 @@ void init_syscalls()
     syscall_append((void *)s_append_file);
     syscall_append((void *)s_read_file);
     syscall_append((void *)s_create_proc);
+    syscall_append((void *)s_yield);
+    syscall_append((void *)s_exit);
     Kernel::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }

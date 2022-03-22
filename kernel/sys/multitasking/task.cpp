@@ -120,7 +120,7 @@ void yield()
     switch_task(NULL, true);
 }
 
-pid_t create_process(char *name, uint32_t begin)
+pid_t create_process(char *name, uint32_t begin, int argc, char **argv)
 {
     for (int z = 0; z < task_count; z++)
     {
@@ -138,10 +138,16 @@ pid_t create_process(char *name, uint32_t begin)
 
     task->pid = task_count;
 
-    task->eip = begin;
+    task->eip = (uint32_t)&wrapper;
     task->eflags = 0x202;
     task->null = false;
     task->blocked = false;
+
+    task->start = begin;
+    task->argc = argc;
+
+    for (int z = 0; z < argc; z++)
+        task->argv[z] = strdup(argv[z]);
 
     uint32_t stack_addr = allocate_stack();
 
@@ -177,6 +183,45 @@ pid_t create_process(char *name, uint32_t begin)
     return task->pid;
 }
 
+pid_t create_process_file(FILE *file, int argc, char **argv)
+{
+    if (argc <= 0)
+        return -1;
+
+    if (file != NULL)
+    {
+        auto header = load_elf_memory((uint8_t *)file->node->contents);
+        return create_process(argv[0], header->e_entry, argc, argv);
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+pid_t create_process_filename(char *path, int argc, char **argv)
+{
+    if (argc <= 0)
+        return -1;
+
+    FILE *file = fopen(path, "r");
+
+    if (file != NULL)
+    {
+        auto header = load_elf_memory((uint8_t *)file->node->contents);
+        return create_process(argv[0], header->e_entry, argc, argv);
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+pid_t create_process(char *name, uint32_t begin)
+{
+    return create_process(name, begin, 0, NULL);
+}
+
 void load_new_task(task_t *task)
 {
     uint32_t esp, eip, ebp;
@@ -190,6 +235,26 @@ void load_new_task(task_t *task)
 uint32_t allocate_stack()
 {
     return malloc(4 * 1024);
+}
+
+void wrapper()
+{
+    task_t *task = tasks[current_task];
+
+    if (task == NULL)
+    {
+        asm("sti");
+        exit(1);
+    }
+
+    call_t call = (call_t)task->start;
+
+#ifdef DEBUG
+    log::info("Loading task '%s' (PID %d) at address 0x%x\n", task->name, task->pid, task->start);
+#endif
+
+    int ret = call(task->argc, task->argv);
+    exit(ret);
 }
 
 void switch_task(registers_t *regs, bool save)
@@ -236,11 +301,9 @@ void switch_task(registers_t *regs, bool save)
 void init_tasking()
 {
     create_process("idle", (uint32_t)&idle_task);
-    create_process("test", (uint32_t)&efddsfds);
-    create_process("md", (uint32_t)&mdasd);
-    create_process("yd", (uint32_t)&yd);
-    create_process("nmc", (uint32_t)&nmc);
-    create_process("abc", (uint32_t)&abc);
+
+    char *argv[] = {"echo", "hello from echo"};
+    create_process_filename("/bin/echo.o", 2, argv);
 
     tasking_on = true;
     switch_task(NULL, false);

@@ -18,6 +18,9 @@
 #define FREE 15
 #define APPEND_FILE 16
 #define READ_FILE 17
+#define CREATE_PROC 18
+#define YIELD_PROC 19
+#define EXIT_PROC 20
 
 #define CALL_SYS0(ret, num) \
         asm volatile("int $48" : "=a" (ret) : "0" (num));

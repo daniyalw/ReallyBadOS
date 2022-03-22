@@ -14,6 +14,10 @@ typedef struct
     uint32_t stack;
     bool null, blocked;
     int ret;
+
+    uint32_t start;
+    int argc;
+    char *argv[64];
 } task_t;
 
 task_t *tasks[30];
@@ -24,7 +28,11 @@ int tasking_on = false;
 
 typedef int pid_t;
 
-int create_process(char *name, uint32_t begin);
+pid_t create_process(char *name, uint32_t begin, int argc, char **argv);
+pid_t create_process(char *name, uint32_t begin);
+pid_t create_process_file(FILE *file, int argc, char **argv);
+pid_t create_process_filename(char *path, int argc, char **argv);
+
 void load_new_task(task_t *task);
 
 void save_task_context(task_t *task, registers_t *regs);
@@ -43,3 +51,4 @@ void unblock_task(task_t *task);
 void unblock_task_id(int taskid);
 
 int wait_retcode(pid_t pid);
+void wrapper();
