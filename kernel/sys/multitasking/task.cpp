@@ -128,9 +128,9 @@ pid_t create_process(char *name, uint32_t begin)
             continue;
 
         if (strcmp(tasks[z]->name, name) == 0)
-            return 0;
+            return -1;
     }
-    
+
     task_t *task = (task_t *)malloc(sizeof(task_t *));
 
     memset(task->name, 0, 20);
@@ -148,7 +148,7 @@ pid_t create_process(char *name, uint32_t begin)
     if (!stack_addr)
     {
         free(task);
-        return 0;
+        return -1;
     }
 
     uint32_t *stack = (uint32_t *)stack_addr + (4 * 1024);
