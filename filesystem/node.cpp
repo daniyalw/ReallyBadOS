@@ -229,7 +229,7 @@ int read_node(fs_node_t *node, int offset, int size, char *buffer)
     if (node->read != NULL)
         ret = node->read(node, offset, size, buffer);
     else if (node->flags != FS_FOLDER)
-        strcpy(buffer, node->contents);
+        memcpy(buffer, node->contents, size);
 
     return ret;
 }
