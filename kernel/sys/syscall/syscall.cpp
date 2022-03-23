@@ -191,7 +191,7 @@ int s_read_file(char *buf, int *size, int *n, int fd)
 
 int s_create_proc(char *name, uint32_t addr)
 {
-    return Kernel::CPU::create_process(name, addr);
+    return Kernel::CPU::create_thread(name, addr);
 }
 
 int s_yield()
