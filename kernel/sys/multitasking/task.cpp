@@ -1,5 +1,9 @@
 #include "task.h"
 
+namespace Kernel {
+
+namespace CPU {
+
 int idle_task()
 {
     while (true) {}
@@ -307,4 +311,8 @@ void init_tasking()
 
     tasking_on = true;
     switch_task(NULL, false);
+}
+
+}
+
 }

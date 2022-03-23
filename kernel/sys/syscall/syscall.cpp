@@ -191,18 +191,18 @@ int s_read_file(char *buf, int *size, int *n, int fd)
 
 int s_create_proc(char *name, uint32_t addr)
 {
-    return create_process(name, addr);
+    return Kernel::CPU::create_process(name, addr);
 }
 
 int s_yield()
 {
-    yield();
+    Kernel::CPU::yield();
     return 0;
 }
 
 int s_exit(int ret)
 {
-    exit(ret);
+    Kernel::CPU::exit(ret);
     return 0;
 }
 

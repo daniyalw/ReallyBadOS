@@ -1,5 +1,9 @@
 #pragma once
 
+namespace Kernel {
+
+namespace CPU {
+
 extern "C"
 {
     extern void perform_task_switch(uint32_t, uint32_t, uint32_t);
@@ -14,7 +18,6 @@ typedef struct
     uint32_t stack;
     bool null, blocked;
     int ret;
-
     uint32_t start;
     int argc;
     char *argv[64];
@@ -52,3 +55,7 @@ void unblock_task_id(int taskid);
 
 int wait_retcode(pid_t pid);
 void wrapper();
+
+}
+
+}

@@ -29,14 +29,14 @@ void timer_int(registers_t *regs) {
         pm_on = true;
     }
 
-    if (tasking_on)
+    if (Kernel::CPU::tasking_on)
     {
         task_counter++;
 
         if (task_counter == task_counter_limit)
         {
             task_counter = 0;
-            switch_task(regs, true);
+            Kernel::CPU::switch_task(regs, true);
         }
     }
 
