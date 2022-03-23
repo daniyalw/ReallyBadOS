@@ -5,249 +5,176 @@
 
 namespace std {
 
-template <typename T>
-class list {
-private:
-    int length = 0;
-    T * arr;
-
-public:
-    list()
+    template <typename T> class vector
     {
-        arr = (T *)malloc(length);
-    }
+        T *arr;
+        int capacity;
+        int current;
 
-    bool operator==(list other)
-    {
-        int size = other.size();
-
-        if (size != length)
-            return false;
-
-        for (int z = 0; z < size; z++)
+    public:
+        vector()
         {
-            if (this->get(z) != other.get(z))
+            arr = new T[1];
+            capacity = 1;
+            current = 0;
+        }
+
+        T operator[](int index)
+        {
+            return get(index);
+        }
+
+        void operator=(auto vec)
+        {
+            clear();
+            merge(vec);
+        }
+
+        bool operator==(auto vec)
+        {
+            if (size() != vec.size())
                 return false;
+
+            for (int z = 0; z < vec.size(); z++)
+                if (get(z) != vec.get(z))
+                    return false;
+
+            return true;
         }
 
-        return true;
-    }
-
-    bool operator>(list other)
-    {
-        if (length > other.size())
-            return true;
-
-        return false;
-    }
-
-    bool operator<(list other)
-    {
-        if (length < other.size())
-            return true;
-
-        return false;
-    }
-
-    bool operator!=(list other)
-    {
-        int size = other.size();
-
-        if (size != length)
-            return true;
-
-        for (int z = 0; z < size; z++)
+        bool operator!=(auto vec)
         {
-            if (this->get(z) != other.get(z))
+            if (vec.size() != size())
                 return true;
+
+            bool result = false;
+
+            for (int z = 0; z < vec.size(); z++)
+                if (get(z) != vec.get(z))
+                    result = true;
+
+            return result;
         }
 
-        return false;
-    }
-
-    void operator=(list other)
-    {
-        for (int z = 0; z < length + 1; z++)
-            this->pop();
-
-        if (length != 0)
+        bool operator!()
         {
-            return;
+            if (current == 0)
+                return true;
+
+            return false;
         }
 
-        for (int z = 0; z < other.size(); z++)
-            this->push_back(other.get(z));
-    }
-
-    T operator[](int index)
-    {
-        return this->get(index);
-    }
-
-    void operator=(T object)
-    {
-        for (int z = 0; z < length + 1; z++)
-            this->pop();
-
-        this->push_back(object);
-    }
-
-    void merge(list<T> other)
-    {
-        for (int z = 0; z < other.size(); z++)
-            this->push_back(other[z]);
-    }
-
-    // Function that returns the number of
-    // elements in array after pushing the data
-    void push_back(T data)
-    {
-        arr = (T *)realloc(arr, length + 1);
-        arr[length] = data;
-        length++;
-    }
-
-    T get(int value)
-    {
-        if (value > length) {
-            // caller tried to access illegal value
-            return (T)NULL;
-        } else {
-            return arr[value];
-        }
-    }
-
-    void remove(int value)
-    {
-        T newarr[length];
-        int nz = 0;
-
-        for (int z = 0; z < length; z++)
+        bool operator<(auto vec)
         {
-            if (z == value)
-                continue;
+            if (size() < vec.size())
+                return true;
 
-            newarr[nz] = arr[z];
-            nz++;
+            return false;
         }
-        length = nz;
-        for (int z = 0; z < length; z++)
-            newarr[z] = arr[z];
-        arr = (T *)realloc(arr, length);
-    }
 
-    void clear_all()
-    {
-        for (int z = 0; z < length + 1; z++)
-            this->pop();
-    }
-
-    void pop()
-    {
-        length--;
-        T newarr[length];
-        int nz = 0;
-
-        for (int z = 0; z < length; z++)
+        bool operator>(auto vec)
         {
-            newarr[nz] = arr[z];
-            nz++;
+            if (size() > vec.size())
+                return true;
+
+            return false;
         }
-        length = nz;
 
-        for (int z = 0; z < length; z++)
-            newarr[z] = arr[z];
-
-        arr = (T *)realloc(arr, length); // free a bit of memory
-    }
-
-    T get_last()
-    {
-        return arr[length - 1];
-    }
-
-    int size() {
-        return length;
-    }
-
-    void insert_at(T insert, int pos)
-    {
-        arr = (T *)realloc(arr, length + 1);
-        if (pos > length)
-            return;
-
-        for (int z = length; z > (pos - 1); z--)
+        void merge(auto vec)
         {
-            arr[z+1] = arr[z];
+            for (int z = 0; z < vec.size(); z++)
+                this->push(vec[z]);
         }
 
-        arr[pos] = insert;
-        length++;
-    }
-
-    void move(int oldpos, int newpos)
-    {
-        if (oldpos > length || newpos > length)
-            return;
-
-        T copied = arr[oldpos];
-        this->remove(oldpos);
-        this->insert_at(copied, newpos);
-    }
-
-    int get_first_pos(T obj)
-    {
-        for (int z = 0; z < length; z++)
+        void clear()
         {
-            if (arr[z] == obj)
-                return z;
+            while (current != 0)
+                pop();
         }
 
-        return -1;
-    }
-
-    int get_last_pos(T obj)
-    {
-        for (int z = length; z > 0; z--)
+        void insert(T data, int pos)
         {
-            if (arr[z] == obj)
-                return z;
+            if (current == capacity) {
+                T* temp = new T[2 * capacity];
+
+                for (int i = 0; i < capacity; i++) {
+                    temp[i] = arr[i];
+                }
+
+                delete[] arr;
+                capacity *= 2;
+                arr = temp;
+            }
+
+            for (int z = current - 1; z >= pos; z--)
+                arr[z + 1] = arr[z];
+
+            arr[pos] = data;
+            current++;
         }
 
-        return -1;
-    }
+        void delete_data(int pos)
+        {
+            for (int z = pos + 1; z < current; z++)
+                arr[z - 1] = arr[z];
 
-    int find(T obj)
-    {
-        return get_first_pos(obj);
-    }
+            current--;
+        }
 
-    void replace(T rplce, int pos)
-    {
-        if (pos > length)
-            return;
+        void push(T data)
+        {
+            if (current == capacity) {
+                T* temp = new T[2 * capacity];
 
-        arr[pos] = rplce;
-    }
+                for (int i = 0; i < capacity; i++) {
+                    temp[i] = arr[i];
+                }
 
-    void swap(int index1, int index2)
-    {
-        T index3;
-        index3 = arr[index1];
-        arr[index1] = arr[index2];
-        arr[index2] = index3;
-    }
+                delete[] arr;
+                capacity *= 2;
+                arr = temp;
+            }
 
-    T last()
-    {
-        return this->get(length-1);
-    }
+            arr[current] = data;
+            current++;
+        }
 
-    T type() { return T(); }
-};
+        void replace(T data, int index)
+        {
+            if (index == capacity)
+                push(data);
+            else
+                arr[index] = data;
+        }
 
+        void push_back(T data)
+        {
+            push(data);
+        }
+
+        T get(int index)
+        {
+            if (index < current && index >= 0)
+                return arr[index];
+
+            return NULL;
+        }
+
+        void pop()
+        {
+            current--;
+        }
+
+        // function to get size of the vector
+        int size()
+        {
+            return current;
+        }
+
+        // function to get capacity of the vector
+        int getcapacity()
+        {
+            return capacity;
+        }
+    };
 }
-
-#define foreach(child, _list) \
-                auto child = _list[0]; \
-                for (int z = 0; z < _list.size(); z++, child = _list[z])

@@ -95,11 +95,3 @@ void sleep_ms(int ms)
 {
     timer_wait(ms);
 }
-
-void async_timer(int ms, void (*function)())
-{
-    timer_t timer;
-    timer.func = function;
-    timer.remaining_ms = ms;
-    timers.push_back(timer);
-}

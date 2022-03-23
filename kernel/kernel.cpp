@@ -39,6 +39,7 @@ extern "C" {
 #include <net/arp.h>
 #include <net/ethernet.h>
 #include <tree.h>
+#include <cxa.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
