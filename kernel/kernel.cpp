@@ -99,6 +99,8 @@ extern "C" {
 #include "../filesystem/dir.cpp"
 #include "../filesystem/test.cpp"
 #include "../stdlib/errno.cpp"
+#include "sys/multitasking/thread.cpp"
+#include "sys/multitasking/scheduler.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"

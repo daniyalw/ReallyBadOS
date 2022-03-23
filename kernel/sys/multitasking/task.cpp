@@ -1,4 +1,6 @@
 #include "task.h"
+#include "scheduler.h"
+#include "thread.h"
 
 namespace Kernel {
 
@@ -124,8 +126,13 @@ void yield()
     switch_task(NULL, true);
 }
 
-pid_t create_process(char *name, uint32_t begin, int argc, char **argv)
+pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int argc, char **argv)
 {
+    // threads aren't allowed to create processes
+    if (parent >= 0 && tasks[parent]->is_thread)
+        return -1;
+
+    // make sure no other process/thread has the same name
     for (int z = 0; z < task_count; z++)
     {
         if (tasks[z]->null)
@@ -135,7 +142,7 @@ pid_t create_process(char *name, uint32_t begin, int argc, char **argv)
             return -1;
     }
 
-    task_t *task = (task_t *)malloc(sizeof(task_t *));
+    task_t *task = (task_t *)malloc(sizeof(task_t));
 
     memset(task->name, 0, 20);
     strcpy(task->name, name);
@@ -146,6 +153,8 @@ pid_t create_process(char *name, uint32_t begin, int argc, char **argv)
     task->eflags = 0x202;
     task->null = false;
     task->blocked = false;
+    task->is_thread = thread;
+    task->parent = parent;
 
     task->start = begin;
     task->argc = argc;
@@ -153,7 +162,7 @@ pid_t create_process(char *name, uint32_t begin, int argc, char **argv)
     for (int z = 0; z < argc; z++)
         task->argv[z] = strdup(argv[z]);
 
-    uint32_t stack_addr = allocate_stack();
+    uint32_t stack_addr = allocate_stack(); // allocate 4K for the stack
 
     if (!stack_addr)
     {
@@ -163,15 +172,16 @@ pid_t create_process(char *name, uint32_t begin, int argc, char **argv)
 
     uint32_t *stack = (uint32_t *)stack_addr + (4 * 1024);
 
+    // init stack
     *--stack = task->eflags; // eflags
     *--stack = 0x0b; // cs
     *--stack = (uint32_t)begin; // eip
     *--stack = 0; // eax
     *--stack = 0; // ebx
     *--stack = 0; // ecx;
-    *--stack = 0; //edx
-    *--stack = 0; //esi
-    *--stack = 0; //edi
+    *--stack = 0; // edx
+    *--stack = 0; // esi
+    *--stack = 0; // edi
     *--stack = stack_addr + (4 * 1024); //ebp
     *--stack = 0x13; // ds
     *--stack = 0x13; // fs
@@ -195,7 +205,7 @@ pid_t create_process_file(FILE *file, int argc, char **argv)
     if (file != NULL)
     {
         auto header = load_elf_memory((uint8_t *)file->node->contents);
-        return create_process(argv[0], header->e_entry, argc, argv);
+        return create_process(argv[0], header->e_entry, false, -1, argc, argv);
     }
     else
     {
@@ -213,7 +223,7 @@ pid_t create_process_filename(char *path, int argc, char **argv)
     if (file != NULL)
     {
         auto header = load_elf_memory((uint8_t *)file->node->contents);
-        return create_process(argv[0], header->e_entry, argc, argv);
+        return create_process(argv[0], header->e_entry, false, -1, argc, argv);
     }
     else
     {
@@ -223,7 +233,7 @@ pid_t create_process_filename(char *path, int argc, char **argv)
 
 pid_t create_process(char *name, uint32_t begin)
 {
-    return create_process(name, begin, 0, NULL);
+    return create_process(name, begin, false, -1, 0, NULL);
 }
 
 void load_new_task(task_t *task)
@@ -241,32 +251,33 @@ uint32_t allocate_stack()
     return malloc(4 * 1024);
 }
 
+// this is useful since passing argv via stack doesn't work
 void wrapper()
 {
     task_t *task = tasks[current_task];
 
     if (task == NULL)
     {
-        asm("sti");
         exit(1);
     }
 
     call_t call = (call_t)task->start;
 
+    int ret = call(task->argc, task->argv);
+
 #ifdef DEBUG
-    log::info("Loading task '%s' (PID %d) at address 0x%x\n", task->name, task->pid, task->start);
+    log::info("Application '%s' exited with a return value %d", task->name, ret);
 #endif
 
-    int ret = call(task->argc, task->argv);
     exit(ret);
 }
 
 void switch_task(registers_t *regs, bool save)
 {
     uint32_t esp, ebp;
-    asm volatile ("mov %%esp, %0" : "=r" (esp));
-	asm volatile ("mov %%ebp, %0" : "=r" (ebp));
-    uint32_t eip = read_eip();
+    asm volatile ("mov %%esp, %0" : "=r" (esp)); // save the stack
+	asm volatile ("mov %%ebp, %0" : "=r" (ebp)); // save the ebp
+    uint32_t eip = read_eip(); // save the current instruction pointer
 
     if (eip == 0x12344)
         return;
@@ -282,24 +293,24 @@ void switch_task(registers_t *regs, bool save)
         tasks[current->pid] = current;
     }
 
-    current_task++;
-
-    if (current_task >= task_count)
-        current_task = 0;
-
-    while (tasks[current_task]->null || tasks[current_task]->blocked)
-    {
-        current_task++;
-
-        if (current_task >= task_count)
-            current_task = 0;
-    }
+    Kernel::CPU::schedule();
 
     task_t *load = tasks[current_task];
 #ifdef DEBUG
-    log::warning("Current task: %d\nNew task load: %s\nNew task eip: 0x%x\n", current_task, load->name, load->eip);
+    log::warning("New task load: %s (type %s, parent %d, pid %d)\nNew task eip: 0x%x\n",
+    load->name,
+    (char *)(load->is_thread ? "thread" : "process"),
+    load->parent,
+    load->pid,
+    load->eip);
 #endif
     load_new_task(load);
+}
+
+int adddd()
+{
+    printf("Exiting..");
+    return 5;
 }
 
 void init_tasking()
@@ -307,7 +318,8 @@ void init_tasking()
     create_process("idle", (uint32_t)&idle_task);
 
     char *argv[] = {"echo", "hello from echo"};
-    create_process_filename("/bin/echo.o", 2, argv);
+    create_process_filename("/bin/echo.o", 2, argv); // run an application
+    Kernel::CPU::create_thread("ddd", (uint32_t)&adddd, 0);
 
     tasking_on = true;
     switch_task(NULL, false);
