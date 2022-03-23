@@ -45,7 +45,7 @@ uint8_t tsad[] = {
 
 #define RTL_ISR_FINISH 0x5
 
-PCIDevice *device;
+Kernel::PCIDevice *device;
 uint32_t buffer;
 
 int current_pair = 0;

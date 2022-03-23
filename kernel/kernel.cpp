@@ -93,7 +93,6 @@ extern "C" {
 #include "../net/arp.cpp"
 #include "../drivers/disk/disk.cpp"
 #include "../stdlib/utils.cpp"
-#include "diskfs.cpp"
 #include "../filesystem/node.cpp"
 #include "../filesystem/file.cpp"
 #include "../filesystem/dir.cpp"
@@ -138,9 +137,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     Kernel::init_serial(SERIAL_PORT);
     Kernel::init_logging();
-    Kernel::init_isr();
-    Kernel::init_gdt();
-    Kernel::init_tss();
+    Kernel::CPU::init_isr();
+    Kernel::CPU::init_gdt();
+    Kernel::CPU::init_tss();
     Kernel::read_rtc();
     Kernel::init_timer(1000);
     Kernel::init_keyboard(false, "/");
@@ -252,12 +251,12 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
         }
     }
 
-    scan_buses();
+    Kernel::scan_buses();
 
     time_t time = get_time();
 
     uint16_t *bytes;
-    bytes = ata_init(bytes);
+    bytes = DiskDrivers::ATA::ata_init(bytes);
 
     printf("%s Shell\n", System::SYSTEM);
 

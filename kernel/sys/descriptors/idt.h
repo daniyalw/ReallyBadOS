@@ -30,6 +30,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+namespace Kernel {
+
+namespace CPU {
+
 typedef struct {
     uint16 low_offset;
     uint16 sel;
@@ -45,3 +49,7 @@ typedef struct {
 
 idt_gate_t idt[256];
 idt_register_t idt_reg;
+
+}
+
+}

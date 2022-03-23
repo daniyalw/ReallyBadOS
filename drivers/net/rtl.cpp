@@ -15,7 +15,7 @@ void power_on()
 {
     ASSERT(device != NULL);
 
-    outb(device->base + RTL_CONFIG1_REG, 0x0);
+    Kernel::IO::outb(device->base + RTL_CONFIG1_REG, 0x0);
 }
 
 void reset()
@@ -24,11 +24,11 @@ void reset()
 
     unsigned char ret;
 
-    outb(device->base + RTL_CMD, 0x10);
+    Kernel::IO::outb(device->base + RTL_CMD, 0x10);
 
     while (true)
     {
-        ret = inb(device->base + RTL_CMD) & 0x10;
+        ret = Kernel::IO::inb(device->base + RTL_CMD) & 0x10;
 
         if (!ret)
             break;
@@ -40,15 +40,15 @@ void init_recv_buffer()
     ASSERT(device != NULL);
 
     buffer = (uint32_t)malloc(8192 + 16 + 1500);
-    outw(device->base + RTL_RBSTART, buffer);
+    Kernel::IO::outw(device->base + RTL_RBSTART, buffer);
 }
 
 void init_irq()
 {
     ASSERT(device != NULL);
 
-    Kernel::register_interrupt_handler(device->interrupt + 32, handle_irq);
-    outw(device->base + RTL_IMR, 0x0005);
+    Kernel::CPU::register_interrupt_handler(device->interrupt + 32, handle_irq);
+    Kernel::IO::outw(device->base + RTL_IMR, 0x0005);
 
     log::info("rtl: interrupt %d", device->interrupt + 32);
 }
@@ -57,21 +57,21 @@ void configure_recv()
 {
     ASSERT(device != NULL);
 
-    outl(device->base + 0x44, 0xf | (1 << 7));
+    Kernel::IO::outl(device->base + 0x44, 0xf | (1 << 7));
 }
 
 void enable_recv()
 {
     ASSERT(device != NULL);
 
-    outb(device->base + RTL_CMD, 0x0C);
+    Kernel::IO::outb(device->base + RTL_CMD, 0x0C);
 }
 
 void handle_irq(registers_t *regs)
 {
     ASSERT(device != NULL);
 
-    uint16_t ret = inw(device->base + RTL_ISR);
+    uint16_t ret = Kernel::IO::inw(device->base + RTL_ISR);
 
     if (ret & RTL_ISR_RECV_OK)
     {
@@ -90,7 +90,7 @@ void handle_irq(registers_t *regs)
         log::info("rtl: failed to send packet");
     }
 
-    outw(device->base + RTL_ISR, RTL_ISR_FINISH);
+    Kernel::IO::outw(device->base + RTL_ISR, RTL_ISR_FINISH);
 }
 
 void send_packet(void *data, int length)
@@ -100,8 +100,8 @@ void send_packet(void *data, int length)
     uint8_t *copy = (uint8_t *)malloc(length);
     memcpy(copy, data, length);
 
-    outl(device->base + tsad[current_pair], (uint32_t)&copy);
-    outl(device->base + tsd[current_pair], length);
+    Kernel::IO::outl(device->base + tsad[current_pair], (uint32_t)&copy);
+    Kernel::IO::outl(device->base + tsd[current_pair], length);
 
     current_pair++;
 
@@ -113,7 +113,7 @@ void send_packet(void *data, int length)
 
 void start()
 {
-    device = find_device(RTL_VENDOR, RTL_ID);
+    device = Kernel::find_device(RTL_VENDOR, RTL_ID);
 
     if (device == NULL)
     {
@@ -122,7 +122,7 @@ void start()
         return;
     }
 
-    Kernel::register_interrupt_handler(47, handle_irq);
+    Kernel::CPU::register_interrupt_handler(47, handle_irq);
 
     power_on();
     reset();
@@ -139,8 +139,8 @@ void find_mac()
 {
     ASSERT(device != NULL);
 
-    uint32_t m1 = inl(device->base + RTL_IDR0);
-    uint16_t m2 = inw(device->base + RTL_IDR4);
+    uint32_t m1 = Kernel::IO::inl(device->base + RTL_IDR0);
+    uint16_t m2 = Kernel::IO::inw(device->base + RTL_IDR4);
 
     mac_addr[0] = m1 >> 0;
     mac_addr[1] = m1 >> 8;

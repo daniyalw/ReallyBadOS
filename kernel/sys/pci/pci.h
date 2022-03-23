@@ -1,5 +1,7 @@
 #pragma once
 
+namespace Kernel {
+
 struct PCIDevice
 {
     uint8_t interrupt;
@@ -40,3 +42,5 @@ PCIDevice * find_device(uint16_t vendor, uint16_t device);
 
 PCIDevice * devices[256*32*8];
 int device_count = 0;
+
+}

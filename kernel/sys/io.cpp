@@ -2,6 +2,10 @@
 
 #include <sys/io.h>
 
+namespace Kernel {
+
+namespace IO {
+
 static inline void outw(uint16_t portid, uint16_t value)
 {
   asm("out %%ax, %%dx":: "a"(value), "d"(portid));
@@ -41,4 +45,8 @@ static inline u32 inl(uint32_t port)
     u32 data;
     __asm__ volatile("inl %w1, %0" : "=a" (data) : "Nd" (port));
     return data;
+}
+
+}
+
 }

@@ -1,6 +1,6 @@
 #include <drivers/disk/disk.h>
 
-void load_disk(disk_t *disk)
+void load_disk(Disk *disk)
 {
     disk->disk_no = disk_count;
 
@@ -8,7 +8,7 @@ void load_disk(disk_t *disk)
     disk_count++;
 }
 
-disk_t *get_disk(int index)
+Disk *get_disk(int index)
 {
     if (index < 0 || index > disk_count)
         return NULL;

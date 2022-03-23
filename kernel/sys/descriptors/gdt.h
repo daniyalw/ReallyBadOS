@@ -2,6 +2,10 @@
 
 // http://jamesmolloy.co.uk/tutorial_html/
 
+namespace Kernel {
+
+namespace CPU {
+
 typedef struct
 {
    u16 limit_low;           // The lower 16 bits of the limit.
@@ -25,15 +29,12 @@ extern "C" {
     extern void jump_usermode();
 }
 
-namespace Kernel {
 // Internal function prototypes.
 static void init_gdt();
 static void gdt_set_gate(s32 num, u32 base, u32 limit, u8 access, u8 gran);
 void _init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp);
 void init_tss();
 void set_kernel_stack(uint32_t stack);
-
-}
 
 gdt_entry_t gdt_entries[5];
 gdt_ptr_t   gdt_ptr;
@@ -102,4 +103,8 @@ static TSS tss = {
 
 extern "C" {
     extern void flush_tss();
+}
+
+}
+
 }

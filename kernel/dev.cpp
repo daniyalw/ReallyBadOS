@@ -1,8 +1,14 @@
 int null_read(fs_node_t * node, int offset, int size, char *buf)
 {
     UNUSED(buf);
-    log::warning("Read was attempted on /dev/serial\n");
-    return NULL;
+    log::warning("Read was attempted on device '%s'\n", node->path);
+    return 1;
+}
+
+int null_write(fs_node_t *node, int offset, int size, char *buf)
+{
+    log::warning("Write was attempted on device '%s'", node->path);
+    return 1;
 }
 
 int write_serial_(fs_node_t * node, int offset, int size, char *data)
@@ -26,7 +32,7 @@ void init_all_devs()
     create_file("stdin", "/dev/", read_keyboard, write_keyboard);
 
     // ata
-    create_file("disk0", "/dev/", fs_ata_read, fs_ata_write);
+    create_file("disk0", "/dev/", null_read, null_write);
 
     // serial
     create_file("serial", "/dev/", null_read, write_info);

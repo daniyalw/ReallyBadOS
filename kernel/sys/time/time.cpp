@@ -4,13 +4,13 @@
 namespace Time {
 
 int get_update_in_progress_flag() {
-      outb(cmos_address, 0x0A);
-      return (inb(cmos_data) & 0x80);
+      Kernel::IO::outb(cmos_address, 0x0A);
+      return (Kernel::IO::inb(cmos_data) & 0x80);
 }
 
 int get_RTC_register(int reg) {
-      outb(cmos_address, reg);
-      return inb(cmos_data);
+      Kernel::IO::outb(cmos_address, reg);
+      return Kernel::IO::inb(cmos_data);
 }
 
 }

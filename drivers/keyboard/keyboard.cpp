@@ -48,7 +48,7 @@ void edit_buffer_size(int change)
 
 static void scan_key(registers_t *regs)
 {
-    current_key = inb(KEYBOARD_CODE);
+    current_key = Kernel::IO::inb(KEYBOARD_CODE);
     get_key(current_key);
 
     return;
@@ -146,7 +146,7 @@ void init_keyboard(bool on, char * cd) {
     terminal_on = on;
     log::info("Enabled keyboard.");
     // register the interrupt
-    Kernel::register_interrupt_handler(IRQ1, scan_key);
+    Kernel::CPU::register_interrupt_handler(IRQ1, scan_key);
 
 }
 

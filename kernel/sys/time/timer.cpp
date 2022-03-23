@@ -64,16 +64,16 @@ void init_timer(uint frequency) {
     log::info("Timer enabled.");
     hz = frequency;
 
-    Kernel::register_interrupt_handler(IRQ0, timer_int);
+    Kernel::CPU::register_interrupt_handler(IRQ0, timer_int);
 
     uint divisor = 1193180/frequency;
 
     uint8_t low = (uint8_t)(divisor & 0xFF);
     uint8_t high = (uint8_t)((divisor >> 8) & 0xFF);
 
-    outb(0x43, 0x36);
-    outb(0x40, low);
-    outb(0x40, high);
+    Kernel::IO::outb(0x43, 0x36);
+    Kernel::IO::outb(0x40, low);
+    Kernel::IO::outb(0x40, high);
 }
 
 }

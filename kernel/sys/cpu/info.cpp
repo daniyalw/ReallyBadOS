@@ -71,10 +71,10 @@ unsigned short get_available_memory()
     unsigned short total;
     unsigned char lowmem, highmem;
 
-    outb(0x70, 0x30);
-    lowmem = inb(0x71);
-    outb(0x70, 0x31);
-    highmem = inb(0x71);
+    Kernel::IO::outb(0x70, 0x30);
+    lowmem = Kernel::IO::inb(0x71);
+    Kernel::IO::outb(0x70, 0x31);
+    highmem = Kernel::IO::inb(0x71);
 
     total = lowmem | highmem << 8;
 

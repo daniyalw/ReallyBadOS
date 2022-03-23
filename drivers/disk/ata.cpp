@@ -2,31 +2,33 @@
 #include <string.h>
 #include "disk.h"
 
-using namespace std;
+namespace DiskDrivers {
+
+namespace ATA {
 
 // target_address = your variable to where to store
 // lba = which sector
 // sector_count = how many sectors to read
 uint8_t *ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count) {
-    while (inb(0x1F7) & STATUS_BSY)
+    while (Kernel::IO::inb(0x1F7) & STATUS_BSY)
         ;
-    outb(0x1F1, 0x00);
-    outb(0x1F2, sector_count);
-    outb(0x1F3, (uint8_t)LBA);
-    outb(0x1F4, (uint8_t)(LBA >> 8));
-    outb(0x1F5, (uint8_t)(LBA >> 16));
-    outb(0x1F6, 0xE0 | ((LBA >> 24) & 0x0F));
-    outb(0x1F7, 0x20);
+    Kernel::IO::outb(0x1F1, 0x00);
+    Kernel::IO::outb(0x1F2, sector_count);
+    Kernel::IO::outb(0x1F3, (uint8_t)LBA);
+    Kernel::IO::outb(0x1F4, (uint8_t)(LBA >> 8));
+    Kernel::IO::outb(0x1F5, (uint8_t)(LBA >> 16));
+    Kernel::IO::outb(0x1F6, 0xE0 | ((LBA >> 24) & 0x0F));
+    Kernel::IO::outb(0x1F7, 0x20);
 
     uint8_t *target = target_address;
 
     for (int j = 0; j < sector_count; j++) {
-        while (inb(0x1F7) & STATUS_BSY)
+        while (Kernel::IO::inb(0x1F7) & STATUS_BSY)
             ;
-        while (!(inb(0x1F7) & STATUS_RDY))
+        while (!(Kernel::IO::inb(0x1F7) & STATUS_RDY))
             ;
         for (int i = 0; i < 256; i++) {
-            uint16_t tmpword = inw(0x1F0);
+            uint16_t tmpword = Kernel::IO::inw(0x1F0);
             target[i * 2] = tmpword;
             target[(i * 2) + 1] = tmpword >> 8;
         }
@@ -38,24 +40,24 @@ uint8_t *ata_read(uint8_t *target_address, uint32_t LBA, uint8_t sector_count) {
 }
 
 void ata_write_one(uint32_t LBA, uint8_t *bytes) {
-    while (inb(0x1F7) & STATUS_BSY)
+    while (Kernel::IO::inb(0x1F7) & STATUS_BSY)
         ;
-    outb(0x1F1, 0x00);
-    outb(0x1F2, 0x01);
-    outb(0x1F3, (uint8_t)LBA);
-    outb(0x1F4, (uint8_t)(LBA >> 8));
-    outb(0x1F5, (uint8_t)(LBA >> 16));
-    outb(0x1F6, 0xE0 | ((LBA >> 24) & 0x0F));
-    outb(0x1F7, 0x30);
+    Kernel::IO::outb(0x1F1, 0x00);
+    Kernel::IO::outb(0x1F2, 0x01);
+    Kernel::IO::outb(0x1F3, (uint8_t)LBA);
+    Kernel::IO::outb(0x1F4, (uint8_t)(LBA >> 8));
+    Kernel::IO::outb(0x1F5, (uint8_t)(LBA >> 16));
+    Kernel::IO::outb(0x1F6, 0xE0 | ((LBA >> 24) & 0x0F));
+    Kernel::IO::outb(0x1F7, 0x30);
 
     for (int j = 0; j < 1; j++) {
-        while (inb(0x1F7) & STATUS_BSY)
+        while (Kernel::IO::inb(0x1F7) & STATUS_BSY)
             ;
-        while (!(inb(0x1F7) & STATUS_RDY))
+        while (!(Kernel::IO::inb(0x1F7) & STATUS_RDY))
             ;
         for (int i = 0; i < 256; i++) {
             uint32_t *re = (uint32_t *)*(uint32_t *)&bytes;
-            outl(0x1F0, re[i]);
+            Kernel::IO::outl(0x1F0, re[i]);
         }
     }
 }
@@ -102,7 +104,7 @@ int fs_ata_read(fs_node_t *node, int offset, int size, char * num)
 
 void select_drive(uint8_t drive)
 {
-    outb(0x1F6, drive);
+    Kernel::IO::outb(0x1F6, drive);
 }
 
 char *model(char *str, uint16_t *id_data)
@@ -127,7 +129,7 @@ char *model(char *str, uint16_t *id_data)
 uint16_t * ata_send_identify(uint16_t *bytes)
 {
     // check the kind of drive
-    uint8_t abc = inb(0x1F5);
+    uint8_t abc = Kernel::IO::inb(0x1F5);
     bool non_packet = false;
 
     if (abc == 0xEB) {
@@ -136,36 +138,36 @@ uint16_t * ata_send_identify(uint16_t *bytes)
 
     if (!non_packet) {
         select_drive(DRIVE_MASTER);
-        outb(0x1F2, 0);
-        outb(0x1F3, 0);
-        outb(0x1F4, 0);
-        outb(0x1F5, 0);
-        outb(0x1F7, 0xEC);
-        uint8_t res = inb(0x1F7);
+        Kernel::IO::outb(0x1F2, 0);
+        Kernel::IO::outb(0x1F3, 0);
+        Kernel::IO::outb(0x1F4, 0);
+        Kernel::IO::outb(0x1F5, 0);
+        Kernel::IO::outb(0x1F7, 0xEC);
+        uint8_t res = Kernel::IO::inb(0x1F7);
 
         if (res == 0) {
             log::error("Drive does not exist!\n");
             return bytes;
         }
 
-        while (inb(0x1F7) & STATUS_BSY)
+        while (Kernel::IO::inb(0x1F7) & STATUS_BSY)
             ;
-        while (!(inb(0x1F7) & STATUS_RDY))
+        while (!(Kernel::IO::inb(0x1F7) & STATUS_RDY))
             ;
 
         for (int i = 0; i < 256; i++) {
-            bytes[i] = inw(0x1F0);
+            bytes[i] = Kernel::IO::inw(0x1F0);
         }
 
         return bytes;
     } else {
-        outb(0x1F6, 0xA1);
-        outb(0x1F2, 0);
-        outb(0x1F3, 0);
-        outb(0x1F4, 0);
-        outb(0x1F5, 0);
-        outb(0x1F7, 0xEC);
-        uint8_t res = inb(0x1F7);
+        Kernel::IO::outb(0x1F6, 0xA1);
+        Kernel::IO::outb(0x1F2, 0);
+        Kernel::IO::outb(0x1F3, 0);
+        Kernel::IO::outb(0x1F4, 0);
+        Kernel::IO::outb(0x1F5, 0);
+        Kernel::IO::outb(0x1F7, 0xEC);
+        uint8_t res = Kernel::IO::inb(0x1F7);
 
         if (res == 0) {
             log::error("Non-existent drive!\n");
@@ -173,13 +175,13 @@ uint16_t * ata_send_identify(uint16_t *bytes)
             return bytes;
         }
 
-        while (inb(0x1F7) & STATUS_BSY)
+        while (Kernel::IO::inb(0x1F7) & STATUS_BSY)
             ;
-        while (!(inb(0x1F7) & STATUS_RDY))
+        while (!(Kernel::IO::inb(0x1F7) & STATUS_RDY))
             ;
 
         for (int i = 0; i < 256; i++) {
-            bytes[i] = inw(0x1F0);
+            bytes[i] = Kernel::IO::inw(0x1F0);
         }
 
         return bytes;
@@ -191,7 +193,7 @@ uint32_t total_sectors()
     uint16_t *bytes;
     uint32_t sectors;
 
-    bytes = ata_init(bytes);
+    bytes = ata_send_identify(bytes);
     sectors = (uint32_t)bytes[60];
 
     return sectors;
@@ -218,13 +220,13 @@ FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
 
 uint16_t *ata_init(uint16_t *bytes)
 {
-    Kernel::register_interrupt_handler(32 + 14, ata_irq_handler);
+    Kernel::CPU::register_interrupt_handler(32 + 14, ata_irq_handler);
 
     bytes = ata_send_identify(bytes);
 
     if (bytes[0] != -1)
     {
-        disk_t *disk = (disk_t *)malloc(sizeof(disk_t *));
+        Disk *disk = new Disk();
 
         disk->total_sectors = total_sectors;
         disk->read = ata_read;
@@ -238,4 +240,8 @@ uint16_t *ata_init(uint16_t *bytes)
     }
 
     return bytes;
+}
+
+}
+
 }

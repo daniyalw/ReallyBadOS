@@ -292,7 +292,7 @@ void init_syscalls()
     syscall_append((void *)s_create_proc);
     syscall_append((void *)s_yield);
     syscall_append((void *)s_exit);
-    Kernel::register_interrupt_handler(IRQ16, syscall_handler);
+    Kernel::CPU::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }
 

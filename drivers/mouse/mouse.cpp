@@ -2,8 +2,6 @@
 #include <mouse/mouse.h>
 #include <gui/gui.h>
 
-//https://forum.osdev.org/viewtopic.php?t=10247
-
 void mouse_wait(unsigned char at)
 {
     unsigned int timeout = 100000;
@@ -12,13 +10,13 @@ void mouse_wait(unsigned char at)
     {
         case 0:
             while (timeout--)
-                if ((inb(0x64) & 1) == 1)
+                if ((Kernel::IO::inb(0x64) & 1) == 1)
                     return;
 
             break;
         default:
             while (timeout--)
-                if ((inb(0x64) & 2) == 0)
+                if ((Kernel::IO::inb(0x64) & 2) == 0)
                     return;
 
             break;
@@ -30,17 +28,17 @@ void mouse_write(unsigned char data)
     // wait for the mouse to be ready
     mouse_wait(1);
     // tell them mouse we are sending a command
-    outb(0x64, 0xD4);
+    Kernel::IO::outb(0x64, 0xD4);
     // wait so the mouse is ready for the command
     mouse_wait(1);
     // the actual write
-    outb(0x60, data);
+    Kernel::IO::outb(0x60, data);
 }
 
 unsigned char mouse_read()
 {
     mouse_wait(0);
-    return inb(0x60);
+    return Kernel::IO::inb(0x60);
 }
 
 void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
@@ -186,18 +184,18 @@ void init_mouse()
     unsigned char mstatus, res;
 
     mouse_wait(1);
-    outb(0x64, 0xA8);
+    Kernel::IO::outb(0x64, 0xA8);
 
     mouse_wait(1);
-    outb(0x64, 0x20);
+    Kernel::IO::outb(0x64, 0x20);
 
     mouse_wait(0);
-    mstatus = inb(0x60) | 2;
+    mstatus = Kernel::IO::inb(0x60) | 2;
     mouse_wait(1);
 
-    outb(0x64, 0x60);
+    Kernel::IO::outb(0x64, 0x60);
     mouse_wait(1);
-    outb(0x60, mstatus);
+    Kernel::IO::outb(0x60, mstatus);
 
     mouse_write(0xF6);
     res = mouse_read();
@@ -216,7 +214,7 @@ void init_mouse()
     }
 
 
-    Kernel::register_interrupt_handler(IRQ12, mouse_handler);
+    Kernel::CPU::register_interrupt_handler(IRQ12, mouse_handler);
 }
 
 }

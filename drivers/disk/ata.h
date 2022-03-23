@@ -10,11 +10,9 @@
 #define OFFSET_MODEL 27
 #define OFFSET_MODEL_SERIAL 176
 
-typedef struct
-{
-    uint32_t lba;
-    uint8_t *bytes;
-} fs_ata_t;
+namespace DiskDrivers {
+
+namespace ATA {
 
 uint16_t *ata_init(uint16_t *bytes);
 
@@ -26,8 +24,9 @@ void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes);
 
 void select_drive();
 
-//FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors);
-fs_ata_t get_from_str(char * str);
-
 uint32_t total_sectors();
 uint32_t total_bytes();
+
+}
+
+}

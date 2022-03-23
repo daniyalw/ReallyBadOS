@@ -10,14 +10,14 @@ namespace Graphic {
 
 void bga_write_register(uint16_t addr, uint16_t data)
 {
-    outw(BGA_ADDRESS, addr);
-    outw(BGA_DATA, data);
+    Kernel::IO::outw(BGA_ADDRESS, addr);
+    Kernel::IO::outw(BGA_DATA, data);
 }
 
 uint16_t bga_read_register(uint16_t addr)
 {
-    outw(BGA_ADDRESS, addr);
-    return inw(BGA_DATA);
+    Kernel::IO::outw(BGA_ADDRESS, addr);
+    return Kernel::IO::inw(BGA_DATA);
 }
 
 bool bga_available()
@@ -32,7 +32,7 @@ void bga_set_bank(unsigned short bank_number)
 
 bool is_bga_device()
 {
-    PCIDevice *device = find_device(0x1111, 0x1234);
+    Kernel::PCIDevice *device = Kernel::find_device(0x1111, 0x1234);
 
     if (device == NULL)
         return false;

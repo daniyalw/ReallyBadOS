@@ -1,5 +1,7 @@
 #include <sys/pci/pci.h>
 
+namespace Kernel {
+
 uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
 {
     uint32_t address;
@@ -8,16 +10,16 @@ uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
     address = (uint32_t)(((uint32_t)bus << 16) | ((uint32_t)slot << 11) |
               ((uint32_t)function << 8) | (offset & 0xFC) | ((uint32_t)0x80000000));
 
-    outl(0xCF8, address);
-    tmp = (uint16_t)((inl(0xCFC) >> ((offset & 2) * 8)) & 0xFFFF);
+    Kernel::IO::outl(0xCF8, address);
+    tmp = (uint16_t)((Kernel::IO::inl(0xCFC) >> ((offset & 2) * 8)) & 0xFFFF);
     return tmp;
 }
 
 void write_pci(uint16_t bus, uint16_t device, uint16_t function, uint32_t reg_offset, uint32_t value)
 {
     uint32_t id = 0x1 << 31 | ((bus & 0xFF) << 16) | ((device & 0x1F) << 11) | ((function & 0x07) << 8) | (reg_offset & 0xFC);
-    outl(0xCF8, id);
-    outl(0xCFC, value);
+    Kernel::IO::outl(0xCF8, id);
+    Kernel::IO::outl(0xCFC, value);
 }
 
 bool device_functions(uint16_t bus, uint16_t device)
@@ -73,15 +75,15 @@ void scan_buses()
 
                 for (int z = 0; z < 6; z++)
                 {
-                    addr_reg reg = get_addr_reg(bus, device, function, z);
+                    Kernel::addr_reg reg = get_addr_reg(bus, device, function, z);
                     if (reg.addr && (reg.type == 1))
                     {
                         pci_device->base = (uint32_t)reg.addr;
                     }
                 }
 
-                devices[device_count] = pci_device;
-                device_count++;
+                Kernel::devices[device_count] = pci_device;
+                Kernel::device_count++;
             }
         }
     }
@@ -89,42 +91,42 @@ void scan_buses()
 
 void go_through_and_print()
 {
-    for (int z = 0; z < device_count; z++)
+    for (int z = 0; z < Kernel::device_count; z++)
     {
         printf("classID: %x ::: SubID: %x ::: DeviceID: 0x%x ::: VendorID: 0x%x\n",
-                devices[z]->classID,
-                devices[z]->subclassID,
-                devices[z]->deviceID,
-                devices[z]->vendorID
+                Kernel::devices[z]->classID,
+                Kernel::devices[z]->subclassID,
+                Kernel::devices[z]->deviceID,
+                Kernel::devices[z]->vendorID
             );
 
-        if (devices[z]->interrupt != NULL)
-            printf("\tInterrupt: %d", devices[z]->interrupt + 32);
+        if (Kernel::devices[z]->interrupt != NULL)
+            printf("\tInterrupt: %d", Kernel::devices[z]->interrupt + 32);
 
-        if (devices[z]->interrupt == NULL)
+        if (Kernel::devices[z]->interrupt == NULL)
         {
             printf("             ");
             putchar('\t');
         }
-        printf("\tinterface: %x\n", devices[z]->interfaceID);
+        printf("\tinterface: %x\n", Kernel::devices[z]->interfaceID);
     }
 
-    printf("\n\nTotal devices: %d\n", device_count);
+    printf("\n\nTotal devices: %d\n", Kernel::device_count);
 }
 
-PCIDevice * find_device(uint16_t vendor, uint16_t device)
+Kernel::PCIDevice * find_device(uint16_t vendor, uint16_t device)
 {
     // pci must already be initialized
     for (int z = 0; z < device_count; z++)
-        if (devices[z]->vendorID == vendor && devices[z]->deviceID == device)
-            return devices[z];
+        if (Kernel::devices[z]->vendorID == vendor && Kernel::devices[z]->deviceID == device)
+            return Kernel::devices[z];
 
     return NULL;
 }
 
-addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, uint16_t bar)
+Kernel::addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, uint16_t bar)
 {
-    addr_reg result;
+    Kernel::addr_reg result;
 
     uint32_t barRegister = 0x10 + (bar * sizeof(uint32_t));
     uint32_t bar_v = read_pci(bus, device, function, barRegister);
@@ -168,4 +170,6 @@ addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, uint16_t
         result.size = (uint16_t)(~(sizeMask & ~0x3) + 1);
     }
     return result;
+}
+
 }
