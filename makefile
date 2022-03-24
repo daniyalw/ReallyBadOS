@@ -13,8 +13,11 @@ all:
 	make tss
 	make tasking
 	make user
-	make ramdisk
 	make textmode
+	make map
+	make ramdisk
+	make iso
+	make run
 
 run:
 	${QEMU} -cdrom reallybados-x86_32.iso ${QEMU_FLAGS}
@@ -30,6 +33,9 @@ interrupts:
 
 jmp:
 	nasm -f elf32 kernel/jmp.asm -o built/jmp.o
+
+map:
+	nm -C -n isodir/boot/main.o > initrd/kernel.map
 
 tasking:
 	nasm -f elf32 kernel/sys/multitasking/switch.asm -o built/switch.o
@@ -57,8 +63,6 @@ user:
 textmode:
 	make bootloader
 	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o built/switch.o built/eip.o -o built/main.o -T linker.ld
-	make iso
-	make run
 
 clean:
 	rm *.iso

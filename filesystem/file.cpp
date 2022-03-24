@@ -214,7 +214,6 @@ int fvsscanf(FILE *file, char *fmt, va_list va)
 			while (*str && isspace(*str))
             {
 				str++;
-                file->ptr++;
             }
 		}
 		else if (*fmt == '%')
@@ -241,7 +240,6 @@ int fvsscanf(FILE *file, char *fmt, va_list va)
 				while (isspace(*str))
                 {
                     str++;
-                    file->ptr++;
                 }
 
                 // see if the first is a minus sign
@@ -249,14 +247,12 @@ int fvsscanf(FILE *file, char *fmt, va_list va)
 				{
 					negative = -1;
 					str++;
-                    file->ptr++;
 				}
 
 				while (*str && *str >= '0' && *str <= '9')
 				{
 					z = z * 10 + *str - '0';
 					str++;
-                    file->ptr++;
 				}
 
 				int * out = (int *)va_arg(va, int*);
@@ -270,14 +266,12 @@ int fvsscanf(FILE *file, char *fmt, va_list va)
 				while (isspace(*str))
                 {
                     str++;
-                    file->ptr++;
                 }
 
 				while (*str && *str >= '0' && *str <= '9')
 				{
 					z = z * 10 + *str - '0';
 					str++;
-                    file->ptr++;
 				}
 
 				uint32_t *out = (uint32_t *)va_arg(va, uint32_t*);
@@ -293,14 +287,12 @@ int fvsscanf(FILE *file, char *fmt, va_list va)
                 while (isspace(*str))
                 {
                     str++;
-                    file->ptr++;
                 }
 
                 while (isalpha(*str))
                 {
                     s[sz] = *str;
                     *str++;
-                    file->ptr++;
                     sz++;
                 }
 
@@ -319,7 +311,6 @@ int fvsscanf(FILE *file, char *fmt, va_list va)
 			if (*str == *fmt)
             {
 				str++;
-                file->ptr++;
             }
 			else
 				break;

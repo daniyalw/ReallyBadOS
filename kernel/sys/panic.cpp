@@ -15,10 +15,10 @@ void panic(char * msg, char * file, char * function, int line, ...)
 
     clear();
 
-    log::error("\n\nPANIC:\n\tMessage: %s\n\n\tFile: %s\n\tFunction: %s\n\tLine: %d\n\n", msg, file, function, line);
+    log::error("PANIC:\n\tMessage: %s\n\n\tFile: %s\n\tFunction: %s\n\tLine: %d\n\n", msg, file, function, line);
     printf("\n\nPANIC:\n\tMessage: %s\n\n\tFile: %s\n\tFunction: %s\n\tLine: %d\n\n", msg, file, function, line);
 
-    traceback(5);
+    traceback(100);
 
     Kernel::disable_interrupts();
     Kernel::halt_system();
@@ -29,7 +29,8 @@ void traceback(int limit)
     uint32_t *ebp = (uint32_t *)__builtin_frame_address(0);
     int z = 0;
 
-    for (;;) {
+    for (;;)
+    {
         if (z == limit)
             break;
 
