@@ -4,6 +4,7 @@
 #include <sys/io.h>
 #include <sys/log/log.h>
 #include <sys/multitasking/task.h>
+#include <sys/multitasking/thread.h>
 
 void timer_int(registers_t *regs) {
     tick++;
