@@ -486,24 +486,31 @@ int gvfs(char * s, char value)
     return count;
 }
 
-char * reverse_string(char * str, char * out)
+char * reverse_string(char * str, int limit, char * out)
 {
-    int t = strlen(str);
-    int c = t;
+    int v = 0;
 
-    for (int z = 0; z < strlen(str); z++) {
-        out[t] = str[z];
-        t--;
-    }
-
-    char a[c-1];
-
-    for (int z = 0; z < c; z++)
+    for (int z = strlen(str) - 1; z >= 0; z--)
     {
-        a[z] = out[z+1];
+        if (v >= limit)
+            break;
+
+        out[v] = str[z];
+        v++;
     }
 
-    out = a;
+    return out;
+}
+
+char *reverse_string(char *str, char *out)
+{
+    int v = 0;
+
+    for (int z = strlen(str) - 1; z >= 0; z--)
+    {
+        out[v] = str[z];
+        v++;
+    }
 
     return out;
 }

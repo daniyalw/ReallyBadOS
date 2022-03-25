@@ -73,7 +73,10 @@ void itoa(int num, char * out);
 static void itoa(char *buf, int base, int d);
 int atoi(char * str);
 void memset(int * dest, int val, int len);
+
 char * reverse_string(char * str, char * out);
+char * reverse_string(char * str, int limit, char * out);
+
 char strgetlast(char *c);
 
 char *strdup(char *str);
