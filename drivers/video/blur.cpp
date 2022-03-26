@@ -51,8 +51,7 @@ void stackblur(unsigned char *src,  ///< input image data
                int minX,
                int maxX,
                int minY,
-               int maxY)
-{
+               int maxY) {
     (void)h;
     int x, y, xp, yp, i;
     int sp;
@@ -82,16 +81,14 @@ void stackblur(unsigned char *src,  ///< input image data
 
     {
 
-        for (y = minY; y < maxY; y++)
-        {
+        for (y = minY; y < maxY; y++) {
             sum_r = sum_g = sum_b =
                 sum_in_r = sum_in_g = sum_in_b =
                     sum_out_r = sum_out_g = sum_out_b = 0;
 
             src_ptr = src + w4 * y + (minX * 4); // start of line (0,y)
 
-            for (i = 0; i <= radius; i++)
-            {
+            for (i = 0; i <= radius; i++) {
                 stack_ptr = &stack[3 * i];
                 stack_ptr[0] = src_ptr[0];
                 stack_ptr[1] = src_ptr[1];
@@ -104,8 +101,7 @@ void stackblur(unsigned char *src,  ///< input image data
                 sum_out_b += src_ptr[2];
             }
 
-            for (i = 1; i <= radius; i++)
-            {
+            for (i = 1; i <= radius; i++) {
                 if (i <= wm)
                     src_ptr += 4;
                 stack_ptr = &stack[3 * (i + radius)];
@@ -126,8 +122,8 @@ void stackblur(unsigned char *src,  ///< input image data
                 xp = wm;
             src_ptr = src + 4 * (xp + y * w) + (minX * 4); //   img.pix_ptr(xp, y);
             dst_ptr = src + y * w4 + (minX * 4);           // img.pix_ptr(0, y);
-            for (x = minX; x < maxX; x++)
-            {
+
+            for (x = minX; x < maxX; x++) {
                 dst_ptr[0] = (sum_r * mul_sum) >> shr_sum;
                 dst_ptr[1] = (sum_g * mul_sum) >> shr_sum;
                 dst_ptr[2] = (sum_b * mul_sum) >> shr_sum;
@@ -138,6 +134,7 @@ void stackblur(unsigned char *src,  ///< input image data
                 sum_b -= sum_out_b;
 
                 stack_start = sp + div - radius;
+
                 if (stack_start >= div)
                     stack_start -= div;
                 stack_ptr = &stack[3 * stack_start];
@@ -146,8 +143,7 @@ void stackblur(unsigned char *src,  ///< input image data
                 sum_out_g -= stack_ptr[1];
                 sum_out_b -= stack_ptr[2];
 
-                if (xp < wm)
-                {
+                if (xp < wm) {
                     src_ptr += 4;
                     ++xp;
                 }
@@ -164,8 +160,10 @@ void stackblur(unsigned char *src,  ///< input image data
                 sum_b += sum_in_b;
 
                 ++sp;
+
                 if (sp >= div)
                     sp = 0;
+
                 stack_ptr = &stack[sp * 3];
 
                 sum_out_r += stack_ptr[0];
@@ -180,15 +178,14 @@ void stackblur(unsigned char *src,  ///< input image data
 
     {
 
-        for (x = minX; x < maxX; x++)
-        {
+        for (x = minX; x < maxX; x++) {
             sum_r = sum_g = sum_b =
                 sum_in_r = sum_in_g = sum_in_b =
                     sum_out_r = sum_out_g = sum_out_b = 0;
 
             src_ptr = src + 4 * x + minY * w4; // x,0
-            for (i = 0; i <= radius; i++)
-            {
+
+            for (i = 0; i <= radius; i++) {
                 stack_ptr = &stack[i * 3];
                 stack_ptr[0] = src_ptr[0];
                 stack_ptr[1] = src_ptr[1];
@@ -200,8 +197,8 @@ void stackblur(unsigned char *src,  ///< input image data
                 sum_out_g += src_ptr[1];
                 sum_out_b += src_ptr[2];
             }
-            for (i = 1; i <= radius; i++)
-            {
+
+            for (i = 1; i <= radius; i++) {
                 if (i <= hm)
                     src_ptr += w4; // +stride
 
@@ -224,8 +221,7 @@ void stackblur(unsigned char *src,  ///< input image data
             src_ptr = src + 4 * (x + yp * w) + minY * w4; // img.pix_ptr(x, yp);
             dst_ptr = src + 4 * x + minY * w4;
             // img.pix_ptr(x, 0);
-            for (y = minY; y < maxY; y++)
-            {
+            for (y = minY; y < maxY; y++) {
                 dst_ptr[0] = (sum_r * mul_sum) >> shr_sum;
                 dst_ptr[1] = (sum_g * mul_sum) >> shr_sum;
                 dst_ptr[2] = (sum_b * mul_sum) >> shr_sum;
@@ -244,8 +240,7 @@ void stackblur(unsigned char *src,  ///< input image data
                 sum_out_g -= stack_ptr[1];
                 sum_out_b -= stack_ptr[2];
 
-                if (yp < hm)
-                {
+                if (yp < hm) {
                     src_ptr += w4; // stride
                     ++yp;
                 }

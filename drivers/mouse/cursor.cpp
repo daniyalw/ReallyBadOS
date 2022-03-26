@@ -4,8 +4,7 @@
 
 namespace Kernel {
 
-void update_hardware_cursor(int cursor_x, int cursor_y)
-{
+void update_hardware_cursor(int cursor_x, int cursor_y) {
 	unsigned short cursor_location = cursor_y * 80 + cursor_x;
 
 	Kernel::IO::outb(0x3D4, 0x0F);
@@ -15,15 +14,13 @@ void update_hardware_cursor(int cursor_x, int cursor_y)
 }
 
 // we don't need an enable function as it is enabled by default
-void disable_hardware_cursor()
-{
+void disable_hardware_cursor() {
 	log::warning("Disabled hardware cursor.\n");
 	Kernel::IO::outb(0x3D4, 0x0A);
 	Kernel::IO::outb(0x3D5, 0x20);
 }
 
-unsigned short get_hardware_cursor_pos()
-{
+unsigned short get_hardware_cursor_pos() {
 	unsigned short position = 0;
 
 	Kernel::IO::outb(0x3D4, 0x0F);
@@ -35,8 +32,7 @@ unsigned short get_hardware_cursor_pos()
 	return position;
 }
 
-void set_hardware_cursor(int cursor_y, int cursor_x)
-{
+void set_hardware_cursor(int cursor_y, int cursor_x) {
 	unsigned short cursor_location = cursor_y * 80 + cursor_x;
 
 	Kernel::IO::outb(0x3D4, 0x0F);

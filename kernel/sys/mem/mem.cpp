@@ -3,8 +3,7 @@
 #include <sys/mem/free.h>
 #include <sys/mem/malloc.h>
 
-void init_mem(auto mbd, uint32_t beginning_addr)
-{
+void init_mem(auto mbd, uint32_t beginning_addr) {
     uint32_t copy;
     uint32_t total;
 
@@ -18,14 +17,13 @@ void init_mem(auto mbd, uint32_t beginning_addr)
     uint32_t addr;
     int bz = 0;
 
-    if(!(mbd->flags >> 6 & 0x1)) {
+    if (!(mbd->flags >> 6 & 0x1)) {
         log::error("invalid memory map given by GRUB bootloader\n");
     }
 
     int i;
     for(i = 0; i < mbd->mmap_length;
-        i += sizeof(multiboot_memory_map_t))
-    {
+        i += sizeof(multiboot_memory_map_t)) {
         multiboot_memory_map_t* mmmt =
             (multiboot_memory_map_t*) (mbd->mmap_addr + i);
 
@@ -80,26 +78,22 @@ void init_mem(auto mbd, uint32_t beginning_addr)
 #endif
 }
 
-void print_lists()
-{
+void print_lists() {
     log::warning("\n\nPrinting 'mem_blocks' list:\n");
 
-    for (int z = 0; z < block_count_mem; z++)
-    {
+    for (int z = 0; z < block_count_mem; z++) {
         log::warning("Address: %d\nSize: %d\n\n", mem_blocks[z].addr, mem_blocks[z].size);
     }
 
     log::warning("\nPrinting 'used' list:\n");
 
-    for (int z = 0; z < total_used; z++)
-    {
+    for (int z = 0; z < total_used; z++) {
         if (used[z].null == false)
             log::warning("Address: %d\nSize: %d", used[z].addr, used[z].size);
     }
 }
 
-void __mem_test()
-{
+void __mem_test() {
     print_lists();
 
     uint32_t addr = malloc(10);

@@ -5,8 +5,7 @@
 
 namespace Kernel {
 
-static inline bool are_interrupts_enabled()
-{
+static inline bool are_interrupts_enabled() {
     unsigned long flags;
     asm volatile ( "pushf\n\t"
                    "pop %0"
@@ -14,32 +13,26 @@ static inline bool are_interrupts_enabled()
     return flags & (1 << 9);
 }
 
-static inline unsigned long save_irqdisable()
-{
+static inline unsigned long save_irqdisable() {
     unsigned long flags;
     asm volatile ("pushf\n\tcli\n\tpop %0" : "=r"(flags) : : "memory");
     return flags;
 }
 
-static inline void irqrestore(unsigned long flags)
-{
+static inline void irqrestore(unsigned long flags) {
     asm ("push %0\n\tpopf" : : "rm"(flags) : "memory","cc");
 }
 
-static inline void disable_interrupts()
-{
+static inline void disable_interrupts() {
     asm volatile("cli");
 }
 
-static inline void enable_interrupts()
-{
+static inline void enable_interrupts() {
     asm volatile("sti");
 }
 
-static inline void call_interrupt(int int_no)
-{
-    switch (int_no)
-    {
+static inline void call_interrupt(int int_no) {
+    switch (int_no) {
         case 1:
             asm volatile("int $1");
             break;

@@ -6,8 +6,7 @@ namespace Kernel {
 
 namespace CPU {
 
-void _init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp)
-{
+void _init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp) {
     gdt_set_gate(i, (unsigned int)&tss, (unsigned int)&tss + sizeof(TSS) - 1, 0x89, 0x00);
 
     Kernel::CPU::tss.ss0 = kernel_ss;
@@ -25,21 +24,18 @@ void _init_tss(uint32_t i, uint16_t kernel_ss, uint16_t kernel_esp)
     flush_tss();
 }
 
-void init_tss()
-{
+void init_tss() {
     uint32_t esp;
     asm volatile("mov %%esp, %0" : "=r"(esp));
     Kernel::CPU::_init_tss(5, 0x10, esp);
 }
 
-void set_kernel_stack(uint32_t stack)
-{
+void set_kernel_stack(uint32_t stack) {
     tss.esp0 = stack;
     flush_tss();
 }
 
-static void init_gdt()
-{
+static void init_gdt() {
     gdt_ptr.limit = (sizeof(gdt_entry_t) * 6) - 1;
     gdt_ptr.base  = (u32)&gdt_entries;
 
@@ -53,8 +49,7 @@ static void init_gdt()
     log::info("Enabled GDT.");
 }
 
-static void gdt_set_gate(s32 num, u32 base, u32 limit, u8 access, u8 gran)
-{
+static void gdt_set_gate(s32 num, u32 base, u32 limit, u8 access, u8 gran) {
     Kernel::CPU::gdt_entries[num].base_low    = (base & 0xFFFF);
     Kernel::CPU::gdt_entries[num].base_middle = (base >> 16) & 0xFF;
     Kernel::CPU::gdt_entries[num].base_high   = (base >> 24) & 0xFF;

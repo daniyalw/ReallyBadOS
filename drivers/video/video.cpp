@@ -65,15 +65,12 @@ void putchar(char text, int color) {
     next_char();
 }
 
-char * vsnprintf(char *s, int max, char *format, va_list va)
-{
+char * vsnprintf(char *s, int max, char *format, va_list va) {
     int sz = 0;
     char buffer[20];
 
-    for (int z = 0; z < max; z++)
-    {
-        if (format[z] != '%')
-        {
+    for (int z = 0; z < max; z++) {
+        if (format[z] != '%') {
             s[sz] = format[z];
             sz++;
             continue;
@@ -81,8 +78,7 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
 
         z++;
 
-        if (format[z] == 's')
-        {
+        if (format[z] == 's') {
             char *str = (char *)va_arg(va, char*);
 
             for (int b = 0; b < len(str); b++)
@@ -90,15 +86,11 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
                 s[sz] = str[b];
                 sz++;
             }
-        }
-        else if (format[z] == 'c')
-        {
+        } else if (format[z] == 'c') {
             int ch = (int)va_arg(va, int);
             s[sz] = ch;
             sz++;
-        }
-        else if (format[z] == 'd')
-        {
+        } else if (format[z] == 'd') {
             int i = (int)va_arg(va, int);
             for (int b = 0; b < 20; b++) buffer[b] = 0;
             itoa(buffer, 'd', i);
@@ -107,20 +99,16 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
                 s[sz] = buffer[b];
                 sz++;
             }
-        }
-        else if (format[z] == 'x')
-        {
+        } else if (format[z] == 'x') {
             int arg = (int)va_arg(va, int);
             for (int b = 0; b < 20; b++) buffer[b] = 0;
             itoa(buffer, 'x', arg);
-            for (int b = 0; b < len(buffer); b++)
-            {
+
+            for (int b = 0; b < len(buffer); b++) {
                 s[sz] = buffer[b];
                 sz++;
             }
-        }
-        else
-        {
+        } else {
             s[sz] = '%';
             sz++;
             s[sz] = format[z];
@@ -133,26 +121,22 @@ char * vsnprintf(char *s, int max, char *format, va_list va)
     return s;
 }
 
-char * vsprintf(char *s, char *format, va_list va)
-{
+char * vsprintf(char *s, char *format, va_list va) {
     return vsnprintf(s, len(format), format, va);
 }
 
-int vprintf(char *f, va_list va)
-{
+int vprintf(char *f, va_list va) {
     return printf(vsprintf("", f, va));
 }
 
-void sprintf(char *s, char *fmt, ...)
-{
+void sprintf(char *s, char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
     vsprintf(s, fmt, va);
     va_end(va);
 }
 
-void snprintf(char *s, int max, char *fmt, ...)
-{
+void snprintf(char *s, int max, char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
     vsnprintf(s, max, fmt, va);
@@ -160,12 +144,9 @@ void snprintf(char *s, int max, char *fmt, ...)
 }
 
 void putchar(char text) {
-    if (!custom_color_on)
-    {
+    if (!custom_color_on) {
         putchar(text, 0x0F00);
-    }
-    else
-    {
+    } else {
         putchar(text, custom_color);
     }
 }
@@ -175,40 +156,38 @@ void putchar_with_cursor_move(char text) {
     Kernel::set_hardware_cursor(text_y, text_x);
 }
 
-void scroll()
-{
+void scroll() {
    uint8 attr = (0 << 4) | (15 & 0x0F);
    uint16 space = 0x20 | (attr << 8);
    short * vidmem = (short *)0xb8000;
 
    if (text_y > 24) {
        int i;
-       for (i = 0*80; i < 24*80; i++)
-       {
+
+       for (i = 0*80; i < 24*80; i++) {
            vidmem[i] = vidmem[i+80];
            vga_back[i] = vga_back[i+80];
            written_on[i] = written_on[i+80];
        }
 
-       for (i = 24*80; i < 25*80; i++)
-       {
+       for (i = 24*80; i < 25*80; i++) {
            vidmem[i] = space;
            vga_back[i] = ' ';
            written_on[i] = false;
        }
+
        text_y = 24;
    }
 }
 
-int printf(char *a, ...)
-{
-    if (a == NULL)
-    {
+int printf(char *a, ...) {
+    if (a == NULL) {
         for (int z = 0; z < strlen("(null)"); z++)
             putchar("(null)"[z]);
 
         return 1;
     }
+
     va_list va;
 
     va_start(va, a);
@@ -223,8 +202,7 @@ int printf(char *a, ...)
     return strlen(out);
 }
 
-int cprintf(int color, char *a, ...)
-{
+int cprintf(int color, char *a, ...) {
     custom_color_on = true;
     custom_color = color;
 
@@ -238,8 +216,7 @@ int cprintf(int color, char *a, ...)
     return count;
 }
 
-void putchar_at(int x, int y, char c)
-{
+void putchar_at(int x, int y, char c) {
     short * vidmem = (short *)0xb8000;
 
     if (!custom_color_on)
@@ -248,14 +225,12 @@ void putchar_at(int x, int y, char c)
         vidmem[x+y*80] = custom_color | c;
 }
 
-int printf_centered(char *s, int line_no)
-{
+int printf_centered(char *s, int line_no) {
     const int length = strlen(s);
     int half = length/2;
     int start = 40 - half;
 
-    for (int z = 0; z < length; z++)
-    {
+    for (int z = 0; z < length; z++) {
         putchar_at(start, line_no, s[z]);
         start++;
     }
@@ -263,41 +238,35 @@ int printf_centered(char *s, int line_no)
     return length;
 }
 
-int write_vga(fs_node_t * node, int offset, int size, char *data)
-{
+int write_vga(fs_node_t * node, int offset, int size, char *data) {
     return printf(data);
 }
 
-int read_vga(fs_node_t *node, int offset, int size, char * data)
-{
+int read_vga(fs_node_t *node, int offset, int size, char * data) {
     return NULL;
 }
 
-int write_error(fs_node_t * node, int offset, int size, char *data)
-{
+int write_error(fs_node_t * node, int offset, int size, char *data) {
     p_error(data);
     return 1;
 }
 
-int read_error(fs_node_t * node, int offset, int size, char *data)
-{
+int read_error(fs_node_t * node, int offset, int size, char *data) {
     UNUSED(data);
     // not implemented
     return NULL;
 }
 
-fs_node_t *stdout;
-fs_node_t *stderr;
+fs_node_t *_stdout;
+fs_node_t *_stderr;
 
-void init_error()
-{
+void init_error() {
     create_file("stderr", "/dev/", read_error, write_error);
-    stderr = find_node("/dev/stderr");
+    _stderr = find_node("/dev/stderr");
 }
 
-void init_vga()
-{
+void init_vga() {
     create_file("stdout", "/dev/", read_vga, write_vga);
-    stdout = find_node("/dev/stdout");
+    _stdout = find_node("/dev/stdout");
     init_error();
 }

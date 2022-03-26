@@ -2,8 +2,7 @@
 
 namespace Kernel {
 
-void halt_system()
-{
+void halt_system() {
     asm volatile("hlt");
 }
 

@@ -6,8 +6,7 @@
 
 struct input_t
 {
-    void operator>>(char * buff)
-    {
+    void operator>>(char * buff) {
         buff = scanf();
     }
 };

@@ -2,12 +2,10 @@
 #include <mouse/mouse.h>
 #include <gui/gui.h>
 
-void mouse_wait(unsigned char at)
-{
+void mouse_wait(unsigned char at) {
     unsigned int timeout = 100000;
 
-    switch (at)
-    {
+    switch (at) {
         case 0:
             while (timeout--)
                 if ((Kernel::IO::inb(0x64) & 1) == 1)
@@ -23,8 +21,7 @@ void mouse_wait(unsigned char at)
     }
 }
 
-void mouse_write(unsigned char data)
-{
+void mouse_write(unsigned char data) {
     // wait for the mouse to be ready
     mouse_wait(1);
     // tell them mouse we are sending a command
@@ -35,22 +32,18 @@ void mouse_write(unsigned char data)
     Kernel::IO::outb(0x60, data);
 }
 
-unsigned char mouse_read()
-{
+unsigned char mouse_read() {
     mouse_wait(0);
     return Kernel::IO::inb(0x60);
 }
 
-void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
-{
+void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset) {
     int bx = x;
     int by = y;
     int color;
 
-    for (int z = 0; z < cursor_height; z++)
-    {
-        for (int b = 0; b < cursor_width; b++)
-        {
+    for (int z = 0; z < cursor_height; z++) {
+        for (int b = 0; b < cursor_width; b++) {
             color = cursor_map[z * cursor_width + b];
             if (color == 0)
                 color = back_buffer[bx+by*width];
@@ -76,16 +69,14 @@ void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
 #endif
 }
 
-static void mouse_handler(registers_t *regs)
-{
+static void mouse_handler(registers_t *regs) {
     int r = 0;
     int mx = 0;
     int my = 0;
     bool left, right, middle;
     int offset = -1;
 
-    switch(mouse_cycle)
-    {
+    switch(mouse_cycle) {
         case 0:
             mouse_byte[0] = mouse_read();
             mouse_cycle++;
@@ -138,17 +129,15 @@ static void mouse_handler(registers_t *regs)
 
 
     int col;
-    for (int z = 0; z < cursor_height; z++)
-        for (int b = 0; b < cursor_width; b++)
-        {
+    for (int z = 0; z < cursor_height; z++) {
+        for (int b = 0; b < cursor_width; b++) {
             col = back_buffer[(oldy+z)*width+(oldx+b)];
             uint8_t * where = (uint8_t*)((oldy+z) * pitch + ((oldx+b) * (bpp/8)) + (uint32_t)framebuffer_addr);
             where[0] = col & 255;              // BLUE
             where[1] = (col >> 8) & 255;   // GREEN
             where[2] = (col >> 16) & 255;  // RED
         }
-
-
+    }
 
     // left click
     if (mouse_byte[0] & 1) {
@@ -179,8 +168,7 @@ static void mouse_handler(registers_t *regs)
 
 namespace Kernel {
 
-void init_mouse()
-{
+void init_mouse() {
     unsigned char mstatus, res;
 
     mouse_wait(1);
@@ -200,16 +188,14 @@ void init_mouse()
     mouse_write(0xF6);
     res = mouse_read();
 
-    if (res != MOUSE_ACK)
-    {
+    if (res != MOUSE_ACK) {
         log::error("PS/2 mouse returned command other than 0xFA: 0x%x", res);
     }
 
     mouse_write(0xF4);
     res = mouse_read();
 
-    if (res != MOUSE_ACK)
-    {
+    if (res != MOUSE_ACK) {
         log::error("Error: PS/2 mouse returned command other than 0xFA: 0x%x", res);
     }
 

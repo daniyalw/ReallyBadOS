@@ -7,15 +7,12 @@
 #include <filesystem/file.h>
 #include <filesystem/dir.h>
 
-void set_string(char * string, char * newvalue)
-{
-    for (int z = 0; z < len(string); z++)
-    {
+void set_string(char * string, char * newvalue) {
+    for (int z = 0; z < strlen(string); z++) {
         string[z] = ' ';
     }
 
-    for (int z = 0; z < len(newvalue); z++)
-    {
+    for (int z = 0; z < len(newvalue); z++) {
         string[z] = newvalue[z];
         string[z+1] = 0;
     }
@@ -23,57 +20,48 @@ void set_string(char * string, char * newvalue)
 
 // ----------------------------- //
 
-int print(char * text)
-{
+int print(char * text) {
     return printf(text);
 }
 
-int s_putchar(char text)
-{
+int s_putchar(char text) {
     putchar(text);
     return 0;
 }
 
-int get_num()
-{
+int get_num() {
     return get_random_number();
 }
 
-int s_get_time(time_t time[1])
-{
+int s_get_time(time_t time[1]) {
     time[0] = Time::get_time();
     return 0;
 }
 
-int s_putpixel(int x, int y, int color)
-{
+int s_putpixel(int x, int y, int color) {
     Graphic::SetPixel(x, y, color);
     return 0;
 }
 
-int s_update_mouse()
-{
+int s_update_mouse() {
     next_char();
     Kernel::update_hardware_cursor(text_x, text_y);
     return 0;
 }
 
-int s_test(int chocolate)
-{
+int s_test(int chocolate) {
     chocolate = 5;
     printf("Hello!");
     return 9;
 }
 
-typedef struct
-{
+typedef struct {
     char *name;
     char *version;
     bool dev;
 } info_t;
 
-int s_info(info_t *info)
-{
+int s_info(info_t *info) {
     info[0].name = (char *)System::SYSTEM;
     info[0].version = (char *)System::VERSION;
     info[0].dev = System::dev;
@@ -81,8 +69,7 @@ int s_info(info_t *info)
     return 0;
 }
 
-int s_file(char *path, char *mode, uint32_t *addr)
-{
+int s_file(char *path, char *mode, uint32_t *addr) {
     FILE *file = fopen(path, mode);
 
     if (file == NULL)
@@ -93,35 +80,30 @@ int s_file(char *path, char *mode, uint32_t *addr)
     return 0;
 }
 
-int s_fclose(FILE *file)
-{
+int s_fclose(FILE *file) {
     free(file);
     return 0;
 }
 
-int exec_file(char *contents)
-{
+int exec_file(char *contents) {
+    // TODO: actually execute file
     return 0;
 }
 
-int s_ls(char *path)
-{
+int s_ls(char *path) {
     list_dir(path);
     return 0;
 }
 
-int s_create_folder(char *folder, char *parent_dir)
-{
+int s_create_folder(char *folder, char *parent_dir) {
     return make_dir_user(folder, parent_dir);
 }
 
-int s_create_file(char *name, char *folder, char *contents)
-{
+int s_create_file(char *name, char *folder, char *contents) {
     return create_file(name, folder, contents);
 }
 
-int s_write_file(char *contents, int *size, int *n, int fd)
-{
+int s_write_file(char *contents, int *size, int *n, int fd) {
     if (fd < 0)
         return 1;
 
@@ -142,37 +124,31 @@ int s_write_file(char *contents, int *size, int *n, int fd)
     return ret;
 }
 
-int s_malloc(int *size, uint32_t *addr)
-{
+int s_malloc(int *size, uint32_t *addr) {
     addr[0] = malloc(size[0]);
     return 0;
 }
 
-int s_free(void *buf)
-{
+int s_free(void *buf) {
     free(buf);
     return 0;
 }
 
-int s_append_file(char *name, char *contents)
-{
+int s_append_file(char *name, char *contents) {
     return 0;
 }
 
-int s_read_file(char *buf, int *size, int *n, int fd)
-{
+int s_read_file(char *buf, int *size, int *n, int fd) {
     int ret = 0;
 
-    if (fd < 0)
-    {
+    if (fd < 0) {
         set_string(buf, "ERROR");
         return 1;
     }
 
     fs_node_t *node = find_node(fd);
 
-    if (node == NULL)
-    {
+    if (node == NULL) {
         set_string(buf, "AAA");
         return 1;
     }
@@ -189,19 +165,16 @@ int s_read_file(char *buf, int *size, int *n, int fd)
     return ret;
 }
 
-int s_create_proc(char *name, uint32_t addr)
-{
+int s_create_proc(char *name, uint32_t addr) {
     return Kernel::CPU::create_thread(name, addr);
 }
 
-int s_yield()
-{
+int s_yield() {
     Kernel::CPU::yield();
     return 0;
 }
 
-int s_exit(int ret)
-{
+int s_exit(int ret) {
     Kernel::CPU::exit(ret);
     return 0;
 }
@@ -209,19 +182,17 @@ int s_exit(int ret)
 // ----------------------------- //
 
 
-void syscall_append(void *func)
-{
-    if (syscall_count >= max_syscalls)
-    {
+void syscall_append(void *func) {
+    if (syscall_count >= max_syscalls) {
         log::warning("Max syscalls reached!");
         return;
     }
+
     syscalls[syscall_count] = func;
     syscall_count++;
 }
 
-void syscall_print_syscalls()
-{
+void syscall_print_syscalls() {
     for (int z = 0; z < syscall_count; z++)
         printf("%x\n", syscalls[z]);
 
@@ -231,46 +202,42 @@ void syscall_print_syscalls()
                                         (void *)s_putpixel, (void *)s_update_mouse, (void *)s_info);
 }
 
-void syscall_handler(registers_t *regs)
-{
+void syscall_handler(registers_t *regs) {
     asm("cli");
 
-   if (regs->eax >= syscall_count)
-   {
-      log::error("Syscall outside of initialized syscalls range.");
-       return;
-   }
+    if (regs->eax >= syscall_count) {
+        log::error("Syscall outside of initialized syscalls range.");
+        return;
+    }
 
-   void *location = syscalls[regs->eax];
+    void *location = syscalls[regs->eax];
 
-   log::info("Syscall: %d\nLocations: %x:%x", regs->eax, location, (void *)s_info);
+    log::info("Syscall: %d\nLocations: %x:%x", regs->eax, location, (void *)s_info);
 
-   //syscall_print_syscalls();
+    //syscall_print_syscalls();
 
-   int ret;
+    int ret;
 
-   asm volatile (" \
-     push %1; \
-     push %2; \
-     push %3; \
-     push %4; \
-     push %5; \
-     call *%6; \
-     pop %%ebx; \
-     pop %%ebx; \
-     pop %%ebx; \
-     pop %%ebx; \
-     pop %%ebx; \
-   " : "=a" (ret) : "r" (regs->edi), "r" (regs->esi), "r" (regs->edx), "r" (regs->ecx), "r" (regs->ebx), "r" (location));
-  regs->eax = ret;
-
-  asm("sti");
+    asm volatile (" \
+        push %1; \
+        push %2; \
+        push %3; \
+        push %4; \
+        push %5; \
+        call *%6; \
+        pop %%ebx; \
+        pop %%ebx; \
+        pop %%ebx; \
+        pop %%ebx; \
+        pop %%ebx; \
+        " : "=a" (ret) : "r" (regs->edi), "r" (regs->esi), "r" (regs->edx), "r" (regs->ecx), "r" (regs->ebx), "r" (location));
+    regs->eax = ret;
+    asm("sti");
 }
 
 namespace Kernel {
 
-void init_syscalls()
-{
+void init_syscalls() {
     syscall_append((void *)print);
     syscall_append((void *)s_putchar);
     syscall_append((void *)get_num);

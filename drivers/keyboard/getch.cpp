@@ -1,16 +1,13 @@
 #include <keyboard/keyboard.h>
 
-char scanf_getch()
-{
+char scanf_getch() {
     scanf_on = true;
 
     int buffs = buffer_size;
     keyboard_lock();
 
-    while (true)
-    {
-        if (!is_keyboard_locked())
-        {
+    while (true) {
+        if (!is_keyboard_locked()) {
             char k = buffer[get_buffer_size()-1];
             edit_buffer_size(1);
             return k;
@@ -18,17 +15,14 @@ char scanf_getch()
     }
 }
 
-char getch()
-{
+char getch() {
     scanf_on = true;
 
     int buffs = buffer_size;
     keyboard_lock();
 
-    while (true)
-    {
-        if (!is_keyboard_locked())
-        {
+    while (true) {
+        if (!is_keyboard_locked()) {
             char k = buffer[get_buffer_size()-1];
             edit_buffer_size(1);
 

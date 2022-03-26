@@ -1,9 +1,7 @@
 #include <filesystem/node.h>
 
-fs_node_t *find_node(char *path)
-{
-    for (int z = 0; z < node_count; z++)
-    {
+fs_node_t *find_node(char *path) {
+    for (int z = 0; z < node_count; z++) {
         fs_node_t *node = nodes[z];
 
         if (strcmp(node->path, path) == 0)
@@ -13,15 +11,13 @@ fs_node_t *find_node(char *path)
     return NULL;
 }
 
-fs_node_t *find_node(int fd)
-{
+fs_node_t *find_node(int fd) {
     return nodes[fd];
 }
 
 // parse file/dir name and get parent id
 // good for when the file/dir doesn't exist (or is assumed not to)
-int parse_path_file_parent(char *path, char *target)
-{
+int parse_path_file_parent(char *path, char *target) {
     char **buf;
     int ret = tokenize(path, PATH_SEP, buf);
     int b = 0;
@@ -36,24 +32,19 @@ int parse_path_file_parent(char *path, char *target)
     if ((ret - 1) == 0)
         return 0; // root id
 
-    for (int z = 0; z < ret - 1; z++)
-    {
-        if (strcmp(buf[z], PATH_UP) == 0)
-        {
+    for (int z = 0; z < ret - 1; z++) {
+        if (strcmp(buf[z], PATH_UP) == 0) {
             if (z == 0)
                 continue;
 
             node = parent;
             parent = nodes[parent->parent_id];
-        }
-        else if (strcmp(buf[z], PATH_DOT) == 0)
-        {
+        } else if (strcmp(buf[z], PATH_DOT) == 0) {
             continue;
         }
-        for (int c = 0; c < node->children_count; c++)
-        {
-            if (strcmp(nodes[node->children[c]]->name, buf[z]) == 0)
-            {
+
+        for (int c = 0; c < node->children_count; c++) {
+            if (strcmp(nodes[node->children[c]]->name, buf[z]) == 0) {
                 parent = node;
                 node = nodes[node->children[c]];
                 break;
@@ -66,8 +57,7 @@ int parse_path_file_parent(char *path, char *target)
 
 // parse file/dir name and get current file id
 // good for when the file/dir exists (or is assumed to)
-int parse_path_file(char *path)
-{
+int parse_path_file(char *path) {
     char **buf;
     int ret = tokenize(path, PATH_SEP, buf);
     int b = 0;
@@ -77,24 +67,19 @@ int parse_path_file(char *path)
     node = root;
     parent = root;
 
-    for (int z = 0; z < ret; z++)
-    {
-        if (strcmp(buf[z], PATH_UP) == 0)
-        {
+    for (int z = 0; z < ret; z++) {
+        if (strcmp(buf[z], PATH_UP) == 0) {
             if (z == 0)
                 continue;
 
             node = parent;
             parent = nodes[parent->parent_id];
-        }
-        else if (strcmp(buf[z], PATH_DOT) == 0)
-        {
+        } else if (strcmp(buf[z], PATH_DOT) == 0) {
             continue;
         }
-        for (int c = 0; c < node->children_count; c++)
-        {
-            if (strcmp(nodes[node->children[c]]->name, buf[z]) == 0)
-            {
+
+        for (int c = 0; c < node->children_count; c++) {
+            if (strcmp(nodes[node->children[c]]->name, buf[z]) == 0) {
                 parent = node;
                 node = nodes[node->children[c]];
                 break;
@@ -105,8 +90,7 @@ int parse_path_file(char *path)
     return node->id;
 }
 
-fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, __mkdir mkdir, int permission)
-{
+fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, __mkdir mkdir, int permission) {
     fs_node_t *node = create_node(name, parent, FS_FOLDER, permission);
 
     if (node == NULL)
@@ -126,8 +110,7 @@ fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfi
     return node;
 }
 
-fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount)
-{
+fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount) {
     fs_node_t *parent = find_node(parent_path);
 
     if (parent == NULL || parent->flags != FS_FOLDER)
@@ -150,8 +133,7 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
     node->flags = type;
     node->permission = permission;
 
-    if (parent->is_mount && ignore_mount == false)
-    {
+    if (parent->is_mount && ignore_mount == false) {
         node->mount_parent = parent->mount_parent;
         node->is_mount = true;
         strcpy(node->mount_dir, parent->mount_dir);
@@ -167,8 +149,7 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
         else if (type == FS_FOLDER)
             ret = node->mkdir(node, node->path);
 
-        if (ret != 0)
-        {
+        if (ret != 0) {
             free(node);
             printf("Error creating node");
             return NULL;
@@ -185,36 +166,31 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
     return node;
 }
 
-fs_node_t *create_node_ignore(char *name, char *parent_path, int type, int permission)
-{
+fs_node_t *create_node_ignore(char *name, char *parent_path, int type, int permission) {
     return create_node(name, parent_path, type, permission, true);
 }
 
-fs_node_t *create_node(char *name, char *parent_path, int type, int permission)
-{
+fs_node_t *create_node(char *name, char *parent_path, int type, int permission) {
     return create_node(name, parent_path, type, permission, false);
 }
 
-void close_node(fs_node_t *node)
-{
+void close_node(fs_node_t *node) {
     free(node);
 }
 
-int write_node(fs_node_t *node, int offset, int size, char *contents)
-{
+int write_node(fs_node_t *node, int offset, int size, char *contents) {
     int ret = 0;
 
     if (node->write != NULL)
         ret = node->write(node, offset, size, contents);
-    else if (node->flags != FS_FOLDER)
-    {
+    else if (node->flags != FS_FOLDER) {
         free(node->contents);
         node->contents = (char *)malloc(strlen(contents) + 1);
         memset(node->contents, 0, strlen(contents) + 1);
         strcpy(node->contents, contents);
-    }
-    else
+    } else {
         ret = 1;
+    }
 
     node->size = strlen(contents);
     nodes[node->id] = node;
@@ -222,8 +198,7 @@ int write_node(fs_node_t *node, int offset, int size, char *contents)
     return ret;
 }
 
-int read_node(fs_node_t *node, int offset, int size, char *buffer)
-{
+int read_node(fs_node_t *node, int offset, int size, char *buffer) {
     int ret = 0;
 
     if (node->read != NULL)
@@ -234,8 +209,7 @@ int read_node(fs_node_t *node, int offset, int size, char *buffer)
     return ret;
 }
 
-int list_dir(fs_node_t *node, int index)
-{
+int list_dir(fs_node_t *node, int index) {
     if (node == NULL)
         return 1;
 
@@ -254,8 +228,7 @@ int list_dir(fs_node_t *node, int index)
     return 0;
 }
 
-int list_dir(char *dir)
-{
+int list_dir(char *dir) {
     fs_node_t *node = find_node(dir);
 
     if (node == NULL || node->flags == FS_FILE)
@@ -266,8 +239,7 @@ int list_dir(char *dir)
     return ret;
 }
 
-void create_root()
-{
+void create_root() {
     root = new fs_node_t();
 
     memset(root->name, 0, FILENAME_LIMIT);
@@ -286,8 +258,7 @@ void create_root()
     node_count++;
 }
 
-void init_fs()
-{
+void init_fs() {
     create_root();
 
     make_dir("bin", "/");

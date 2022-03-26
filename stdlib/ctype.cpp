@@ -1,7 +1,6 @@
 #include <ctype.h>
 
-char toupper(char data)
-{
+char toupper(char data) {
     for (int b = 0; b < 26; b++) {
         if (data == lower_letters[b]) {
             data = upper_letters[b];
@@ -12,8 +11,7 @@ char toupper(char data)
     return data;
 }
 
-char tolower(char data)
-{
+char tolower(char data) {
     for (int b = 0; b < 26; b++) {
         if (data == upper_letters[b]) {
             data = lower_letters[b];
@@ -24,16 +22,14 @@ char tolower(char data)
     return data;
 }
 
-char *toupper(char *data)
-{
+char *toupper(char *data) {
     for (int z = 0; z < strlen(data); z++)
         data[z] = toupper(data[z]);
 
     return data;
 }
 
-char *tolower(char *data)
-{
+char *tolower(char *data) {
     for (int z = 0; z < strlen(data); z++)
         data[z] = tolower(data[z]);
 
@@ -49,8 +45,7 @@ int strcasecmp(const char *_l, const char *_r) {
     return tolower(*l) - tolower(*r);
 }
 
-bool strisempty(char * s)
-{
+bool strisempty(char * s) {
     for (int z = 0; z < len(s); z++)
         if (s[z] != ' ')
             return false;
@@ -58,24 +53,21 @@ bool strisempty(char * s)
     return true;
 }
 
-bool isspace(char c)
-{
+bool isspace(char c) {
     if (c == ' ')
         return true;
 
     return false;
 }
 
-bool isdigit(char k)
-{
+bool isdigit(char k) {
     if (k == '1' || k == '2' || k == '3' || k == '4' || k == '5' || k == '6' || k == '7' || k == '8' || k == '9' || k == '0')
         return true;
 
     return false;
 }
 
-bool isalpha(char c)
-{
+bool isalpha(char c) {
     c = tolower(c);
 
     for (int z = 0; z < 26; z++)

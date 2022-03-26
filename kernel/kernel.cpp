@@ -7,7 +7,7 @@ extern "C" {
     extern unsigned int kernel_end;
 }
 
-//#define DEBUG
+#define DEBUG
 //#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
@@ -115,12 +115,10 @@ using namespace Time;
 using namespace Graphic;
 
 #ifdef GRAPHICS
-void call(int id, widget_t widget, bool right, bool left, bool middle)
-{
+void call(int id, widget_t widget, bool right, bool left, bool middle) {
     log::info("Called!");
 
-    if (left)
-    {
+    if (left) {
         widget.bg = Graphic::rgb(255, 255, 255);
         window_t win = windows[widget.parent_id];
         win.widgets[widget.id] = widget;
@@ -160,8 +158,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     // parse the tar file
     tar.parse(location);
 
-    for (int z = 0; z < tar.block_count; z++)
-    {
+    for (int z = 0; z < tar.block_count; z++) {
         beginning += 512;
         beginning += tar.blocks[z].size;
     }
@@ -176,26 +173,16 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     init_fs();
     init_all_devs();
 
-    for (int z = 0; z < tar.block_count; z++)
-    {
-        if (endswith(tar.blocks[z].name, "o"))
-        {
-            create_file(tar.blocks[z].name, "/apps/", tar.blocks[z].contents);
-        }
-        else if (endswith(tar.blocks[z].name, "txt"))
-        {
+    for (int z = 0; z < tar.block_count; z++) {
+        if (endswith(tar.blocks[z].name, ".o")) {
+            create_file(tar.blocks[z].name, "/bin/", tar.blocks[z].contents);
+        } else if (endswith(tar.blocks[z].name, ".txt")) {
             create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
-        }
-        else if (endswith(tar.blocks[z].name, "r"))
-        {
+        } else if (endswith(tar.blocks[z].name, ".r")) {
             create_file(tar.blocks[z].name, "/usr/scripts/", tar.blocks[z].contents);
-        }
-        else if (endswith(tar.blocks[z].name, "sfn"))
-        {
+        } else if (endswith(tar.blocks[z].name, ".sfn")) {
             create_file(tar.blocks[z].name, "/usr/fonts/", tar.blocks[z].contents);
-        }
-        else
-        {
+        } else {
             create_file(tar.blocks[z].name, "/usr/", tar.blocks[z].contents);
         }
     }
@@ -217,9 +204,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     Graphic::blit_changes();
 
-    while (true)
-    {
-    }
+    while (true) {}
 
 #else
 
@@ -230,26 +215,16 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     init_vga();
     init_all_devs();
 
-    for (int z = 0; z < tar.block_count; z++)
-    {
-        if (endswith(tar.blocks[z].name, ".o"))
-        {
+    for (int z = 0; z < tar.block_count; z++) {
+        if (endswith(tar.blocks[z].name, ".o")) {
             create_file(tar.blocks[z].name, "/bin/", tar.blocks[z].contents);
-        }
-        else if (endswith(tar.blocks[z].name, ".txt"))
-        {
+        } else if (endswith(tar.blocks[z].name, ".txt")) {
             create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
-        }
-        else if (endswith(tar.blocks[z].name, ".r"))
-        {
+        } else if (endswith(tar.blocks[z].name, ".r")) {
             create_file(tar.blocks[z].name, "/usr/scripts/", tar.blocks[z].contents);
-        }
-        else if (endswith(tar.blocks[z].name, ".sfn"))
-        {
+        } else if (endswith(tar.blocks[z].name, ".sfn")) {
             create_file(tar.blocks[z].name, "/usr/fonts/", tar.blocks[z].contents);
-        }
-        else
-        {
+        } else {
             create_file(tar.blocks[z].name, "/usr/", tar.blocks[z].contents);
         }
     }
@@ -279,7 +254,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Net::ARP::send_request(addr);
     */
 
-    //Kernel::CPU::init_tasking();
+    Kernel::CPU::init_tasking();
 
     //PANIC("s");
 

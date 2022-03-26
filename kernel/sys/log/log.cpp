@@ -3,10 +3,8 @@
 #include <sys/serial.h>
 #include <string.h>
 
-namespace log
-{
-    void info(char *data, ...)
-    {
+namespace log {
+    void info(char *data, ...) {
         va_list va;
         auto light_blue = get_color("40", "36");
 
@@ -17,8 +15,7 @@ namespace log
         Kernel::output_serial_char('\n');
     }
 
-    void error(char *data, ...)
-    {
+    void error(char *data, ...) {
         va_list va;
         auto red = get_color("40", "1;31");
 
@@ -29,8 +26,7 @@ namespace log
         Kernel::output_serial_char('\n');
     }
 
-    void warning(char *data, ...)
-    {
+    void warning(char *data, ...) {
         va_list va;
         auto yellow = get_color("40", "1;33");
 
@@ -41,8 +37,7 @@ namespace log
         Kernel::output_serial_char('\n');
     }
 
-    void warn(char *data, ...)
-    {
+    void warn(char *data, ...) {
         va_list va;
         auto yellow = get_color("40", "1;33");
 
@@ -54,11 +49,8 @@ namespace log
     }
 }
 
-namespace Kernel
-{
+namespace Kernel {
 
-void init_logging()
-{
-}
+void init_logging() {}
 
 }

@@ -46,23 +46,21 @@ int floor(int x) {
     }
 }
 
-int round(double x)
-{
+int round(double x) {
     if (x < 0.0)
         return (int)(x - 0.5);
     else
         return (int)(x + 0.5);
 }
 
-int ceil(float num)
-{   int a = num;
+int ceil(float num) {
+    int a = num;
     if ((float)a != num)
         return a+1;
     return a;
 }
 
-int average(int * numbers, int number_size)
-{
+int average(int * numbers, int number_size) {
     int total = 0;
 
     for (int z = 0; z < number_size; z++)

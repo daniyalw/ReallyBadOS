@@ -1,7 +1,6 @@
 #include <exec/argparse.h>
 
-bool there_is_more(char *command, int z)
-{
+bool there_is_more(char *command, int z) {
     for (int b = z; b < len(command); b++)
         if (command[b] != ' ')
             return true;
@@ -9,8 +8,7 @@ bool there_is_more(char *command, int z)
     return false;
 }
 
-args_t parse_args(char *command)
-{
+args_t parse_args(char *command) {
     args_t args;
 
     for (int z = 0; z < 64; z++)
@@ -28,19 +26,15 @@ args_t parse_args(char *command)
         for (int b = 0; b < 64; b++)
             argv[z][b] = 0;
 
-    for (int z = 0; z < length; z++)
-    {
-        if (command[z] == ' ')
-        {
+    for (int z = 0; z < length; z++) {
+        if (command[z] == ' ') {
             if (!found_char) continue;
 
             if (there_is_more(command, z))
                 argc++;
 
             charcount = 0;
-        }
-        else
-        {
+        } else {
             found_char = true;
             argv[argc-1][charcount] = command[z];
             charcount++;

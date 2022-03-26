@@ -1,8 +1,7 @@
 #include <gui/button.h>
 #include <gui/window.h>
 
-void draw_button(button_t button, coords_t coords)
-{
+void draw_button(button_t button, coords_t coords) {
     int x = coords.x + button.coords.x;
     const int orig_x = x;
     x += BUTTON_PIXEL_PADDING;
@@ -22,23 +21,19 @@ void draw_button(button_t button, coords_t coords)
     draw_rect(orig_x, orig_y, limit_x, limit_y, button.bg);
     draw_empty_rect(orig_x, orig_y, button.coords.w, button.coords.h, button.fg);
 
-    for (int z = 0; z < strlen(text); z++)
-    {
+    for (int z = 0; z < strlen(text); z++) {
         draw_char(text[z], x, y, button.fg);
 
         x += font_width;
 
         if (x >= max_w || y >= max_h)
-        {
             return;
-        }
     }
 
     //Graphic::blit_changes();
 }
 
-button_t create_button(auto win, char *text, int x, int y, auto callback, int bg, int fg)
-{
+button_t create_button(auto win, char *text, int x, int y, auto callback, int bg, int fg) {
     button_t button;
 
     button.id = win.widget_count;
@@ -60,7 +55,6 @@ button_t create_button(auto win, char *text, int x, int y, auto callback, int bg
     return button;
 }
 
-button_t create_button(auto win, char *text, int x, int y, auto callback)
-{
+button_t create_button(auto win, char *text, int x, int y, auto callback) {
     return create_button(win, text, x, y, callback, DEFAULT_BG, DEFAULT_FG);
 }

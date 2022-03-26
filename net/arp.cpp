@@ -10,8 +10,7 @@ namespace Net
 namespace ARP
 {
 
-void send_request(uint8_t ip_addr[4])
-{
+void send_request(uint8_t ip_addr[4]) {
     arp_t *arp = (arp_t *)malloc(sizeof(arp_t *));
 
     arp->hardware_type = ARP_ETHERNET;

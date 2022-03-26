@@ -11,4 +11,5 @@ const int task_counter_limit = 500;
 
 static void timer_callback(registers_t regs);
 void timer_wait(int ticks);
-void sleep(int secs);
+void sleep(int ms);
+void sleep_sec(int sec);

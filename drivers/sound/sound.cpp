@@ -33,22 +33,19 @@ static void nosound() {
    Kernel::IO::outb(0x61, tmp);
 }
 
-int sound_input(fs_node_t *node, int offset, int size, char *data)
-{
+int sound_input(fs_node_t *node, int offset, int size, char *data) {
     UNUSED(data);
     // not implemented
     return NULL;
 }
 
-int sound_write(fs_node_t *node, int offset, int size, char *data)
-{
+int sound_write(fs_node_t *node, int offset, int size, char *data) {
     uint32_t frequency = uint_atoi(data);
     play_sound(frequency);
     return 0;
 }
 
-void beep()
-{
+void beep() {
     FILE *file = fopen("/dev/sound", "rw");
     sound_write(file->node, 0, 10, "1000");
 

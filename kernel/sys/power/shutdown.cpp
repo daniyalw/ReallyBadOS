@@ -3,8 +3,7 @@
 
 namespace Kernel {
 
-void shutdown_os()
-{
+void shutdown_os() {
     log::warning("Shutting down...");
 
     // bochs and older qemu

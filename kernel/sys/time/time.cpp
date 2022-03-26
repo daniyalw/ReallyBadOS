@@ -101,8 +101,7 @@ void read_rtc() {
 
 namespace Time {
 
-time_t get_time()
-{
+time_t get_time() {
     time_t t;
     t.sec = second;
     t.min = minute;

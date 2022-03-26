@@ -20,8 +20,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // test
-void draw_char(char character, int x, int y, uint32_t color)
-{
+void draw_char(char character, int x, int y, uint32_t color) {
     int font_x, font_y;
     int count_x = 8;
     int count_y = 12;
@@ -40,8 +39,7 @@ void draw_char(char character, int x, int y, uint32_t color)
     }
 }
 
-void draw_string(char *string, int x, int y, uint32_t color)
-{
+void draw_string(char *string, int x, int y, uint32_t color) {
     int dx = x;
     for (; *string; dx += 8) {
         if (*(string) == '\n') {
@@ -55,8 +53,7 @@ void draw_string(char *string, int x, int y, uint32_t color)
     }
 }
 
-void draw_string(int x, int y, uint color, char *text, ...)
-{
+void draw_string(int x, int y, uint color, char *text, ...) {
     va_list va;
     va_start(va, text);
     char *out = vsprintf("", text, va);

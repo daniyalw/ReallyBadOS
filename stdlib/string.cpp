@@ -4,8 +4,7 @@
 #include <list.h>
 #include <memory.h>
 
-int atoi(char * str)
-{
+int atoi(char * str) {
     int num = 0;
 
     for (int z = 0; str[z] != '\0'; z++)
@@ -14,8 +13,7 @@ int atoi(char * str)
     return num;
 }
 
-uint32_t uint_atoi(char *str)
-{
+uint32_t uint_atoi(char *str) {
     uint32_t num = 0;
 
     for (int z = 0; str[z] != '\0'; z++)
@@ -24,23 +22,16 @@ uint32_t uint_atoi(char *str)
     return num;
 }
 
-void memcpy(void *dest, void * source, int begin, int end)
-{
-    //ASSERT(begin < end);
-
+void memcpy(void *dest, void * source, int begin, int end) {
     for (int z = begin; z < end; z++)
-    {
         ((int *)dest)[z] = ((int *)source)[z];
-    }
 }
 
-extern "C" void memcpy(void *dest, void *source, int length)
-{
+extern "C" void memcpy(void *dest, void *source, int length) {
     memcpy(dest, source, 0, length);
 }
 
-bool contains(char *str, char c)
-{
+bool contains(char *str, char c) {
     for (int z = 0; z < strlen(str); z++)
         if (str[z] == c)
             return true;
@@ -48,8 +39,7 @@ bool contains(char *str, char c)
     return false;
 }
 
-auto tokenize(char *s, char sep, char **buff, int beg_index, int end_index)
-{
+auto tokenize(char *s, char sep, char **buff, int beg_index, int end_index) {
     const int total_length = strlen(s);
     int length = 0;
     int count = 1;
@@ -60,10 +50,8 @@ auto tokenize(char *s, char sep, char **buff, int beg_index, int end_index)
     str[total_length] = NULL;
     strcpy(str, s);
 
-    for (int z = 0; z < total_length; z++)
-    {
-        if (str[z] == sep)
-        {
+    for (int z = 0; z < total_length; z++) {
+        if (str[z] == sep) {
             char *ss = (char *)malloc(strlen(str));
             strcpy(ss, str);
             ss[length] = 0;
@@ -76,8 +64,7 @@ auto tokenize(char *s, char sep, char **buff, int beg_index, int end_index)
 
             count++;
         }
-        else
-        {
+        else {
             length++;
         }
     }
@@ -95,18 +82,15 @@ auto tokenize(char *s, char sep, char **buff, int beg_index, int end_index)
     return count;
 }
 
-int tokenize(char *str, char sep, char **buff)
-{
+int tokenize(char *str, char sep, char **buff) {
     return tokenize(str, sep, buff, 0, 0);
 }
 
-char strgetlast(char *c)
-{
+char strgetlast(char *c) {
     return c[strlen(c)-1];
 }
 
-static void itoa(char *buf, int base, int d)
-{
+static void itoa(char *buf, int base, int d) {
   char *p = buf;
   char *p1, *p2;
   unsigned long ud = d;
@@ -143,18 +127,15 @@ static void itoa(char *buf, int base, int d)
     }
 }
 
-void itoa(int num, char * out)
-{
+void itoa(int num, char * out) {
     itoa(out, 10, num);
 }
 
-void itoa(uint32_t num, char * out)
-{
+void itoa(uint32_t num, char * out) {
     itoa(out, 10, num);
 }
 
-int len(char * str)
-{
+int len(char * str) {
     int count = 0;
 
     while (str[count] != '\0')
@@ -207,18 +188,15 @@ bool charcmp(char str1, char str2) {
 //      append(a, b, dest);
 //
 // dest will be "/abc"
-char * append(char * j1, char * j2, char * dest)
-{
+char * append(char * j1, char * j2, char * dest) {
     int js = 0;
 
-    for (int z = 0; z < len(j1); z++)
-    {
+    for (int z = 0; z < len(j1); z++) {
         dest[js] = j1[z];
         js++;
     }
 
-    for (int z = 0; z < len(j2); z++)
-    {
+    for (int z = 0; z < len(j2); z++) {
         dest[js] = j2[z];
         js++;
     }
@@ -228,44 +206,35 @@ char * append(char * j1, char * j2, char * dest)
     return dest;
 }
 
-char * append_int(char * j1, int num, char * dest)
-{
+char * append_int(char * j1, int num, char * dest) {
     char * textnum;
     itoa(num, textnum);
     return append(j1, textnum, dest);
 }
 
-int vsscanf(char *str, char *fmt, va_list va)
-{
+int vsscanf(char *str, char *fmt, va_list va) {
 	int cz = 0;
 
-	while (*fmt)
-	{
-		if (*fmt == ' ')
-		{
+	while (*fmt) {
+		if (*fmt == ' ') {
 			while (*str && isspace(*str))
 				str++;
-		}
-		else if (*fmt == '%')
-		{
+		} else if (*fmt == '%') {
 			fmt++;
 
-			if (*fmt == 'd')
-			{
+			if (*fmt == 'd') {
 				int z = 0;
 				int negative = 1;
 
 				while (isspace(*str)) str++;
 
                 // see if the first is a minus sign
-				if (*str == '-')
-				{
+				if (*str == '-') {
 					negative = -1;
 					str++;
 				}
 
-				while (*str && *str >= '0' && *str <= '9')
-				{
+				while (*str && *str >= '0' && *str <= '9') {
 					z = z * 10 + *str - '0';
 					str++;
 				}
@@ -273,15 +242,12 @@ int vsscanf(char *str, char *fmt, va_list va)
 				int * out = (int *)va_arg(va, int*);
 				cz++;
 				*out = z * negative;
-			}
-			else if (*fmt == 'u')
-			{
+			} else if (*fmt == 'u') {
 				uint32_t z = 0;
 
 				while (isspace(*str)) str++;
 
-				while (*str && *str >= '0' && *str <= '9')
-				{
+				while (*str && *str >= '0' && *str <= '9') {
 					z = z * 10 + *str - '0';
 					str++;
 				}
@@ -289,17 +255,14 @@ int vsscanf(char *str, char *fmt, va_list va)
 				uint32_t *out = (uint32_t *)va_arg(va, uint32_t*);
 				cz++;
 				*out = z;
-			}
-            else if (*fmt == 's')
-            {
+			} else if (*fmt == 's') {
                 char **out = (char **)va_arg(va, char**);
                 char *s = (char *)&out[0];
                 int sz = 0;
 
                 while (isspace(*str)) str++;
 
-                while (isalpha(*str))
-                {
+                while (isalpha(*str)) {
                     s[sz] = *str;
                     *str++;
                     sz++;
@@ -308,9 +271,7 @@ int vsscanf(char *str, char *fmt, va_list va)
                 s[sz] = 0;
                 cz++;
             }
-		}
-		else
-		{
+		} else {
 			if (*str == *fmt)
 				str++;
 			else
@@ -323,8 +284,7 @@ int vsscanf(char *str, char *fmt, va_list va)
 	return cz;
 }
 
-int sscanf(char *s, char *fmt, ...)
-{
+int sscanf(char *s, char *fmt, ...) {
 	va_list va;
     int out;
 
@@ -335,14 +295,11 @@ int sscanf(char *s, char *fmt, ...)
 	return out;
 }
 
-char *strstr(char *s, char *d)
-{
-	for (int i = 0; s[i]; i++)
-    {
+char *strstr(char *s, char *d) {
+	for (int i = 0; s[i]; i++) {
 		bool found = false;
 
-		for (int j = 0; d[j]; j++)
-        {
+		for (int j = 0; d[j]; j++) {
 			if (!d[j] || s[i + j] == d[j])
 				continue;
 
@@ -357,8 +314,7 @@ char *strstr(char *s, char *d)
 	return NULL;
 }
 
-char *strtok_r(char *s, char *del, char **m)
-{
+char *strtok_r(char *s, char *del, char **m) {
 	char *tok;
 
 	if (s)
@@ -376,13 +332,10 @@ char *strtok_r(char *s, char *del, char **m)
 	while (*p && !strchr(del, *p))
 		p++;
 
-	if (*p)
-    {
+	if (*p) {
 		*p = 0;
 		*m = p + 1;
-	}
-    else
-    {
+	} else {
 		*m = NULL;
 	}
 
@@ -392,14 +345,12 @@ char *strtok_r(char *s, char *del, char **m)
 	return tok;
 }
 
-char *strtok(char *s, char *del)
-{
+char *strtok(char *s, char *del) {
         static char *saved;
         return strtok_r(s, del, &saved);
 }
 
-int tokenize(char * str, char * d, char **buf)
-{
+int tokenize(char * str, char * d, char **buf) {
 	char *p;
 	char *s;
 	int args = 0;
@@ -409,8 +360,7 @@ int tokenize(char * str, char * d, char **buf)
 	if (!p)
         return 0;
 
-	while (p != NULL)
-    {
+	while (p != NULL) {
 		buf[args] = (char *)p;
 		args++;
 		p = strtok_r(NULL, d, &s);
@@ -420,20 +370,16 @@ int tokenize(char * str, char * d, char **buf)
 	return args;
 }
 
-bool startswith(char * words, char * start)
-{
+bool startswith(char * words, char * start) {
     int cl = len(start);
     int length = len(words);
 
-    if (cl > length)
-    {
+    if (cl > length) {
         return false;
     }
 
-    for (int z = 0; z < cl; z++)
-    {
-        if (words[z] != start[z])
-        {
+    for (int z = 0; z < cl; z++) {
+        if (words[z] != start[z]) {
             return false;
         }
     }
@@ -441,12 +387,10 @@ bool startswith(char * words, char * start)
     return true;
 }
 
-bool endswith(char * words, char * end)
-{
+bool endswith(char * words, char * end) {
     int x = 0;
 
-    for (int z = len(words)-len(end); z < len(words); z++)
-    {
+    for (int z = len(words)-len(end); z < len(words); z++) {
         if (words[z] != end[x])
             return false;
 
@@ -456,27 +400,18 @@ bool endswith(char * words, char * end)
     return true;
 }
 
-char * strcpy(char * d, char * s) // destination, source
-{
+char * strcpy(char * d, char * s) {
     while ((*d++ = *s++));
     return d;
 }
 
-char * strcat(char * d, char * s)
-{
+char * strcat(char * d, char * s) {
     strcpy(d + len(d), s);
     return d;
 }
 
-void clears(char d[128])
-{
-    for (int z = 0; z < 128; z++)
-        d[z] = ' ';
-}
-
 // get how many times a value appears in a string
-int gvfs(char * s, char value)
-{
+int gvfs(char * s, char value) {
     int count = 0;
 
     for (int z = 0; z < len(s); z++)
@@ -486,12 +421,10 @@ int gvfs(char * s, char value)
     return count;
 }
 
-char * reverse_string(char * str, int limit, char * out)
-{
+char * reverse_string(char * str, int limit, char * out) {
     int v = 0;
 
-    for (int z = strlen(str) - 1; z >= 0; z--)
-    {
+    for (int z = strlen(str) - 1; z >= 0; z--) {
         if (v >= limit)
             break;
 
@@ -502,12 +435,10 @@ char * reverse_string(char * str, int limit, char * out)
     return out;
 }
 
-char *reverse_string(char *str, char *out)
-{
+char *reverse_string(char *str, char *out) {
     int v = 0;
 
-    for (int z = strlen(str) - 1; z >= 0; z--)
-    {
+    for (int z = strlen(str) - 1; z >= 0; z--) {
         out[v] = str[z];
         v++;
     }
@@ -515,26 +446,22 @@ char *reverse_string(char *str, char *out)
     return out;
 }
 
-char * opposite_split(char * string, char key, int position, char * out)
-{
+char * opposite_split(char * string, char key, int position, char * out) {
     int lcount = 0;
     int v = 0;
 
-    for (int z = len(string); z > 0; z--)
-    {
-        if (string[z] == key)
-        {
-            if (lcount == position)
-            {
+    for (int z = len(string); z > 0; z--) {
+        if (string[z] == key) {
+            if (lcount == position) {
                 out = reverse_string(string, out);
                 return out;
             }
+
             lcount++;
             out = "";
             v = 0;
         }
-        else
-        {
+        else {
             out[v] = string[z];
             v++;
             out[v] = 0;
@@ -548,24 +475,19 @@ char * opposite_split(char * string, char key, int position, char * out)
 // key: the delimeter of the split
 // position: which part of the split string to return
 // out: where to store the return value
-char * split(char * string, char key, int position, char * out)
-{
+char * split(char * string, char key, int position, char * out) {
     int lcount = 0;
     int v = 0;
 
-    for (int z = 0; z < len(string); z++)
-    {
-        if (string[z] == key)
-        {
+    for (int z = 0; z < len(string); z++) {
+        if (string[z] == key) {
             if (lcount == position)
                 return out;
 
             lcount++;
             out = "";
             v = 0;
-        }
-        else
-        {
+        } else {
             out[v] = string[z];
             v++;
             out[v] = 0;
@@ -575,8 +497,7 @@ char * split(char * string, char key, int position, char * out)
     return out;
 }
 
-char * get(char * out, char *text, ...)
-{
+char * get(char * out, char *text, ...) {
     int max = strlen(text);
     va_list va;
 
@@ -587,15 +508,12 @@ char * get(char * out, char *text, ...)
     return out;
 }
 
-char * strip(char * string, char key)
-{
+char * strip(char * string, char key) {
     int sz = 0;
     char buff[len(string)];
 
-    for (int z = 0; z < len(string); z++)
-    {
-        if (string[z] != key)
-        {
+    for (int z = 0; z < len(string); z++) {
+        if (string[z] != key) {
             buff[sz] = string[z];
             sz++;
         }
@@ -638,8 +556,7 @@ void memset(u8 *dest, u8 val, u32 len) {
 void memset(int * dest, int val, int len) {
     int *temp = (int *)dest;
 
-    for (int z = len; z != 0; z--)
-    {
+    for (int z = len; z != 0; z--) {
         *temp++ = val;
     }
 }
@@ -647,8 +564,7 @@ void memset(int * dest, int val, int len) {
 extern "C" void memset(char *dest, char val, u32 len) {
     char *temp = (char *)dest;
 
-    for (; len != 0; len--)
-    {
+    for (; len != 0; len--) {
         *temp++ = val;
     }
 }
@@ -665,51 +581,24 @@ int memcmp(void* buf1, void* buf2, int count) {
     return(*((unsigned char*)buf1) - *((unsigned char*)buf2));
 }
 
-int strlen(char * data)
-{
-    return len(data);
+int strlen(char * data) {
+    int z = 0;
+
+    while (data[z])
+        z++;
+
+    return z;
 }
 
-void swap(int num1, int num2)
-{
+void swap(int num1, int num2) {
     int num3 = num1;
     num1 = num2;
     num2 = num3;
 }
 
-int findMinIndex(int * A, int start, int sz) {
-    int min_index = start;
-
-    ++start;
-
-    while(start < sz) {
-        if(A[start] < A[min_index])
-            min_index = start;
-
-        ++start;
-    }
-
-    return min_index;
-}
-
-void sort(int * A, int sz) {
-    for(int i = 0; i < sz; ++i) {
-        int min_index = findMinIndex(A, i, sz);
-
-        if(i != min_index)
-        {
-            int temp;
-            temp = A[i];
-            A[i] = A[min_index];
-            A[min_index] = temp;
-        }
-    }
-}
-
 namespace std {
 
-string::string(char * data)
-{
+string::string(char * data) {
     length = strlen(data);
     str = (char *)malloc(length + 1);
 
@@ -720,14 +609,12 @@ string::string(char * data)
     strcpy(str, data);
 }
 
-void string::append_string(char * data)
-{
+void string::append_string(char * data) {
     append(str, data, str);
     length += strlen(data);
 }
 
-void string::operator=(char * s)
-{
+void string::operator=(char * s) {
     length = strlen(s);
     str = (char *)realloc(str, length + 1);
 
@@ -738,8 +625,7 @@ void string::operator=(char * s)
     strcpy(str, s);
 }
 
-void string::operator=(string s)
-{
+void string::operator=(string s) {
     length = s.size();
     str = (char *)realloc(str, length + 1);
 
@@ -750,102 +636,88 @@ void string::operator=(string s)
     strcpy(str, s.c_str());
 }
 
-bool string::operator==(string s)
-{
+bool string::operator==(string s) {
     if (strcmp(s.c_str(), this->c_str()) == 0 && s.size() == this->length)
         return true;
 
     return false;
 }
 
-bool string::operator==(char * s)
-{
+bool string::operator==(char * s) {
     if (strcmp(s, this->c_str()) == 0 && strlen(s) == this->length)
         return true;
 
     return false;
 }
 
-bool string::operator!=(string s)
-{
+bool string::operator!=(string s) {
     if (strcmp(s.c_str(), this->c_str()) && s.size() == this->length)
         return false;
 
     return true;
 }
 
-bool string::operator!=(char * s)
-{
+bool string::operator!=(char * s) {
     if (strcmp(s, this->c_str()) && len(s) == this->length)
         return false;
 
     return true;
 }
 
-bool string::operator<(string s)
-{
+bool string::operator<(string s) {
     if (this->size() < s.size())
         return true;
 
     return false;
 }
 
-bool string::operator<(char * s)
-{
+bool string::operator<(char * s) {
     if (this->length < len(s))
         return true;
 
     return false;
 }
 
-bool string::operator>(string s)
-{
+bool string::operator>(string s) {
     if (this->size() > s.size())
         return true;
 
     return false;
 }
 
-bool string::operator>(char * s)
-{
+bool string::operator>(char * s) {
     if (this->length > len(s))
         return true;
 
     return false;
 }
 
-void string::operator+(string s)
-{
+void string::operator+(string s) {
     append(this->c_str(), s.c_str(), this->str);
 }
 
-void string::operator+(char * s)
-{
+void string::operator+(char * s) {
     append(this->str, s, this->str);
 }
 
-char string::operator[](int z)
-{
+char string::operator[](int z) {
     return str[z];
 }
 
-char * string::c_str()
-{
+char * string::c_str() {
     return str;
 }
 
 }
 
-void memset(char * dest, char *val, int len)
-{
+void memset(char * dest, char *val, int len) {
     for (int z = 0; z < len; z++)
     {
         dest[z] = val[z];
     }
 }
 
-char *strdup(char *str)
-{
+char *strdup(char *str) {
     const int length = strlen(str);
     char *text = (char *)malloc(length + 1);
     memset(text, 0, length + 1);

@@ -5,8 +5,7 @@
 #include <sys/log/log.h>
 #include <stdlib/va_list.h>
 
-void panic(char * msg, char * file, char * function, int line, ...)
-{
+void panic(char * msg, char * file, char * function, int line, ...) {
     va_list va;
 
     va_start(va, line);
@@ -24,13 +23,11 @@ void panic(char * msg, char * file, char * function, int line, ...)
     Kernel::halt_system();
 }
 
-void traceback(int limit)
-{
+void traceback(int limit) {
     uint32_t *ebp = (uint32_t *)__builtin_frame_address(0);
     int z = 0;
 
-    for (;;)
-    {
+    for (;;) {
         if (z == limit)
             break;
 

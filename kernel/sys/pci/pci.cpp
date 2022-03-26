@@ -2,8 +2,7 @@
 
 namespace Kernel {
 
-uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
-{
+uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
     uint32_t address;
     uint16_t tmp = 0;
 
@@ -15,36 +14,29 @@ uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
     return tmp;
 }
 
-void write_pci(uint16_t bus, uint16_t device, uint16_t function, uint32_t reg_offset, uint32_t value)
-{
+void write_pci(uint16_t bus, uint16_t device, uint16_t function, uint32_t reg_offset, uint32_t value) {
     uint32_t id = 0x1 << 31 | ((bus & 0xFF) << 16) | ((device & 0x1F) << 11) | ((function & 0x07) << 8) | (reg_offset & 0xFC);
     Kernel::IO::outl(0xCF8, id);
     Kernel::IO::outl(0xCFC, value);
 }
 
-bool device_functions(uint16_t bus, uint16_t device)
-{
+bool device_functions(uint16_t bus, uint16_t device) {
     return read_pci(bus, device, 0, 0x0E) & (1 << 7);
 }
 
-uint16_t get_class_id(uint16_t bus, uint16_t device, uint16_t function)
-{
+uint16_t get_class_id(uint16_t bus, uint16_t device, uint16_t function) {
         uint32_t res = read_pci(bus, device, function, 0xA);
         return res >> 8;
 }
 
-uint16_t get_subclass_id(uint16_t bus, uint16_t device, uint16_t function)
-{
+uint16_t get_subclass_id(uint16_t bus, uint16_t device, uint16_t function) {
         uint32_t res = read_pci(bus, device, function, 0x08);
         return (res & 0xFF);
 }
 
-void scan_buses()
-{
-    for (int bus = 0; bus < 256; bus++)
-    {
-        for (int device = 0; device < 32; device++)
-        {
+void scan_buses() {
+    for (int bus = 0; bus < 256; bus++) {
+        for (int device = 0; device < 32; device++) {
             bool result = device_functions(bus, device);
             int function_count;
 
@@ -53,8 +45,7 @@ void scan_buses()
             else
                 function_count = 1;
 
-            for (int function = 0; function < function_count; function++)
-            {
+            for (int function = 0; function < function_count; function++) {
                 uint16_t res = read_pci(bus, device, function, 0x0);
 
                 if (res == 0xFFFF)
@@ -73,11 +64,10 @@ void scan_buses()
                 pci_device->revisionID = read_pci(bus, device, function, 0x08);
                 pci_device->interfaceID = read_pci(bus, device, function, 0x09);
 
-                for (int z = 0; z < 6; z++)
-                {
+                for (int z = 0; z < 6; z++) {
                     Kernel::addr_reg reg = get_addr_reg(bus, device, function, z);
-                    if (reg.addr && (reg.type == 1))
-                    {
+
+                    if (reg.addr && (reg.type == 1)) {
                         pci_device->base = (uint32_t)reg.addr;
                     }
                 }
@@ -89,10 +79,8 @@ void scan_buses()
     }
 }
 
-void go_through_and_print()
-{
-    for (int z = 0; z < Kernel::device_count; z++)
-    {
+void go_through_and_print() {
+    for (int z = 0; z < Kernel::device_count; z++) {
         printf("classID: %x ::: SubID: %x ::: DeviceID: 0x%x ::: VendorID: 0x%x\n",
                 Kernel::devices[z]->classID,
                 Kernel::devices[z]->subclassID,
@@ -103,8 +91,7 @@ void go_through_and_print()
         if (Kernel::devices[z]->interrupt != NULL)
             printf("\tInterrupt: %d", Kernel::devices[z]->interrupt + 32);
 
-        if (Kernel::devices[z]->interrupt == NULL)
-        {
+        if (Kernel::devices[z]->interrupt == NULL) {
             printf("             ");
             putchar('\t');
         }
@@ -114,8 +101,7 @@ void go_through_and_print()
     printf("\n\nTotal devices: %d\n", Kernel::device_count);
 }
 
-Kernel::PCIDevice * find_device(uint16_t vendor, uint16_t device)
-{
+Kernel::PCIDevice * find_device(uint16_t vendor, uint16_t device) {
     // pci must already be initialized
     for (int z = 0; z < device_count; z++)
         if (Kernel::devices[z]->vendorID == vendor && Kernel::devices[z]->deviceID == device)
@@ -124,8 +110,7 @@ Kernel::PCIDevice * find_device(uint16_t vendor, uint16_t device)
     return NULL;
 }
 
-Kernel::addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, uint16_t bar)
-{
+Kernel::addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, uint16_t bar) {
     Kernel::addr_reg result;
 
     uint32_t barRegister = 0x10 + (bar * sizeof(uint32_t));
@@ -147,10 +132,8 @@ Kernel::addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, 
 
     result.type = (bar_v & 0x1) ? 1 : 0;
 
-    if(result.type == 0)
-    {
-        switch((bar_v >> 1) & 0x3)
-        {
+    if (result.type == 0) {
+        switch ((bar_v >> 1) & 0x3) {
             case 0: // 32 Bit Mode
                 result.addr = (uint32_t)(uintptr_t)(bar_v & ~0xf);
                 result.size = ~(sizeMask & ~0xf) + 1;
@@ -163,9 +146,7 @@ Kernel::addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, 
                 result.addr = ((uint32_t)(uintptr_t)(bar_v & ~0xf) + ((sbar.addr & 0xFFFFFFFF) << 32));
                 break;
         }
-    }
-    else
-    {
+    } else {
         result.addr = (uint32_t)(bar_v & ~0x3);
         result.size = (uint16_t)(~(sizeMask & ~0x3) + 1);
     }

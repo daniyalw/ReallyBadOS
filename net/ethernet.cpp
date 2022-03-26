@@ -11,8 +11,7 @@ namespace Net
 namespace Ethernet
 {
 
-void send_ethernet_packet(uint8_t dest_mac_addr[6], uint16_t type, uint8_t *data)
-{
+void send_ethernet_packet(uint8_t dest_mac_addr[6], uint16_t type, uint8_t *data) {
     ethernet_frame_t *enet = (ethernet_frame_t *)malloc(sizeof(ethernet_frame_t *));
 
     memcpy(enet->dst_mac_addr, dest_mac_addr, 6);

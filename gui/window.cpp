@@ -3,8 +3,7 @@
 #include <gui/coords.h>
 #include <utils.h>
 
-window_t window_create(int x, int y, int bg, char *title, ...)
-{
+window_t window_create(int x, int y, int bg, char *title, ...) {
     va_list va;
     coords_t coords;
     window_t window;
@@ -32,8 +31,7 @@ window_t window_create(int x, int y, int bg, char *title, ...)
     return window;
 }
 
-void win_draw(window_t win)
-{
+void win_draw(window_t win) {
     // title
     Graphic::draw_rect(win.coords.x, win.coords.y - font_height - 2, win.coords.w, font_height + 2, Graphic::rgb(14, 0, 135));
     draw_string(win.name, win.coords.x, win.coords.y - font_height - 1, Graphic::rgb(255, 255, 255));
@@ -46,21 +44,16 @@ void win_draw(window_t win)
             win.widgets[z].draw_widget(win.widgets[z], win.coords);
 }
 
-void add_new_window(window_t win)
-{
+void add_new_window(window_t win) {
     add_window_at_location(0, win.id);
 }
 
-void remove_window_z(int _z)
-{
+void remove_window_z(int _z) {
     for (int b = _z; b < window_count; b++)
-    {
         windows_z[b] = windows_z[b + 1];
-    }
 }
 
-void remove_window_id(int id)
-{
+void remove_window_id(int id) {
     int _z = -1;
 
     for (int z = 0; z < window_count; z++)
@@ -70,18 +63,14 @@ void remove_window_id(int id)
     if (_z != -1) remove_window_z(_z);
 }
 
-void add_window_at_location(int _z, int id)
-{
+void add_window_at_location(int _z, int id) {
     for (int b = window_count; b >= _z; b--)
-    {
         windows_z[b + 1] = windows_z[b];
-    }
 
     windows_z[_z] = id;
 }
 
-void update_window_z(int id, int new_z)
-{
+void update_window_z(int id, int new_z) {
     remove_window_id(id);
     add_window_at_location(new_z, id);
 }

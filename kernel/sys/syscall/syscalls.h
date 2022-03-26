@@ -1,34 +1,17 @@
-extern "C" void call_sys0(int num)
-{
-    void * a;
- asm volatile("int $48" : "=a" (a) : "0" (num));
-}
+#define CALL_SYS0(ret, num) \
+        asm volatile("int $48" : "=a" (ret) : "0" (num));
 
-extern "C" void call_sys1(int num, auto p1)
-{
-    void * a;
- asm volatile("int $48" : "=a" (a) : "0" (num), "b" (p1));
-}
-extern "C" void call_sys2(int num, auto p1, auto p2)
-{
-    void * a;
- asm volatile("int $48" : "=a" (a) : "0" (num), "b" (p1), "c" (p2));
-}
+#define CALL_SYS1(ret, num, p1) \
+ asm volatile("int $48" : "=a" (ret) : "0" (num), "b" (p1));
 
-extern "C" void call_sys3(int num, auto p1, auto p2, auto p3)
-{
-    void * a;
-    asm volatile("int $48" : "=a" (a) : "0" (num), "b" (p1), "c" (p2), "d" (p3));
-}
+#define CALL_SYS2(ret, num, p1, p2) \
+    asm volatile("int $48" : "=a" (ret) : "0" (num), "b" (p1), "c" (p2));
 
-extern "C" void call_sys4(int num, auto p1, auto p2, auto p3, auto p4)
-{
-    void * a;
-    asm volatile("int $48" : "=a" (a) : "0" (num), "b" (p1), "c" (p2), "d" (p3), "S" (p4));
-}
+#define CALL_SYS3(ret, num, p1, p2, p3) \
+    asm volatile("int $48" : "=a" (ret) : "0" (num), "b" (p1), "c" (p2), "d" (p3));
 
-extern "C" void call_sys5(int num, auto p1, auto p2, auto p3, auto p4, auto p5)
-{
-    void * a;
-    asm volatile("int $48" : "=a" (a) : "0" (num), "b" (p1), "c" (p2), "d" (p3), "S" (p4), "D" (p5));
-}
+#define CALL_SYS4(ret, num, p1, p2, p3, p4) \
+    asm volatile("int $48" : "=a" (ret) : "0" (num), "b" (p1), "c" (p2), "d" (p3), "S" (p4));
+
+#define CALL_SYS5(ret, num, p1, p2, p3, p4, p5) \
+    asm volatile("int $48" : "=a" (ret) : "0" (num), "b" (p1), "c" (p2), "d" (p3), "S" (p4), "D" (p5));

@@ -24,17 +24,11 @@ typedef struct widget_t
     auto hide();
 } widget_t;
 
-void default_mouse_click(int win_id, widget_t widget, coords_t coords, bool right, bool left, bool middle)
-{
-}
+void default_mouse_click(int win_id, widget_t widget, coords_t coords, bool right, bool left, bool middle) {}
 
-void default_key_click(widget_t widget, char key)
-{
-}
+void default_key_click(widget_t widget, char key) {}
 
-void default_draw(widget_t widget, coords_t coords)
-{
-}
+void default_draw(widget_t widget, coords_t coords) {}
 
 auto add_widget(auto win, widget_t widget);
 auto widget_save(auto win, widget_t widget);

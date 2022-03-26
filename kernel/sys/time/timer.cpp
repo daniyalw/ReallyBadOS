@@ -30,12 +30,10 @@ void timer_int(registers_t *regs) {
         pm_on = true;
     }
 
-    if (Kernel::CPU::tasking_on)
-    {
+    if (Kernel::CPU::tasking_on) {
         task_counter++;
 
-        if (task_counter == task_counter_limit)
-        {
+        if (task_counter == task_counter_limit) {
             task_counter = 0;
             Kernel::CPU::switch_task(regs, true);
         }
@@ -79,20 +77,18 @@ void init_timer(uint frequency) {
 
 }
 
-void timer_wait(int ticks)
-{
+void timer_wait(int ticks) {
     unsigned long eticks;
 
     eticks = tick + ticks;
     while(tick < eticks);
 }
 
-void sleep(int secs)
-{
-    timer_wait(secs * hz);
+void sleep(int ms) {
+    timer_wait(secs);
 }
 
-void sleep_ms(int ms)
+void sleep_sec(int sec)
 {
-    timer_wait(ms);
+    timer_wait(sec * hz);
 }

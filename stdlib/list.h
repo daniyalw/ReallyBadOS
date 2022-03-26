@@ -12,26 +12,22 @@ namespace std {
         int current;
 
     public:
-        vector()
-        {
+        vector() {
             arr = new T[1];
             capacity = 1;
             current = 0;
         }
 
-        T operator[](int index)
-        {
+        T operator[](int index) {
             return get(index);
         }
 
-        void operator=(auto vec)
-        {
+        void operator=(auto vec) {
             clear();
             merge(vec);
         }
 
-        bool operator==(auto vec)
-        {
+        bool operator==(auto vec) {
             if (size() != vec.size())
                 return false;
 
@@ -42,8 +38,7 @@ namespace std {
             return true;
         }
 
-        bool operator!=(auto vec)
-        {
+        bool operator!=(auto vec) {
             if (vec.size() != size())
                 return true;
 
@@ -56,44 +51,38 @@ namespace std {
             return result;
         }
 
-        bool operator!()
-        {
+        bool operator!() {
             if (current == 0)
                 return true;
 
             return false;
         }
 
-        bool operator<(auto vec)
-        {
+        bool operator<(auto vec) {
             if (size() < vec.size())
                 return true;
 
             return false;
         }
 
-        bool operator>(auto vec)
-        {
+        bool operator>(auto vec) {
             if (size() > vec.size())
                 return true;
 
             return false;
         }
 
-        void merge(auto vec)
-        {
+        void merge(auto vec) {
             for (int z = 0; z < vec.size(); z++)
                 this->push(vec[z]);
         }
 
-        void clear()
-        {
+        void clear() {
             while (current != 0)
                 pop();
         }
 
-        void insert(T data, int pos)
-        {
+        void insert(T data, int pos) {
             if (current == capacity) {
                 T* temp = new T[2 * capacity];
 
@@ -113,16 +102,14 @@ namespace std {
             current++;
         }
 
-        void delete_data(int pos)
-        {
+        void delete_data(int pos) {
             for (int z = pos + 1; z < current; z++)
                 arr[z - 1] = arr[z];
 
             current--;
         }
 
-        void push(T data)
-        {
+        void push(T data) {
             if (current == capacity) {
                 T* temp = new T[2 * capacity];
 
@@ -139,41 +126,35 @@ namespace std {
             current++;
         }
 
-        void replace(T data, int index)
-        {
+        void replace(T data, int index) {
             if (index == capacity)
                 push(data);
             else
                 arr[index] = data;
         }
 
-        void push_back(T data)
-        {
+        void push_back(T data) {
             push(data);
         }
 
-        T get(int index)
-        {
+        T get(int index) {
             if (index < current && index >= 0)
                 return arr[index];
 
             return NULL;
         }
 
-        void pop()
-        {
+        void pop() {
             current--;
         }
 
         // function to get size of the vector
-        int size()
-        {
+        int size() {
             return current;
         }
 
         // function to get capacity of the vector
-        int getcapacity()
-        {
+        int getcapacity() {
             return capacity;
         }
     };

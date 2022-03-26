@@ -6,8 +6,7 @@
 
 namespace Kernel {
 
-void reboot()
-{
+void reboot() {
     log::warning("Rebooting...");
 
     asm("cli");

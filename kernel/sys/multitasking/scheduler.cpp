@@ -5,8 +5,7 @@ namespace Kernel {
 
     namespace CPU {
 
-        pid_t schedule()
-        {
+        pid_t schedule() {
             // simple round-robin scheduler
             Kernel::CPU::current_task++;
 

@@ -6,14 +6,12 @@ namespace Kernel {
 
 namespace CPU {
 
-int idle_task()
-{
+int idle_task() {
     while (true) {}
     return 0;
 }
 
-int efddsfds()
-{
+int efddsfds() {
     int z = 0;
 
     while (true)
@@ -22,25 +20,21 @@ int efddsfds()
     return 0;
 }
 
-int mdasd()
-{
+int mdasd() {
     printf("EEEEEE");
     exit(0);
     return 0;
 }
 
-int yd()
-{
+int yd() {
     printf("Yielding");
-    while (true)
-    {
+    while (true) {
         yield();
     }
     return 0;
 }
 
-int nmc()
-{
+int nmc() {
     int code = wait_retcode(5);
 
     printf("Code: %d\n", code);
@@ -49,40 +43,34 @@ int nmc()
     return 0;
 }
 
-int abc()
-{
+int abc() {
     exit(4);
     return 0;
 }
 
-void block_task(task_t *task)
-{
+void block_task(task_t *task) {
     task->blocked = true;
     tasks[task->pid] = task;
 }
 
-void block_task_id(int taskid)
-{
+void block_task_id(int taskid) {
     ASSERT(taskid >= 0 && taskid < task_count);
     task_t *task = tasks[taskid];
     block_task(task);
 }
 
-void unblock_task(task_t *task)
-{
+void unblock_task(task_t *task) {
     task->blocked = false;
     tasks[task->pid] = task;
 }
 
-void unblock_task_id(int taskid)
-{
+void unblock_task_id(int taskid) {
     ASSERT(taskid >= 0 && taskid < task_count);
     task_t *task = tasks[taskid];
     unblock_task(task);
 }
 
-int find_retcode(pid_t pid)
-{
+int find_retcode(pid_t pid) {
     ASSERT(pid >= 0 && pid < task_count);
 
     if (tasks[pid]->null)
@@ -91,12 +79,10 @@ int find_retcode(pid_t pid)
         return -1;
 }
 
-int wait_retcode(pid_t pid)
-{
+int wait_retcode(pid_t pid) {
     ASSERT(pid >= 0 && pid < task_count);
 
-    while (true)
-    {
+    while (true) {
         if (tasks[pid]->null)
             return tasks[pid]->ret;
         else
@@ -104,8 +90,7 @@ int wait_retcode(pid_t pid)
     }
 }
 
-void exit(int ret)
-{
+void exit(int ret) {
     task_t *task = tasks[current_task];
 
     if (task == NULL)
@@ -120,21 +105,18 @@ void exit(int ret)
     switch_task(NULL, false);
 }
 
-void yield()
-{
+void yield() {
     task_counter = 0;
     switch_task(NULL, true);
 }
 
-pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int argc, char **argv)
-{
+pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int argc, char **argv) {
     // threads aren't allowed to create processes
     if (parent >= 0 && tasks[parent]->is_thread)
         return -1;
 
     // make sure no other process/thread has the same name
-    for (int z = 0; z < task_count; z++)
-    {
+    for (int z = 0; z < task_count; z++) {
         if (tasks[z]->null)
             continue;
 
@@ -164,8 +146,7 @@ pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int ar
 
     uint32_t stack_addr = allocate_stack(); // allocate 4K for the stack
 
-    if (!stack_addr)
-    {
+    if (!stack_addr) {
         free(task);
         return -1;
     }
@@ -197,47 +178,33 @@ pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int ar
     return task->pid;
 }
 
-pid_t create_process_file(FILE *file, int argc, char **argv)
-{
+pid_t create_process_file(FILE *file, int argc, char **argv) {
     if (argc <= 0)
         return -1;
 
-    if (file != NULL)
-    {
+    if (file != NULL) {
         auto header = load_elf_memory((uint8_t *)file->node->contents);
         return create_process(argv[0], header->e_entry, false, -1, argc, argv);
-    }
-    else
-    {
+    } else {
         return -1;
     }
 }
 
-pid_t create_process_filename(char *path, int argc, char **argv)
-{
+pid_t create_process_filename(char *path, int argc, char **argv) {
     if (argc <= 0)
         return -1;
 
     FILE *file = fopen(path, "r");
+    int ret = create_process_file(file, argc, argv);
 
-    if (file != NULL)
-    {
-        auto header = load_elf_memory((uint8_t *)file->node->contents);
-        return create_process(argv[0], header->e_entry, false, -1, argc, argv);
-    }
-    else
-    {
-        return -1;
-    }
+    return ret;
 }
 
-pid_t create_process(char *name, uint32_t begin)
-{
+pid_t create_process(char *name, uint32_t begin) {
     return create_process(name, begin, false, -1, 0, NULL);
 }
 
-void load_new_task(task_t *task)
-{
+void load_new_task(task_t *task) {
     uint32_t esp, eip, ebp;
     esp = task->esp;
     eip = task->eip;
@@ -246,18 +213,15 @@ void load_new_task(task_t *task)
     perform_task_switch(eip, ebp, esp);
 }
 
-uint32_t allocate_stack()
-{
+uint32_t allocate_stack() {
     return malloc(4 * 1024);
 }
 
 // this is useful since passing argv via stack doesn't work
-void wrapper()
-{
+void wrapper() {
     task_t *task = tasks[current_task];
 
-    if (task == NULL)
-    {
+    if (task == NULL || task->null || task->blocked) {
         exit(1);
     }
 
@@ -272,8 +236,7 @@ void wrapper()
     exit(ret);
 }
 
-void switch_task(registers_t *regs, bool save)
-{
+void switch_task(registers_t *regs, bool save) {
     uint32_t esp, ebp;
     asm volatile ("mov %%esp, %0" : "=r" (esp)); // save the stack
 	asm volatile ("mov %%ebp, %0" : "=r" (ebp)); // save the ebp
@@ -284,8 +247,7 @@ void switch_task(registers_t *regs, bool save)
 
     task_t *current = tasks[current_task];
 
-    if (save)
-    {
+    if (save) {
         current->eip = eip;
         current->esp = esp;
         current->ebp = ebp;
@@ -297,28 +259,28 @@ void switch_task(registers_t *regs, bool save)
 
     task_t *load = tasks[current_task];
 #ifdef DEBUG
-    log::warning("New task load: %s (type %s, parent %d, pid %d)\nNew task eip: 0x%x\n",
+    log::warning("New task load: %s (type %s, parent %d, pid %d)\nNew task eip: 0x%x\nNew task start: 0x%x",
     load->name,
     (char *)(load->is_thread ? "thread" : "process"),
     load->parent,
     load->pid,
-    load->eip);
+    load->eip,
+    load->start);
 #endif
     load_new_task(load);
 }
 
-int adddd()
-{
+int adddd() {
     printf("Exiting..");
     return 5;
 }
 
-void init_tasking()
-{
+void init_tasking() {
     create_process("idle", (uint32_t)&idle_task);
 
     char *argv[] = {"echo", "hello from echo"};
-    create_process_filename("/bin/echo.o", 2, argv); // run an application
+    int ret = create_process_filename("/bin/echo.o", 2, argv); // run an application
+    printf("Ret while creating proes: %d\n", ret);
     Kernel::CPU::create_thread("ddd", (uint32_t)&adddd, 0);
 
     tasking_on = true;

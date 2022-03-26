@@ -5,6 +5,11 @@ QEMU_FLAGS = -soundhw pcspk -m 1G -serial stdio -rtc base=localtime -drive forma
 			 -accel tcg -net nic,model=rtl8139 -net user -boot d -device bochs-display -device virtio-serial-pci
 OUT = reallybados-x86_32.iso
 QEMU = qemu-system-x86_64
+ARCH = i686-elf
+
+AS = ${ARCH}-as
+GCC = ${ARCH}-g++
+NM = ${ARCH}-nm
 
 all:
 	make gdt
@@ -23,7 +28,7 @@ run:
 	${QEMU} -cdrom reallybados-x86_32.iso ${QEMU_FLAGS}
 
 bootloader:
-	i686-elf-as -o built/loader.o ${boot}
+	${AS} -o built/loader.o ${boot}
 
 gdt:
 	nasm -f elf32 -o built/gdt.o kernel/sys/descriptors/gdt.asm
@@ -35,11 +40,11 @@ jmp:
 	nasm -f elf32 kernel/jmp.asm -o built/jmp.o
 
 map:
-	nm -C -n isodir/boot/main.o > initrd/kernel.map
+	${NM} -C -n built/main.o > initrd/kernel.map
 
 tasking:
 	nasm -f elf32 kernel/sys/multitasking/switch.asm -o built/switch.o
-	i686-elf-as kernel/sys/multitasking/eip.asm -o built/eip.o
+	${AS} kernel/sys/multitasking/eip.asm -o built/eip.o
 
 tss:
 	nasm -f elf32 kernel/sys/descriptors/tss.asm -o built/tss.o
@@ -62,7 +67,7 @@ user:
 
 textmode:
 	make bootloader
-	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o built/switch.o built/eip.o -o built/main.o -T linker.ld
+	${GCC} ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o built/switch.o built/eip.o -o built/main.o -T linker.ld
 
 clean:
 	rm *.iso
@@ -80,8 +85,8 @@ iso:
 
 # graphics
 graphics:
-	i686-elf-as -o built/loader.o boot/graphics_boot.asm
-	i686-elf-g++ ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
+	${AS} -o built/loader.o boot/graphics_boot.asm
+	${GCC} ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
 	cp built/main.o isodir/boot/main.o
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o ${OUT} isodir

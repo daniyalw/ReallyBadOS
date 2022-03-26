@@ -1,8 +1,7 @@
 #include <gui/label.h>
 #include <gui/window.h>
 
-void draw_label(widget_t label, coords_t coords)
-{
+void draw_label(widget_t label, coords_t coords) {
     int x = coords.x + label.coords.x;
     const int orig_x = x;
     int y = coords.y + label.coords.y;
@@ -20,14 +19,12 @@ void draw_label(widget_t label, coords_t coords)
 
     draw_rect(x, y, limit_x, limit_y, label.bg);
 
-    for (int z = 0; z < strlen(text); z++)
-    {
+    for (int z = 0; z < strlen(text); z++) {
         draw_char(text[z], x, y, label.fg);
 
         x += font_width;
 
-        if (x >= max_w || y >= max_h)
-        {
+        if (x >= max_w || y >= max_h) {
             if (wrap[0]) return;
 
             y += font_height + 1;
@@ -38,8 +35,7 @@ void draw_label(widget_t label, coords_t coords)
 
 // if wrap is 1, wrap is true
 // else no wrap
-label_t create_label(auto win, char *text, int x, int y, int wrap, int bg, int fg)
-{
+label_t create_label(auto win, char *text, int x, int y, int wrap, int bg, int fg) {
     log::warning("Part A");
 
     label_t label;
@@ -78,7 +74,6 @@ label_t create_label(auto win, char *text, int x, int y, int wrap, int bg, int f
     return label;
 }
 
-label_t create_label(auto win, char *text, int x, int y, int wrap)
-{
+label_t create_label(auto win, char *text, int x, int y, int wrap) {
     return create_label(win, text, x, y, wrap, DEFAULT_BG, DEFAULT_FG);
 }

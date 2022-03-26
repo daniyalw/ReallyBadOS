@@ -17,8 +17,7 @@
 using namespace std;
 using namespace Time;
 
-void print_both(char *text, ...)
-{
+void print_both(char *text, ...) {
     va_list va;
 
     va_start(va, text);
@@ -30,14 +29,12 @@ void print_both(char *text, ...)
     va_end(va);
 }
 
-void putchar_both(char text, ...)
-{
+void putchar_both(char text, ...) {
     putchar(text);
     Kernel::output_serial_char(text);
 }
 
-bool check_name(char * name, char * check_against)
-{
+bool check_name(char * name, char * check_against) {
     if (!startswith(name, check_against))
         return false;
 
@@ -53,18 +50,15 @@ bool check_name(char * name, char * check_against)
     return true;
 }
 
-int run_command(char * command)
-{
+int run_command(char * command) {
     args_t args = parse_args(command);
     char *executable = args.argv[0];
     char *fname;
     bool is_exec_slash = false;
 
-    if (startswith(executable, "/") && endswith(executable, "o"))
-    {
+    if (startswith(executable, "/") && endswith(executable, "o")) {
         is_exec_slash = true;
-    }
-    {
+    } else {
         fname = get("", "/bin/%s.o", executable);
     }
 
@@ -75,16 +69,14 @@ int run_command(char * command)
     else
         file = fopen(fname, "r");
 
-    if (file == NULL)
-    {
+    if (file == NULL) {
         fclose(file);
 
         // if we fail, try searching the usr folder
         fname = get("", "/usr/bin/%s.o", executable, executable);
         file = fopen(fname, "r");
 
-        if (file == NULL)
-        {
+        if (file == NULL) {
             printf("Error: command not found: %s\n", args.argv[0]);
             return 1;
         }
@@ -97,9 +89,7 @@ int run_command(char * command)
     char *argv[args.argc];
 
     for (int z = 0; z < args.argc; z++)
-    {
         argv[z] = args.argv[z];
-    }
 
     int ret = load_app_from_file(file, args.argc, argv);
 
@@ -108,22 +98,18 @@ int run_command(char * command)
     return 0;
 }
 
-int execute_script(char *text)
-{
+int execute_script(char *text) {
     const int length = strlen(text);
     char * command = (char *)malloc(length);
     for (int z = 0; z < length; z++) command[z] = 0;
     int sz = 0;
 
-    for (int z = 0; z < length; z++)
-    {
-        if (text[z] == '\n')
-        {
+    for (int z = 0; z < length; z++) {
+        if (text[z] == '\n') {
             if (strisempty(command)) continue;
             int ret = run_command(command);
 
-            if (ret)
-            {
+            if (ret) {
                 printf("Error: r: application exited with return code 1\n");
                 return 1;
             }
@@ -134,9 +120,7 @@ int execute_script(char *text)
                 command[b] = 0;
 
             sz = 0;
-        }
-        else
-        {
+        } else {
             command[sz] = text[z];
             sz++;
             command[sz] = 0;
@@ -146,27 +130,21 @@ int execute_script(char *text)
     return 0;
 }
 
-void shell_quit()
-{
+void shell_quit() {
     putchar('\n');
     printf("Exited application\n");
     log::info("User exited application using Ctrl+C");
     shell();
 }
 
-void shell()
-{
-    while (true)
-    {
-        if (current_display_len != 0 && current_display_len != 1)
-        {
+void shell() {
+    while (true) {
+        if (current_display_len != 0 && current_display_len != 1) {
 #ifdef DEBUG
             log::info("/%s/> ", current_display);
 #endif
             printf("/%s/> ", current_display);
-        }
-        else
-        {
+        } else {
 #ifdef DEBUG
             log::info("/> ");
 #endif
@@ -175,8 +153,7 @@ void shell()
 
         char * command = scanf();
 
-        if (strisempty(command) || command == "")
-        {
+        if (strisempty(command) || command == "") {
 #ifdef DEBUG
             log::info("String is NULL.");
 #endif
@@ -188,8 +165,7 @@ void shell()
         log::info(command);
 #endif
 
-        if (check_name(command, "exec"))
-        {
+        if (check_name(command, "exec")) {
             printf("Warning: %s\n", "executable not properly working...\n");
             printf("Do you wish to continue? [y/n] ");
 
@@ -200,9 +176,7 @@ void shell()
 
             if (res != 'y')
                 continue;
-        }
-        else if (check_name(command, "exit"))
-        {
+        } else if (check_name(command, "exit")) {
             printf("Exiting...\n");
             break;
         }
@@ -222,11 +196,7 @@ void shell()
     char result = getch();
 
     if (result == 'y')
-    {
         Kernel::shutdown_os();
-    }
     else
-    {
         printf("\nWelp, now you're stuck. And I don't care");
-    }
 }

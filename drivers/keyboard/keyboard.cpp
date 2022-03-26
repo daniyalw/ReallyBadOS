@@ -5,91 +5,70 @@
 #include "keys.cpp"
 #include <gui/gui.h>
 
-bool keyboard_lock()
-{
-    if (!keyboard_locked)
-    {
+bool keyboard_lock() {
+    if (!keyboard_locked) {
         keyboard_locked = true;
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
 
-bool keyboard_unlock()
-{
-    if (keyboard_locked)
-    {
+bool keyboard_unlock() {
+    if (keyboard_locked) {
         keyboard_locked = false;
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
 
-bool is_keyboard_locked()
-{
+bool is_keyboard_locked() {
     return keyboard_locked;
 }
 
-int get_buffer_size()
-{
+int get_buffer_size() {
     return buffer_size;
 }
 
-void edit_buffer_size(int change)
-{
+void edit_buffer_size(int change) {
     buffer_size += change;
 }
 
-static void scan_key(registers_t *regs)
-{
+static void scan_key(registers_t *regs) {
     current_key = Kernel::IO::inb(KEYBOARD_CODE);
     get_key(current_key);
 
     return;
 }
 
-void get_key(unsigned char code)
-{
+void get_key(unsigned char code) {
     char key;
 
-    if (code == 0)
-    {
+    if (code == 0) {
         returned = "";
         return;
     }
 
     int index = -1;
 
-    for (int z = 0; z < keycode_length; z++)
-    {
-        if (keycodes[z] == code)
-        {
+    for (int z = 0; z < keycode_length; z++) {
+        if (keycodes[z] == code) {
             index = z;
             break;
         }
     }
 
-    if (index == -1)
-    {
-        for (int z = 0; z < shift_code_length; z++)
-        {
-            if (code == shifted_codes[z])
-            {
+    if (index == -1) {
+        for (int z = 0; z < shift_code_length; z++) {
+            if (code == shifted_codes[z]) {
                 shifted = !shifted;
                 key = 0;
                 break;
             }
         }
         return;
-    }
-    else
-    {
+    } else {
         if (shifted)
             key = letters_upper[index];
         else

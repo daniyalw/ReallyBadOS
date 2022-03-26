@@ -14,8 +14,7 @@ uint16_t to_short(uint16_t sint) {
     return (b1 << 8) | (b2);
 }
 
-uint8_t *get_src_mac(uint8_t mac_addr[6])
-{
+uint8_t *get_src_mac(uint8_t mac_addr[6]) {
     memcpy(mac_addr, rtl8139::mac_addr, 6);
 
     return (uint8_t *)mac_addr;

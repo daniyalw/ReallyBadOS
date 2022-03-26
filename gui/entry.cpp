@@ -1,7 +1,6 @@
 #include <gui/entry.h>
 
-void handle_entry_key(entry_t entry, char key)
-{
+void handle_entry_key(entry_t entry, char key) {
     char *keys = (char *)entry.data[0];
     int *count = (int *)entry.extra[0];
 
@@ -41,8 +40,7 @@ void handle_entry_key(entry_t entry, char key)
     Graphic::blit_changes();
 }
 
-void draw_entry(entry_t entry, coords_t coords)
-{
+void draw_entry(entry_t entry, coords_t coords) {
     int x = coords.x + entry.coords.x;
     int y = coords.y + entry.coords.y;
     int max_w = coords.x + coords.w;
@@ -63,21 +61,17 @@ void draw_entry(entry_t entry, coords_t coords)
     if (x >= max_w || y >= max_h)
         return;
 
-    for (int z = 0; z < arr[0]; z++)
-    {
+    for (int z = 0; z < arr[0]; z++) {
         draw_char(keys_entered[z], x, y, entry.fg);
 
         x += font_width;
 
         if (x >= max_w || y >= max_h)
-        {
             return;
-        }
     }
 }
 
-entry_t create_entry(auto win, int x, int y, int bg, int fg)
-{
+entry_t create_entry(auto win, int x, int y, int bg, int fg) {
     entry_t entry;
     int arr[] = {0}; // keeps track of how many keys entered
     char keys[] = {0}; // keeps the keys entered
@@ -102,7 +96,6 @@ entry_t create_entry(auto win, int x, int y, int bg, int fg)
     return entry;
 }
 
-entry_t create_entry(auto win, int x, int y)
-{
+entry_t create_entry(auto win, int x, int y) {
     return create_entry(win, x, y, DEFAULT_BG, DEFAULT_FG);
 }

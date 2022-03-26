@@ -1,7 +1,6 @@
 #include <kernel/kernel.h>
 
-void switch_to_user_mode()
-{
+void switch_to_user_mode() {
    asm volatile("  \
      cli; \
      mov $0x23, %ax; \

@@ -62,8 +62,7 @@ void ata_write_one(uint32_t LBA, uint8_t *bytes) {
     }
 }
 
-void ata_irq_handler(registers_t *regs)
-{
+void ata_irq_handler(registers_t *regs) {
     // just so we don't get an unknown interrupt error
 }
 
@@ -76,8 +75,7 @@ void ata_write(uint32_t LBA, uint8_t sector_count, uint8_t *bytes) {
     }
 }
 
-int fs_ata_write(fs_node_t *node, int offset, int size, char * str)
-{
+int fs_ata_write(fs_node_t *node, int offset, int size, char * str) {
     if (size < 512)
         ata_write_one(offset, (uint8_t *)str);
     else
@@ -86,8 +84,7 @@ int fs_ata_write(fs_node_t *node, int offset, int size, char * str)
     return 0;
 }
 
-int fs_ata_read(fs_node_t *node, int offset, int size, char * num)
-{
+int fs_ata_read(fs_node_t *node, int offset, int size, char * num) {
     char *data = (char *)malloc(size);
     uint8_t *bytes;
 
@@ -102,21 +99,17 @@ int fs_ata_read(fs_node_t *node, int offset, int size, char * num)
     return 0;
 }
 
-void select_drive(uint8_t drive)
-{
+void select_drive(uint8_t drive) {
     Kernel::IO::outb(0x1F6, drive);
 }
 
-char *model(char *str, uint16_t *id_data)
-{
-    for (int i = 0; i < 40; i += 2)
-    {
+char *model(char *str, uint16_t *id_data) {
+    for (int i = 0; i < 40; i += 2) {
         str[i] = id_data[OFFSET_MODEL + i + 1];
         str[i + 1] = id_data[OFFSET_MODEL + i];
     }
 
-    for (int i = 39; i >= 0; i--)
-    {
+    for (int i = 39; i >= 0; i--) {
         if (!isspace(str[i]))
             break;
 
@@ -126,8 +119,7 @@ char *model(char *str, uint16_t *id_data)
     return str;
 }
 
-uint16_t * ata_send_identify(uint16_t *bytes)
-{
+uint16_t * ata_send_identify(uint16_t *bytes) {
     // check the kind of drive
     uint8_t abc = Kernel::IO::inb(0x1F5);
     bool non_packet = false;
@@ -188,8 +180,7 @@ uint16_t * ata_send_identify(uint16_t *bytes)
     }
 }
 
-uint32_t total_sectors()
-{
+uint32_t total_sectors() {
     uint16_t *bytes;
     uint32_t sectors;
 
@@ -199,8 +190,7 @@ uint32_t total_sectors()
     return sectors;
 }
 
-uint32_t total_bytes()
-{
+uint32_t total_bytes() {
     return total_sectors() * 512;
 }
 
@@ -218,14 +208,12 @@ FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
 }
 */
 
-uint16_t *ata_init(uint16_t *bytes)
-{
+uint16_t *ata_init(uint16_t *bytes) {
     Kernel::CPU::register_interrupt_handler(32 + 14, ata_irq_handler);
 
     bytes = ata_send_identify(bytes);
 
-    if (bytes[0] != -1)
-    {
+    if (bytes[0] != -1) {
         Disk *disk = new Disk();
 
         disk->total_sectors = total_sectors;
@@ -233,9 +221,7 @@ uint16_t *ata_init(uint16_t *bytes)
         disk->write = ata_write_one;
 
         load_disk(disk);
-    }
-    else
-    {
+    } else {
         log::error("ata: bytes are null");
     }
 
