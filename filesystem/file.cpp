@@ -1,5 +1,6 @@
 #include "file.h"
 #include "node.h"
+#include <errno.h>
 
 int create_file(char *name, char *path, int permission) {
     fs_node_t *node = create_node(name, path, FS_FILE, permission);
@@ -61,11 +62,15 @@ int kcreate_file(char *name, char *path, __read read, __write write) {
 FILE *fopen(char *path, char *mode, int permission) {
     fs_node_t *node = find_node(path);
 
-    if (node == NULL)
+    if (node == NULL) {
+        errno = ENOENT;
         return NULL;
+    }
 
-    if (node->permission < permission)
+    if (node->permission < permission) {
+        errno  = EPERM;
         return NULL;
+    }
 
     FILE *file = new FILE();
 

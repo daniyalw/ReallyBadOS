@@ -85,7 +85,7 @@ void timer_wait(int ticks) {
 }
 
 void sleep(int ms) {
-    timer_wait(secs);
+    timer_wait(ms);
 }
 
 void sleep_sec(int sec)

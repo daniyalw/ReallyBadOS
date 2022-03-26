@@ -249,3 +249,5 @@ char *error_strings[] = {
 	"Streams pipe error",
 	"Operation would block",
 };
+
+int errno = 0;
