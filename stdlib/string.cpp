@@ -39,51 +39,40 @@ bool contains(char *str, char c) {
     return false;
 }
 
-auto tokenize(char *s, char sep, char **buff, int beg_index, int end_index) {
-    const int total_length = strlen(s);
-    int length = 0;
-    int count = 1;
-    char *str = (char *)malloc(total_length);
-    uint32_t orig_addr = (uint32_t)&str;
+int tokenize(char *s, char sep, char **buff) {
+    int bufsize = 100;
+    int off = 0;
+    int bz = 0;
 
-    str[total_length] = sep;
-    str[total_length] = NULL;
-    strcpy(str, s);
-
-    for (int z = 0; z < total_length; z++) {
-        if (str[z] == sep) {
-            char *ss = (char *)malloc(strlen(str));
-            strcpy(ss, str);
-            ss[length] = 0;
-            str = (char *)&str[length + 1];
-            length = 0;
-
-            buff[count-1] = ss;
-
-            free(ss);
-
-            count++;
-        }
-        else {
-            length++;
-        }
+    if (s[strlen(s) - 1] != sep) {
+        s[strlen(s)] = sep;
     }
 
-    char *ss = (char *)malloc(strlen(str));
-    strcpy(ss, str);
+    char *buf = (char *)malloc(bufsize);
+    memset(buf, 0, bufsize);
 
-    ss = (char *)&ss[beg_index];
-    ss[strlen(ss)-end_index] = 0;
+    for (int z = 0; z < strlen(s); z++) {
+        if (s[z] == sep && buf) {
+            buff[off] = buf;
 
-    buff[count-1] = ss;
+            // reset
+            bufsize = 100;
+            buf = (char *)malloc(bufsize);
+            memset(buf, 0, bufsize);
 
-    free(ss);
+            off++;
+            bz = 0;
 
-    return count;
-}
+            continue;
+        } else if (s[z] == sep) {
+            continue;
+        }
 
-int tokenize(char *str, char sep, char **buff) {
-    return tokenize(str, sep, buff, 0, 0);
+        buf[bz] = s[z];
+        bz++;
+    }
+
+    return off;
 }
 
 char strgetlast(char *c) {
