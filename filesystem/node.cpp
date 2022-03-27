@@ -23,6 +23,15 @@ fs_node_t *find_node_by_name(char *path) {
     for (int z = 1; z < ret; z++) {
         bool found = false;
 
+        if (strcmp(buf[z], PATH_UP) == 0) {
+            node = nodes[node->parent_id];
+            continue;
+        } else if (strcmp(buf[z], PATH_DOT) == 0) {
+            continue;
+        } else if (strcmp(buf[z], PATH_SEP) == 0) {
+            continue;
+        }
+
         if (node != NULL) {
             for (int c = 0; c < node->children_count; c++) {
                 fs_node_t *_n = nodes[node->children[c]];
