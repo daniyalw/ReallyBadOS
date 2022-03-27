@@ -77,3 +77,8 @@ void init_fs();
 
 int parse_path_file(char *path);
 int parse_path_file_parent(char *path);
+
+fs_node_t *find_node_fixed(char *path);
+char *find_fixed(char *path);
+fs_node_t *absolute_path_node(char *cwd, char *fmt);
+char *absolute_path(char *cwd, char *fmt);

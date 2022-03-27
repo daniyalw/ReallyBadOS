@@ -1,4 +1,5 @@
 #include <filesystem/node.h>
+#include <errno.h>
 
 fs_node_t *find_node(char *path) {
     for (int z = 0; z < node_count; z++) {
@@ -15,9 +16,9 @@ fs_node_t *find_node(int fd) {
     return nodes[fd];
 }
 
-fs_node_t *find_node_by_name(char *path) {
+fs_node_t *find_node_fixed(char *path) {
     char **buf;
-    fs_node_t *node = NULL;
+    fs_node_t *node = nodes[0]; // root dir
     int ret = tokenize(path, '/', buf);
 
     for (int z = 1; z < ret; z++) {
@@ -25,39 +26,63 @@ fs_node_t *find_node_by_name(char *path) {
 
         if (strcmp(buf[z], PATH_UP) == 0) {
             node = nodes[node->parent_id];
+            free(buf[z]);
             continue;
         } else if (strcmp(buf[z], PATH_DOT) == 0) {
+            free(buf[z]);
             continue;
         } else if (strcmp(buf[z], PATH_SEP) == 0) {
+            free(buf[z]);
             continue;
         }
 
-        if (node != NULL) {
-            for (int c = 0; c < node->children_count; c++) {
-                fs_node_t *_n = nodes[node->children[c]];
+        for (int c = 0; c < node->children_count; c++) {
+            fs_node_t *_n = nodes[node->children[c]];
 
-                if (strcmp(_n->name, buf[z]) == 0) {
-                    node = _n;
-                    found = true;
-                    break;
-                }
-            }
-        } else {
-            for (int c = 0; c < node_count; c++) {
-                if (strcmp(nodes[c]->name, buf[z]) == 0) {
-                    node = nodes[c];
-                    found = true;
-                    break;
-                }
+            if (strcmp(_n->name, buf[z]) == 0) {
+                node = _n;
+                found = true;
+                break;
             }
         }
 
         if (!found) {
+            free(buf[z]);
+            errno = ENOENT;
             return NULL;
         }
+
+        free(buf[z]);
     }
 
     return node;
+}
+
+char *find_fixed(char *path) {
+    fs_node_t *node = find_node_fixed(path);
+    return node->path;
+}
+
+fs_node_t *absolute_path_node(char *cwd, char *fmt) {
+    char *path = (char *)malloc(100);
+    memset(path, 0, 100);
+
+    if (cwd[strlen(cwd) - 1] != '/') {
+        // obviously require the current working directory to be a directory
+        errno = ENOTDIR;
+        return NULL;
+    }
+
+    if (fmt[0] != '/')
+        append(cwd, fmt, path);
+    else
+        strcpy(path, fmt);
+
+    return find_node_fixed(path);
+}
+
+char *absolute_path(char *cwd, char *fmt) {
+    return absolute_path_node(cwd, fmt)->path;
 }
 
 fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, __mkdir mkdir, int permission) {

@@ -370,134 +370,137 @@
 0010b2d0 T get_highest_value(int*, int)
 0010b330 T find_node(char*)
 0010b390 T find_node(int)
-0010b3a0 T find_node_by_name(char*)
-0010b580 T mount_fs(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*), int (*)(fs_node_t*, char*), int)
-0010b640 T create_node(char*, char*, int, int, bool)
-0010b900 T create_node_ignore(char*, char*, int, int)
-0010b930 T create_node(char*, char*, int, int)
-0010b960 T close_node(fs_node_t*)
-0010b980 T write_node(fs_node_t*, int, int, char*)
-0010ba90 T read_node(fs_node_t*, int, int, char*)
-0010bb00 T list_dir(fs_node_t*, int)
-0010bbe0 T list_dir(char*)
-0010bc30 T create_root()
-0010bd20 T init_fs()
-0010bdf0 T create_file(char*, char*, int)
-0010be20 T create_file(char*, char*)
-0010be40 T create_file(char*, char*, char*, int)
-0010beb0 T create_file(char*, char*, char*)
-0010bed0 T kcreate_file(char*, char*, char*)
-0010bef0 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int)
-0010bf50 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
-0010bf80 T kcreate_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
-0010bfb0 T fopen(char*, char*, int)
-0010c060 T fopen(char*, char*)
-0010c080 T kopen(char*, char*)
-0010c0a0 T fclose(FILE*)
-0010c0d0 T fwrite(FILE*, int, int, char*)
-0010c100 T fgetc(FILE*)
-0010c150 T fread(FILE*, int, int, char*)
-0010c1c0 T feof(FILE*)
-0010c1e0 T fgets(char*, int, FILE*)
-0010c200 T fgetpos(FILE*, int*)
-0010c220 T fseek(FILE*, int, int)
-0010c290 T ftell(FILE*)
-0010c2b0 T fsize(FILE*)
-0010c2f0 T rewind(FILE*)
-0010c310 T fsetpos(FILE*, int*)
-0010c330 T fvsscanf(FILE*, char*, char*)
-0010c650 T fscanf(FILE*, char*, ...)
-0010c680 T make_dir(char*, char*, int)
-0010c6b0 T make_dir(char*, char*)
-0010c6d0 T make_dir_user(char*, char*)
-0010c6f0 T kmake_dir(char*, char*)
-0010c710 T opendir(char*)
-0010c770 T readdir(DIR*)
-0010c7d0 T test_write(fs_node_t*, int, int, char*)
-0010c800 T test_read(fs_node_t*, int, int, char*)
-0010c840 T test_mkfile(fs_node_t*)
-0010c870 T test_mkdir(fs_node_t*, char*)
-0010c890 T test_install()
-0010c910 T strerror(int)
-0010c930 T perror(char*)
-0010c960 T Kernel::CPU::create_thread(char*, unsigned int)
-0010c990 T Kernel::CPU::create_thread(char*, unsigned int, int)
-0010c9c0 T Kernel::CPU::create_thread(char*, unsigned int, int, char**)
-0010c9f0 T Kernel::CPU::create_thread(char*, unsigned int, int, int, char**)
-0010ca20 T Kernel::CPU::schedule()
-0010caa0 T kernel_main
-0010cf10 t __static_initialization_and_destruction_0(int, int)
-0010cfa0 t _GLOBAL__sub_I_text_x
-0010cfc0 t isr_common_stub
-0010cfe5 t irq_common_stub
-0010d00a T isr0
-0010d011 T isr1
-0010d018 T isr2
-0010d01f T isr3
-0010d026 T isr4
-0010d02d T isr5
-0010d034 T isr6
-0010d03b T isr7
-0010d045 T isr8
-0010d04d T isr9
-0010d057 T isr10
-0010d05f T isr11
-0010d067 T isr12
-0010d06f T isr13
-0010d077 T isr14
-0010d07f T isr15
-0010d089 T isr16
-0010d093 T isr17
-0010d09d T isr18
-0010d0a7 T isr19
-0010d0b1 T isr20
-0010d0bb T isr21
-0010d0c5 T isr22
-0010d0cf T isr23
-0010d0d9 T isr24
-0010d0e3 T isr25
-0010d0ed T isr26
-0010d0f7 T isr27
-0010d101 T isr28
-0010d10b T isr29
-0010d115 T isr30
-0010d11f T isr31
-0010d129 T irq0
-0010d133 T irq1
-0010d13d T irq2
-0010d147 T irq3
-0010d151 T irq4
-0010d15b T irq5
-0010d165 T irq6
-0010d16f T irq7
-0010d179 T irq8
-0010d183 T irq9
-0010d18d T irq10
-0010d197 T irq11
-0010d1a1 T irq12
-0010d1ab T irq13
-0010d1b5 T irq14
-0010d1bf T irq15
-0010d1c9 T irq16
-0010d1d3 T irq17
-0010d1e0 T gdt_flush
-0010d1fc t gdt_flush.flush_
-0010d200 T flush_tss
-0010d210 T perform_task_switch
-0010d225 T read_eip
-0010d230 W mem_t::mem_t()
-0010d230 W mem_t::mem_t()
-0010d240 W std::string::size()
-0010d250 W Graphic::SetPixel(int, int, int)
-0010d2e0 W Graphic::draw_rect(int, int, int, int, int)
-0010d3a0 W RawTar::file_size()
-0010d3f0 W Tar::Tar()
-0010d3f0 W Tar::Tar()
-0010d410 W fs_node_t::fs_node_t()
-0010d410 W fs_node_t::fs_node_t()
-0010d470 W DIR::DIR()
-0010d470 W DIR::DIR()
-0010d480 W void init_mem<multiboot_info*>(multiboot_info*, unsigned int)
+0010b3a0 T find_node_fixed(char*)
+0010b5b0 T find_fixed(char*)
+0010b5d0 T absolute_path_node(char*, char*)
+0010b680 T absolute_path(char*, char*)
+0010b6a0 T mount_fs(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*), int (*)(fs_node_t*, char*), int)
+0010b760 T create_node(char*, char*, int, int, bool)
+0010ba20 T create_node_ignore(char*, char*, int, int)
+0010ba50 T create_node(char*, char*, int, int)
+0010ba80 T close_node(fs_node_t*)
+0010baa0 T write_node(fs_node_t*, int, int, char*)
+0010bbb0 T read_node(fs_node_t*, int, int, char*)
+0010bc20 T list_dir(fs_node_t*, int)
+0010bd00 T list_dir(char*)
+0010bd50 T create_root()
+0010be40 T init_fs()
+0010bf10 T create_file(char*, char*, int)
+0010bf40 T create_file(char*, char*)
+0010bf60 T create_file(char*, char*, char*, int)
+0010bfd0 T create_file(char*, char*, char*)
+0010bff0 T kcreate_file(char*, char*, char*)
+0010c010 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int)
+0010c070 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
+0010c0a0 T kcreate_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
+0010c0d0 T fopen(char*, char*, int)
+0010c180 T fopen(char*, char*)
+0010c1a0 T kopen(char*, char*)
+0010c1c0 T fclose(FILE*)
+0010c1f0 T fwrite(FILE*, int, int, char*)
+0010c220 T fgetc(FILE*)
+0010c270 T fread(FILE*, int, int, char*)
+0010c2e0 T feof(FILE*)
+0010c300 T fgets(char*, int, FILE*)
+0010c320 T fgetpos(FILE*, int*)
+0010c340 T fseek(FILE*, int, int)
+0010c3b0 T ftell(FILE*)
+0010c3d0 T fsize(FILE*)
+0010c410 T rewind(FILE*)
+0010c430 T fsetpos(FILE*, int*)
+0010c450 T fvsscanf(FILE*, char*, char*)
+0010c770 T fscanf(FILE*, char*, ...)
+0010c7a0 T make_dir(char*, char*, int)
+0010c7d0 T make_dir(char*, char*)
+0010c7f0 T make_dir_user(char*, char*)
+0010c810 T kmake_dir(char*, char*)
+0010c830 T opendir(char*)
+0010c890 T readdir(DIR*)
+0010c8f0 T test_write(fs_node_t*, int, int, char*)
+0010c920 T test_read(fs_node_t*, int, int, char*)
+0010c960 T test_mkfile(fs_node_t*)
+0010c990 T test_mkdir(fs_node_t*, char*)
+0010c9b0 T test_install()
+0010ca30 T strerror(int)
+0010ca50 T perror(char*)
+0010ca80 T Kernel::CPU::create_thread(char*, unsigned int)
+0010cab0 T Kernel::CPU::create_thread(char*, unsigned int, int)
+0010cae0 T Kernel::CPU::create_thread(char*, unsigned int, int, char**)
+0010cb10 T Kernel::CPU::create_thread(char*, unsigned int, int, int, char**)
+0010cb40 T Kernel::CPU::schedule()
+0010cbc0 T kernel_main
+0010d030 t __static_initialization_and_destruction_0(int, int)
+0010d0c0 t _GLOBAL__sub_I_text_x
+0010d0e0 t isr_common_stub
+0010d105 t irq_common_stub
+0010d12a T isr0
+0010d131 T isr1
+0010d138 T isr2
+0010d13f T isr3
+0010d146 T isr4
+0010d14d T isr5
+0010d154 T isr6
+0010d15b T isr7
+0010d165 T isr8
+0010d16d T isr9
+0010d177 T isr10
+0010d17f T isr11
+0010d187 T isr12
+0010d18f T isr13
+0010d197 T isr14
+0010d19f T isr15
+0010d1a9 T isr16
+0010d1b3 T isr17
+0010d1bd T isr18
+0010d1c7 T isr19
+0010d1d1 T isr20
+0010d1db T isr21
+0010d1e5 T isr22
+0010d1ef T isr23
+0010d1f9 T isr24
+0010d203 T isr25
+0010d20d T isr26
+0010d217 T isr27
+0010d221 T isr28
+0010d22b T isr29
+0010d235 T isr30
+0010d23f T isr31
+0010d249 T irq0
+0010d253 T irq1
+0010d25d T irq2
+0010d267 T irq3
+0010d271 T irq4
+0010d27b T irq5
+0010d285 T irq6
+0010d28f T irq7
+0010d299 T irq8
+0010d2a3 T irq9
+0010d2ad T irq10
+0010d2b7 T irq11
+0010d2c1 T irq12
+0010d2cb T irq13
+0010d2d5 T irq14
+0010d2df T irq15
+0010d2e9 T irq16
+0010d2f3 T irq17
+0010d300 T gdt_flush
+0010d31c t gdt_flush.flush_
+0010d320 T flush_tss
+0010d330 T perform_task_switch
+0010d345 T read_eip
+0010d350 W mem_t::mem_t()
+0010d350 W mem_t::mem_t()
+0010d360 W std::string::size()
+0010d370 W Graphic::SetPixel(int, int, int)
+0010d400 W Graphic::draw_rect(int, int, int, int, int)
+0010d4c0 W RawTar::file_size()
+0010d510 W Tar::Tar()
+0010d510 W Tar::Tar()
+0010d530 W fs_node_t::fs_node_t()
+0010d530 W fs_node_t::fs_node_t()
+0010d590 W DIR::DIR()
+0010d590 W DIR::DIR()
+0010d5a0 W void init_mem<multiboot_info*>(multiboot_info*, unsigned int)
 0010e000 r upper_letters
 0010e01c r lower_letters
 0010e036 r System::dev
