@@ -15,79 +15,40 @@ fs_node_t *find_node(int fd) {
     return nodes[fd];
 }
 
-// parse file/dir name and get parent id
-// good for when the file/dir doesn't exist (or is assumed not to)
-int parse_path_file_parent(char *path, char *target) {
+fs_node_t *find_node_by_name(char *path) {
     char **buf;
-    int ret = tokenize(path, PATH_SEP, buf);
-    int b = 0;
+    fs_node_t *node = NULL;
+    int ret = tokenize(path, '/', buf);
 
-    fs_node_t *node;
-    fs_node_t *parent;
-    node = root;
-    parent = root;
+    for (int z = 1; z < ret; z++) {
+        bool found = false;
 
-    target = buf[ret-1];
+        if (node != NULL) {
+            for (int c = 0; c < node->children_count; c++) {
+                fs_node_t *_n = nodes[node->children[c]];
 
-    if ((ret - 1) == 0)
-        return 0; // root id
-
-    for (int z = 0; z < ret - 1; z++) {
-        if (strcmp(buf[z], PATH_UP) == 0) {
-            if (z == 0)
-                continue;
-
-            node = parent;
-            parent = nodes[parent->parent_id];
-        } else if (strcmp(buf[z], PATH_DOT) == 0) {
-            continue;
+                if (strcmp(_n->name, buf[z]) == 0) {
+                    node = _n;
+                    found = true;
+                    break;
+                }
+            }
+        } else {
+            for (int c = 0; c < node_count; c++) {
+                if (strcmp(nodes[c]->name, buf[z]) == 0) {
+                    node = nodes[c];
+                    found = true;
+                    break;
+                }
+            }
         }
 
-        for (int c = 0; c < node->children_count; c++) {
-            if (strcmp(nodes[node->children[c]]->name, buf[z]) == 0) {
-                parent = node;
-                node = nodes[node->children[c]];
-                break;
-            }
+        if (!found) {
+            return NULL;
         }
     }
 
-    return node->id;
-}
-
-// parse file/dir name and get current file id
-// good for when the file/dir exists (or is assumed to)
-int parse_path_file(char *path) {
-    char **buf;
-    int ret = tokenize(path, PATH_SEP, buf);
-    int b = 0;
-
-    fs_node_t *node;
-    fs_node_t *parent;
-    node = root;
-    parent = root;
-
-    for (int z = 0; z < ret; z++) {
-        if (strcmp(buf[z], PATH_UP) == 0) {
-            if (z == 0)
-                continue;
-
-            node = parent;
-            parent = nodes[parent->parent_id];
-        } else if (strcmp(buf[z], PATH_DOT) == 0) {
-            continue;
-        }
-
-        for (int c = 0; c < node->children_count; c++) {
-            if (strcmp(nodes[node->children[c]]->name, buf[z]) == 0) {
-                parent = node;
-                node = nodes[node->children[c]];
-                break;
-            }
-        }
-    }
-
-    return node->id;
+    return node;
 }
 
 fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, __mkdir mkdir, int permission) {
