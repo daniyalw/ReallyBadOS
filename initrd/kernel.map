@@ -307,207 +307,207 @@
 00109350 T Kernel::CPU::switch_task(registers_t*, bool)
 001093e0 T Kernel::CPU::adddd()
 00109400 T Kernel::CPU::init_tasking()
-00109470 T create_tree(tree_t*, char*)
-00109530 T save_tree(tree_t*)
-00109580 T set_tree_name(tree_t*, char*)
-001095b0 T add_data(tree_t*, void const*)
-001095f0 T Kernel::read_pci(unsigned char, unsigned char, unsigned char, unsigned char)
-00109680 T Kernel::write_pci(unsigned short, unsigned short, unsigned short, unsigned int, unsigned int)
-00109700 T Kernel::device_functions(unsigned short, unsigned short)
-00109740 T Kernel::get_class_id(unsigned short, unsigned short, unsigned short)
-00109790 T Kernel::get_subclass_id(unsigned short, unsigned short, unsigned short)
-001097e0 T Kernel::scan_buses()
-00109aa0 T Kernel::go_through_and_print()
-00109bc0 T Kernel::find_device(unsigned short, unsigned short)
-00109c30 T Kernel::get_addr_reg(unsigned short, unsigned short, unsigned short, unsigned short)
-00109ea0 T scanf_getch()
-00109ef0 T getch()
-00109f40 T scanf()
-0010a090 T secret_scanf()
-0010a1a0 T elf_verify(unsigned char*)
-0010a1f0 T load_elf_memory(unsigned char*)
-0010a2f0 T elf_start(unsigned char*, int, char**)
-0010a330 T load_app(unsigned int, int, char**)
-0010a380 T load_app_from_name(char*, int, char**)
-0010a410 T load_app_from_file(FILE*, int, char**)
-0010a470 T there_is_more(char*, int)
-0010a4c0 T parse_args(char*)
-0010a650 T toupper(char)
-0010a6a0 T tolower(char)
-0010a6f0 T toupper(char*)
-0010a750 T tolower(char*)
-0010a7b0 T strcasecmp(char const*, char const*)
-0010a860 T strisempty(char*)
-0010a8b0 T isspace(char)
-0010a8d0 T isdigit(char)
-0010a930 T isalpha(char)
-0010a980 T null_read(fs_node_t*, int, int, char*)
-0010a9b0 T null_write(fs_node_t*, int, int, char*)
-0010a9e0 T write_serial_(fs_node_t*, int, int, char*)
-0010aa00 T write_info(fs_node_t*, int, int, char*)
-0010aa20 T init_all_devs()
-0010aaa0 T Net::rtl8139::power_on()
-0010aaf0 T Net::rtl8139::reset()
-0010ab70 T Net::rtl8139::init_recv_buffer()
-0010abe0 T Net::rtl8139::init_irq()
-0010ac70 T Net::rtl8139::configure_recv()
-0010acc0 T Net::rtl8139::enable_recv()
-0010ad10 T Net::rtl8139::handle_irq(registers_t*)
-0010adf0 T Net::rtl8139::send_packet(void*, int)
-0010aec0 T Net::rtl8139::start()
-0010af90 T Net::rtl8139::find_mac()
-0010b040 T Net::Ethernet::send_ethernet_packet(unsigned char*, unsigned short, unsigned char*)
-0010b0c0 T to_big(unsigned int)
-0010b120 T to_short(unsigned short)
-0010b160 T get_src_mac(unsigned char*)
-0010b180 T Net::ARP::send_request(unsigned char*)
-0010b230 T load_disk(Disk*)
-0010b260 T get_disk(int)
-0010b290 T get_highest_position(int*, int)
-0010b2f0 T get_highest_value(int*, int)
-0010b350 T find_node(char*)
-0010b3b0 T find_node(int)
-0010b3c0 T find_node_fixed(char*)
-0010b5d0 T find_fixed(char*)
-0010b5f0 T absolute_path_node(char*, char*)
-0010b6a0 T absolute_path(char*, char*)
-0010b6c0 T mount_fs(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*), int (*)(fs_node_t*, char*), int)
-0010b780 T create_node(char*, char*, int, int, bool)
-0010ba40 T create_node_ignore(char*, char*, int, int)
-0010ba70 T create_node(char*, char*, int, int)
-0010baa0 T close_node(fs_node_t*)
-0010bac0 T write_node(fs_node_t*, int, int, char*)
-0010bbd0 T read_node(fs_node_t*, int, int, char*)
-0010bc40 T list_dir(fs_node_t*, int)
-0010bd20 T list_dir(char*)
-0010bd70 T create_root()
-0010be60 T init_fs()
-0010bf30 T create_file(char*, char*, int)
-0010bf60 T create_file(char*, char*)
-0010bf80 T create_file(char*, char*, char*, int)
-0010bff0 T create_file(char*, char*, char*)
-0010c010 T kcreate_file(char*, char*, char*)
-0010c030 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int)
-0010c090 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
-0010c0c0 T kcreate_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
-0010c0f0 T fopen(char*, char*, int)
-0010c1a0 T fopen(char*, char*)
-0010c1c0 T kopen(char*, char*)
-0010c1e0 T fclose(FILE*)
-0010c210 T fwrite(FILE*, int, int, char*)
-0010c240 T fgetc(FILE*)
-0010c290 T fread(FILE*, int, int, char*)
-0010c300 T feof(FILE*)
-0010c320 T fgets(char*, int, FILE*)
-0010c340 T fgetpos(FILE*, int*)
-0010c360 T fseek(FILE*, int, int)
-0010c3d0 T ftell(FILE*)
-0010c3f0 T fsize(FILE*)
-0010c430 T rewind(FILE*)
-0010c450 T fsetpos(FILE*, int*)
-0010c470 T fvsscanf(FILE*, char*, char*)
-0010c790 T fscanf(FILE*, char*, ...)
-0010c7c0 T make_dir(char*, char*, int)
-0010c7f0 T make_dir(char*, char*)
-0010c810 T make_dir_user(char*, char*)
-0010c830 T kmake_dir(char*, char*)
-0010c850 T opendir(char*)
-0010c8b0 T readdir(DIR*)
-0010c910 T test_write(fs_node_t*, int, int, char*)
-0010c940 T test_read(fs_node_t*, int, int, char*)
-0010c980 T test_mkfile(fs_node_t*)
-0010c9b0 T test_mkdir(fs_node_t*, char*)
-0010c9d0 T test_install()
-0010ca50 T strerror(int)
-0010ca70 T perror(char*)
-0010caa0 T Kernel::CPU::create_thread(char*, unsigned int)
-0010cad0 T Kernel::CPU::create_thread(char*, unsigned int, int)
-0010cb00 T Kernel::CPU::create_thread(char*, unsigned int, int, char**)
-0010cb30 T Kernel::CPU::create_thread(char*, unsigned int, int, int, char**)
-0010cb60 T Kernel::CPU::schedule()
-0010cbe0 T Kernel::IPC::create_msg(int, int, int, int)
-0010cc40 T Kernel::IPC::add_msg_list(Kernel::IPC::Message*)
-0010cc90 T Kernel::IPC::move_msgs_down(int)
-0010cce0 T Kernel::IPC::read_message_id(int)
-0010cd20 T Kernel::IPC::read_message(Kernel::IPC::Message*)
-0010cd40 T Kernel::IPC::send_message(int, int, int)
-0010cd70 T Kernel::IPC::send_message(int, int)
-0010cdb0 T Kernel::IPC::reply_message(Kernel::IPC::Message*, int)
-0010cdf0 T Kernel::IPC::find_messages_pid(int)
-0010ce40 T Kernel::IPC::send_message_wait(int, int, int)
-0010cef0 T kernel_main
-0010d320 t __static_initialization_and_destruction_0(int, int)
-0010d3b0 t _GLOBAL__sub_I_text_x
-0010d3d0 t isr_common_stub
-0010d3f5 t irq_common_stub
-0010d41a T isr0
-0010d421 T isr1
-0010d428 T isr2
-0010d42f T isr3
-0010d436 T isr4
-0010d43d T isr5
-0010d444 T isr6
-0010d44b T isr7
-0010d455 T isr8
-0010d45d T isr9
-0010d467 T isr10
-0010d46f T isr11
-0010d477 T isr12
-0010d47f T isr13
-0010d487 T isr14
-0010d48f T isr15
-0010d499 T isr16
-0010d4a3 T isr17
-0010d4ad T isr18
-0010d4b7 T isr19
-0010d4c1 T isr20
-0010d4cb T isr21
-0010d4d5 T isr22
-0010d4df T isr23
-0010d4e9 T isr24
-0010d4f3 T isr25
-0010d4fd T isr26
-0010d507 T isr27
-0010d511 T isr28
-0010d51b T isr29
-0010d525 T isr30
-0010d52f T isr31
-0010d539 T irq0
-0010d543 T irq1
-0010d54d T irq2
-0010d557 T irq3
-0010d561 T irq4
-0010d56b T irq5
-0010d575 T irq6
-0010d57f T irq7
-0010d589 T irq8
-0010d593 T irq9
-0010d59d T irq10
-0010d5a7 T irq11
-0010d5b1 T irq12
-0010d5bb T irq13
-0010d5c5 T irq14
-0010d5cf T irq15
-0010d5d9 T irq16
-0010d5e3 T irq17
-0010d5f0 T gdt_flush
-0010d60c t gdt_flush.flush_
-0010d610 T flush_tss
-0010d620 T perform_task_switch
-0010d635 T read_eip
-0010d640 W mem_t::mem_t()
-0010d640 W mem_t::mem_t()
-0010d650 W std::string::size()
-0010d660 W Graphic::SetPixel(int, int, int)
-0010d6f0 W Graphic::draw_rect(int, int, int, int, int)
-0010d7b0 W RawTar::file_size()
-0010d800 W Tar::Tar()
-0010d800 W Tar::Tar()
-0010d820 W fs_node_t::fs_node_t()
-0010d820 W fs_node_t::fs_node_t()
-0010d880 W DIR::DIR()
-0010d880 W DIR::DIR()
-0010d890 W void init_mem<multiboot_info*>(multiboot_info*, unsigned int)
+00109440 T create_tree(tree_t*, char*)
+00109500 T save_tree(tree_t*)
+00109550 T set_tree_name(tree_t*, char*)
+00109580 T add_data(tree_t*, void const*)
+001095c0 T Kernel::read_pci(unsigned char, unsigned char, unsigned char, unsigned char)
+00109650 T Kernel::write_pci(unsigned short, unsigned short, unsigned short, unsigned int, unsigned int)
+001096d0 T Kernel::device_functions(unsigned short, unsigned short)
+00109710 T Kernel::get_class_id(unsigned short, unsigned short, unsigned short)
+00109760 T Kernel::get_subclass_id(unsigned short, unsigned short, unsigned short)
+001097b0 T Kernel::scan_buses()
+00109a70 T Kernel::go_through_and_print()
+00109b90 T Kernel::find_device(unsigned short, unsigned short)
+00109c00 T Kernel::get_addr_reg(unsigned short, unsigned short, unsigned short, unsigned short)
+00109e70 T scanf_getch()
+00109ec0 T getch()
+00109f10 T scanf()
+0010a060 T secret_scanf()
+0010a170 T elf_verify(unsigned char*)
+0010a1c0 T load_elf_memory(unsigned char*)
+0010a2c0 T elf_start(unsigned char*, int, char**)
+0010a300 T load_app(unsigned int, int, char**)
+0010a350 T load_app_from_name(char*, int, char**)
+0010a3e0 T load_app_from_file(FILE*, int, char**)
+0010a440 T there_is_more(char*, int)
+0010a490 T parse_args(char*)
+0010a620 T toupper(char)
+0010a670 T tolower(char)
+0010a6c0 T toupper(char*)
+0010a720 T tolower(char*)
+0010a780 T strcasecmp(char const*, char const*)
+0010a830 T strisempty(char*)
+0010a880 T isspace(char)
+0010a8a0 T isdigit(char)
+0010a900 T isalpha(char)
+0010a950 T null_read(fs_node_t*, int, int, char*)
+0010a980 T null_write(fs_node_t*, int, int, char*)
+0010a9b0 T write_serial_(fs_node_t*, int, int, char*)
+0010a9d0 T write_info(fs_node_t*, int, int, char*)
+0010a9f0 T init_all_devs()
+0010aa70 T Net::rtl8139::power_on()
+0010aac0 T Net::rtl8139::reset()
+0010ab40 T Net::rtl8139::init_recv_buffer()
+0010abb0 T Net::rtl8139::init_irq()
+0010ac40 T Net::rtl8139::configure_recv()
+0010ac90 T Net::rtl8139::enable_recv()
+0010ace0 T Net::rtl8139::handle_irq(registers_t*)
+0010adc0 T Net::rtl8139::send_packet(void*, int)
+0010ae90 T Net::rtl8139::start()
+0010af60 T Net::rtl8139::find_mac()
+0010b010 T Net::Ethernet::send_ethernet_packet(unsigned char*, unsigned short, unsigned char*)
+0010b090 T to_big(unsigned int)
+0010b0f0 T to_short(unsigned short)
+0010b130 T get_src_mac(unsigned char*)
+0010b150 T Net::ARP::send_request(unsigned char*)
+0010b200 T load_disk(Disk*)
+0010b230 T get_disk(int)
+0010b260 T get_highest_position(int*, int)
+0010b2c0 T get_highest_value(int*, int)
+0010b320 T find_node(char*)
+0010b380 T find_node(int)
+0010b390 T find_node_fixed(char*)
+0010b5a0 T find_fixed(char*)
+0010b5c0 T absolute_path_node(char*, char*)
+0010b670 T absolute_path(char*, char*)
+0010b690 T mount_fs(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*), int (*)(fs_node_t*, char*), int)
+0010b750 T create_node(char*, char*, int, int, bool)
+0010ba10 T create_node_ignore(char*, char*, int, int)
+0010ba40 T create_node(char*, char*, int, int)
+0010ba70 T close_node(fs_node_t*)
+0010ba90 T write_node(fs_node_t*, int, int, char*)
+0010bba0 T read_node(fs_node_t*, int, int, char*)
+0010bc10 T list_dir(fs_node_t*, int)
+0010bcf0 T list_dir(char*)
+0010bd40 T create_root()
+0010be30 T init_fs()
+0010bf00 T create_file(char*, char*, int)
+0010bf30 T create_file(char*, char*)
+0010bf50 T create_file(char*, char*, char*, int)
+0010bfc0 T create_file(char*, char*, char*)
+0010bfe0 T kcreate_file(char*, char*, char*)
+0010c000 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int)
+0010c060 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
+0010c090 T kcreate_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
+0010c0c0 T fopen(char*, char*, int)
+0010c170 T fopen(char*, char*)
+0010c190 T kopen(char*, char*)
+0010c1b0 T fclose(FILE*)
+0010c1e0 T fwrite(FILE*, int, int, char*)
+0010c210 T fgetc(FILE*)
+0010c260 T fread(FILE*, int, int, char*)
+0010c2d0 T feof(FILE*)
+0010c2f0 T fgets(char*, int, FILE*)
+0010c310 T fgetpos(FILE*, int*)
+0010c330 T fseek(FILE*, int, int)
+0010c3a0 T ftell(FILE*)
+0010c3c0 T fsize(FILE*)
+0010c400 T rewind(FILE*)
+0010c420 T fsetpos(FILE*, int*)
+0010c440 T fvsscanf(FILE*, char*, char*)
+0010c760 T fscanf(FILE*, char*, ...)
+0010c790 T make_dir(char*, char*, int)
+0010c7c0 T make_dir(char*, char*)
+0010c7e0 T make_dir_user(char*, char*)
+0010c800 T kmake_dir(char*, char*)
+0010c820 T opendir(char*)
+0010c880 T readdir(DIR*)
+0010c8e0 T test_write(fs_node_t*, int, int, char*)
+0010c910 T test_read(fs_node_t*, int, int, char*)
+0010c950 T test_mkfile(fs_node_t*)
+0010c980 T test_mkdir(fs_node_t*, char*)
+0010c9a0 T test_install()
+0010ca20 T strerror(int)
+0010ca40 T perror(char*)
+0010ca70 T Kernel::CPU::create_thread(char*, unsigned int)
+0010caa0 T Kernel::CPU::create_thread(char*, unsigned int, int)
+0010cad0 T Kernel::CPU::create_thread(char*, unsigned int, int, char**)
+0010cb00 T Kernel::CPU::create_thread(char*, unsigned int, int, int, char**)
+0010cb30 T Kernel::CPU::schedule()
+0010cbb0 T Kernel::IPC::create_msg(int, int, int, int)
+0010cc10 T Kernel::IPC::add_msg_list(Kernel::IPC::Message*)
+0010cc60 T Kernel::IPC::move_msgs_down(int)
+0010ccb0 T Kernel::IPC::read_message_id(int)
+0010ccf0 T Kernel::IPC::read_message(Kernel::IPC::Message*)
+0010cd10 T Kernel::IPC::send_message(int, int, int)
+0010cd40 T Kernel::IPC::send_message(int, int)
+0010cd80 T Kernel::IPC::reply_message(Kernel::IPC::Message*, int)
+0010cdc0 T Kernel::IPC::find_messages_pid(int)
+0010ce10 T Kernel::IPC::send_message_wait(int, int, int)
+0010cec0 T kernel_main
+0010d2f0 t __static_initialization_and_destruction_0(int, int)
+0010d380 t _GLOBAL__sub_I_text_x
+0010d3a0 t isr_common_stub
+0010d3c5 t irq_common_stub
+0010d3ea T isr0
+0010d3f1 T isr1
+0010d3f8 T isr2
+0010d3ff T isr3
+0010d406 T isr4
+0010d40d T isr5
+0010d414 T isr6
+0010d41b T isr7
+0010d425 T isr8
+0010d42d T isr9
+0010d437 T isr10
+0010d43f T isr11
+0010d447 T isr12
+0010d44f T isr13
+0010d457 T isr14
+0010d45f T isr15
+0010d469 T isr16
+0010d473 T isr17
+0010d47d T isr18
+0010d487 T isr19
+0010d491 T isr20
+0010d49b T isr21
+0010d4a5 T isr22
+0010d4af T isr23
+0010d4b9 T isr24
+0010d4c3 T isr25
+0010d4cd T isr26
+0010d4d7 T isr27
+0010d4e1 T isr28
+0010d4eb T isr29
+0010d4f5 T isr30
+0010d4ff T isr31
+0010d509 T irq0
+0010d513 T irq1
+0010d51d T irq2
+0010d527 T irq3
+0010d531 T irq4
+0010d53b T irq5
+0010d545 T irq6
+0010d54f T irq7
+0010d559 T irq8
+0010d563 T irq9
+0010d56d T irq10
+0010d577 T irq11
+0010d581 T irq12
+0010d58b T irq13
+0010d595 T irq14
+0010d59f T irq15
+0010d5a9 T irq16
+0010d5b3 T irq17
+0010d5c0 T gdt_flush
+0010d5dc t gdt_flush.flush_
+0010d5e0 T flush_tss
+0010d5f0 T perform_task_switch
+0010d605 T read_eip
+0010d610 W mem_t::mem_t()
+0010d610 W mem_t::mem_t()
+0010d620 W std::string::size()
+0010d630 W Graphic::SetPixel(int, int, int)
+0010d6c0 W Graphic::draw_rect(int, int, int, int, int)
+0010d780 W RawTar::file_size()
+0010d7d0 W Tar::Tar()
+0010d7d0 W Tar::Tar()
+0010d7f0 W fs_node_t::fs_node_t()
+0010d7f0 W fs_node_t::fs_node_t()
+0010d850 W DIR::DIR()
+0010d850 W DIR::DIR()
+0010d860 W void init_mem<multiboot_info*>(multiboot_info*, unsigned int)
 0010e000 r upper_letters
 0010e01c r lower_letters
 0010e036 r System::dev

@@ -102,7 +102,9 @@ int run_command(char * command) {
         ret = elf_start((uint8_t *)file->node->contents, args.argc, argv);
     }
 
+#ifdef DEBUG
     log::error("Return code: %d\n", ret);
+#endif
 
     //fclose(file);
 
