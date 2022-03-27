@@ -7,7 +7,7 @@ extern "C" {
     extern unsigned int kernel_end;
 }
 
-#define DEBUG
+//#define DEBUG
 //#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 

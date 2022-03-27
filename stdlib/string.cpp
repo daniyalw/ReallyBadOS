@@ -170,27 +170,18 @@ bool charcmp(char str1, char str2) {
     return false;
 }
 
-// ex:
-//      char * a = "/";
-//      char * b = "abc";
-//      char * dest;
-//      append(a, b, dest);
-//
-// dest will be "/abc"
 char * append(char * j1, char * j2, char * dest) {
-    int js = 0;
+    int c = 0;
 
-    for (int z = 0; z < len(j1); z++) {
-        dest[js] = j1[z];
-        js++;
+    for (int z = 0; z < strlen(j1); z++) {
+        dest[c] = j1[z];
+        c++;
     }
 
-    for (int z = 0; z < len(j2); z++) {
-        dest[js] = j2[z];
-        js++;
+    for (int z = 0; z < strlen(j2); z++) {
+        dest[c] = j2[z];
+        c++;
     }
-
-    dest[js] = 0;
 
     return dest;
 }
