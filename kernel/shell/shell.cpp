@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include <keyboard/keys.cpp>
 #include <kernel/sys/serial.h>
+#include <sys/multitasking/task.h>
 
 using namespace std;
 using namespace Time;
@@ -56,7 +57,7 @@ int run_command(char * command) {
     char *fname;
     bool is_exec_slash = false;
 
-    if (startswith(executable, "/") && endswith(executable, "o")) {
+    if (startswith(executable, "/")) {
         is_exec_slash = true;
     } else {
         fname = get("", "/bin/%s.o", executable);
@@ -77,7 +78,7 @@ int run_command(char * command) {
         file = fopen(fname, "r");
 
         if (file == NULL) {
-            printf("Error: command not found: %s\n", args.argv[0]);
+            printf("shell: command not found: %s\n", args.argv[0]);
             return 1;
         }
     }
@@ -91,9 +92,19 @@ int run_command(char * command) {
     for (int z = 0; z < args.argc; z++)
         argv[z] = args.argv[z];
 
-    int ret = load_app_from_file(file, args.argc, argv);
+    int ret;
 
-    fclose(file);
+    if (Kernel::CPU::tasking_on) {
+        Kernel::CPU::pid_t pid = Kernel::CPU::create_process_file(file, args.argc, argv);
+
+        ret = Kernel::CPU::wait_retcode(pid);
+    } else {
+        ret = elf_start((uint8_t *)file->node->contents, args.argc, argv);
+    }
+
+    log::error("Return code: %d\n", ret);
+
+    //fclose(file);
 
     return 0;
 }
@@ -140,30 +151,17 @@ void shell_quit() {
 void shell() {
     while (true) {
         if (current_display_len != 0 && current_display_len != 1) {
-#ifdef DEBUG
-            log::info("/%s/> ", current_display);
-#endif
             printf("/%s/> ", current_display);
         } else {
-#ifdef DEBUG
-            log::info("/> ");
-#endif
             printf("/> ");
         }
 
         char * command = scanf();
 
         if (strisempty(command) || command == "") {
-#ifdef DEBUG
-            log::info("String is NULL.");
-#endif
             putchar('\n');
             continue;
         }
-
-#ifdef DEBUG
-        log::info(command);
-#endif
 
         if (check_name(command, "exec")) {
             printf("Warning: %s\n", "executable not properly working...\n");
@@ -177,8 +175,7 @@ void shell() {
             if (res != 'y')
                 continue;
         } else if (check_name(command, "exit")) {
-            printf("Exiting...\n");
-            break;
+            Kernel::CPU::exit(0);
         }
 
         memset(last_command, NULL, 100);
@@ -191,12 +188,4 @@ void shell() {
 
         free(command); // since scanf() uses malloc()
     }
-
-    printf("Would you like to shutdown? [y/n] ");
-    char result = getch();
-
-    if (result == 'y')
-        Kernel::shutdown_os();
-    else
-        printf("\nWelp, now you're stuck. And I don't care");
 }

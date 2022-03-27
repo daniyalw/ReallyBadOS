@@ -1,6 +1,7 @@
 #include "task.h"
 #include "scheduler.h"
 #include "thread.h"
+#include <shell/shell.h>
 
 namespace Kernel {
 
@@ -276,12 +277,8 @@ int adddd() {
 }
 
 void init_tasking() {
-    create_process("idle", (uint32_t)&idle_task);
-
-    char *argv[] = {"echo", "hello from echo"};
-    int ret = create_process_filename("/bin/echo.o", 2, argv); // run an application
-    printf("Ret while creating proes: %d\n", ret);
-    Kernel::CPU::create_thread("ddd", (uint32_t)&adddd, 0);
+    //create_process("idle", (uint32_t)&idle_task);
+    create_process("shell", (uint32_t)&shell);
 
     tasking_on = true;
     switch_task(NULL, false);
