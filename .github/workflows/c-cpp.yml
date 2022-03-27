@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: fix error
+      run: sudo chmod 755 'scripts/macos.sh'
     - name: get dependencies
       run: scripts/macos.sh
     - name: make all
