@@ -287,358 +287,368 @@
 00108b40 T realloc(void*, int)
 00108bb0 T calloc(int, int)
 00108c00 T Kernel::CPU::idle_task()
-00108c10 T Kernel::CPU::efddsfds()
-00108c20 T Kernel::CPU::mdasd()
-00108c50 T Kernel::CPU::yd()
-00108c70 T Kernel::CPU::nmc()
-00108cb0 T Kernel::CPU::abc()
-00108cd0 T Kernel::CPU::block_task(Kernel::CPU::task_t*)
-00108cf0 T Kernel::CPU::block_task_id(int)
-00108d50 T Kernel::CPU::unblock_task(Kernel::CPU::task_t*)
-00108d70 T Kernel::CPU::unblock_task_id(int)
-00108dd0 T Kernel::CPU::find_retcode(int)
-00108e30 T Kernel::CPU::wait_retcode(int)
-00108e90 T Kernel::CPU::exit(int)
-00108ef0 T Kernel::CPU::yield()
-00108f20 T Kernel::CPU::create_process(char*, unsigned int, bool, int, int, char**)
-001091a0 T Kernel::CPU::create_process_file(FILE*, int, char**)
-00109200 T Kernel::CPU::create_process_filename(char*, int, char**)
-00109250 T Kernel::CPU::create_process(char*, unsigned int)
-00109280 T Kernel::CPU::load_new_task(Kernel::CPU::task_t*)
-001092c0 T Kernel::CPU::allocate_stack()
-001092e0 T Kernel::CPU::wrapper()
-00109360 T Kernel::CPU::switch_task(registers_t*, bool)
-001093f0 T Kernel::CPU::adddd()
-00109410 T Kernel::CPU::init_tasking()
-00109450 T create_tree(tree_t*, char*)
-00109510 T save_tree(tree_t*)
-00109560 T set_tree_name(tree_t*, char*)
-00109590 T add_data(tree_t*, void const*)
-001095d0 T Kernel::read_pci(unsigned char, unsigned char, unsigned char, unsigned char)
-00109660 T Kernel::write_pci(unsigned short, unsigned short, unsigned short, unsigned int, unsigned int)
-001096e0 T Kernel::device_functions(unsigned short, unsigned short)
-00109720 T Kernel::get_class_id(unsigned short, unsigned short, unsigned short)
-00109770 T Kernel::get_subclass_id(unsigned short, unsigned short, unsigned short)
-001097c0 T Kernel::scan_buses()
-00109a80 T Kernel::go_through_and_print()
-00109ba0 T Kernel::find_device(unsigned short, unsigned short)
-00109c10 T Kernel::get_addr_reg(unsigned short, unsigned short, unsigned short, unsigned short)
-00109e80 T scanf_getch()
-00109ed0 T getch()
-00109f20 T scanf()
-0010a070 T secret_scanf()
-0010a180 T elf_verify(unsigned char*)
-0010a1d0 T load_elf_memory(unsigned char*)
-0010a2d0 T elf_start(unsigned char*, int, char**)
-0010a310 T load_app(unsigned int, int, char**)
-0010a360 T load_app_from_name(char*, int, char**)
-0010a3f0 T load_app_from_file(FILE*, int, char**)
-0010a450 T there_is_more(char*, int)
-0010a4a0 T parse_args(char*)
-0010a630 T toupper(char)
-0010a680 T tolower(char)
-0010a6d0 T toupper(char*)
-0010a730 T tolower(char*)
-0010a790 T strcasecmp(char const*, char const*)
-0010a840 T strisempty(char*)
-0010a890 T isspace(char)
-0010a8b0 T isdigit(char)
-0010a910 T isalpha(char)
-0010a960 T null_read(fs_node_t*, int, int, char*)
-0010a990 T null_write(fs_node_t*, int, int, char*)
-0010a9c0 T write_serial_(fs_node_t*, int, int, char*)
-0010a9e0 T write_info(fs_node_t*, int, int, char*)
-0010aa00 T init_all_devs()
-0010aa80 T Net::rtl8139::power_on()
-0010aad0 T Net::rtl8139::reset()
-0010ab50 T Net::rtl8139::init_recv_buffer()
-0010abc0 T Net::rtl8139::init_irq()
-0010ac50 T Net::rtl8139::configure_recv()
-0010aca0 T Net::rtl8139::enable_recv()
-0010acf0 T Net::rtl8139::handle_irq(registers_t*)
-0010add0 T Net::rtl8139::send_packet(void*, int)
-0010aea0 T Net::rtl8139::start()
-0010af70 T Net::rtl8139::find_mac()
-0010b020 T Net::Ethernet::send_ethernet_packet(unsigned char*, unsigned short, unsigned char*)
-0010b0a0 T to_big(unsigned int)
-0010b100 T to_short(unsigned short)
-0010b140 T get_src_mac(unsigned char*)
-0010b160 T Net::ARP::send_request(unsigned char*)
-0010b210 T load_disk(Disk*)
-0010b240 T get_disk(int)
-0010b270 T get_highest_position(int*, int)
-0010b2d0 T get_highest_value(int*, int)
-0010b330 T find_node(char*)
-0010b390 T find_node(int)
-0010b3a0 T find_node_fixed(char*)
-0010b5b0 T find_fixed(char*)
-0010b5d0 T absolute_path_node(char*, char*)
-0010b680 T absolute_path(char*, char*)
-0010b6a0 T mount_fs(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*), int (*)(fs_node_t*, char*), int)
-0010b760 T create_node(char*, char*, int, int, bool)
-0010ba20 T create_node_ignore(char*, char*, int, int)
-0010ba50 T create_node(char*, char*, int, int)
-0010ba80 T close_node(fs_node_t*)
-0010baa0 T write_node(fs_node_t*, int, int, char*)
-0010bbb0 T read_node(fs_node_t*, int, int, char*)
-0010bc20 T list_dir(fs_node_t*, int)
-0010bd00 T list_dir(char*)
-0010bd50 T create_root()
-0010be40 T init_fs()
-0010bf10 T create_file(char*, char*, int)
-0010bf40 T create_file(char*, char*)
-0010bf60 T create_file(char*, char*, char*, int)
-0010bfd0 T create_file(char*, char*, char*)
-0010bff0 T kcreate_file(char*, char*, char*)
-0010c010 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int)
-0010c070 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
-0010c0a0 T kcreate_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
-0010c0d0 T fopen(char*, char*, int)
-0010c180 T fopen(char*, char*)
-0010c1a0 T kopen(char*, char*)
-0010c1c0 T fclose(FILE*)
-0010c1f0 T fwrite(FILE*, int, int, char*)
-0010c220 T fgetc(FILE*)
-0010c270 T fread(FILE*, int, int, char*)
-0010c2e0 T feof(FILE*)
-0010c300 T fgets(char*, int, FILE*)
-0010c320 T fgetpos(FILE*, int*)
-0010c340 T fseek(FILE*, int, int)
-0010c3b0 T ftell(FILE*)
-0010c3d0 T fsize(FILE*)
-0010c410 T rewind(FILE*)
-0010c430 T fsetpos(FILE*, int*)
-0010c450 T fvsscanf(FILE*, char*, char*)
-0010c770 T fscanf(FILE*, char*, ...)
-0010c7a0 T make_dir(char*, char*, int)
-0010c7d0 T make_dir(char*, char*)
-0010c7f0 T make_dir_user(char*, char*)
-0010c810 T kmake_dir(char*, char*)
-0010c830 T opendir(char*)
-0010c890 T readdir(DIR*)
-0010c8f0 T test_write(fs_node_t*, int, int, char*)
-0010c920 T test_read(fs_node_t*, int, int, char*)
-0010c960 T test_mkfile(fs_node_t*)
-0010c990 T test_mkdir(fs_node_t*, char*)
-0010c9b0 T test_install()
-0010ca30 T strerror(int)
-0010ca50 T perror(char*)
-0010ca80 T Kernel::CPU::create_thread(char*, unsigned int)
-0010cab0 T Kernel::CPU::create_thread(char*, unsigned int, int)
-0010cae0 T Kernel::CPU::create_thread(char*, unsigned int, int, char**)
-0010cb10 T Kernel::CPU::create_thread(char*, unsigned int, int, int, char**)
-0010cb40 T Kernel::CPU::schedule()
-0010cbc0 T kernel_main
-0010d030 t __static_initialization_and_destruction_0(int, int)
-0010d0c0 t _GLOBAL__sub_I_text_x
-0010d0e0 t isr_common_stub
-0010d105 t irq_common_stub
-0010d12a T isr0
-0010d131 T isr1
-0010d138 T isr2
-0010d13f T isr3
-0010d146 T isr4
-0010d14d T isr5
-0010d154 T isr6
-0010d15b T isr7
-0010d165 T isr8
-0010d16d T isr9
-0010d177 T isr10
-0010d17f T isr11
-0010d187 T isr12
-0010d18f T isr13
-0010d197 T isr14
-0010d19f T isr15
-0010d1a9 T isr16
-0010d1b3 T isr17
-0010d1bd T isr18
-0010d1c7 T isr19
-0010d1d1 T isr20
-0010d1db T isr21
-0010d1e5 T isr22
-0010d1ef T isr23
-0010d1f9 T isr24
-0010d203 T isr25
-0010d20d T isr26
-0010d217 T isr27
-0010d221 T isr28
-0010d22b T isr29
-0010d235 T isr30
-0010d23f T isr31
-0010d249 T irq0
-0010d253 T irq1
-0010d25d T irq2
-0010d267 T irq3
-0010d271 T irq4
-0010d27b T irq5
-0010d285 T irq6
-0010d28f T irq7
-0010d299 T irq8
-0010d2a3 T irq9
-0010d2ad T irq10
-0010d2b7 T irq11
-0010d2c1 T irq12
-0010d2cb T irq13
-0010d2d5 T irq14
-0010d2df T irq15
-0010d2e9 T irq16
-0010d2f3 T irq17
-0010d300 T gdt_flush
-0010d31c t gdt_flush.flush_
-0010d320 T flush_tss
-0010d330 T perform_task_switch
-0010d345 T read_eip
-0010d350 W mem_t::mem_t()
-0010d350 W mem_t::mem_t()
-0010d360 W std::string::size()
-0010d370 W Graphic::SetPixel(int, int, int)
-0010d400 W Graphic::draw_rect(int, int, int, int, int)
-0010d4c0 W RawTar::file_size()
-0010d510 W Tar::Tar()
-0010d510 W Tar::Tar()
-0010d530 W fs_node_t::fs_node_t()
-0010d530 W fs_node_t::fs_node_t()
-0010d590 W DIR::DIR()
-0010d590 W DIR::DIR()
-0010d5a0 W void init_mem<multiboot_info*>(multiboot_info*, unsigned int)
+00108c10 T Kernel::CPU::ipc_test()
+00108c50 T Kernel::CPU::ipc_test11()
+00108cc0 T Kernel::CPU::block_task(Kernel::CPU::task_t*)
+00108ce0 T Kernel::CPU::block_task_id(int)
+00108d40 T Kernel::CPU::unblock_task(Kernel::CPU::task_t*)
+00108d60 T Kernel::CPU::unblock_task_id(int)
+00108dc0 T Kernel::CPU::find_retcode(int)
+00108e20 T Kernel::CPU::wait_retcode(int)
+00108e80 T Kernel::CPU::exit(int)
+00108ee0 T Kernel::CPU::yield()
+00108f10 T Kernel::CPU::create_process(char*, unsigned int, bool, int, int, char**)
+00109190 T Kernel::CPU::create_process_file(FILE*, int, char**)
+001091f0 T Kernel::CPU::create_process_filename(char*, int, char**)
+00109240 T Kernel::CPU::create_process(char*, unsigned int)
+00109270 T Kernel::CPU::load_new_task(Kernel::CPU::task_t*)
+001092b0 T Kernel::CPU::allocate_stack()
+001092d0 T Kernel::CPU::wrapper()
+00109350 T Kernel::CPU::switch_task(registers_t*, bool)
+001093e0 T Kernel::CPU::adddd()
+00109400 T Kernel::CPU::init_tasking()
+00109470 T create_tree(tree_t*, char*)
+00109530 T save_tree(tree_t*)
+00109580 T set_tree_name(tree_t*, char*)
+001095b0 T add_data(tree_t*, void const*)
+001095f0 T Kernel::read_pci(unsigned char, unsigned char, unsigned char, unsigned char)
+00109680 T Kernel::write_pci(unsigned short, unsigned short, unsigned short, unsigned int, unsigned int)
+00109700 T Kernel::device_functions(unsigned short, unsigned short)
+00109740 T Kernel::get_class_id(unsigned short, unsigned short, unsigned short)
+00109790 T Kernel::get_subclass_id(unsigned short, unsigned short, unsigned short)
+001097e0 T Kernel::scan_buses()
+00109aa0 T Kernel::go_through_and_print()
+00109bc0 T Kernel::find_device(unsigned short, unsigned short)
+00109c30 T Kernel::get_addr_reg(unsigned short, unsigned short, unsigned short, unsigned short)
+00109ea0 T scanf_getch()
+00109ef0 T getch()
+00109f40 T scanf()
+0010a090 T secret_scanf()
+0010a1a0 T elf_verify(unsigned char*)
+0010a1f0 T load_elf_memory(unsigned char*)
+0010a2f0 T elf_start(unsigned char*, int, char**)
+0010a330 T load_app(unsigned int, int, char**)
+0010a380 T load_app_from_name(char*, int, char**)
+0010a410 T load_app_from_file(FILE*, int, char**)
+0010a470 T there_is_more(char*, int)
+0010a4c0 T parse_args(char*)
+0010a650 T toupper(char)
+0010a6a0 T tolower(char)
+0010a6f0 T toupper(char*)
+0010a750 T tolower(char*)
+0010a7b0 T strcasecmp(char const*, char const*)
+0010a860 T strisempty(char*)
+0010a8b0 T isspace(char)
+0010a8d0 T isdigit(char)
+0010a930 T isalpha(char)
+0010a980 T null_read(fs_node_t*, int, int, char*)
+0010a9b0 T null_write(fs_node_t*, int, int, char*)
+0010a9e0 T write_serial_(fs_node_t*, int, int, char*)
+0010aa00 T write_info(fs_node_t*, int, int, char*)
+0010aa20 T init_all_devs()
+0010aaa0 T Net::rtl8139::power_on()
+0010aaf0 T Net::rtl8139::reset()
+0010ab70 T Net::rtl8139::init_recv_buffer()
+0010abe0 T Net::rtl8139::init_irq()
+0010ac70 T Net::rtl8139::configure_recv()
+0010acc0 T Net::rtl8139::enable_recv()
+0010ad10 T Net::rtl8139::handle_irq(registers_t*)
+0010adf0 T Net::rtl8139::send_packet(void*, int)
+0010aec0 T Net::rtl8139::start()
+0010af90 T Net::rtl8139::find_mac()
+0010b040 T Net::Ethernet::send_ethernet_packet(unsigned char*, unsigned short, unsigned char*)
+0010b0c0 T to_big(unsigned int)
+0010b120 T to_short(unsigned short)
+0010b160 T get_src_mac(unsigned char*)
+0010b180 T Net::ARP::send_request(unsigned char*)
+0010b230 T load_disk(Disk*)
+0010b260 T get_disk(int)
+0010b290 T get_highest_position(int*, int)
+0010b2f0 T get_highest_value(int*, int)
+0010b350 T find_node(char*)
+0010b3b0 T find_node(int)
+0010b3c0 T find_node_fixed(char*)
+0010b5d0 T find_fixed(char*)
+0010b5f0 T absolute_path_node(char*, char*)
+0010b6a0 T absolute_path(char*, char*)
+0010b6c0 T mount_fs(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*), int (*)(fs_node_t*, char*), int)
+0010b780 T create_node(char*, char*, int, int, bool)
+0010ba40 T create_node_ignore(char*, char*, int, int)
+0010ba70 T create_node(char*, char*, int, int)
+0010baa0 T close_node(fs_node_t*)
+0010bac0 T write_node(fs_node_t*, int, int, char*)
+0010bbd0 T read_node(fs_node_t*, int, int, char*)
+0010bc40 T list_dir(fs_node_t*, int)
+0010bd20 T list_dir(char*)
+0010bd70 T create_root()
+0010be60 T init_fs()
+0010bf30 T create_file(char*, char*, int)
+0010bf60 T create_file(char*, char*)
+0010bf80 T create_file(char*, char*, char*, int)
+0010bff0 T create_file(char*, char*, char*)
+0010c010 T kcreate_file(char*, char*, char*)
+0010c030 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*), int)
+0010c090 T create_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
+0010c0c0 T kcreate_file(char*, char*, int (*)(fs_node_t*, int, int, char*), int (*)(fs_node_t*, int, int, char*))
+0010c0f0 T fopen(char*, char*, int)
+0010c1a0 T fopen(char*, char*)
+0010c1c0 T kopen(char*, char*)
+0010c1e0 T fclose(FILE*)
+0010c210 T fwrite(FILE*, int, int, char*)
+0010c240 T fgetc(FILE*)
+0010c290 T fread(FILE*, int, int, char*)
+0010c300 T feof(FILE*)
+0010c320 T fgets(char*, int, FILE*)
+0010c340 T fgetpos(FILE*, int*)
+0010c360 T fseek(FILE*, int, int)
+0010c3d0 T ftell(FILE*)
+0010c3f0 T fsize(FILE*)
+0010c430 T rewind(FILE*)
+0010c450 T fsetpos(FILE*, int*)
+0010c470 T fvsscanf(FILE*, char*, char*)
+0010c790 T fscanf(FILE*, char*, ...)
+0010c7c0 T make_dir(char*, char*, int)
+0010c7f0 T make_dir(char*, char*)
+0010c810 T make_dir_user(char*, char*)
+0010c830 T kmake_dir(char*, char*)
+0010c850 T opendir(char*)
+0010c8b0 T readdir(DIR*)
+0010c910 T test_write(fs_node_t*, int, int, char*)
+0010c940 T test_read(fs_node_t*, int, int, char*)
+0010c980 T test_mkfile(fs_node_t*)
+0010c9b0 T test_mkdir(fs_node_t*, char*)
+0010c9d0 T test_install()
+0010ca50 T strerror(int)
+0010ca70 T perror(char*)
+0010caa0 T Kernel::CPU::create_thread(char*, unsigned int)
+0010cad0 T Kernel::CPU::create_thread(char*, unsigned int, int)
+0010cb00 T Kernel::CPU::create_thread(char*, unsigned int, int, char**)
+0010cb30 T Kernel::CPU::create_thread(char*, unsigned int, int, int, char**)
+0010cb60 T Kernel::CPU::schedule()
+0010cbe0 T Kernel::IPC::create_msg(int, int, int, int)
+0010cc40 T Kernel::IPC::add_msg_list(Kernel::IPC::Message*)
+0010cc90 T Kernel::IPC::move_msgs_down(int)
+0010cce0 T Kernel::IPC::read_message_id(int)
+0010cd20 T Kernel::IPC::read_message(Kernel::IPC::Message*)
+0010cd40 T Kernel::IPC::send_message(int, int, int)
+0010cd70 T Kernel::IPC::send_message(int, int)
+0010cdb0 T Kernel::IPC::reply_message(Kernel::IPC::Message*, int)
+0010cdf0 T Kernel::IPC::find_messages_pid(int)
+0010ce40 T Kernel::IPC::send_message_wait(int, int, int)
+0010cef0 T kernel_main
+0010d320 t __static_initialization_and_destruction_0(int, int)
+0010d3b0 t _GLOBAL__sub_I_text_x
+0010d3d0 t isr_common_stub
+0010d3f5 t irq_common_stub
+0010d41a T isr0
+0010d421 T isr1
+0010d428 T isr2
+0010d42f T isr3
+0010d436 T isr4
+0010d43d T isr5
+0010d444 T isr6
+0010d44b T isr7
+0010d455 T isr8
+0010d45d T isr9
+0010d467 T isr10
+0010d46f T isr11
+0010d477 T isr12
+0010d47f T isr13
+0010d487 T isr14
+0010d48f T isr15
+0010d499 T isr16
+0010d4a3 T isr17
+0010d4ad T isr18
+0010d4b7 T isr19
+0010d4c1 T isr20
+0010d4cb T isr21
+0010d4d5 T isr22
+0010d4df T isr23
+0010d4e9 T isr24
+0010d4f3 T isr25
+0010d4fd T isr26
+0010d507 T isr27
+0010d511 T isr28
+0010d51b T isr29
+0010d525 T isr30
+0010d52f T isr31
+0010d539 T irq0
+0010d543 T irq1
+0010d54d T irq2
+0010d557 T irq3
+0010d561 T irq4
+0010d56b T irq5
+0010d575 T irq6
+0010d57f T irq7
+0010d589 T irq8
+0010d593 T irq9
+0010d59d T irq10
+0010d5a7 T irq11
+0010d5b1 T irq12
+0010d5bb T irq13
+0010d5c5 T irq14
+0010d5cf T irq15
+0010d5d9 T irq16
+0010d5e3 T irq17
+0010d5f0 T gdt_flush
+0010d60c t gdt_flush.flush_
+0010d610 T flush_tss
+0010d620 T perform_task_switch
+0010d635 T read_eip
+0010d640 W mem_t::mem_t()
+0010d640 W mem_t::mem_t()
+0010d650 W std::string::size()
+0010d660 W Graphic::SetPixel(int, int, int)
+0010d6f0 W Graphic::draw_rect(int, int, int, int, int)
+0010d7b0 W RawTar::file_size()
+0010d800 W Tar::Tar()
+0010d800 W Tar::Tar()
+0010d820 W fs_node_t::fs_node_t()
+0010d820 W fs_node_t::fs_node_t()
+0010d880 W DIR::DIR()
+0010d880 W DIR::DIR()
+0010d890 W void init_mem<multiboot_info*>(multiboot_info*, unsigned int)
 0010e000 r upper_letters
 0010e01c r lower_letters
 0010e036 r System::dev
 0010e038 r task_counter_limit
-00113000 D scroll_on
-00113001 D to_clear
-00113004 D total_size_b
-00113008 D buffer_size
-0011300c D cursor_height
-00113010 D cursor_width
-00113014 D cursor_inner
-00113020 D cursor_map
-001133b0 D weekdays
-001133e0 D months
-00113410 D blit_right_away
-00113414 D System::VERSION
-00113418 D System::SYSTEM
-0011341c D Net::rtl8139::tsd
-00113420 D Net::rtl8139::tsad
-00113440 d Kernel::CPU::tss
-001134c0 D Kernel::CPU::exception_messages
-00113540 D verify_elf
-00113544 D keycode_length
-00113548 D shift_code_length
-0011354c D ctrl_codes_length
-00113560 D keycodes
-00113594 D shifted_codes
-0011359a D ctrl_codes
-0011359c D key_up
-0011359d D key_down
-001135a0 D letters_lower
-001135e0 D letters_upper
-00113614 D font_height
-00113618 D font_width
-00113620 D font
-00113c20 D max_syscalls
-00113c40 d Graphic::stackblur_mul
-00113e40 d Graphic::stackblur_shr
-00113f40 D error_strings
-00315000 B kernel_stack
-00515000 B stack_top
-00515000 B text_x
-00515004 B text_y
-00515008 B cx
-0051500c B cy
-00515010 B booted
-00515020 B back_buffer
-00815020 B current_display
-008150a0 B current_display_len
-008150a4 B in_ring3
-008150a8 B username
-008150ac B ssfn_src
-008150b0 B ssfn_dst
-008150e0 B written_on
-008158c0 B vga_back
-00816090 B custom_color_on
-00816094 B custom_color
-00816098 B has_scrolled
-00816099 B cout
-008160a0 B mem_blocks
-008166a0 B block_count_mem
-008166c0 B used
-00816cc0 B total_used
-00816cc4 B total_memory
-00816cc8 B total_usable
-00816ccc B shifted
-00816cd0 B returned
-00816cd4 B current_key
-00816cd5 B terminal_on
-00816cd6 B keyboard_locked
-00816cd7 B scanf_on
-00816ce0 B buffer
-008170c8 B entered_len
-008170cc B cin
-008170cd B mouse_cycle
-008170ce B mouse_byte
-008170d4 B mouse_x
-008170d8 B mouse_y
-008170dc B oldx
-008170e0 B oldy
-008170e4 B right_clicked
-008170e5 B left_clicked
-008170e6 B middle_clicked
-008170e8 B menux
-008170ec B menuy
-008170f0 B movedx
-008170f4 B movedy
-008170f8 B cursor_outer
-008170fc B century_register
-00817100 B pm_on
-00817104 B second
-00817108 B minute
-0081710c B hour
-00817110 B day
-00817114 B month
-00817118 B year
-0081711c B weekday
-00817120 B s
-00817124 B framebuffer_addr
-00817128 B pitch
-0081712c B width
-00817130 B height
-00817134 B bpp
-00817140 B Net::ARP::arp_table
-00817b40 B Kernel::devices
-00857b40 B Kernel::device_count
-00857b44 B Net::rtl8139::device
-00857b48 B Net::rtl8139::buffer
-00857b4c B Net::rtl8139::current_pair
-00857b50 B Net::rtl8139::mac_addr
-00857b60 B nodes
-00858b00 B node_count
-00858b04 B root
-00858b08 B set_port
-00858b0c B _stdout
-00858b10 B _stderr
-00858b20 B Kernel::CPU::gdt_entries
-00858b48 B Kernel::CPU::gdt_ptr
-00858b60 B Kernel::CPU::idt
-00859360 B Kernel::CPU::idt_reg
-00859380 B Kernel::CPU::interrupt_handlers
-00859780 B last_command
-00859800 B Kernel::CPU::tasks
-00859878 B Kernel::CPU::current_task
-0085987c B Kernel::CPU::task_count
-00859880 B Kernel::CPU::tasking_on
-00859884 B tick
-00859888 B seconds
-0085988c B ctick
-00859890 B hz
-00859894 B task_counter
-008598a0 B syscalls
-00859918 B syscall_count
-0085991c B seed
-00859920 B disks
-00859948 B disk_count
-0085994c B errno
-00859950 b strtok(char*, char*)::saved
-00859954 B kernel_end
+00114000 D scroll_on
+00114001 D to_clear
+00114004 D total_size_b
+00114008 D buffer_size
+0011400c D cursor_height
+00114010 D cursor_width
+00114014 D cursor_inner
+00114020 D cursor_map
+001143b0 D weekdays
+001143e0 D months
+00114410 D blit_right_away
+00114414 D System::VERSION
+00114418 D System::SYSTEM
+0011441c D Net::rtl8139::tsd
+00114420 D Net::rtl8139::tsad
+00114440 d Kernel::CPU::tss
+001144c0 D Kernel::CPU::exception_messages
+00114540 D verify_elf
+00114544 D keycode_length
+00114548 D shift_code_length
+0011454c D ctrl_codes_length
+00114560 D keycodes
+00114594 D shifted_codes
+0011459a D ctrl_codes
+0011459c D key_up
+0011459d D key_down
+001145a0 D letters_lower
+001145e0 D letters_upper
+00114614 D font_height
+00114618 D font_width
+00114620 D font
+00114c20 D max_syscalls
+00114c40 d Graphic::stackblur_mul
+00114e40 d Graphic::stackblur_shr
+00114f40 D error_strings
+00316000 B kernel_stack
+00516000 B stack_top
+00516000 B text_x
+00516004 B text_y
+00516008 B cx
+0051600c B cy
+00516010 B booted
+00516020 B back_buffer
+00816020 B current_display
+008160a0 B current_display_len
+008160a4 B in_ring3
+008160a8 B username
+008160ac B ssfn_src
+008160b0 B ssfn_dst
+008160e0 B written_on
+008168c0 B vga_back
+00817090 B custom_color_on
+00817094 B custom_color
+00817098 B has_scrolled
+00817099 B cout
+008170a0 B mem_blocks
+008176a0 B block_count_mem
+008176c0 B used
+00817cc0 B total_used
+00817cc4 B total_memory
+00817cc8 B total_usable
+00817ccc B shifted
+00817cd0 B returned
+00817cd4 B current_key
+00817cd5 B terminal_on
+00817cd6 B keyboard_locked
+00817cd7 B scanf_on
+00817ce0 B buffer
+008180c8 B entered_len
+008180cc B cin
+008180cd B mouse_cycle
+008180ce B mouse_byte
+008180d4 B mouse_x
+008180d8 B mouse_y
+008180dc B oldx
+008180e0 B oldy
+008180e4 B right_clicked
+008180e5 B left_clicked
+008180e6 B middle_clicked
+008180e8 B menux
+008180ec B menuy
+008180f0 B movedx
+008180f4 B movedy
+008180f8 B cursor_outer
+008180fc B century_register
+00818100 B pm_on
+00818104 B second
+00818108 B minute
+0081810c B hour
+00818110 B day
+00818114 B month
+00818118 B year
+0081811c B weekday
+00818120 B s
+00818124 B framebuffer_addr
+00818128 B pitch
+0081812c B width
+00818130 B height
+00818134 B bpp
+00818140 B Net::ARP::arp_table
+00818b40 B Kernel::devices
+00858b40 B Kernel::device_count
+00858b44 B Net::rtl8139::device
+00858b48 B Net::rtl8139::buffer
+00858b4c B Net::rtl8139::current_pair
+00858b50 B Net::rtl8139::mac_addr
+00858b60 B nodes
+00859b00 B node_count
+00859b04 B root
+00859b08 B set_port
+00859b0c B _stdout
+00859b10 B _stderr
+00859b20 B Kernel::CPU::gdt_entries
+00859b48 B Kernel::CPU::gdt_ptr
+00859b60 B Kernel::CPU::idt
+0085a360 B Kernel::CPU::idt_reg
+0085a380 B Kernel::CPU::interrupt_handlers
+0085a780 B last_command
+0085a800 B Kernel::CPU::tasks
+0085a878 B Kernel::CPU::current_task
+0085a87c B Kernel::CPU::task_count
+0085a880 B Kernel::CPU::tasking_on
+0085a884 B tick
+0085a888 B seconds
+0085a88c B ctick
+0085a890 B hz
+0085a894 B task_counter
+0085a8a0 B syscalls
+0085a918 B syscall_count
+0085a91c B seed
+0085a920 B disks
+0085a948 B disk_count
+0085a94c B Kernel::IPC::messages
+0085a950 B Kernel::IPC::message_count
+0085a954 B Kernel::IPC::id_total
+0085a958 B errno
+0085a95c b strtok(char*, char*)::saved
+0085a960 B kernel_end
 1badb002 a MAGIC
 e4524ffb a CHECKSUM

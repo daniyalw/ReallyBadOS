@@ -101,6 +101,7 @@ extern "C" {
 #include "../stdlib/errno.cpp"
 #include "sys/multitasking/thread.cpp"
 #include "sys/multitasking/scheduler.cpp"
+#include "sys/multitasking/ipc.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -254,7 +255,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Net::ARP::send_request(addr);
     */
 
-    //Kernel::CPU::init_tasking();
+    Kernel::CPU::init_tasking();
 
     //PANIC("s");
 

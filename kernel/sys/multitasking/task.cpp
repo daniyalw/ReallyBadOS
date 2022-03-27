@@ -1,6 +1,7 @@
 #include "task.h"
 #include "scheduler.h"
 #include "thread.h"
+#include "ipc.h"
 #include <shell/shell.h>
 
 namespace Kernel {
@@ -12,40 +13,26 @@ int idle_task() {
     return 0;
 }
 
-int efddsfds() {
-    int z = 0;
+int ipc_test() {
+    auto msg = Kernel::IPC::send_message_wait(current_task, 2, 4);
 
-    while (true)
-    {
-    }
+    printf("Msg: %d\n", msg->message);
+
     return 0;
 }
 
-int mdasd() {
-    printf("EEEEEE");
-    exit(0);
-    return 0;
-}
-
-int yd() {
-    printf("Yielding");
+int ipc_test11() {
     while (true) {
-        yield();
+        Kernel::IPC::Message *msg = Kernel::IPC::find_messages_pid(current_task);
+
+        if (msg != NULL) {
+            printf("Received message: %d\n", msg->message);
+            Kernel::IPC::reply_message(msg, 9);
+            Kernel::IPC::read_message(msg);
+            exit(0);
+        }
     }
-    return 0;
-}
 
-int nmc() {
-    int code = wait_retcode(5);
-
-    printf("Code: %d\n", code);
-
-    exit(0);
-    return 0;
-}
-
-int abc() {
-    exit(4);
     return 0;
 }
 
@@ -277,8 +264,10 @@ int adddd() {
 }
 
 void init_tasking() {
-    //create_process("idle", (uint32_t)&idle_task);
-    create_process("shell", (uint32_t)&shell);
+    create_process("idle", (uint32_t)&idle_task);
+    //create_process("ipc-test", (uint32_t)&ipc_test);
+    //create_process("ipc-test-1", (uint32_t)&ipc_test11);
+    //create_process("shell", (uint32_t)&shell);
 
     tasking_on = true;
     switch_task(NULL, false);
