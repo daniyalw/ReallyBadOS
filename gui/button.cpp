@@ -1,60 +1,33 @@
-#include <gui/button.h>
-#include <gui/window.h>
+#include "button.h"
 
-void draw_button(button_t button, coords_t coords) {
-    int x = coords.x + button.coords.x;
-    const int orig_x = x;
-    x += BUTTON_PIXEL_PADDING;
-    int y = coords.y + button.coords.y;
-    const int orig_y = y;
-    y += BUTTON_PIXEL_PADDING;
-    int max_w = coords.x + coords.w;
-    int max_h = coords.y + coords.h;
-    char *text = (char *)button.data[0];
+UIButton *create_button(UIWindow *win, char *text, int x, int y, int bg, int fg, auto callback) {
+    UIButton *btn = new UIButton();
 
-    int limit_x = (orig_x + button.coords.w) - orig_x;
-    int limit_y = (orig_y + button.coords.h) - orig_y;
+    memset(btn->text, 0, 100);
+    strcpy(btn->text, text);
 
-    if (x >= max_w || y >= max_h)
-        return;
+    memset(btn->name, 0, 20);
+    strcpy(btn->name, "UIButton");
 
-    draw_rect(orig_x, orig_y, limit_x, limit_y, button.bg);
-    draw_empty_rect(orig_x, orig_y, button.coords.w, button.coords.h, button.fg);
+    btn->bg = bg;
+    btn->fg = fg;
 
-    for (int z = 0; z < strlen(text); z++) {
-        draw_char(text[z], x, y, button.fg);
+    btn->coords.x = x;
+    btn->coords.y = y;
+    btn->coords.w = font_width * strlen(btn->text);
+    btn->coords.h = font_height;
 
-        x += font_width;
+    btn->id = win->child_count;
+    btn->parent = win->id;
 
-        if (x >= max_w || y >= max_h)
-            return;
-    }
+    btn->callback = callback;
 
-    //Graphic::blit_changes();
+    win->childs[btn->id] = btn;
+    win->child_count++;
+
+    return btn;
 }
 
-button_t create_button(auto win, char *text, int x, int y, auto callback, int bg, int fg) {
-    button_t button;
-
-    button.id = win.widget_count;
-    button.parent_id = win.id;
-    button.data[0] = text;
-
-    button.coords.x = x;
-    button.coords.y = y;
-    button.coords.w = (strlen(text) * font_width) + (2 * BUTTON_PIXEL_PADDING); // 3px padding on each side
-    button.coords.h = font_height + (2 * BUTTON_PIXEL_PADDING);
-
-    button.bg = bg;
-    button.fg = fg;
-
-    button.mouse_click = callback;
-    button.key_click = default_key_click;
-    button.draw_widget = draw_button;
-
-    return button;
-}
-
-button_t create_button(auto win, char *text, int x, int y, auto callback) {
-    return create_button(win, text, x, y, callback, DEFAULT_BG, DEFAULT_FG);
+UIButton *create_button(UIWindow *win, char *text, int x, int y, auto callback) {
+    return create_button(win, text, x, y, DEFAULT_BG, DEFAULT_FG, callback);
 }

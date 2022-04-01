@@ -1,50 +1,53 @@
-#include <gui/gui.h>
-#include <gui/window.h>
+#include "gui.h"
+#include "object.h"
 
 void handle_mouse_click(coords_t coords, bool right, bool left, bool middle) {
     bool done = false;
 
-    for (int z = 0; z < window_count; z++) {
-        int id = windows_z[z];
+    for (int z = 0; z < ui_obj_count; z++) {
+        UIObject *win = ui_objects[z_order[z]];
 
-        window_t win = windows[id];
-
-        if (win.null)
+        if (win->null)
             continue;
 
-        for (int b = 0; b < win.widget_count; b++) {
-            widget_t widget = win.widgets[b];
+        for (int b = 0; b < win->child_count; b++) {
+            UIObject *obj = win->childs[b];
 
-            if ((widget.coords.x + win.coords.x) <= coords.x && (widget.coords.w + (widget.coords.x + win.coords.x)) >= coords.x) {
-                if ((widget.coords.y + win.coords.y) <= coords.y && (widget.coords.h + (widget.coords.y + win.coords.y)) >= coords.y) {
-                    if (z > 0)
-                        update_window_z(id, 0);
+            if ((obj->coords.x + win->coords.x) <= coords.x && (obj->coords.w + (obj->coords.x + win->coords.x)) >= coords.x) {
+                if ((obj->coords.y + win->coords.y) <= coords.y && (obj->coords.h + (obj->coords.y + win->coords.y)) >= coords.y) {
+                    update_window_z(win->id, 0);
 
                     if (right || left || middle) {
-                        for (int c = 0; c < window_count; c++) {
-                            window_t w = windows[c];
+                        // make the active part of every widget for every window false
+                        for (int c = 0; c < ui_obj_count; c++) {
+                            auto w = ui_objects[c];
 
-                            for (int i = 0; i < w.widget_count; i++) {
-                                log::warning("GUI: widget %d of window %d turned OFF", i, c);
-                                widget_t wi = w.widgets[i];
-                                wi.active = false;
-                                w.widgets[i] = wi;
+                            for (int i = 0; i < w->child_count; i++) {
+                                auto wi = w->childs[i];
+                                wi->active = false;
+                                w->childs[i] = wi;
                             }
 
-                            windows[c] = w;
+                            ui_objects[c] = w;
                         }
 
-                        log::info("GUI: widget %d of window %d turned ON", widget.id, win.id);
-
-                        widget.active = true;
-                        win.widgets[widget.id] = widget;
-                        windows[win.id] = win;
+                        obj->active = true;
+                        win->childs[obj->id] = obj;
+                        ui_objects[win->id] = win;
                     }
 
+                    Event event = create_event();
+                    event.type = get_mouse_click_type(right, left, middle);
+
+                    event.right = right;
+                    event.left = left;
+                    event.middle = middle;
+                    event.coords = coords;
+
+                    strcpy(event.name, "mouse");
+
+                    obj->event_handle(obj, event);
                     done = true;
-                    win_draw(win);
-                    widget.mouse_click(id, widget, coords, right, left, middle);
-                    break;
                 }
             }
         }
@@ -58,21 +61,24 @@ void handle_key_entry(char key) {
     log::info("GUI: entered key '%c'", key);
     bool done = false;
 
-    for (int z = 0; z < window_count; z++) {
-        int id = windows_z[z];
+    for (int z = 0; z < ui_obj_count; z++) {
+        int id = z_order[z];
 
-        window_t win = windows[id];
+        auto win = ui_objects[id];
 
-        if (win.null)
+        if (win->null)
             continue;
 
-        for (int b = 0; b < win.widget_count; b++) {
-            widget_t widget = win.widgets[b];
+        for (int b = 0; b < win->child_count; b++) {
+            auto widget = win->childs[b];
 
-            if (widget.active) {
-                log::info("Widget found for key click: %d of window %d", widget.id, win.id);
-                win_draw(win);
-                widget.key_click(widget, key);
+            if (widget->active) {
+                Event event = create_event();
+                strcpy(event.name, "keyboard");
+                event.type = EVENT_KEY;
+                event.key = key;
+
+                widget->event_handle(widget, event);
                 done = true;
             }
         }
@@ -80,4 +86,28 @@ void handle_key_entry(char key) {
         if (done)
             break;
     }
+}
+
+Event create_event() {
+    Event event;
+
+    event.coords.x = 0;
+    event.coords.y = 0;
+    event.coords.w = 0;
+    event.coords.h = 0;
+
+    memset(event.name, 0, 20);
+
+    return event;
+}
+
+int get_mouse_click_type(bool right, bool left, bool middle) {
+    if (right)
+        return EVENT_MOUSE_RIGHT;
+    else if (left)
+        return EVENT_MOUSE_LEFT;
+    else if (middle)
+        return EVENT_MOUSE_MIDDLE;
+
+    return EVENT_MOUSE_HOVER;
 }

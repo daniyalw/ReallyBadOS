@@ -1,6 +1,6 @@
 boot = boot/loader.s
 INCLUDES = -Istdlib -Ifilesystem -Idrivers -Ikernel -I.
-COMPILER_FLAGS = -m32 -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -fpermissive -lgcc
+COMPILER_FLAGS = -m32 -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -fpermissive -lgcc -fno-rtti
 QEMU_FLAGS = -soundhw pcspk -m 1G -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk,id=nvm \
 			 -accel tcg -net nic,model=rtl8139 -net user -boot d -device bochs-display -device virtio-serial-pci
 OUT = reallybados-x86_32.iso
@@ -67,11 +67,12 @@ user:
 
 textmode:
 	make bootloader
-	${GCC} ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o built/switch.o built/eip.o -o built/main.o -T linker.ld
+	make build-cpp
 
 clean:
 	rm *.iso
 	rm built/*.o
+	rm initrd/kernel.map
 	rm isodir/boot/grub/*.cfg
 	rm usr/src/*.o
 	rm initrd/*.o
@@ -83,11 +84,12 @@ iso:
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o ${OUT} isodir
 
+build-cpp:
+	${GCC} ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/int.o built/gdt.o built/tss.o built/switch.o built/eip.o -o built/main.o -T linker.ld
+
 # graphics
 graphics:
 	${AS} -o built/loader.o boot/graphics_boot.asm
-	${GCC} ${COMPILER_FLAGS} ${INCLUDES} built/loader.o built/jmp.o kernel/kernel.cpp built/gdt.o built/int.o built/tss.o -o built/main.o -T linker.ld
-	cp built/main.o isodir/boot/main.o
-	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o ${OUT} isodir
+	make build-cpp
+	make iso
 	make run

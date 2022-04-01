@@ -33,4 +33,8 @@ namespace __cxxabiv1
 	{
 
 	}
+
+	extern "C" void __si_class_type_info() {}
+
+	extern "C" void __class_type_info() {}
 }

@@ -15,3 +15,7 @@ void operator delete(void *p) {
 void operator delete[](void *p) {
     free(p);
 }
+
+void operator delete(void *a, unsigned long b) {
+    free(a);
+}

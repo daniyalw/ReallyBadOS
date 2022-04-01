@@ -1,33 +1,36 @@
 #pragma once
 
-#define MAX_WINDOWS 10
+#include "object.h"
 
-#include <gui/coords.h>
-#include <gui/widget.h>
+struct UIWindow : public UIObject {
+    virtual void event_handle(UIObject *object, Event event) override {
 
-typedef struct
-{
-    char name[20];
-    widget_t widgets[10];
-    int widget_count = 0;
-    coords_t coords;
-    int id;
+    }
 
-    bool dragged = false;
-    bool null = false;
+    virtual void draw(UIObject *object, coords_t __coords) override {
+        Graphic::draw_rect(object->coords.x, object->coords.y - font_height - 2, object->coords.w, font_height + 2, Graphic::rgb(14, 0, 135));
+        draw_string(object->name, object->coords.x, object->coords.y - font_height - 1, Graphic::rgb(255, 255, 255));
 
-    int bg;
-} window_t;
+        Graphic::draw_rect(object->coords.x, object->coords.y, object->coords.w, object->coords.h, object->bg);
 
-window_t windows[MAX_WINDOWS];
-int windows_z[MAX_WINDOWS];
-int window_count = 0;
+        for (int z = 0; z < object->child_count; z++)
+            if (object->childs[z]->to_draw)
+                object->childs[z]->draw(object->childs[z], object->coords);
+    }
+};
 
-window_t window_create(int x, int y, int bg, char *title, ...);
-void win_draw(window_t win);
+UIWindow *create_window(char *name, int bg, int fg, int font);
 
-void add_new_window(window_t win);
-void remove_window_z(int _z);
+int find_z_from_id(int id);
+void move_z_order_up(int pos, int size);
+void add_z_order(int id);
+void move_z_order_down(int pos, int size);
+void remove_z(int id);
+
 void remove_window_id(int id);
-void add_window_at_location(int _z, int id);
-void update_window_z(int id, int new_z);
+void remove_window(UIWindow *win);
+void add_window(UIWindow *win);
+
+void draw_window(UIWindow *win);
+
+void update_window_z(int id, int pos);

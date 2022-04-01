@@ -8,7 +8,7 @@ extern "C" {
 }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -40,6 +40,7 @@ extern "C" {
 #include <net/ethernet.h>
 #include <tree.h>
 #include <cxa.h>
+#include <gui/coords.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
@@ -110,24 +111,20 @@ extern "C" {
 #include "../gui/label.cpp"
 #include "../gui/window.cpp"
 #include "../gui/entry.cpp"
+
+void callback(UIObject *obj, Event event) {
+    if (strcmp(event.name, "keyboard") == 0) {
+        log::info("Keyboard event.\n");
+    } else if (strcmp(event.name, "mouse") == 0) {
+        log::info("Mouse event.\n");
+    } else {
+        log::info("Unknown event of type: %d\n", event.type);
+    }
+}
 #endif
 
 using namespace Time;
 using namespace Graphic;
-
-#ifdef GRAPHICS
-void call(int id, widget_t widget, bool right, bool left, bool middle) {
-    log::info("Called!");
-
-    if (left) {
-        widget.bg = Graphic::rgb(255, 255, 255);
-        window_t win = windows[widget.parent_id];
-        win.widgets[widget.id] = widget;
-        windows[win.id] = win;
-        win_draw(win);
-    }
-}
-#endif
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -190,18 +187,15 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     Graphic::redraw_background_picture(array);
 
-    window_t win = window_create(100, 100, DEFAULT_BG, "Settings");
+    UIWindow *win = create_window("Test", DEFAULT_BG, DEFAULT_FG, DEFAULT_FONT);
 
+    UILabel *label = create_label(win, "Test label!", 4, 4);
+    draw_widget(label);
 
-    entry_t entry = create_entry(win, 10, 10);
-    win = add_widget(win, entry);
-    win = entry.draw();
+    UIButton *button = create_button(win, "Button", 10, 10, callback);
+    draw_widget(button);
 
-    button_t b = create_button(win, "heh", 10, 25, call);
-    win = add_widget(win, b);
-    win = b.draw();
-
-    win_draw(win);
+    draw_window(win);
 
     Graphic::blit_changes();
 

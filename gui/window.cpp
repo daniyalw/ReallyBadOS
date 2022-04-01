@@ -1,76 +1,89 @@
-#include <gui/window.h>
-#include <gui/widget.h>
 #include <gui/coords.h>
 #include <utils.h>
+#include "window.h"
 
-window_t window_create(int x, int y, int bg, char *title, ...) {
-    va_list va;
-    coords_t coords;
-    window_t window;
+UIWindow *create_window(char *name, int bg, int fg, int font) {
+    UIWindow *win = new UIWindow();
 
-    va_start(va, title);
-    char *out;
-    out = vsprintf(out, title, va);
-    va_end(va);
+    memset(win->name, 0, 20);
+    strcpy(win->name, name);
 
-    coords.x = x;
-    coords.y = y;
-    coords.w = 200;
-    coords.h = 200;
+    win->bg = bg;
+    win->fg = fg;
+    win->fsize = font;
 
-    window.bg = bg;
+    win->coords.x = 100;
+    win->coords.y = 100;
+    win->coords.w = 300;
+    win->coords.h = 300;
 
-    window.coords = coords;
-    strcpy(window.name, out);
-    window.id = window_count;
+    win->parent = -1;
 
-    windows[window_count] = window;
-    add_new_window(window);
-    window_count++;
+    add_window(win);
 
-    return window;
+    return win;
 }
 
-void win_draw(window_t win) {
-    // title
-    Graphic::draw_rect(win.coords.x, win.coords.y - font_height - 2, win.coords.w, font_height + 2, Graphic::rgb(14, 0, 135));
-    draw_string(win.name, win.coords.x, win.coords.y - font_height - 1, Graphic::rgb(255, 255, 255));
+int find_z_from_id(int id) {
+    for (int z = 0; z < ui_obj_count; z++)
+        if (z_order[z] == id)
+            return z;
 
-    // body
-    Graphic::draw_rect(win.coords.x, win.coords.y, win.coords.w, win.coords.h, win.bg);
-
-    for (int z = 0; z < win.widget_count; z++)
-        if (win.widgets[z].to_draw)
-            win.widgets[z].draw_widget(win.widgets[z], win.coords);
+    return -1;
 }
 
-void add_new_window(window_t win) {
-    add_window_at_location(0, win.id);
+void move_z_order_up(int pos, int size) {
+    for (int z = ui_obj_count - 1; z >= pos; z--) {
+        z_order[z + 1] = z_order[z];
+    }
 }
 
-void remove_window_z(int _z) {
-    for (int b = _z; b < window_count; b++)
-        windows_z[b] = windows_z[b + 1];
+void add_z_order(int id) {
+    move_z_order_up(0, 1);
+    z_order[0] = id;
+}
+
+void move_z_order_down(int pos, int size) {
+    for (int z = pos; z < ui_obj_count; z++) {
+        z_order[z] = z_order[z + 1];
+    }
+}
+
+void remove_z(int id) {
+    int z = find_z_from_id(id);
+
+    if (z != -1) {
+        move_z_order_down(z, 1);
+    }
 }
 
 void remove_window_id(int id) {
-    int _z = -1;
+    if (id < 0 || id >= ui_obj_count)
+        return;
 
-    for (int z = 0; z < window_count; z++)
-        if (windows_z[z] == id)
-            _z = z;
+    remove_z(id);
 
-    if (_z != -1) remove_window_z(_z);
+    ui_objects[id]->null = true;
 }
 
-void add_window_at_location(int _z, int id) {
-    for (int b = window_count; b >= _z; b--)
-        windows_z[b + 1] = windows_z[b];
-
-    windows_z[_z] = id;
+void remove_window(UIWindow *win) {
+    remove_window_id(win->id);
 }
 
-void update_window_z(int id, int new_z) {
+void add_window(UIWindow *win) {
+    win->id = ui_obj_count;
+    ui_objects[win->id] = win;
+    ui_obj_count++;
+
+    add_z_order(win->id);
+}
+
+void draw_window(UIWindow *win) {
+    win->draw(win, win->coords);
+}
+
+void update_window_z(int id, int pos) {
     remove_window_id(id);
-    add_window_at_location(new_z, id);
+    move_z_order_up(pos, 1);
+    z_order[pos] = id;
 }
