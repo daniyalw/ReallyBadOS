@@ -67,7 +67,6 @@ char * strip(char * string, char key);
 char * split(char * string, char key, int position, char * out);
 int gvfs(char * s, char value);
 bool endswith(char * words, char * end);
-char * append(char * j1, char * j2, char * dest);
 void itoa(unsigned int num, char * out);
 void itoa(int num, char * out);
 static void itoa(char *buf, int base, int d);
@@ -80,3 +79,5 @@ char * reverse_string(char * str, int limit, char * out);
 char strgetlast(char *c);
 
 char *strdup(char *str);
+
+char * strcat(char *dest, char *src);

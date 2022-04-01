@@ -73,10 +73,12 @@ fs_node_t *absolute_path_node(char *cwd, char *fmt) {
         return NULL;
     }
 
-    if (fmt[0] != '/')
-        append(cwd, fmt, path);
-    else
+    if (fmt[0] != '/') {
+        strcat(path, cwd);
+        strcat(path, fmt);
+    } else {
         strcpy(path, fmt);
+    }
 
     return find_node_fixed(path);
 }

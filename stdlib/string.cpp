@@ -170,18 +170,15 @@ bool charcmp(char str1, char str2) {
     return false;
 }
 
-char * append(char * j1, char * j2, char * dest) {
-    int c = 0;
+char * strcat(char *dest, char *src) {
+    int c = strlen(dest);
 
-    for (int z = 0; z < strlen(j1); z++) {
-        dest[c] = j1[z];
+    for (int z = 0; z < strlen(src); z++) {
+        dest[c] = src[z];
         c++;
     }
 
-    for (int z = 0; z < strlen(j2); z++) {
-        dest[c] = j2[z];
-        c++;
-    }
+    dest[c] = 0;
 
     return dest;
 }
@@ -189,7 +186,9 @@ char * append(char * j1, char * j2, char * dest) {
 char * append_int(char * j1, int num, char * dest) {
     char * textnum;
     itoa(num, textnum);
-    return append(j1, textnum, dest);
+    strcat(dest, j1);
+    strcat(dest, textnum);
+    return dest;
 }
 
 int vsscanf(char *str, char *fmt, va_list va) {
@@ -382,11 +381,6 @@ bool endswith(char * words, char * end) {
 
 char * strcpy(char * d, char * s) {
     while ((*d++ = *s++));
-    return d;
-}
-
-char * strcat(char * d, char * s) {
-    strcpy(d + len(d), s);
     return d;
 }
 
@@ -590,7 +584,7 @@ string::string(char * data) {
 }
 
 void string::append_string(char * data) {
-    append(str, data, str);
+    strcat(str, data);
     length += strlen(data);
 }
 
@@ -666,18 +660,18 @@ bool string::operator>(string s) {
 }
 
 bool string::operator>(char * s) {
-    if (this->length > len(s))
+    if (this->length > strlen(s))
         return true;
 
     return false;
 }
 
 void string::operator+(string s) {
-    append(this->c_str(), s.c_str(), this->str);
+    strcat(this->str, s.c_str());
 }
 
 void string::operator+(char * s) {
-    append(this->str, s, this->str);
+    strcat(this->str, s);
 }
 
 char string::operator[](int z) {
