@@ -380,7 +380,23 @@ bool endswith(char * words, char * end) {
 }
 
 char * strcpy(char * d, char * s) {
-    while ((*d++ = *s++));
+    return strncpy(d, s, strlen(s));
+}
+
+char *strncpy(char *d, char *s, int n) {
+    const int max = strlen(s);
+    int c = 0;
+
+    for (int z = 0; z < max; z++) {
+        if (z == n)
+            break;
+
+        d[z] = s[z];
+        c++;
+    }
+
+    d[c] = 0;
+
     return d;
 }
 

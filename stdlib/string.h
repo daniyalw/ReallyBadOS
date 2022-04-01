@@ -40,6 +40,7 @@ void clears(char * d);
 uint32_t uint_atoi(char *str);
 char * strcat(char * d, char * s);
 char * strcpy(char * d, char * s);
+char *strncpy(char *d, char *s, int n);
 bool startswith(char * words, char * start);
 char * append(char * orig, char * anew);
 bool charcmp(char str1, char str2);
