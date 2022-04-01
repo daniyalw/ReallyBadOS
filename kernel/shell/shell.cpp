@@ -71,8 +71,6 @@ int run_command(char * command) {
         file = fopen(fname, "r");
 
     if (file == NULL) {
-        fclose(file);
-
         // if we fail, try searching the usr folder
         fname = get("", "/usr/bin/%s.o", executable, executable);
         file = fopen(fname, "r");
@@ -179,9 +177,6 @@ void shell() {
         } else if (check_name(command, "exit")) {
             Kernel::CPU::exit(0);
         }
-
-        memset(last_command, NULL, 100);
-        strcpy(last_command, command);
 
         run_command(command);
 
