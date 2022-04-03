@@ -8,7 +8,7 @@ extern "C" {
 }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -112,13 +112,13 @@ extern "C" {
 #include "../gui/window.cpp"
 #include "../gui/entry.cpp"
 
-void callback(UIObject *obj, Event event) {
-    if (strcmp(event.name, "keyboard") == 0) {
+void callback(UIObject *obj, Event *event) {
+    if (strcmp(event->name, "keyboard") == 0) {
         log::info("Keyboard event.\n");
-    } else if (strcmp(event.name, "mouse") == 0) {
+    } else if (strcmp(event->name, "mouse") == 0) {
         log::info("Mouse event.\n");
     } else {
-        log::info("Unknown event of type: %d\n", event.type);
+        log::info("Unknown event of type: %d name: %s\n", event->type, event->name);
     }
 }
 #endif

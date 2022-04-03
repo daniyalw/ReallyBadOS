@@ -4,8 +4,8 @@
 #include "object.h"
 
 struct UILabel : public UIObject {
-    virtual void event_handle(UIObject *object, Event event) override {
-        log::error("Label: received event\n");
+    virtual void event_handle(UIObject *object, Event *event) override {
+        log::error("Label: received event of type %s\n", event->name);
     }
 
     virtual void draw(UIObject *object, coords_t _coords) override {

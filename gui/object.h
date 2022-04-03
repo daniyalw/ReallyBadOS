@@ -26,7 +26,7 @@ struct UIObject {
     bool dragged = false, null = false, active = false, to_draw = false;
     int id, parent;
 
-    virtual void event_handle(UIObject*, Event) {}
+    virtual void event_handle(UIObject*, Event*) {}
     virtual void draw(UIObject*, coords_t) {}
 };
 

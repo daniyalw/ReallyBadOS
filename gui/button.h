@@ -4,8 +4,9 @@
 #include "object.h"
 
 struct UIButton : public UIObject {
-    virtual void event_handle(UIObject *object, Event event) override {
-        callback(this, event);
+    virtual void event_handle(UIObject *object, Event *event) override {
+        //callback(this, event);
+        log::error("%s event", event->name);
     }
 
     virtual void draw(UIObject *object, coords_t _coords) override {
@@ -13,7 +14,7 @@ struct UIButton : public UIObject {
             Graphic::draw_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w, object->coords.h, object->bg);
         }
 
-        Graphic::draw_empty_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w + padding * 2, object->coords.h + padding * 2, object->fg);
+        Graphic::draw_empty_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w, object->coords.h, object->fg);
 
         const int max_w = _coords.x + object->coords.x + object->coords.w;
         const int max_h = _coords.y + object->coords.y + object->coords.h;
@@ -42,5 +43,5 @@ struct UIButton : public UIObject {
     int outer = 1; // outer is small little border; 1 - true; 0 - false
     int padding = 2;
 
-    void (*callback)(UIObject*, Event);
+    void (*callback)(UIObject*, Event*);
 };

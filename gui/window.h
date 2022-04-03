@@ -3,8 +3,8 @@
 #include "object.h"
 
 struct UIWindow : public UIObject {
-    virtual void event_handle(UIObject *object, Event event) override {
-
+    virtual void event_handle(UIObject *object, Event *event) override {
+        log::info("WINDOW EVENT %s\n", event->name);
     }
 
     virtual void draw(UIObject *object, coords_t __coords) override {
@@ -34,3 +34,4 @@ void add_window(UIWindow *win);
 void draw_window(UIWindow *win);
 
 void update_window_z(int id, int pos);
+void log_z_order();

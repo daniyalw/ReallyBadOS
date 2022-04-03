@@ -87,3 +87,10 @@ void update_window_z(int id, int pos) {
     move_z_order_up(pos, 1);
     z_order[pos] = id;
 }
+
+// debug
+void log_z_order() {
+    for (int z = 0; z < ui_obj_count; z++) {
+        log::warning("ID %d at z %d", z_order[z], z);
+    }
+}

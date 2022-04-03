@@ -14,8 +14,8 @@ UIButton *create_button(UIWindow *win, char *text, int x, int y, int bg, int fg,
 
     btn->coords.x = x;
     btn->coords.y = y;
-    btn->coords.w = font_width * strlen(btn->text);
-    btn->coords.h = font_height;
+    btn->coords.w = font_width * strlen(btn->text) + (btn->padding * 2);
+    btn->coords.h = font_height + (btn->padding * 2);
 
     btn->id = win->child_count;
     btn->parent = win->id;
@@ -24,6 +24,8 @@ UIButton *create_button(UIWindow *win, char *text, int x, int y, int bg, int fg,
 
     win->childs[btn->id] = btn;
     win->child_count++;
+
+    ui_objects[win->id] = win;
 
     return btn;
 }
