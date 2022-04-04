@@ -144,11 +144,10 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
         if (type == FS_FILE)
             ret = node->mkfile(node);
         else if (type == FS_FOLDER)
-            ret = node->mkdir(node, node->path);
+            ret = node->mkdir(node);
 
         if (ret != 0) {
             free(node);
-            printf("Error creating node");
             return NULL;
         }
     }
@@ -198,10 +197,11 @@ int write_node(fs_node_t *node, int offset, int size, char *contents) {
 int read_node(fs_node_t *node, int offset, int size, char *buffer) {
     int ret = 0;
 
-    if (node->read != NULL)
+    if (node->read != NULL) {
         ret = node->read(node, offset, size, buffer);
-    else if (node->flags != FS_FOLDER)
+    } else if (node->flags != FS_FOLDER) {
         strcpy(buffer, node->contents);
+    }
 
     return ret;
 }

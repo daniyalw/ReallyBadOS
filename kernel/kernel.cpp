@@ -8,7 +8,7 @@ extern "C" {
 }
 
 //#define DEBUG
-#define GRAPHICS
+//#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -103,6 +103,7 @@ extern "C" {
 #include "sys/multitasking/thread.cpp"
 #include "sys/multitasking/scheduler.cpp"
 #include "sys/multitasking/ipc.cpp"
+#include "../filesystem/disk.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -252,6 +253,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     ///Kernel::CPU::init_tasking();
 
     //PANIC("s");
+
+    init_rbfs();
 
     test_install();
 

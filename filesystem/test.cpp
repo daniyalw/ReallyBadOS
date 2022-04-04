@@ -16,8 +16,8 @@ int test_mkfile(fs_node_t *node) {
     return 0;
 }
 
-int test_mkdir(fs_node_t *node, char *path) {
-    log::info("Creating new folder %s\n", path);
+int test_mkdir(fs_node_t *node) {
+    log::info("Creating new folder %s\n", node->path);
     return 0;
 }
 
