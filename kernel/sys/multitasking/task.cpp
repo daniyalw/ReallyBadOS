@@ -14,21 +14,22 @@ int idle_task() {
 }
 
 int ipc_test() {
-    auto msg = Kernel::IPC::send_message_wait(current_task, 2, 4);
+    auto msg = ipc_send_message_wait(current_task, 2, (uint8_t *)strdup("Hello!"));
 
-    printf("Msg: %d\n", msg->message);
+    printf("Msg: %s\n", msg->message);
 
     return 0;
 }
 
 int ipc_test11() {
     while (true) {
-        Kernel::IPC::Message *msg = Kernel::IPC::find_messages_pid(current_task);
+        Message *msg = ipc_find_messages_pid(current_task);
 
         if (msg != NULL) {
-            printf("Received message: %d\n", msg->message);
-            Kernel::IPC::reply_message(msg, 9);
-            Kernel::IPC::read_message(msg);
+            printf("Received message: %s\n", msg->message);
+            ipc_reply_message(msg, (uint8_t *)strdup("Bye!"));
+            free(msg->message);
+            ipc_read_message(msg);
             exit(0);
         }
     }
@@ -265,8 +266,8 @@ int adddd() {
 
 void init_tasking() {
     create_process("idle", (uint32_t)&idle_task);
-    //create_process("ipc-test", (uint32_t)&ipc_test);
-    //create_process("ipc-test-1", (uint32_t)&ipc_test11);
+    create_process("ipc-test", (uint32_t)&ipc_test);
+    create_process("ipc-test-1", (uint32_t)&ipc_test11);
     //create_process("shell", (uint32_t)&shell);
 
     tasking_on = true;
