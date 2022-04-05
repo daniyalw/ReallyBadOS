@@ -75,6 +75,11 @@ void free_block(uint32_t addr, int size) {
     }
 
     if (found_in_list) {
+        // clean
+        for (int z = 0; z < size; z++) {
+            ((short *)addr)[z] = NULL;
+        }
+
         mem_t m;
         m.addr = addr;
         m.size = size;
@@ -102,8 +107,12 @@ uint32_t move_block_with_new_size(uint32 old, int newsize) {
         if (newaddr == NULL)
             return get_free_block(block.size);
 
-        for (uint32_t z = old; z < block.size; z++)
+        for (uint32_t z = 0; z < block.size; z++)
             ((short *)newaddr)[z] = ((short *)old)[z];
+
+        for (uint32_t z = 0; z < block.size; z++) {
+            ((short *)old)[z] = NULL;
+        }
 
         return newaddr;
     } else {
