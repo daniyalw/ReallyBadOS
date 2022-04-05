@@ -23,3 +23,4 @@ void ipc_send_message(int to, uint8_t *message);
 void ipc_reply_message(Message *msg, uint8_t *message);
 Message *ipc_find_messages_pid(Kernel::CPU::pid_t pid);
 Message *ipc_send_message_wait(int from, int to, uint8_t *message);
+Message *ipc_check_inbox();
