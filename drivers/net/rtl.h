@@ -27,6 +27,8 @@ namespace rtl8139
 #define RTL_TSAD2 0x28
 #define RTL_TSAD3 0x2C
 
+#define BUFSIZE 8192 + 16 + 1500
+
 uint8_t tsd[] = {
     RTL_TSD0, RTL_TSD1, RTL_TSD2, RTL_TSD3
 };

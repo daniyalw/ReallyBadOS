@@ -79,5 +79,5 @@ Message *ipc_send_message_wait(int from, int to, uint8_t *message) {
 }
 
 Message *ipc_check_inbox() {
-    return ipc_find_messages_pid(current_task);
+    return ipc_find_messages_pid(Kernel::CPU::current_task);
 }

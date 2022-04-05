@@ -1,6 +1,7 @@
 #include <kernel/sys/pci/pci.h>
 #include <drivers/net/rtl.h>
 #include <sys/io.h>
+#include <net/ethernet.h>
 
 using namespace Net;
 using namespace rtl8139;
@@ -35,7 +36,7 @@ void reset() {
 void init_recv_buffer() {
     ASSERT(device != NULL);
 
-    buffer = (uint32_t)malloc(8192 + 16 + 1500);
+    buffer = (uint32_t)malloc(BUFSIZE);
     Kernel::IO::outw(device->base + RTL_RBSTART, buffer);
 }
 
@@ -51,7 +52,7 @@ void init_irq() {
 void configure_recv() {
     ASSERT(device != NULL);
 
-    Kernel::IO::outl(device->base + 0x44, 0xf | (1 << 7));
+    Kernel::IO::outl(device->base + 0x44, 0xF | (1 << 7));
 }
 
 void enable_recv() {
@@ -60,6 +61,8 @@ void enable_recv() {
     Kernel::IO::outb(device->base + RTL_CMD, 0x0C);
 }
 
+uint32_t cptr = 0;
+
 void handle_irq(registers_t *regs) {
     ASSERT(device != NULL);
 
@@ -67,6 +70,25 @@ void handle_irq(registers_t *regs) {
 
     if (ret & RTL_ISR_RECV_OK) {
         log::info("rtl: packet received");
+        Kernel::IO::outw(device->base + RTL_ISR, RTL_ISR_FINISH);
+
+        uint16_t *t = (uint16_t *)(buffer + cptr);
+        int length = *t + 1;
+        t += 2;
+
+        void *packet = (void *)malloc(length + 1);
+        memset((int *)packet, 0, length + 1);
+        memcpy(packet, t, length);
+
+        Net::Ethernet::handle_packet(packet, length);
+
+        cptr = (cptr + 4 + 3 + length) & (~3);
+
+        if (cptr > BUFSIZE) {
+            cptr -= BUFSIZE;
+        }
+
+        Kernel::IO::outw(device->base + 0x3E, 0x5); // to reset it
     } else if (ret & RTL_ISR_RECV_ERR) {
         log::info("rtl: failed to receive packet");
     } else if (ret & RTL_ISR_SENT_OK) {
@@ -84,7 +106,7 @@ void send_packet(void *data, int length) {
     uint8_t *copy = (uint8_t *)malloc(length);
     memcpy(copy, data, length);
 
-    Kernel::IO::outl(device->base + tsad[current_pair], (uint32_t)&copy);
+    Kernel::IO::outl(device->base + tsad[current_pair], (uint32_t)copy);
     Kernel::IO::outl(device->base + tsd[current_pair], length);
 
     current_pair++;
@@ -105,6 +127,13 @@ void start() {
     }
 
     Kernel::CPU::register_interrupt_handler(47, handle_irq);
+
+    uint32_t ret = Kernel::read_pci(device->bus, device->device, device->function, 0x04);
+
+    if (!(ret & (1 << 2))) {
+        ret |= (1 << 2);
+        Kernel::write_pci(device->bus, device->device, device->function, 0x04, ret);
+    }
 
     power_on();
     reset();

@@ -19,3 +19,33 @@ uint8_t *get_src_mac(uint8_t mac_addr[6]) {
 
     return (uint8_t *)mac_addr;
 }
+
+uint8_t to_byte(uint8_t byte, int num_bits) {
+    uint8_t t = byte << (8 - num_bits);
+    return t | (byte >> num_bits);
+}
+
+uint8_t htonb(uint8_t byte, int num_bits) {
+    return to_byte(byte, num_bits);
+}
+
+uint8_t ntohb(uint8_t byte, int num_bits) {
+    return to_byte(byte, 8 - num_bits);
+}
+
+
+uint16_t htons(uint16_t hostshort) {
+    return to_short(hostshort);
+}
+
+uint32_t htonl(uint32_t hostlong) {
+    return to_big(hostlong);
+}
+
+uint16_t ntohs(uint16_t netshort) {
+    return to_short(netshort);
+}
+
+uint32_t ntohl(uint32_t netlong) {
+    return to_big(netlong);
+}

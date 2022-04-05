@@ -241,16 +241,16 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     else
         printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
 
-    /*
+
     uint8_t addr[] = {
         10, 0, 0, 199
     };
 
     Net::rtl8139::start();
     Net::ARP::send_request(addr);
-    */
 
-    Kernel::CPU::init_tasking();
+
+    //Kernel::CPU::init_tasking();
 
     //PANIC("s");
 
