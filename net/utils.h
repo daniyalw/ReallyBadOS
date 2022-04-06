@@ -2,6 +2,7 @@
 
 #define ETHERNET_ARP 0x0806
 #define ETHERNET_IP  0x0800
+#define ETHERNET_ARP 0x0806
 
 #define HARDWARE_ETHERNET 0x01
 
@@ -12,7 +13,7 @@
 
 uint32_t to_big(uint32_t lint);
 uint16_t to_short(uint16_t sint);
-uint8_t *get_src_mac(uint8_t mac_addr[6]);
+void get_src_ip(uint8_t *ip); // just temp
 
 uint8_t to_byte(uint8_t byte, int num_bits);
 uint8_t htonb(uint8_t byte, int num_bits);

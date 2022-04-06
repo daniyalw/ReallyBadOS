@@ -1,11 +1,9 @@
 #pragma once
 
 #include <sys/pci/pci.h>
+#include <drivers/net/net.h>
 
 namespace Net
-{
-
-namespace rtl8139
 {
 
 // wrap in nice #defines
@@ -27,7 +25,7 @@ namespace rtl8139
 #define RTL_TSAD2 0x28
 #define RTL_TSAD3 0x2C
 
-#define BUFSIZE 8192 + 16 + 1500
+#define RTL_BUFSIZE 8192 + 16 + 1500
 
 uint8_t tsd[] = {
     RTL_TSD0, RTL_TSD1, RTL_TSD2, RTL_TSD3
@@ -47,29 +45,36 @@ uint8_t tsad[] = {
 
 #define RTL_ISR_FINISH 0x5
 
-Kernel::PCIDevice *device;
-uint32_t buffer;
+class rtl8139 : public NetDriver {
+private:
+    uint32_t buffer;
 
-int current_pair = 0;
+    int current_pair = 0;
 
-uint8_t mac_addr[6]; // 6-byte
+    void power_on();
+    void reset();
+    void init_recv_buffer();
+    void init_irq();
+    void configure_recv();
+    void enable_recv();
+    void find_mac();
 
-void power_on();
-void reset();
+    uint32_t cptr = 0;
 
-void init_recv_buffer();
-void configure_recv();
-void enable_recv();
+    void print_mac(uint8_t *_mac) {
+        log::info("rtl: successfully enabled network card! MAC: %x:%x:%x:%x:%x:%x", _mac[0], _mac[1], _mac[2], _mac[3], _mac[4], _mac[5]);
+    }
 
-void find_mac();
+public:
 
-void send_packet(void *data, int length);
+    virtual void get_mac(uint8_t *mac) override {
+        memcpy(mac, mac_addr, 6);
+    }
 
-void init_irq();
-void handle_irq(registers_t *regs);
-
-void start();
-
-}
+    virtual void send(void *data, int length) override;
+    virtual int start() override;
+    virtual void end() override;
+    virtual void handle_irq(registers_t *regs) override;
+};
 
 }

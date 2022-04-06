@@ -14,12 +14,6 @@ uint16_t to_short(uint16_t sint) {
     return (b1 << 8) | (b2);
 }
 
-uint8_t *get_src_mac(uint8_t mac_addr[6]) {
-    memcpy(mac_addr, rtl8139::mac_addr, 6);
-
-    return (uint8_t *)mac_addr;
-}
-
 uint8_t to_byte(uint8_t byte, int num_bits) {
     uint8_t t = byte << (8 - num_bits);
     return t | (byte >> num_bits);
@@ -48,4 +42,11 @@ uint16_t ntohs(uint16_t netshort) {
 
 uint32_t ntohl(uint32_t netlong) {
     return to_big(netlong);
+}
+
+void get_src_ip(uint8_t *ip) {
+    ip[0] = 10;
+    ip[1] = 0;
+    ip[2] = 2;
+    ip[3] = 14;
 }

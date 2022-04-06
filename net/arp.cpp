@@ -21,14 +21,44 @@ void send_request(uint8_t ip_addr[4]) {
     memset(arp->dst_hardware_addr, 0xFF, 6);
     memcpy(arp->dst_protocol_addr, ip_addr, 4);
 
-    get_src_mac(arp->src_hardware_addr);
-
-    arp->src_protocol_addr[0] = 10;
-    arp->src_protocol_addr[1] = 0;
-    arp->src_protocol_addr[2] = 2;
-    arp->src_protocol_addr[3] = 14;
+    Net::get_mac(arp->src_hardware_addr);
+    get_src_ip(arp->src_protocol_addr);
 
     send_ethernet_packet(arp->dst_hardware_addr, ETHERNET_ARP, sizeof(arp_t), (uint8_t *)arp);
+}
+
+void handle_arp(arp_t *packet, int length) {
+    // need it for later
+    uint8_t dha[6];
+    uint8_t dpa[6];
+
+    memcpy(dha, packet->src_hardware_addr, 6);
+    memcpy(dpa, packet->src_protocol_addr, 4);
+
+    int type = ntohs(packet->opcode);
+
+    switch (type) {
+        case ARP_REQUEST:
+            // send mac address back
+            Net::get_mac(packet->src_hardware_addr);
+            get_src_ip(packet->src_protocol_addr);
+
+            memcpy(packet->dst_hardware_addr, dha, 6);
+            memcpy(packet->dst_protocol_addr, dpa, 4);
+
+            packet->opcode = htons(ARP_REPLY);
+            packet->hardware_type = htons(HARDWARE_ETHERNET);
+            packet->protocol_type = htons(ETHERNET_IP);
+
+            send_ethernet_packet(dha, ETHERNET_ARP, sizeof(arp_t), (uint8_t *)packet);
+            break;
+        case ARP_REPLY:
+            log::warning("net: not equppied to handle ARP_REPLY");
+
+        default:
+            log::error("net: unknown ARP operation code received: %d\n", type);
+            break;
+    }
 }
 
 }

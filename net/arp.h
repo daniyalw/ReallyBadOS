@@ -32,6 +32,7 @@ typedef struct
 arp_table_t arp_table[256];
 
 void send_request(uint8_t ip_addr[4]);
+void handle_arp(arp_t *packet, int length);
 
 }
 
