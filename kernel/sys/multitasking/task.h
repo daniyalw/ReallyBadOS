@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ipc.h"
+
 namespace Kernel {
 
 namespace CPU {
@@ -23,6 +25,8 @@ typedef struct
     uint32_t start;
     int argc;
     char *argv[64];
+    Message *messages[10];
+    int message_count = 0;
 } task_t;
 
 task_t *tasks[30];

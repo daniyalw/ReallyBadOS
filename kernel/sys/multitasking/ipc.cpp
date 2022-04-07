@@ -1,61 +1,93 @@
 #include "ipc.h"
 #include "task.h"
 
-Message *ipc_create_msg(int from, int to, int orig, uint8_t *message) {
-    Message *msg = new Message();
-    // the id part is written outside
+int ipc_task_msg_count(int n) {
+    if (n < 0 || n >= Kernel::CPU::task_count) {
+        return -1;
+    }
 
-    msg->from = from;
+    int length = 0;
+
+    for (int z = 0; z < msg_count; z++) {
+        if (messages[z]->to == n) {
+            length++;
+        }
+    }
+
+    return length;
+}
+
+Message * ipc_create_msg(int to, int from, char *message) {
+    Message * msg = new Message();
+
+    msg->data = message;
     msg->to = to;
-    msg->orig_sender = orig;
-    msg->message = message;
+    msg->from = from;
+    msg->id = ipc_task_msg_count(to);
+    msg->pos = msg_count;
 
     return msg;
 }
 
-void ipc_add_msg_list(Message *msg) {
-    msg->id = id_total;
-    messages[message_count] = msg;
-    message_count++;
-    id_total++;
-}
+int ipc_send_msg(int to, int from, char *message) {
+    Message * msg = ipc_create_msg(to, from, message);
 
-        // message at pos will assume to have been read
-void ipc_move_msgs_down(int pos) {
-    for (int z = pos; z < message_count; z++) {
-        messages[z] = messages[z + 1];
+    if (msg->id == -1) {
+        return -1;
     }
 
-    message_count--;
+    messages[msg_count] = msg;
+    msg_count++;
+
+    return 0;
 }
 
-void ipc_read_message_id(int id) {
-    free(messages[id]);
-    ipc_move_msgs_down(id);
+int ipc_send_msg(int to, char *message) {
+    return ipc_send_msg(to, Kernel::CPU::current_task, message);
 }
 
-void ipc_read_message(Message *msg) {
-    ipc_read_message_id(msg->id);
+Message *ipc_send_wait(int to, char *message, int timeout /* useful if a process never replies */) {
+    if (ipc_send_msg(to, message) == -1) {
+        return NULL;
+    }
+
+    sleep_sec(timeout);
+
+    return ipc_read_last_msg();
 }
 
-void ipc_send_message(int from, int to, uint8_t *message) {
-    Message *msg = ipc_create_msg(from, to, from, message);
-    ipc_add_msg_list(msg);
+Message *ipc_send_wait(int to, char *message) {
+    return ipc_send_wait(to, message, 2);
 }
 
-void ipc_send_message(int to, uint8_t *message) {
-    Message *msg = ipc_create_msg(Kernel::CPU::current_task, to, Kernel::CPU::current_task, message);
-    ipc_add_msg_list(msg);
+int ipc_find_messages(int task, Message **msgs) {
+    if (task < 0 || task >= Kernel::CPU::task_count) {
+        return NULL;
+    }
+
+    int c = 0;
+
+    for (int z = 0; z < msg_count; z++) {
+        if (messages[z]->to == task) {
+            msgs[c] = messages[z];
+            c++;
+        }
+    }
+
+    return c;
 }
 
-void ipc_reply_message(Message *msg, uint8_t *message) {
-    Message *_msg = ipc_create_msg(msg->to, msg->from, msg->orig_sender, message);
-    ipc_add_msg_list(_msg);
+int ipc_find_messages(Message **msgs) {
+    return ipc_find_messages(Kernel::CPU::current_task, msgs);
 }
 
-Message *ipc_find_messages_pid(Kernel::CPU::pid_t pid) {
-    for (int z = 0; z < message_count; z++) {
-        if (messages[z]->to == pid) {
+Message * ipc_read_last_msg(int _task) {
+    if (_task < 0 || _task >= Kernel::CPU::task_count) {
+        return NULL;
+    }
+
+    for (int z = msg_count - 1; z >= 0; z--) {
+        if (messages[z]->to == _task) {
             return messages[z];
         }
     }
@@ -63,21 +95,41 @@ Message *ipc_find_messages_pid(Kernel::CPU::pid_t pid) {
     return NULL;
 }
 
-Message *ipc_send_message_wait(int from, int to, uint8_t *message) {
-    ipc_send_message(from, to, message);
-    int id = messages[message_count - 1]->id;
+Message * ipc_read_last_msg() {
+    return ipc_read_last_msg(Kernel::CPU::current_task);
+}
 
-    while (true) {
-        for (int z = 0; z < message_count; z++) {
-            if (messages[z]->from == to && messages[z]->to == from && messages[z]->orig_sender == from) {
-                return messages[z];
-            }
+Message * ipc_read_first_msg(int task) {
+    if (task < 0 || task >= Kernel::CPU::task_count) {
+        return NULL;
+    }
+
+    for (int z = 0; z < msg_count; z++) {
+        if (messages[z]->to == task) {
+            return messages[z];
         }
     }
 
     return NULL;
 }
 
-Message *ipc_check_inbox() {
-    return ipc_find_messages_pid(Kernel::CPU::current_task);
+Message * ipc_read_first_msg() {
+    return ipc_read_first_msg(Kernel::CPU::current_task);
+}
+
+void ipc_msg_finish(Message * msg, int _task) {
+    int id = msg->id; // copy id before destroying the message
+    int pos = msg->pos;
+
+    delete msg;
+
+    for (int z = pos; z < msg_count; z++) {
+        messages[z] = messages[z + 1];
+    }
+
+    msg_count--;
+}
+
+void ipc_msg_finish(Message *msg) {
+    return ipc_msg_finish(msg, Kernel::CPU::current_task);
 }

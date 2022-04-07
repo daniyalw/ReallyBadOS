@@ -1,26 +1,33 @@
 #pragma once
 
-typedef struct {
+struct Message {
     int from;
     int to;
     int id;
-    uint8_t *message;
+    int pos;
 
-    int orig_sender;
-} Message;
+    char *data;
+};
 
 Message **messages;
-int message_count = 0;
-int id_total = 0;
+int msg_count = 0;
 
-Message *ipc_create_msg(int from, int to, int orig, uint8_t *message);
-void ipc_add_msg_list(Message *msg);
-void ipc_move_msgs_down(int pos);
-void ipc_read_message_id(int id);
-void ipc_read_message(Message *msg);
-void ipc_send_message(int from, int to, uint8_t *message);
-void ipc_send_message(int to, uint8_t *message);
-void ipc_reply_message(Message *msg, uint8_t *message);
-Message *ipc_find_messages_pid(Kernel::CPU::pid_t pid);
-Message *ipc_send_message_wait(int from, int to, uint8_t *message);
-Message *ipc_check_inbox();
+int ipc_task_msg_count(int n);
+Message *ipc_create_msg(int to, int from, char *message);
+
+int ipc_send_msg(int to, int from, char *message);
+int ipc_send_msg(int to, char *message);
+
+int ipc_find_messages(int task, Message **msgs);
+int ipc_find_messages(Message **msgs);
+
+Message *ipc_read_last_msg(int task);
+Message *ipc_read_last_msg();
+Message *ipc_read_first_msg(int task);
+Message *ipc_read_first_msg();
+
+void ipc_msg_finish(Message * msg, int _task);
+void ipc_msg_finish(Message * msg);
+
+Message *ipc_send_wait(int to, char *message, int timeout);
+Message *ipc_send_wait(int to, char *message);

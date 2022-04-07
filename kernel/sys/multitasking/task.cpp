@@ -14,22 +14,23 @@ int idle_task() {
 }
 
 int ipc_test() {
-    auto msg = ipc_send_message_wait(current_task, 2, (uint8_t *)strdup("Hello!"));
+    auto msg = ipc_send_wait(2, strdup("Hello!"));
 
-    printf("Msg: %s\n", msg->message);
+    if (msg) printf("Msg: %s\n", msg->data);
+    else printf("Msg is NULL\n");
 
     return 0;
 }
 
 int ipc_test11() {
     while (true) {
-        Message *msg = ipc_find_messages_pid(current_task);
+        Message *msg = ipc_read_last_msg();
 
         if (msg != NULL) {
-            printf("Received message: %s\n", msg->message);
-            ipc_send_message(current_task, msg->from, (uint8_t *)strdup("Bye!"));
-            free(msg->message);
-            ipc_read_message(msg);
+            printf("Received message: %s\n", msg->data);
+            ipc_send_msg(msg->from, strdup("Bye!"));
+            free(msg->data);
+            ipc_msg_finish(msg);
             exit(0);
         }
     }
