@@ -102,8 +102,8 @@ int rtl8139::start() {
     reset();
     init_recv_buffer();
     init_irq();
-    configure_recv();
     enable_recv();
+    configure_recv();
     find_mac();
     set_name("rtl8139");
     print_mac(mac_addr);

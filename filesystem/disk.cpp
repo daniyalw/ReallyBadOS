@@ -423,13 +423,18 @@ int rbfs_edit_file(RBFSNode *node, char *new_contents) {
 }
 
 int rbfs_vfs_write(fs_node_t *_node, int offset, int size, char *buf) {
-    char *path = strdup(_node->path);
+    char *_path = strdup(_node->path);
+    char *path;
 
     if (startswith(path, "/disk0")) {
-        path = &path[6];
+        path = &_path[6];
+    } else {
+        path = &_path[0];
     }
 
     RBFSNode *node = find_file(path);
+
+    free(_path);
 
     if (!node) {
         return 1;
@@ -439,13 +444,18 @@ int rbfs_vfs_write(fs_node_t *_node, int offset, int size, char *buf) {
 }
 
 int rbfs_vfs_read(fs_node_t *_node, int offset, int size, char *buf) {
-    char *path = strdup(_node->path);
+    char *_path = strdup(_node->path);
+    char *path;
 
     if (startswith(path, "/disk0")) {
-        path = &path[6];
+        path = &_path[6];
+    } else {
+        path = &_path[0];
     }
 
     RBFSNode *node = find_file(path);
+
+    free(_path);
 
     if (!node) {
         return 1;
@@ -461,31 +471,40 @@ int rbfs_vfs_read(fs_node_t *_node, int offset, int size, char *buf) {
 }
 
 int rbfs_vfs_mkfile(fs_node_t *node) {
-    char *path = strdup(node->path);
+    char *_path = strdup(node->path);
+    char *path;
 
     if (startswith(path, "/disk0")) {
-        path = &path[6];
+        path = &_path[6];
+    } else {
+        path = &_path[0];
     }
 
     RBFSNode *_node = find_file(path);
 
     if (_node) { // the file is already on disk, just adding the nodes to the vfs
+        printf("PATH");
+        free(_path);
         return 0;
     }
 
     int ret = rbfs_create_file(path, node->contents);
+    free(_path);
     return ret;
 }
 
 int rbfs_vfs_mkdir(fs_node_t *node) {
-    char *path = strdup(node->path);
+    char *_path = strdup(node->path);
+    char *path;
 
     if (startswith(path, "/disk0")) {
-        path = &path[6];
+        path = &_path[6];
+    } else {
+        path = &_path[0];
     }
 
     int ret = rbfs_create_dir(path);
-    free(path);
+    free(_path);
     return ret;
 }
 
