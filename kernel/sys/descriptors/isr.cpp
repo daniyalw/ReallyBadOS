@@ -2,6 +2,7 @@
 #include <video/video.h>
 #include <sys/descriptors/isr.h>
 #include <sys/log/log.h>
+#include <sys/multitasking/task.h>
 
 namespace Kernel {
 
@@ -155,6 +156,10 @@ char *exception_messages[] = {
 extern "C" void isr_handler(registers_t r) {
     if (r.int_no == 6)  {
         return;
+    }
+
+    if (tasking_on) {
+        exit(1);
     }
 
     if (interrupt_handlers[r.int_no] != NULL) {

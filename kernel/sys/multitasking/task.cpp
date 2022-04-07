@@ -27,13 +27,18 @@ int ipc_test11() {
 
         if (msg != NULL) {
             printf("Received message: %s\n", msg->message);
-            ipc_reply_message(msg, (uint8_t *)strdup("Bye!"));
+            ipc_send_message(current_task, msg->from, (uint8_t *)strdup("Bye!"));
             free(msg->message);
             ipc_read_message(msg);
             exit(0);
         }
     }
 
+    return 0;
+}
+
+int task_err_check() {
+    jmp_somewhere(0); // jump to null
     return 0;
 }
 
@@ -268,6 +273,7 @@ void init_tasking() {
     create_process("idle", (uint32_t)&idle_task);
     create_process("ipc-test", (uint32_t)&ipc_test);
     create_process("ipc-test-1", (uint32_t)&ipc_test11);
+    //create_process("err-check", (uint32_t)&task_err_check);
     //create_process("shell", (uint32_t)&shell);
 
     tasking_on = true;
