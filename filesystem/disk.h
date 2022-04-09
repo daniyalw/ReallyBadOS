@@ -44,7 +44,6 @@ int index_count = 0;
 void rbfs_format();
 void wipe_disk();
 
-char *find_parent(char *_path);
 RBFSNode *find_file(char *path);
 int find_sector_node(RBFSNode *node);
 void find_disk();

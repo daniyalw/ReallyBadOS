@@ -1,5 +1,6 @@
 #include "disk.h"
 #include <drivers/disk/disk.h>
+#include "utils.h"
 
 void rbfs_format() {
     RBFSSuperblock super;
@@ -31,27 +32,6 @@ void add_index(char *name, char *path, int sector, int type) {
 void wipe_disk() {
     find_disk();
     rbfs_format(); // just ignore the files
-}
-
-char *find_parent(char *_path) {
-    char *path = strdup(_path);
-
-    if (strcmp(path, "/") == 0) {
-        return path;
-    }
-
-    if (path[strlen(path) - 1] == '/') {
-        path[strlen(path) - 1] = 0;
-    }
-
-    for (int z = strlen(path) - 1; z >= 0; z--) {
-        if (path[z] == '/')
-            break;
-
-        path[z] = 0;
-    }
-
-    return path;
 }
 
 int rbfs_create(char *name, char *parent, int type, int permission, char *contents) {

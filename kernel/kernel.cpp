@@ -7,7 +7,11 @@ extern "C" {
     extern unsigned int kernel_end;
 }
 
-#define DEBUG
+// for some fucking reason i need these
+extern "C" unsigned int _Unwind_Resume() { return 0; }
+extern "C" unsigned int __gxx_personality_v0() { return 0; }
+
+//#define DEBUG
 //#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
@@ -105,6 +109,7 @@ extern "C" {
 #include "sys/multitasking/ipc.cpp"
 #include "../filesystem/disk.cpp"
 #include "../drivers/net/net.cpp"
+#include "../filesystem/utils.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -251,7 +256,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     rtl->start();
     Net::ARP::send_request(addr);
     */
-
 
     Kernel::CPU::init_tasking();
 
