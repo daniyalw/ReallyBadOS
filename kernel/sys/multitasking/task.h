@@ -51,6 +51,8 @@ uint32_t allocate_stack();
 void init_tasking();
 void switch_task(registers_t *regs, bool save);
 
+void kill(int pid, int ret);
+void kill(int pid);
 void exit(int ret);
 void yield();
 

@@ -173,6 +173,29 @@ pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int ar
     return task->pid;
 }
 
+void kill(int pid, int ret) {
+    if (pid < 0 || pid > task_count) {
+        return;
+    }
+
+    task_t *task = tasks[pid];
+
+    // let's not be able to kill random processes at will
+    if (task->parent != current_task) {
+        return;
+    }
+
+    task->ret = ret;
+    free((void *)task->stack);
+    task->null = true;
+
+    tasks[pid] = task;
+}
+
+void kill(int pid) {
+    kill(pid, 0);
+}
+
 pid_t create_process_file(FILE *file, int argc, char **argv) {
     if (argc <= 0)
         return -1;
