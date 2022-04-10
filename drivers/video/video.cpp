@@ -257,16 +257,16 @@ int read_error(fs_node_t * node, int offset, int size, char *data) {
     return NULL;
 }
 
-fs_node_t *_stdout;
-fs_node_t *_stderr;
+FILE *stdout;
+FILE *stderr;
 
 void init_error() {
     create_file("stderr", "/dev/", read_error, write_error);
-    _stderr = find_node("/dev/stderr");
+    stderr = fopen("/dev/stderr", "w");
 }
 
 void init_vga() {
     create_file("stdout", "/dev/", read_vga, write_vga);
-    _stdout = find_node("/dev/stdout");
+    stdout = fopen("/dev/stdout", "w");
     init_error();
 }

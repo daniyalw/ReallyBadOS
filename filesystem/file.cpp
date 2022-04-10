@@ -68,7 +68,7 @@ FILE *fopen(char *path, char *mode, int permission) {
     }
 
     if (node->permission < permission) {
-        errno  = EPERM;
+        errno = EPERM;
         return NULL;
     }
 
@@ -291,4 +291,12 @@ int fscanf(FILE *file, char *fmt, ...) {
     va_end(va);
 
     return ret;
+}
+
+void fprintf(FILE *file, char *data) {
+    fwrite(file, 1, strlen(data), data);
+}
+
+void fprintf(fs_node_t *node, char *data) {
+    node->write(node, 0, strlen(data), data);
 }
