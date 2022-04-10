@@ -111,6 +111,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../drivers/net/net.cpp"
 #include "../filesystem/utils.cpp"
 #include "sys/multitasking/connection.cpp"
+#include "../filesystem/env.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -261,6 +262,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     //Kernel::CPU::init_tasking();
 
     //PANIC("s");
+
+    env_init();
 
     init_rbfs();
 

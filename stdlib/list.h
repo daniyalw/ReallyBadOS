@@ -141,7 +141,7 @@ namespace std {
             if (index < current && index >= 0)
                 return arr[index];
 
-            return NULL;
+            return (T)NULL;
         }
 
         void pop() {
