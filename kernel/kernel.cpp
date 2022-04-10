@@ -110,6 +110,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../filesystem/disk.cpp"
 #include "../drivers/net/net.cpp"
 #include "../filesystem/utils.cpp"
+#include "sys/multitasking/connection.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
