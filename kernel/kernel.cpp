@@ -262,8 +262,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     //PANIC("s");
 
-    list_dir("/");
-
     init_rbfs();
 
     test_install();

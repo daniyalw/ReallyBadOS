@@ -75,6 +75,25 @@ int load_app_from_name(char *name, int argc, char **argv) {
     return elf_start(buf, argc, argv);
 }
 
+// does not handle arguments
+// can do things like echo -> /bin/echo
+char *exec_path_from_name(char *name) {
+    char *path;
+    get(path, "/bin/%s.o", name);
+    FILE *file = fopen(path, "r");
+
+    if (!file) {
+        get(path, "/usr/bin/%s.o", name);
+        file = fopen(path, "r");
+
+        if (!file) {
+            return NULL;
+        }
+    }
+
+    return path;
+}
+
 int load_app_from_file(FILE *file, int argc, char **argv) {
     uint8_t *buf = (uint8_t *)file->node->contents;
 
@@ -85,4 +104,22 @@ int load_app_from_file(FILE *file, int argc, char **argv) {
 
     return elf_start(buf, argc, argv);
     return 0;
+}
+
+int execv(char *path, char **argv) {
+    int argc = 0;
+
+    while (true) {
+        if (argv[argc] == NULL) {
+            break;
+        }
+
+        argc++;
+    }
+
+    return load_app_from_name(path, argc, argv);
+}
+
+int execvp(char *file, char **argv) {
+    return execv(file, argv);
 }
