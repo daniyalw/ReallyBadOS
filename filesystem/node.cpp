@@ -68,9 +68,7 @@ fs_node_t *absolute_path_node(char *cwd, char *fmt) {
     memset(path, 0, 100);
 
     if (cwd[strlen(cwd) - 1] != '/') {
-        // obviously require the current working directory to be a directory
-        errno = ENOTDIR;
-        return NULL;
+        get(cwd, "%s/", cwd);
     }
 
     if (fmt[0] != '/') {

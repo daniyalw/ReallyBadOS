@@ -329,26 +329,6 @@ char *strtok(char *s, char *del) {
         return strtok_r(s, del, &saved);
 }
 
-int tokenize(char * str, char * d, char **buf) {
-	char *p;
-	char *s;
-	int args = 0;
-
-	p = strtok_r(str, d, &s);
-
-	if (!p)
-        return 0;
-
-	while (p != NULL) {
-		buf[args] = (char *)p;
-		args++;
-		p = strtok_r(NULL, d, &s);
-	}
-
-	buf[args] = NULL;
-	return args;
-}
-
 bool startswith(char * words, char * start) {
     int cl = len(start);
     int length = len(words);
