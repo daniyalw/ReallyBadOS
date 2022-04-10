@@ -369,7 +369,7 @@ bool startswith(char * words, char * start) {
 bool endswith(char * words, char * end) {
     int x = 0;
 
-    for (int z = len(words)-len(end); z < len(words); z++) {
+    for (int z = strlen(words) - strlen(end); z < strlen(words); z++) {
         if (words[z] != end[x])
             return false;
 
@@ -380,7 +380,13 @@ bool endswith(char * words, char * end) {
 }
 
 char * strcpy(char * d, char * s) {
-    return strncpy(d, s, strlen(s));
+    for (int z = 0; z < strlen(s); z++) {
+        d[z] = s[z];
+    }
+
+    d[strlen(s)] = 0;
+
+    return d;
 }
 
 char *strncpy(char *d, char *s, int n) {

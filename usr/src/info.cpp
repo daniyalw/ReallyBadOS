@@ -10,9 +10,9 @@ typedef struct
 
 extern "C" info_t get_sys_info()
 {
-    info_t info[1];
+    info_t info;
     void * a;
-    CALL_SYS1(a, INFO, info);
+    CALL_SYS1(a, INFO, &info);
 
-    return info[0];
+    return info;
 }

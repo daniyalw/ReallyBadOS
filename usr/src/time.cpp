@@ -7,8 +7,8 @@ typedef struct {
 
 extern "C" time_t get_time()
 {
-    time_t time[1];
+    time_t time;
     void *a;
-    CALL_SYS1(a, TIME, time);
-    return time[0];
+    CALL_SYS1(a, TIME, &time);
+    return time;
 }

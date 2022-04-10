@@ -70,7 +70,7 @@ int s_info(info_t *info) {
 }
 
 int s_file(char *path, char *mode, uint32_t *addr) {
-    FILE *file = fopen(path, mode);
+    FILE *file = fopen(find_fixed(path), mode);
 
     if (file == NULL)
         addr[0] = NULL;
@@ -91,16 +91,16 @@ int exec_file(char *contents) {
 }
 
 int s_ls(char *path) {
-    list_dir(path);
+    list_dir(find_fixed(path));
     return 0;
 }
 
 int s_create_folder(char *folder, char *parent_dir) {
-    return make_dir_user(folder, parent_dir);
+    return make_dir_user(folder, find_fixed(parent_dir));
 }
 
 int s_create_file(char *name, char *folder, char *contents) {
-    return create_file(name, folder, contents);
+    return create_file(name, find_fixed(folder), contents);
 }
 
 int s_write_file(char *contents, int *size, int *n, int fd) {
@@ -142,14 +142,12 @@ int s_read_file(char *buf, int *size, int *n, int fd) {
     int ret = 0;
 
     if (fd < 0) {
-        set_string(buf, "ERROR");
         return 1;
     }
 
     fs_node_t *node = find_node(fd);
 
     if (node == NULL) {
-        set_string(buf, "AAA");
         return 1;
     }
 

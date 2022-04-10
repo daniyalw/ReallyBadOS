@@ -68,17 +68,16 @@ extern "C" void append_file(char *name, char *contents)
     CALL_SYS2(a, APPEND_FILE, name, contents);
 }
 
+extern "C" int fileno(FILE *stream) {
+    return stream->node->id;
+}
+
 
 extern "C" int fread(char *buffer, int size, int n, FILE *file)
 {
-    int off[1];
-    int s[1];
     int ret;
 
-    off[0] = size;
-    s[0] = n;
-
-    CALL_SYS4(ret, READ_FILE, buffer, off, s, file->node->id);
+    CALL_SYS4(ret, READ_FILE, buffer, size, n, fileno(file));
     file->ptr += size * n;
 
     return ret;

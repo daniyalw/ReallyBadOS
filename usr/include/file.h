@@ -69,6 +69,8 @@ extern int ftell(FILE *file);
 extern void rewind(FILE *file);
 extern int fsetpos(FILE *file, fpos_t *pos);
 
+extern int fileno(FILE *stream);
+
 #ifdef __cplusplus
 }
 #endif

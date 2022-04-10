@@ -180,9 +180,7 @@ int write_node(fs_node_t *node, int offset, int size, char *contents) {
     if (node->write != NULL)
         ret = node->write(node, offset, size, contents);
     else if (node->flags != FS_FOLDER) {
-        free(node->contents);
-        node->contents = (char *)malloc(strlen(contents) + 1);
-        memset(node->contents, 0, strlen(contents) + 1);
+        node->contents = (char *)realloc(node->contents, strlen(contents) + 1);
         strcpy(node->contents, contents);
     } else {
         ret = 1;
@@ -200,7 +198,8 @@ int read_node(fs_node_t *node, int offset, int size, char *buffer) {
     if (node->read != NULL) {
         ret = node->read(node, offset, size, buffer);
     } else if (node->flags != FS_FOLDER) {
-        strcpy(buffer, node->contents);
+        printf("NODE: %s", node->contents);
+        set_string(buffer, node->contents);
     }
 
     return ret;
@@ -229,8 +228,12 @@ int list_dir(fs_node_t *node, int index) {
     for (int z = 0; z < index; z++)
         Kernel::serial_write_string("    ");
 
-    printf("%s (%s)\n", node->name, get_type(node));
-    Kernel::serial_write_string("%s (%s)\n", node->name, get_type(node));
+    char *type = get_type(node);
+
+    printf("%s (%s)\n", node->name, type);
+    Kernel::serial_write_string("%s (%s)\n", node->name, type);
+
+    free(type);
 
     for (int z = 0; z < node->children_count; z++)
         list_dir(nodes[node->children[z]], index + 1);

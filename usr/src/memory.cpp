@@ -3,15 +3,15 @@
 
 extern "C" uint32_t malloc(int size)
 {
-    uint32_t buf[1];
+    uint32_t buf;
     int sz[1];
     void *a;
 
     sz[0] = size;
 
-    CALL_SYS2(a, MALLOC, sz, buf);
+    CALL_SYS2(a, MALLOC, sz, &buf);
 
-    return buf[0];
+    return buf;
 }
 
 extern "C" void free(void *buf)
