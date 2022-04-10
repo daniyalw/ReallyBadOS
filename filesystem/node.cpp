@@ -206,6 +206,19 @@ int read_node(fs_node_t *node, int offset, int size, char *buffer) {
     return ret;
 }
 
+char *get_type(fs_node_t *node) {
+    switch (node->flags) {
+        case FS_FOLDER:
+            return strdup("folder");
+
+        case FS_FILE:
+            return strdup("file");
+
+        default:
+            return strdup("unknown");
+    }
+}
+
 int list_dir(fs_node_t *node, int index) {
     if (node == NULL)
         return 1;
@@ -216,8 +229,8 @@ int list_dir(fs_node_t *node, int index) {
     for (int z = 0; z < index; z++)
         Kernel::serial_write_string("    ");
 
-    printf("%s\n", node->name);
-    Kernel::serial_write_string("%s\n", node->name);
+    printf("%s (%s)\n", node->name, get_type(node));
+    Kernel::serial_write_string("%s (%s)\n", node->name, get_type(node));
 
     for (int z = 0; z < node->children_count; z++)
         list_dir(nodes[node->children[z]], index + 1);

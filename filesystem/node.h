@@ -82,3 +82,5 @@ fs_node_t *find_node_fixed(char *path);
 char *find_fixed(char *path);
 fs_node_t *absolute_path_node(char *cwd, char *fmt);
 char *absolute_path(char *cwd, char *fmt);
+
+char *get_type(fs_node_t *node);
