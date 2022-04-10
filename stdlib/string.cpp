@@ -419,6 +419,8 @@ char *reverse_string(char *str, char *out) {
         v++;
     }
 
+    out[v] = 0;
+
     return out;
 }
 

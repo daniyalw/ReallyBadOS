@@ -1,4 +1,4 @@
-FILES := read.o echo.o hello.txt time.o info.o Vera.sfn test.r ls.o mkdir.o mkfile.o write.o test.o kernel.map \
+FILES := bin home usr
 
 OUT = out.tar
 

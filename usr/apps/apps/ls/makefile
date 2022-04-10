@@ -3,4 +3,4 @@ include ../../makefile
 NAME = ls
 
 all:
-	${CPP} -o ../../../../initrd/${NAME}.o main.cpp ${CPP_FLAGS} ${EXTERNAL}
+	${CPP} -o ../../../../${FOLDER}/bin/${NAME}.o main.cpp ${CPP_FLAGS} ${EXTERNAL}

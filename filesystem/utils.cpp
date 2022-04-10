@@ -20,3 +20,26 @@ char *find_parent(char *_path) {
 
     return path;
 }
+
+char *find_name(char *path) {
+    int last = 0;
+
+    for (int z = 0; z < strlen(path); z++) {
+        if (path[z] == '/') {
+            last = z;
+        }
+    }
+
+    char *name = strdup(path);
+    memset(name, 0, strlen(path));
+    int c = 0;
+
+    for (int z = last + 1; z < strlen(path); z++) {
+        name[c] = path[z];
+        c++;
+    }
+
+    name[c] = 0;
+
+    return name;
+}

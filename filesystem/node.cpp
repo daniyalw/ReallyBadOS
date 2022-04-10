@@ -272,15 +272,8 @@ void create_root() {
 void init_fs() {
     create_root();
 
-    make_dir("bin", "/");
-    make_dir("usr", "/");
     make_dir("dev", "/");
     make_dir("apps", "/");
-
-    make_dir("bin", "/usr/");
-    make_dir("documents", "/usr/");
-    make_dir("scripts", "/usr/");
-    make_dir("fonts", "/usr/");
 
     log::info("Initialized virtual file system");
 }

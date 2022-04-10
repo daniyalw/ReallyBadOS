@@ -1,7 +1,40 @@
 #pragma once
 
 #define TAR_FILE '0'
+#define TAR_HARD_LINK '1'
+#define TAR_SYMBOLIC_DEVICE '2'
+#define TAR_CHARACTER_DEVICE '3'
+#define TAR_BLOCK_DEVICE '4'
 #define TAR_DIR '5'
+#define TAR_NAMED_PIPE '6'
+
+struct TarDesc {
+    char name[30];
+    char type;
+};
+
+TarDesc tar_types[] = {
+    {"file", '0'},
+    {"hard link", '1'},
+    {"symbolic device", '2'},
+    {"character device", '3'},
+    {"block device", '4'},
+    {"directory", '5'},
+    {"named pipe", '6'},
+    {NULL, NULL}
+};
+
+char *tar_find_type(char type) {
+    int z = 0;
+
+    while (tar_types[z].name != NULL) {
+        if (tar_types[z].type == type) {
+            return tar_types[z].name;
+        }
+    }
+
+    return NULL;
+}
 
 struct TarFile
 {

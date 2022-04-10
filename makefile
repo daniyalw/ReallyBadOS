@@ -7,6 +7,7 @@ QEMU_FLAGS = -soundhw pcspk -m 1G -serial stdio -rtc base=localtime -drive forma
 OUT = reallybados-x86_32.iso
 QEMU = qemu-system-x86_64
 ARCH = i686-elf
+BASE = base
 
 AS = ${ARCH}-as
 GCC = ${ARCH}-g++
@@ -41,7 +42,7 @@ jmp:
 	nasm -f elf32 kernel/jmp.asm -o built/jmp.o
 
 map:
-	${NM} -C -n built/main.o > initrd/kernel.map
+	${NM} -C -n built/main.o > ${BASE}/usr/share/kernel.map
 
 tasking:
 	nasm -f elf32 kernel/sys/multitasking/switch.asm -o built/switch.o
@@ -51,7 +52,7 @@ tss:
 	nasm -f elf32 kernel/sys/descriptors/tss.asm -o built/tss.o
 
 ramdisk:
-	cd initrd && make build && cd ..
+	cd ${BASE} && make build && cd ..
 
 user:
 	make -C usr/src
@@ -73,10 +74,10 @@ textmode:
 clean:
 	rm *.iso
 	rm built/*.o
-	rm initrd/kernel.map
+	rm ${BASE}/kernel.map
 	rm isodir/boot/grub/*.cfg
 	rm usr/src/*.o
-	rm initrd/*.o
+	rm ${BASE}/*.o
 	rm isodir/boot/main.o
 	rm isodir/boot/out.tar
 

@@ -181,16 +181,19 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     init_all_devs();
 
     for (int z = 0; z < tar.block_count; z++) {
-        if (endswith(tar.blocks[z].name, ".o")) {
-            create_file(tar.blocks[z].name, "/bin/", tar.blocks[z].contents);
-        } else if (endswith(tar.blocks[z].name, ".txt")) {
-            create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
-        } else if (endswith(tar.blocks[z].name, ".r")) {
-            create_file(tar.blocks[z].name, "/usr/scripts/", tar.blocks[z].contents);
-        } else if (endswith(tar.blocks[z].name, ".sfn")) {
-            create_file(tar.blocks[z].name, "/usr/fonts/", tar.blocks[z].contents);
+        if (tar.blocks[z].type == TAR_DIR) {
+            tar.blocks[z].name[strlen(tar.blocks[z].name) - 1] = 0;
+            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
+            memset(path, 0, strlen(tar.blocks[z].name) + 3);
+            get(path, "/%s", tar.blocks[z].name);
+            make_dir(find_name(path), find_parent(path));
+        } else if (tar.blocks[z].type == TAR_FILE) {
+            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
+            memset(path, 0, strlen(tar.blocks[z].name) + 3);
+            get(path, "/%s", tar.blocks[z].name);
+            create_file(find_name(path), find_parent(path), tar.blocks[z].contents);
         } else {
-            create_file(tar.blocks[z].name, "/usr/", tar.blocks[z].contents);
+            log::warning("Tar file of type '%s'\n", tar_find_type(tar.blocks[z].type));
         }
     }
 
@@ -220,16 +223,19 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     init_all_devs();
 
     for (int z = 0; z < tar.block_count; z++) {
-        if (endswith(tar.blocks[z].name, ".o")) {
-            create_file(tar.blocks[z].name, "/bin/", tar.blocks[z].contents);
-        } else if (endswith(tar.blocks[z].name, ".txt")) {
-            create_file(tar.blocks[z].name, "/usr/documents/", tar.blocks[z].contents);
-        } else if (endswith(tar.blocks[z].name, ".r")) {
-            create_file(tar.blocks[z].name, "/usr/scripts/", tar.blocks[z].contents);
-        } else if (endswith(tar.blocks[z].name, ".sfn")) {
-            create_file(tar.blocks[z].name, "/usr/fonts/", tar.blocks[z].contents);
+        if (tar.blocks[z].type == TAR_DIR) {
+            tar.blocks[z].name[strlen(tar.blocks[z].name) - 1] = 0;
+            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
+            memset(path, 0, strlen(tar.blocks[z].name) + 3);
+            get(path, "/%s", tar.blocks[z].name);
+            make_dir(find_name(path), find_parent(path));
+        } else if (tar.blocks[z].type == TAR_FILE) {
+            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
+            memset(path, 0, strlen(tar.blocks[z].name) + 3);
+            get(path, "/%s", tar.blocks[z].name);
+            create_file(find_name(path), find_parent(path), tar.blocks[z].contents);
         } else {
-            create_file(tar.blocks[z].name, "/usr/", tar.blocks[z].contents);
+            log::warning("Tar file of type '%s'\n", tar_find_type(tar.blocks[z].type));
         }
     }
 
