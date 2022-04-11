@@ -59,7 +59,7 @@ extern "C" void memcpy(void *dest, void *source, int length);
 
 char * get(char * out, char *text, ...);
 
-extern "C" void memset(char *dest, char val, u32 len);
+extern "C" void memset(void *dest, char val, u32 len);
 int memcmp(void* buf1, void* buf2, int count);
 void memset(u8 *dest, u8 val, u32 len);
 

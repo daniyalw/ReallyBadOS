@@ -1,5 +1,6 @@
 #include <filesystem/node.h>
 #include <errno.h>
+#include "utils.h"
 
 fs_node_t *find_node(char *path) {
     for (int z = 0; z < node_count; z++) {
@@ -106,8 +107,8 @@ fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfi
 }
 
 void delete_node(fs_node_t *node) {
-    if (node && node->parent >= 0 && node->parent < node->id) {
-        fs_node_t *parent = nodes[node->parent];
+    if (node && node->parent_id >= 0 && node->parent_id < node->id) {
+        fs_node_t *parent = nodes[node->parent_id];
 
         // remove the id from its parent
         int pos = -1;
@@ -120,7 +121,7 @@ void delete_node(fs_node_t *node) {
         }
 
         // ensure that the parent actually has the child
-        if (pos > 0) {
+        if (pos >= 0) {
             for (int z = pos; z < parent->children_count; z++) {
                 parent->children[z] = parent->children[z];
             }
@@ -129,8 +130,50 @@ void delete_node(fs_node_t *node) {
         }
 
         memset(node, 0, sizeof(fs_node_t));
-        free(node);
+
+        delete node;
     }
+}
+
+void delete_node(char *path) {
+    delete_node(find_node(path));
+}
+
+fs_node_t *_clone_node(fs_node_t *node) {
+    fs_node_t *copy = new fs_node_t();
+
+    memset(copy, 0, sizeof(fs_node_t));
+    memcpy(copy, node, sizeof(fs_node_t));
+
+    return copy;
+}
+
+fs_node_t *copy_node(fs_node_t *node, char *new_path) {
+    char *parent = find_parent(new_path);
+    char *name = find_name(new_path);
+
+    fs_node_t *_node = create_node(name, parent, node->flags, node->permission, false);
+    _node->contents = node->contents;
+    _node->size = node->size;
+
+    free(parent);
+    free(name);
+
+    return _node;
+}
+
+fs_node_t *move_node(fs_node_t *node, char *new_path) {
+    auto _node = copy_node(node, new_path);
+    delete_node(node);
+    return _node;
+}
+
+fs_node_t *move_node(char *old, char *new_path) {
+    return move_node(find_node(old), new_path);
+}
+
+fs_node_t *copy_node(char *old_path, char *new_path) {
+    return copy_node(find_node(old_path), new_path);
 }
 
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount) {

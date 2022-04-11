@@ -539,7 +539,7 @@ void memset(int * dest, int val, int len) {
     }
 }
 
-extern "C" void memset(char *dest, char val, u32 len) {
+extern "C" void memset(void *dest, char val, u32 len) {
     char *temp = (char *)dest;
 
     for (; len != 0; len--) {

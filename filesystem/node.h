@@ -84,3 +84,11 @@ fs_node_t *absolute_path_node(char *cwd, char *fmt);
 char *absolute_path(char *cwd, char *fmt);
 
 char *get_type(fs_node_t *node);
+
+void delete_node(fs_node_t *node);
+void delete_node(char *path);
+fs_node_t *_clone_node(fs_node_t *node);
+fs_node_t *copy_node(fs_node_t *node, char *new_path);
+fs_node_t *copy_node(char *old_path, char *new_path);
+fs_node_t *move_node(fs_node_t *node, char *new_path);
+fs_node_t *move_node(char *old, char *new_path);
