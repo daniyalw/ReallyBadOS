@@ -105,6 +105,34 @@ fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfi
     return node;
 }
 
+void delete_node(fs_node_t *node) {
+    if (node && node->parent >= 0 && node->parent < node->id) {
+        fs_node_t *parent = nodes[node->parent];
+
+        // remove the id from its parent
+        int pos = -1;
+
+        for (int z = 0; z < parent->children_count; z++) {
+            if (parent->children[z] == node->id) {
+                pos = z;
+                break;
+            }
+        }
+
+        // ensure that the parent actually has the child
+        if (pos > 0) {
+            for (int z = pos; z < parent->children_count; z++) {
+                parent->children[z] = parent->children[z];
+            }
+
+            parent->children_count--;
+        }
+
+        memset(node, 0, sizeof(fs_node_t));
+        free(node);
+    }
+}
+
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount) {
     fs_node_t *parent = find_node(parent_path);
 
