@@ -59,6 +59,22 @@ int kcreate_file(char *name, char *path, __read read, __write write) {
     return create_file(name, path, read, write, ROOT_PERMISSION);
 }
 
+int get_flags_from_str(char *mode) {
+    if (strcmp(mode, "r") == 0) {
+        return FLAGS_READ;
+    } else if (strcmp(mode, "w") == 0) {
+        return FLAGS_WRITE;
+    } else if (strcmp(mode, "rw") == 0) {
+        return FLAGS_READ | FLAGS_WRITE;
+    } else if (strcmp(mode, "rb") == 0) {
+        return FLAGS_READ | FLAGS_BYTES;
+    } else if (strcmp(mode, "wb") == 0) {
+        return FLAGS_WRITE | FLAGS_BYTES;
+    }
+
+    return FLAGS_NONE;
+}
+
 FILE *fopen(char *path, char *mode, int permission) {
     fs_node_t *node = find_node(path);
 
@@ -77,7 +93,7 @@ FILE *fopen(char *path, char *mode, int permission) {
     file->ptr = 0;
     file->eof = 0;
     file->node = node;
-    file->mode = strdup(mode);
+    file->flags = get_flags_from_str(mode);
 
     return file;
 }
@@ -91,14 +107,17 @@ FILE *kopen(char *path, char *mode) {
 }
 
 void fclose(FILE *file) {
-    free(file->mode);
     free(file);
 }
 
 int fwrite(FILE *file, int size, int n, char *buffer) {
-    int ret = write_node(file->node, file->ptr, size * n, buffer);
+    if ((file->flags & FLAGS_WRITE) == FLAGS_WRITE) {
+        int ret = write_node(file->node, file->ptr, size * n, buffer);
 
-    return ret;
+        return ret;
+    }
+
+    return 1;
 }
 
 int fgetc(FILE *file) {
@@ -113,14 +132,18 @@ int fgetc(FILE *file) {
 }
 
 int fread(FILE *file, int size, int n, char *buffer) {
-    int ret = read_node(file->node, file->ptr, size * n, buffer);
+    if ((file->flags & FLAGS_READ) == FLAGS_READ) {
+        int ret = read_node(file->node, file->ptr, size * n, buffer);
 
-    file->ptr += size * n;
+        file->ptr += size * n;
 
-    if (file->ptr >= file->node->size)
-        file->ptr = EOF;
+        if (file->ptr >= file->node->size)
+            file->ptr = EOF;
 
-    return ret;
+        return ret;
+    }
+
+    return 1;
 }
 
 int feof(FILE *file) {

@@ -15,7 +15,7 @@ typedef struct {
     int status; // clean - 0; error - 1
     int files;
     int first_free;
-} RBFSSuperblock;
+} __attribute__((packed)) RBFSSuperblock;
 
 typedef struct {
     uint32_t magic;
@@ -27,14 +27,14 @@ typedef struct {
     int permission; // what permissions does file have
     int sectors; // how many sectors used by the contents of node; if dir, it means 0
     int type; // dir - 0; file - 1
-} RBFSNode;
+} __attribute__((packed)) RBFSNode;
 
 typedef struct {
     char name[20];
     char path[100];
     int sector;
     int type;
-} RBFSIndex;
+} __attribute__((packed)) RBFSIndex;
 
 Disk *rbfs_disk = NULL;
 

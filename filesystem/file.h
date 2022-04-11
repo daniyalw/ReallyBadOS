@@ -7,13 +7,18 @@
 #define SEEK_END -1
 #define SEEK_CUR -2
 
+#define FLAGS_READ 4
+#define FLAGS_WRITE 5
+#define FLAGS_NONE 6
+#define FLAGS_BYTES 7
+
 typedef struct
 {
     fs_node_t *node;
 
     int ptr;
     int eof;
-    char *mode;
+    int flags;
 } FILE;
 
 typedef int fpos_t;
@@ -50,3 +55,5 @@ int fsize(FILE *file);
 
 int fvsscanf(FILE *file, char *fmt, va_list va);
 int fscanf(FILE *file, char *fmt, ...);
+
+int get_flags_from_str(char *mode);

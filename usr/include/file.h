@@ -81,4 +81,5 @@ struct FILE
 
     int ptr;
     int eof;
+    int flags;
 };
