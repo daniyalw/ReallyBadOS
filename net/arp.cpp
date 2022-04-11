@@ -11,7 +11,7 @@ namespace ARP
 {
 
 void send_request(uint8_t ip_addr[4]) {
-    arp_t *arp = (arp_t *)malloc(sizeof(arp_t *));
+    arp_t *arp = (arp_t *)malloc(sizeof(arp_t));
 
     arp->hardware_type = htons(ARP_ETHERNET);
     arp->protocol_type = htons(ARP_IP);
