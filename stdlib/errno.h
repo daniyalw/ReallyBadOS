@@ -251,3 +251,6 @@ char *error_strings[] = {
 };
 
 int errno = 0;
+
+char *strerror(int err);
+void perror(char *func);

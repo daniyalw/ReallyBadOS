@@ -14,6 +14,7 @@
 #include <keyboard/keys.cpp>
 #include <kernel/sys/serial.h>
 #include <sys/multitasking/task.h>
+#include <errno.h>
 
 using namespace std;
 using namespace Time;
@@ -72,12 +73,18 @@ int run_command(char * command) {
 
     if (file == NULL) {
         // if we fail, try searching the usr folder
-        fname = get("", "/usr/bin/%s.o", executable, executable);
+        fname = get("", "/usr/bin/%s.o", executable);
         file = fopen(fname, "r");
 
         if (file == NULL) {
-            printf("shell: command not found: %s\n", args.argv[0]);
-            return 1;
+            // one last go: append cwd to the command
+            fname = get("", "%s%s", cwd, executable);
+            file = fopen(fname, "r");
+
+            if (!file) {
+                printf("shell: command not found: %s\n", executable);
+                return 1;
+            }
         }
     }
 #ifdef DEBUG
@@ -105,6 +112,23 @@ int run_command(char * command) {
 #endif
 
     //fclose(file);
+
+    return 0;
+}
+
+int run_commands(char *command) {
+    char **buf;
+    int size = tokenize(command, ';', buf);
+    int ret = 0;
+
+    for (int z = 0; z < size; z++) {
+        ret = run_command(buf[z]);
+
+        if (ret) {
+            printf("shell: exited with return code 1\n");
+            return ret;
+        }
+    }
 
     return 0;
 }
@@ -149,6 +173,9 @@ void shell_quit() {
 }
 
 void shell() {
+    cwd = (char *)malloc(100);
+    memset(cwd, 0, 100);
+
     while (true) {
         if (current_display_len != 0 && current_display_len != 1) {
             printf("/%s/> ", current_display);
@@ -163,22 +190,27 @@ void shell() {
             continue;
         }
 
-        if (check_name(command, "exec")) {
-            printf("Warning: %s\n", "executable not properly working...\n");
-            printf("Do you wish to continue? [y/n] ");
+        char *cmd = tolower(command); /* temporary workaround to command being all-uppercase for some reason */
 
-            char res = getch();
-
-            putchar('\n');
-            putchar('\n');
-
-            if (res != 'y')
-                continue;
-        } else if (check_name(command, "exit")) {
+        if (check_name(cmd, "exit")) {
             Kernel::CPU::exit(0);
+        } else if (check_name(cwd, "cd")) {
+            args_t args = parse_args(cmd);
+
+            if (args.argc > 1) {
+                fs_node_t *node = absolute_path_node(cwd, args.argv[1]);
+
+                if (!node) {
+                    perror("cd");
+                } else {
+                    strcpy(cwd, node->path);
+                }
+            } else {
+                printf("cd: incomplete command\n");
+            }
         }
 
-        run_command(command);
+        run_commands(cmd);
 
         putchar('\n');
         putchar('\n');
