@@ -44,9 +44,13 @@ int rbfs_create(char *name, char *parent, int type, int permission, char *conten
 
         if (parent[strlen(parent) - 1] == '/') {
             if (type == RBFS_DIR) {
-                sprintf(path, "%s%s/", parent, name);
+                if (strcmp(parent, "/") == 0) {
+                    sprintf(path, "%s%s", parent, name);
+                } else {
+                    sprintf(path, "%s/%s", parent, name);
+                }
             } else {
-                sprintf(path, "%s%s", parent, name);
+                sprintf(path, "%s/%s", parent, name);
             }
         }
     }
@@ -122,32 +126,10 @@ int rbfs_create(char *name, char *parent, int type, int permission, char *conten
 }
 
 int rbfs_create_file(char *path, char *contents) {
-    // horrible
-    char *name = (char *)malloc(strlen(path) + 1);
-    memset(name, 0, strlen(path) + 1);
-
-    int c = 0;
-
-    for (int z = strlen(path) - 1; z >= 0; z--) {
-        if (path[z] == '/') {
-            break;
-        }
-
-        name[c] = path[z];
-        c++;
-    }
-
+    char *name = find_name(path);
     char *parent = find_parent(path);
 
-    char *_name = (char *)malloc(strlen(name) + 1);
-    memset(_name, 0, strlen(name) + 1);
-    reverse_string(name, _name);
-    free(name);
-    name = &_name[1];
-
     int ret = rbfs_create(name, parent, RBFS_FILE, 0, contents);
-
-    free(_name);
 
     return ret;
 }
@@ -157,32 +139,11 @@ int rbfs_create_dir(char *path) {
         rbfs_create("/", "/", RBFS_DIR, 0, NULL);
         return 1;
     }
-    // horrible
-    char *name = (char *)malloc(strlen(path) + 1);
-    memset(name, 0, strlen(path) + 1);
 
-    int c = 0;
-
-    for (int z = strlen(path) - 2; z >= 0; z--) {
-        if (path[z] == '/') {
-            break;
-        }
-
-        name[c] = path[z];
-        c++;
-    }
-
+    char *name = find_name(path);
     char *parent = find_parent(path);
 
-    char *_name = (char *)malloc(strlen(name) + 1);
-    memset(_name, 0, strlen(name) + 1);
-    reverse_string(name, _name);
-    free(name);
-    name = &_name[2];
-
     int ret = rbfs_create(name, parent, RBFS_DIR, 0, NULL);
-
-    free(_name);
 
     return ret;
 }
@@ -497,9 +458,9 @@ int init_rbfs() {
     fs_node_t *node = mount_fs("disk0", "/", rbfs_vfs_write, rbfs_vfs_read, rbfs_vfs_mkfile, rbfs_vfs_mkdir, USER_PERMISSION);
 
     if (!node) {
-        printf("Failed to mount disk0\n");
+        log::error("Failed to mount disk0");
     } else {
-        printf("Successfully mounted disk0\n");
+        log::info("Successfully mounted disk0");
         index_disk();
     }
     return 0;
