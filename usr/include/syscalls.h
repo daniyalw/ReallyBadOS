@@ -21,6 +21,8 @@
 #define CREATE_PROC 18
 #define YIELD_PROC 19
 #define EXIT_PROC 20
+#define GETENV 21
+#define SETENV 22
 
 #define CALL_SYS0(ret, num) \
         asm volatile("int $48" : "=a" (ret) : "0" (num));

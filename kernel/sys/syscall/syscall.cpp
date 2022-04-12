@@ -6,6 +6,7 @@
 #include <sys/log/log.h>
 #include <filesystem/file.h>
 #include <filesystem/dir.h>
+#include <filesystem/env.h>
 
 void set_string(char * string, char * newvalue) {
     for (int z = 0; z < strlen(string); z++) {
@@ -177,6 +178,15 @@ int s_exit(int ret) {
     return 0;
 }
 
+int s_getenv(char *name, char *env) {
+    set_string(env, getenv(name));
+    return 0;
+}
+
+int s_setenv(char *name, char *val) {
+    return setenv(name, val, 1);
+}
+
 // ----------------------------- //
 
 
@@ -257,6 +267,8 @@ void init_syscalls() {
     syscall_append((void *)s_create_proc);
     syscall_append((void *)s_yield);
     syscall_append((void *)s_exit);
+    syscall_append((void *)s_getenv);
+    syscall_append((void *)s_setenv);
     Kernel::CPU::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }

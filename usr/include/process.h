@@ -1,16 +1,13 @@
 #include <syscalls.h>
 #include <stdint.h>
+#include "_header.h"
 
 typedef int pid_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+C_HEADER
 
 extern pid_t create_process(char *name, uint32_t instruction);
 extern void yield();
 extern void exit(int ret);
 
-#ifdef __cplusplus
-}
-#endif
+C_HEADER_END

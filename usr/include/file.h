@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include "_header.h"
 
 #define EOF -1
 #define SEEK_SET 0
@@ -46,9 +47,7 @@ struct fs_node_t
 struct FILE;
 typedef int fpos_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+C_HEADER
 
 extern FILE *fopen(char *path, char *mode);
 extern void fclose(FILE *file);
@@ -71,9 +70,7 @@ extern int fsetpos(FILE *file, fpos_t *pos);
 
 extern int fileno(FILE *stream);
 
-#ifdef __cplusplus
-}
-#endif
+C_HEADER_END
 
 struct FILE
 {

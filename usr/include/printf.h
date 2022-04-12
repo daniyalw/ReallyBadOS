@@ -1,10 +1,9 @@
 #pragma once
 
 #include <stdarg.h>
+#include "_header.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+C_HEADER
 
 extern int printf(char *a, ...);
 extern void putchar(char text);
@@ -14,6 +13,4 @@ extern int vprintf(char *f, va_list va);
 extern char * vsprintf(char *s, char *format, va_list va);
 extern char * vnprintf(char *s, int max, char *format, va_list va);
 
-#ifdef __cplusplus
-}
-#endif
+C_HEADER_END

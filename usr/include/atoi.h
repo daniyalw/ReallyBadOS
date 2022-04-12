@@ -1,11 +1,8 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "_header.h"
 
+C_HEADER
 extern int atoi(char *str);
 
-#ifdef __cplusplus
-}
-#endif
+C_HEADER_END

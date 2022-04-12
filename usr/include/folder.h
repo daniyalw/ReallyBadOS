@@ -1,16 +1,14 @@
 #pragma once
 
+#include "_header.h"
+
 typedef struct
 {
     fs_node_t *node;
 } DIR;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+C_HEADER
 
 extern int mkdir(char *name, char *parent);
 
-#ifdef __cplusplus
-}
-#endif
+C_HEADER_END

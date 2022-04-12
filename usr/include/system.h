@@ -1,5 +1,7 @@
 #pragma once
 
+#include "_header.h"
+
 typedef struct
 {
     char *name;
@@ -7,12 +9,8 @@ typedef struct
     bool dev;
 } info_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+C_HEADER
 
 extern info_t get_sys_info();
 
-#ifdef __cplusplus
-}
-#endif
+C_HEADER_END

@@ -1,6 +1,8 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
+#pragma once
+
+#include "_header.h"
+
+C_HEADER
 
 typedef struct {
     int sec, min, h, d, m, y, wd;
@@ -9,6 +11,4 @@ typedef struct {
 
 extern time_t get_time();
 
-#ifdef __cplusplus
-}
-#endif
+C_HEADER_END

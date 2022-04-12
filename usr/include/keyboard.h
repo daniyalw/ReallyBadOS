@@ -1,12 +1,10 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "_header.h"
+
+C_HEADER
 
 extern char *scanf(char *buf);
 extern char getch();
 
-#ifdef __cplusplus
-}
-#endif
+C_HEADER_END
