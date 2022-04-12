@@ -19,50 +19,20 @@ fs_node_t *find_node(int fd) {
 }
 
 fs_node_t *find_node_fixed(char *path) {
-    char **buf;
-    fs_node_t *node = nodes[0]; // root dir
-    int ret = tokenize(path, '/', buf);
-
-    for (int z = 1; z < ret; z++) {
-        bool found = false;
-
-        if (strcmp(buf[z], PATH_UP) == 0) {
-            node = nodes[node->parent_id];
-            free(buf[z]);
-            continue;
-        } else if (strcmp(buf[z], PATH_DOT) == 0) {
-            free(buf[z]);
-            continue;
-        } else if (strcmp(buf[z], PATH_SEP) == 0) {
-            free(buf[z]);
-            continue;
-        }
-
-        for (int c = 0; c < node->children_count; c++) {
-            fs_node_t *_n = nodes[node->children[c]];
-
-            if (strcmp(_n->name, buf[z]) == 0) {
-                node = _n;
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            free(buf[z]);
-            errno = ENOENT;
-            return NULL;
-        }
-
-        free(buf[z]);
-    }
-
+    char out[strlen(path) + 20];
+    fixup_path(path, out);
+    auto node = find_node(out);
     return node;
 }
 
 char *find_fixed(char *path) {
     fs_node_t *node = find_node_fixed(path);
-    return node->path;
+
+    if (node) {
+        return node->path;
+    } else {
+        return NULL;
+    }
 }
 
 fs_node_t *absolute_path_node(char *cwd, char *fmt) {

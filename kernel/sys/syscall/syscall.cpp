@@ -91,7 +91,7 @@ int exec_file(char *contents) {
 }
 
 int s_ls(char *path) {
-    list_dir(find_fixed(path));
+    list_dir(path);
     return 0;
 }
 
