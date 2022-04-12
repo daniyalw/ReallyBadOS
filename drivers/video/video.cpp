@@ -261,12 +261,12 @@ FILE *stdout;
 FILE *stderr;
 
 void init_error() {
-    create_file("stderr", "/dev/", read_error, write_error);
+    create_file("stderr", "/dev", read_error, write_error);
     stderr = fopen("/dev/stderr", "w");
 }
 
 void init_vga() {
-    create_file("stdout", "/dev/", read_vga, write_vga);
+    create_file("stdout", "/dev", read_vga, write_vga);
     stdout = fopen("/dev/stdout", "w");
     init_error();
 }

@@ -26,14 +26,14 @@ int write_info(fs_node_t * node, int offset, int size, char *data)
 void init_all_devs()
 {
     // sound
-    create_file("sound", "/dev/", Kernel::sound_input, Kernel::sound_write);
+    create_file("sound", "/dev", Kernel::sound_input, Kernel::sound_write);
 
     // keyboard
-    create_file("stdin", "/dev/", read_keyboard, write_keyboard);
+    create_file("stdin", "/dev", read_keyboard, write_keyboard);
 
     // ata
-    create_file("disk0", "/dev/", null_read, null_write);
+    create_file("disk0", "/dev", null_read, null_write);
 
     // serial
-    create_file("serial", "/dev/", null_read, write_info);
+    create_file("serial", "/dev", null_read, write_info);
 }

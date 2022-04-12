@@ -15,3 +15,4 @@ int make_dir(char *name, char *dir);
 int kmake_dir(char *name, char *dir);
 
 fs_node_t *readdir(DIR *dir);
+DIR *opendir(char *name);

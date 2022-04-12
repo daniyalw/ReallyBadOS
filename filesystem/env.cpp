@@ -102,10 +102,10 @@ int env_init() {
         return 1;
     }
 
-    create_file("PATH", "/env/");
-    create_file("HOME", "/env/");
+    create_file("PATH", "/env");
+    create_file("HOME", "/env");
 
-    setenv("PATH", "/bin/:/usr/bin/", 1);
+    setenv("PATH", "/bin:/usr/bin", 1);
     setenv("HOME", "/", 1);
 
     log::info("env: successfully created env filesystem!");

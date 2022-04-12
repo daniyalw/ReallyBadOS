@@ -12,11 +12,17 @@ char *find_parent(char *_path) {
     }
 
     for (int z = strlen(path) - 1; z >= 0; z--) {
-        if (path[z] == '/')
+        if (path[z] == '/') {
+            if (strcmp(path, "/")) {
+                path[z] = 0;
+            }
             break;
+        }
 
         path[z] = 0;
     }
+
+    log::warning("PATH: %s\n", path);
 
     return path;
 }

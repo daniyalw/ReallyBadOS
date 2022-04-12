@@ -6,8 +6,9 @@ fs_node_t *find_node(char *path) {
     for (int z = 0; z < node_count; z++) {
         fs_node_t *node = nodes[z];
 
-        if (strcmp(node->path, path) == 0)
+        if (strcmp(node->path, path) == 0) {
             return node;
+        }
     }
 
     return NULL;
@@ -190,10 +191,11 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
 
     strcpy(node->name, name);
 
-    if (type == FS_FILE)
+    if (strcmp(parent_path, "/") == 0) {
         strcpy(node->path, get("", "%s%s", parent_path, name));
-    else
-        strcpy(node->path, get("", "%s%s/", parent_path, name));
+    } else {
+        strcpy(node->path, get("", "%s/%s", parent_path, name));
+    }
 
     node->id = node_count;
     node->parent_id = parent->id;
@@ -300,7 +302,7 @@ int list_dir(fs_node_t *node, int index) {
     char *type = get_type(node);
 
     printf("%s (%s)\n", node->name, type);
-    Kernel::serial_write_string("%s (%s)\n", node->name, type);
+    Kernel::serial_write_string("%s (%s) (%s)\n", node->name, type, node->path);
 
     free(type);
 
