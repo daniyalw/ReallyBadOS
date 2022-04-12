@@ -48,6 +48,17 @@ int setenv(char *name, char *val, int overwrite) {
     return 0;
 }
 
+int append_env(char *name, char *val) {
+    char *env = getenv(name);
+
+    if (env) {
+        strcat(env, val);
+        return setenv(name, env, 1);
+    }
+
+    return 1;
+}
+
 int env_read(fs_node_t *node, int offset, int length, char *buffer) {
     for (int z = 0; z < env_count; z++) {
         if (strcmp(env_vec[z].name, node->name) == 0) {

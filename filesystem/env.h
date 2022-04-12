@@ -14,3 +14,5 @@ fs_node_t *env_node;
 char *getenv(char *name);
 int setenv(char *name, char *val, int overwrite);
 int env_init();
+
+int append_env(char *name, char *val);
