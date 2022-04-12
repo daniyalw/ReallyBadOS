@@ -720,3 +720,41 @@ char *strdup(char *str) {
     strcpy(text, str);
     return text;
 }
+
+char *strjoin(char **buf, char *del, char *out) {
+    int size = 0;
+    int count = 0;
+    const int del_length = strlen(del);
+
+    while (buf[count]) {
+        count++;
+    }
+
+    for (int z = 0; z < count; z++) {
+        size += strlen(buf[z]);
+        size += del_length;
+    }
+
+    int c = 0;
+
+    for (int z = 0; z < count; z++) {
+        for (int b = 0; b < strlen(buf[z]); b++) {
+            out[c] = buf[z][b];
+            c++;
+        }
+
+        if (z == count - 1) {
+            break;
+        }
+
+        for (int b = 0; b < del_length; b++) {
+            out[c] = del[b];
+            c++;
+        }
+    }
+
+    c -= del_length * 4;
+    out[c] = NULL;
+
+    return out;
+}
