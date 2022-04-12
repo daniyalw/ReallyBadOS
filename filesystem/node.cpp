@@ -65,7 +65,7 @@ char *find_fixed(char *path) {
 }
 
 fs_node_t *absolute_path_node(char *cwd, char *fmt) {
-    char *path = (char *)malloc(100);
+    char path[100];
     memset(path, 0, 100);
 
     if (cwd[strlen(cwd) - 1] != '/') {
@@ -73,13 +73,14 @@ fs_node_t *absolute_path_node(char *cwd, char *fmt) {
     }
 
     if (fmt[0] != '/') {
-        strcat(path, cwd);
-        strcat(path, fmt);
+        append(cwd, fmt, path);
     } else {
         strcpy(path, fmt);
     }
 
-    return find_node_fixed(path);
+    fs_node_t *node = find_node_fixed(path);
+
+    return node;
 }
 
 char *absolute_path(char *cwd, char *fmt) {

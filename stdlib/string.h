@@ -82,3 +82,5 @@ char strgetlast(char *c);
 char *strdup(char *str);
 
 char * strcat(char *dest, char *src);
+
+char *append(char *a1, char *a2, char *out);

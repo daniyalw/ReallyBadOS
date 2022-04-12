@@ -170,6 +170,24 @@ bool charcmp(char str1, char str2) {
     return false;
 }
 
+char *append(char *a1, char *a2, char *out) {
+    int c = 0;
+
+    for (int z = 0; z < strlen(a1); z++) {
+        out[c] = a1[z];
+        c++;
+    }
+
+    for (int z = 0; z < strlen(a2); z++) {
+        out[c] = a2[z];
+        c++;
+    }
+
+    out[c] = NULL;
+
+    return out;
+}
+
 char * strcat(char *dest, char *src) {
     int c = strlen(dest);
 
