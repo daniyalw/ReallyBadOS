@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "env.h"
 
 char *find_parent(char *_path) {
     char *path = strdup(_path);
@@ -21,8 +22,6 @@ char *find_parent(char *_path) {
 
         path[z] = 0;
     }
-
-    log::warning("PATH: %s\n", path);
 
     return path;
 }
@@ -84,4 +83,31 @@ char *fixup_path(char *path, char *out) {
     out[c] = NULL;
 
     return out;
+}
+
+fs_node_t *check_path_env(char *relative) {
+    char *env;
+    int size;
+    char **buf;
+
+    env = getenv("PATH");
+    size = tokenize(env, ':', buf);
+
+    for (int z = 0; z < size; z++) {
+        fs_node_t *node = absolute_path_node(buf[z], relative);
+
+        if (node) {
+            for (int c = 0; c < size; c++) {
+                free(buf[c]);
+            }
+
+            return node;
+        }
+    }
+
+    for (int c = 0; c < size; c++) {
+        free(buf[c]);
+    }
+
+    return NULL;
 }
