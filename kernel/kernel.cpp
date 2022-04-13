@@ -45,6 +45,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include <tree.h>
 #include <cxa.h>
 #include <gui/coords.h>
+#include <strmap.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"

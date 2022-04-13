@@ -3,78 +3,220 @@
 
 namespace std {
 
+template <typename T>
 class map {
     typedef struct {
-        uint32_t start;
         char *name;
-        char *val;
+        T val;
     } MapKey;
 
     MapKey *keys;
     int mkey_count = 0;
 
+    void add_key(MapKey key) {
+        keys[mkey_count] = key;
+        mkey_count++;
+    }
+
 public:
-    void parse(char *str) {
-        char **buf;
-        int size = tokenize(str, ';', buf);
-
-        for (int z = 0; z < size; z++) {
-            char *name = buf[z];
-            char *val;
-
-            int c = 0;
-            while (isalpha(name[c])) {
-                c++;
-            }
-
-            int n = -1;
-            for (int v = 0; v < strlen(buf[z]); v++) {
-                if (buf[z][v] == ':') {
-                    n = v + 1;
-                    break;
-                }
-            }
-
-            if (n == -1) {
-                for (int m = 0; m < size; m++) {
-                    free(buf[m]);
-                }
-
-                return;
-            } else {
-                int max = strlen(buf[z]);
-
-                val = &buf[z][n];
-                val[max] = 0;
-            }
-
-            name[c] = 0;
-
-            printf("NAME: %s\nVAL1: %s\n", name, val);
-
-            MapKey key;
-            key.start = (uint32_t)&buf[z];
-            key.name = name;
-            key.val = val;
-
-            keys[mkey_count] = key;
-            mkey_count++;
-        }
-    }
-
     map() {}
-    map(char *str) {
-        parse(str);
+
+    int size() {
+        return mkey_count;
     }
 
-    char *find(char *name) {
+    bool has_name(char *name) {
         for (int z = 0; z < mkey_count; z++) {
             if (strcmp(keys[z].name, name) == 0) {
-                return keys[z].val;
+                return true;
             }
         }
 
-        return NULL;
+        return false;
+    }
+
+    int find_pos_of(char *name) {
+        for (int z = 0; z < mkey_count; z++) {
+            if (strcmp(keys[z].name, name) == 0) {
+                return z;
+            }
+        }
+
+        return -1;
+    }
+
+    char *find_name_of(int pos) {
+        if (pos < 0 || pos >= mkey_count) {
+            return NULL;
+        }
+
+        return keys[pos].name;
+    }
+
+    T find(char *name) {
+        int pos = find_pos_of(name);
+
+        if (pos >= 0) {
+            return keys[pos].val;
+        } else {
+            return (T)NULL;
+        }
+    }
+
+    T find(int pos) {
+        char *name = NULL;
+
+        if ((name = find_name_of(pos)) != NULL) {
+            return find(name);
+        } else {
+            return NULL;
+        }
+    }
+
+    void push_back(char *name, T val) {
+        if (has_name(name)) {
+            return;
+        }
+
+        MapKey key;
+        key.name = name;
+        key.val = val;
+        add_key(key);
+    }
+
+    void remove(char *name) {
+        int pos = find_pos_of(name);
+
+        if (pos >= 0) {
+            for (int z = pos; z < mkey_count; z++) {
+                keys[z] = keys[z + 1];
+            }
+
+            mkey_count--;
+        }
+    }
+
+    void remove(int pos) {
+        char *name = NULL;
+
+        if ((name = find_name_of(pos)) != NULL) {
+            remove(name);
+        }
+    }
+
+    void pop() {
+        if (mkey_count > 0) {
+            remove(mkey_count - 1);
+        }
+    }
+
+    void erase() {
+        while (size() != 0) {
+            pop();
+        }
+    }
+
+    void merge_map(auto _map) {
+        for (int z = 0; z < _map.size(); z++) {
+            push_back(_map.find_name_of(z), _map.find(z));
+        }
+    }
+
+    T operator[](int pos) {
+        return find(pos);
+    }
+
+    T operator()(int pos) {
+        return find(pos);
+    }
+
+    void operator+(auto _map) {
+        merge_map(_map);
+    }
+
+    void operator+=(auto _map) {
+        merge_map(_map);
+    }
+
+    void operator=(auto _map) {
+        erase();
+        merge_map(_map);
+    }
+
+    bool operator>(auto _map) {
+        if (size() > _map.size()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool operator<(auto _map) {
+        if (size() < _map.size()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool operator==(auto _map) {
+        if (size() != _map.size()) {
+            return false;
+        }
+
+        for (int z = 0; z < size(); z++) {
+            if (strcmp(keys[z].name, _map.find_name_of(z)) != 0) {
+                return false;
+            }
+
+            if (keys[z].val != _map.find(z)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool operator!=(auto _map) {
+        if (size() != _map.size()) {
+            return true;
+        }
+
+        for (int z = 0; z < size(); z++) {
+            if (strcmp(keys[z].name, _map.find_name_of(z)) != 0) {
+                return true;
+            }
+
+            if (keys[z].val != _map.find(z)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool operator<=(auto _map) {
+        if (size() <= _map.size()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool operator>=(auto _map) {
+        if (size() >= _map.size()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool operator!() {
+        if (size()) {
+            return false;
+        }
+
+        return true;
     }
 };
 
