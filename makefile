@@ -9,6 +9,7 @@ OUT = reallybados-x86_32.iso
 QEMU = qemu-system-x86_64
 ARCH = i686-elf
 BASE = base
+MAP_SCRIPT = map.py
 
 AS = ${ARCH}-as
 GCC = ${ARCH}-g++
@@ -44,27 +45,27 @@ jmp:
 
 map:
 	${NM} -C -n --radix=x built/main.o > ${BASE}/usr/share/kernel.map
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
-	python3 test.py
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
+	python3 ${MAP_SCRIPT}
 
 
 
