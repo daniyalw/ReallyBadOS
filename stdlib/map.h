@@ -218,6 +218,8 @@ public:
 
         return true;
     }
+
+    ~map() {}
 };
 
 }
