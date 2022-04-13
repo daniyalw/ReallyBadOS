@@ -1,7 +1,8 @@
 boot = boot/loader.s
 INCLUDES = -Istdlib -Ifilesystem -Idrivers -Ikernel -I.
+MEM = 2G
 COMPILER_FLAGS = -m32 -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -fpermissive -lgcc -fno-rtti
-QEMU_FLAGS = -soundhw pcspk -m 1G -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk,id=nvm \
+QEMU_FLAGS = -soundhw pcspk -m ${MEM} -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk,id=nvm \
 			 -accel tcg -netdev user,id=u1 -device rtl8139,netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.dat \
 			 -boot d -device bochs-display -device virtio-serial-pci
 OUT = reallybados-x86_32.iso
@@ -42,7 +43,30 @@ jmp:
 	nasm -f elf32 kernel/jmp.asm -o built/jmp.o
 
 map:
-	${NM} -C -n built/main.o > ${BASE}/usr/share/kernel.map
+	${NM} -C -n --radix=x built/main.o > ${BASE}/usr/share/kernel.map
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+	python3 test.py
+
+
 
 tasking:
 	nasm -f elf32 kernel/sys/multitasking/switch.asm -o built/switch.o

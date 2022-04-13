@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <list.h>
 #include <memory.h>
+#include <strtol.h>
 
 int atoi(char * str) {
     int num = 0;
@@ -252,7 +253,16 @@ int vsscanf(char *str, char *fmt, va_list va) {
 				uint32_t *out = (uint32_t *)va_arg(va, uint32_t*);
 				cz++;
 				*out = z;
-			} else if (*fmt == 's') {
+			} else if (*fmt == 'x') {
+                uint32_t z = 0;
+
+                while (isspace(*str)) str++;
+
+                z = strtol(str, NULL, 16);
+                int *out = (int *)va_arg(va, int*);
+                cz++;
+                *out = z;
+            } else if (*fmt == 's') {
                 char **out = (char **)va_arg(va, char**);
                 char *s = (char *)&out[0];
                 int sz = 0;
