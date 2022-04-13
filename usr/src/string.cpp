@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 extern "C" void strcpy(char *dest, char *orig)
 {
@@ -35,4 +36,12 @@ extern "C" int strcmp(char * str1, char * str2)
         if (str1[z] != str2[z]) return 1;
 
     return 0;
+}
+
+extern "C" char *strdup(char *str) {
+    int len = strlen(str);
+    char *s = (char *)malloc(len + 1);
+    memset(s, 0, len + 1);
+    strcpy(s, str);
+    return s;
 }

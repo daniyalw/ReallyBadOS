@@ -245,7 +245,7 @@ void wrapper() {
 
     call_t call = (call_t)task->start;
 
-    int ret = call(task->argc, task->argv);
+    int ret = call(task->argc, task->argv, env_vec, env_count);
 
 #ifdef DEBUG
     log::info("Application '%s' exited with a return value %d", task->name, ret);

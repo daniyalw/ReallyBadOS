@@ -1,4 +1,5 @@
 #include <exec/elf.h>
+#include <filesystem/env.h>
 
 /* returns true if true elf, otherwise false */
 bool elf_verify(uint8_t *buf) {
@@ -41,7 +42,7 @@ int elf_start(uint8_t *buf, int argc, char **argv) {
     elf_header_t *header = load_elf_memory(buf);
 
     call_t func = (call_t)header->e_entry;
-    int result = func(argc, argv);
+    int result = func(argc, argv, env_vec, env_count);
 
     return result;
 }

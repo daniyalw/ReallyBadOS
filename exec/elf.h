@@ -1,12 +1,14 @@
 #pragma once
 
+#include <filesystem/env.h>
+
 #define ELF_LOAD 1
 
 char verify_elf[] = {
     0x7f, 'E', 'L', 'F'
 };
 
-typedef int (*call_t)(int argc, char **argv);
+typedef int (*call_t)(int argc, char **argv, EnvMap *maps, int envc);
 
 typedef struct {
 	uint32_t sig;
