@@ -13,8 +13,12 @@ class map {
     MapKey *keys;
     int mkey_count = 0;
 
-    void add_key(MapKey key) {
-        keys[mkey_count] = key;
+    void add_key(MapKey key, int pos) {
+        for (int z = mkey_count - 1; z > pos; z--) {
+            keys[z + 1] = keys[z];
+        }
+
+        keys[pos] = key;
         mkey_count++;
     }
 
@@ -74,6 +78,10 @@ public:
     }
 
     void push_back(char *name, T val) {
+        insert(name, val, mkey_count);
+    }
+
+    void insert(char *name, T val, int pos) {
         if (has_name(name)) {
             return;
         }
@@ -81,7 +89,7 @@ public:
         MapKey key;
         key.name = name;
         key.val = val;
-        add_key(key);
+        add_key(key, pos);
     }
 
     void remove(char *name) {
