@@ -55,6 +55,7 @@ void kill(int pid, int ret);
 void kill(int pid);
 void exit(int ret);
 void yield();
+void abort();
 
 void block_task(task_t *task);
 void block_task_id(int taskid);

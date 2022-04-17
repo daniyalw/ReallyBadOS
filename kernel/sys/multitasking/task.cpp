@@ -105,6 +105,10 @@ void yield() {
     switch_task(NULL, true);
 }
 
+void abort() {
+    exit(1);
+}
+
 pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int argc, char **argv) {
     // threads aren't allowed to create processes
     if (parent >= 0 && tasks[parent]->is_thread)
