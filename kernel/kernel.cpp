@@ -271,7 +271,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     //PANIC("s");
 
-    test_install();
+    //test_install();
 
     switch_to_user_mode();
     shell();

@@ -15,9 +15,6 @@ AS = ${ARCH}-as
 GCC = ${ARCH}-g++
 NM = ${ARCH}-nm
 
-SHELL := /bin/bash
-PATH := bin:$(PATH)
-
 all:
 	make gdt
 	make interrupts
@@ -83,7 +80,8 @@ ramdisk:
 	cd ${BASE} && make build && cd ..
 
 user:
-	export PATH=${PATH}:usr/apps && make -C usr/src && make -C usr/apps
+	make -C usr/src
+	make -C usr/apps
 
 textmode:
 	make bootloader
