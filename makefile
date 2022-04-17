@@ -15,6 +15,9 @@ AS = ${ARCH}-as
 GCC = ${ARCH}-g++
 NM = ${ARCH}-nm
 
+SHELL := /bin/bash
+PATH := bin:$(PATH)
+
 all:
 	make gdt
 	make interrupts
@@ -80,17 +83,7 @@ ramdisk:
 	cd ${BASE} && make build && cd ..
 
 user:
-	make -C usr/src
-	make -C usr/apps/apps/write
-	make -C usr/apps/apps/read
-	make -C usr/apps/apps/echo
-	make -C usr/apps/apps/exec
-	make -C usr/apps/apps/info
-	make -C usr/apps/apps/ls
-	make -C usr/apps/apps/mkdir
-	make -C usr/apps/apps/mkfile
-	make -C usr/apps/apps/test
-	make -C usr/apps/apps/time
+	export PATH=${PATH}:usr/apps && make -C usr/src && make -C usr/apps
 
 textmode:
 	make bootloader
@@ -99,10 +92,9 @@ textmode:
 clean:
 	rm *.iso
 	rm built/*.o
-	rm ${BASE}/kernel.map
 	rm isodir/boot/grub/*.cfg
 	rm usr/src/*.o
-	rm ${BASE}/*.o
+	rm ${BASE}/bin/*.o
 	rm isodir/boot/main.o
 	rm isodir/boot/out.tar
 
