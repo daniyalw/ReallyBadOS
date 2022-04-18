@@ -37,7 +37,7 @@ int tasking_on = false;
 
 typedef int pid_t;
 
-pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int argc, char **argv);
+pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int argc, char **argv, int user);
 pid_t create_process(char *name, uint32_t begin);
 pid_t create_process_file(FILE *file, int argc, char **argv);
 pid_t create_process_filename(char *path, int argc, char **argv);

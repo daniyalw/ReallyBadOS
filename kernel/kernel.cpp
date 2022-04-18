@@ -137,6 +137,38 @@ void callback(UIObject *obj, Event *event) {
 using namespace Time;
 using namespace Graphic;
 
+void handle_tar(Tar tar) {
+    for (int z = 0; z < tar.block_count; z++) {
+        if (tar.blocks[z].type == TAR_DIR) {
+            tar.blocks[z].name[strlen(tar.blocks[z].name) - 1] = 0;
+            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
+            memset(path, 0, strlen(tar.blocks[z].name) + 3);
+            get(path, "/%s", tar.blocks[z].name);
+            make_dir(find_name(path), find_parent(path));
+        } else if (tar.blocks[z].type == TAR_FILE) {
+            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
+            memset(path, 0, strlen(tar.blocks[z].name) + 3);
+            get(path, "/%s", tar.blocks[z].name);
+            create_file(find_name(path), find_parent(path), tar.blocks[z].contents);
+        } else {
+            log::warning("Tar file of type '%s'\n", tar_find_type(tar.blocks[z].type));
+        }
+    }
+}
+
+void print_init_msg() {
+    time_t time = get_time();
+
+    printf("%s\n", System::SYSTEM);
+
+    printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
+
+    if (time.min < 10)
+        printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+    else
+        printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+}
+
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t stack) {
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         log::error("Invalid magic."); // we could use printf, but that's text-mode only
@@ -182,22 +214,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     init_fs();
     init_all_devs();
 
-    for (int z = 0; z < tar.block_count; z++) {
-        if (tar.blocks[z].type == TAR_DIR) {
-            tar.blocks[z].name[strlen(tar.blocks[z].name) - 1] = 0;
-            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
-            memset(path, 0, strlen(tar.blocks[z].name) + 3);
-            get(path, "/%s", tar.blocks[z].name);
-            make_dir(find_name(path), find_parent(path));
-        } else if (tar.blocks[z].type == TAR_FILE) {
-            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
-            memset(path, 0, strlen(tar.blocks[z].name) + 3);
-            get(path, "/%s", tar.blocks[z].name);
-            create_file(find_name(path), find_parent(path), tar.blocks[z].contents);
-        } else {
-            log::warning("Tar file of type '%s'\n", tar_find_type(tar.blocks[z].type));
-        }
-    }
+    handle_tar(tar);
 
     Graphic::redraw_background_picture(array);
 
@@ -224,39 +241,14 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     init_vga();
     init_all_devs();
 
-    for (int z = 0; z < tar.block_count; z++) {
-        if (tar.blocks[z].type == TAR_DIR) {
-            tar.blocks[z].name[strlen(tar.blocks[z].name) - 1] = 0;
-            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
-            memset(path, 0, strlen(tar.blocks[z].name) + 3);
-            get(path, "/%s", tar.blocks[z].name);
-            make_dir(find_name(path), find_parent(path));
-        } else if (tar.blocks[z].type == TAR_FILE) {
-            char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
-            memset(path, 0, strlen(tar.blocks[z].name) + 3);
-            get(path, "/%s", tar.blocks[z].name);
-            create_file(find_name(path), find_parent(path), tar.blocks[z].contents);
-        } else {
-            log::warning("Tar file of type '%s'\n", tar_find_type(tar.blocks[z].type));
-        }
-    }
+    handle_tar(tar);
 
     Kernel::scan_buses();
-
-    time_t time = get_time();
 
     uint16_t *bytes;
     bytes = DiskDrivers::ATA::ata_init(bytes);
 
-    printf("%s Shell\n", System::SYSTEM);
-
-    printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
-
-    if (time.min < 10)
-        printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
-    else
-        printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
-
+    print_init_msg();
     /*
     uint8_t addr[] = {
         10, 0, 0, 199
@@ -267,14 +259,14 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Net::ARP::send_request(addr);
     */
 
-    //Kernel::CPU::init_tasking();
+    Kernel::CPU::init_tasking();
 
     //PANIC("s");
 
     //test_install();
 
-    switch_to_user_mode();
-    shell();
+    //switch_to_user_mode();
+    //shell();
 
     Kernel::serial_write_string("\n");
     while (true) {}

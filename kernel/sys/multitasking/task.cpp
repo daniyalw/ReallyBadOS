@@ -109,7 +109,7 @@ void abort() {
     exit(1);
 }
 
-pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int argc, char **argv) {
+pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int argc, char **argv, int user) {
     // threads aren't allowed to create processes
     if (parent >= 0 && tasks[parent]->is_thread)
         return -1;
@@ -131,7 +131,11 @@ pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int ar
     task->pid = task_count;
 
     task->eip = (uint32_t)&wrapper;
-    task->eflags = 0x202;
+    if (user) {
+        task->eflags = 0x206;
+    } else {
+        task->eflags = 0x202;
+    }
     task->null = false;
     task->blocked = false;
     task->is_thread = thread;
@@ -154,7 +158,11 @@ pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int ar
 
     // init stack
     *--stack = task->eflags; // eflags
-    *--stack = 0x0b; // cs
+    if (user) {
+        *--stack = 0x1b; // cs
+    } else {
+        *--stack = 0x0b;
+    }
     *--stack = (uint32_t)begin; // eip
     *--stack = 0; // eax
     *--stack = 0; // ebx
@@ -206,7 +214,7 @@ pid_t create_process_file(FILE *file, int argc, char **argv) {
 
     if (file != NULL) {
         auto header = load_elf_memory((uint8_t *)file->node->contents);
-        return create_process(argv[0], header->e_entry, false, -1, argc, argv);
+        return create_process(argv[0], header->e_entry, false, -1, argc, argv, 1);
     } else {
         return -1;
     }
@@ -223,7 +231,7 @@ pid_t create_process_filename(char *path, int argc, char **argv) {
 }
 
 pid_t create_process(char *name, uint32_t begin) {
-    return create_process(name, begin, false, -1, 0, NULL);
+    return create_process(name, begin, false, -1, 0, NULL, 0);
 }
 
 void load_new_task(task_t *task) {
@@ -303,6 +311,8 @@ void init_tasking() {
     create_process("ipc-test-1", (uint32_t)&ipc_test11);
     //create_process("err-check", (uint32_t)&task_err_check);
     //create_process("shell", (uint32_t)&shell);
+    char *argv[] = {"echo", "hello"};
+    create_process_filename("/bin/echo.o", 2, argv);
 
     tasking_on = true;
     switch_task(NULL, false);
