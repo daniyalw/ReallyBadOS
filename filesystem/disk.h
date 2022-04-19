@@ -30,42 +30,16 @@ typedef struct {
 } __attribute__((packed)) RBFSNode;
 
 typedef struct {
+    uint32_t magic;
     char name[20];
     char path[100];
     int sector;
+    int sectors;
     int type;
+    bool null = false;
 } __attribute__((packed)) RBFSIndex;
 
 Disk *rbfs_disk = NULL;
 
-RBFSIndex **indexed;
+RBFSIndex *indexed[1000];
 int index_count = 0;
-
-void rbfs_format();
-void wipe_disk();
-
-RBFSNode *find_file(char *path);
-int find_sector_node(RBFSNode *node);
-void find_disk();
-RBFSIndex *find_index(char *path);
-RBFSIndex *find_index(RBFSNode *node);
-
-void move_sector_up(int sector);
-void move_sector_down(int sector);
-void move_sectors_up(int sector, int sectors);
-void move_sectors_down(int sector, int sectors);
-
-void edit_file(RBFSNode *node, char *new_contents);
-
-void add_index(char *name, char *path, int sector, int type);
-int rbfs_create(char *name, char *parent, int type, int permission, char *contents);
-int rbfs_create_file(char *path, char *contents);
-int rbfs_create_dir(char *path);
-
-void index_disk();
-
-char *read_file(RBFSNode *node, int offset, int sectors);
-char *read_file(RBFSNode *node);
-char *read_file(char *path);
-
-int init_rbfs();

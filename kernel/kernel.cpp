@@ -267,6 +267,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     //switch_to_user_mode();
     //shell();
+    rbfs_init();
 
     Kernel::serial_write_string("\n");
     while (true) {}

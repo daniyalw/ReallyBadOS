@@ -24,7 +24,7 @@ int Disk::write(uint32_t sector, uint8_t sectors, uint8_t *data) {
 }
 
 int Disk::write_one(uint32_t sector, uint8_t *data) {
-    if ((sector + sectors) >= total_sectors()) {
+    if (sector >= total_sectors()) {
         return 1;
     }
 
