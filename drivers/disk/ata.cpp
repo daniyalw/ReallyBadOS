@@ -217,8 +217,9 @@ uint16_t *ata_init(uint16_t *bytes) {
         Disk *disk = new Disk();
 
         disk->total_sectors = total_sectors;
-        disk->read = ata_read;
-        disk->write = ata_write_one;
+        disk->_read = ata_read;
+        disk->_write_one = ata_write_one;
+        disk->_write = ata_write;
 
         load_disk(disk);
     } else {

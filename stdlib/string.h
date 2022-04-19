@@ -61,7 +61,6 @@ char * get(char * out, char *text, ...);
 
 extern "C" void memset(void *dest, char val, u32 len);
 int memcmp(void* buf1, void* buf2, int count);
-void memset(u8 *dest, u8 val, u32 len);
 
 bool find(char * s, char c);
 char * strip(char * string, char key);
