@@ -129,6 +129,7 @@ void callback(UI::Object *obj, UI::Event *event) {
     obj->bg = Graphic::rgb(100, 100, 100);
     obj->draw(obj, ui_objects[obj->parent]->coords);
 }
+
 #endif
 
 using namespace Time;
