@@ -224,6 +224,9 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     UI::Button *button = UI::button(win, "Button", 10, 10, callback);
     draw_widget(button);
 
+    UI::Entry *entry = UI::entry(win, 30, 30);
+    draw_widget(entry);
+
     draw_window(win);
 
     Graphic::blit_changes();
