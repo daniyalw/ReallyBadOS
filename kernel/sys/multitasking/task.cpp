@@ -307,12 +307,12 @@ int adddd() {
 
 void init_tasking() {
     create_process("idle", (uint32_t)&idle_task);
-    create_process("ipc-test", (uint32_t)&ipc_test);
-    create_process("ipc-test-1", (uint32_t)&ipc_test11);
+    //create_process("ipc-test", (uint32_t)&ipc_test);
+    //create_process("ipc-test-1", (uint32_t)&ipc_test11);
     //create_process("err-check", (uint32_t)&task_err_check);
     //create_process("shell", (uint32_t)&shell);
     char *argv[] = {"echo", "hello"};
-    create_process_filename("/bin/echo.o", 2, argv);
+    //create_process_filename("/bin/echo.o", 2, argv);
 
     tasking_on = true;
     switch_task(NULL, false);

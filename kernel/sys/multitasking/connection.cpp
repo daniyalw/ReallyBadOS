@@ -25,8 +25,18 @@ Data *get_last() {
 
 int sid_to_pid(int sid) {
     for (int z = 0; z < server_count; z++) {
-        if (servers[z]->getid() == sid) {
-            return servers[z]->getthread();
+        if (servers[z]->id() == sid) {
+            return servers[z]->thread();
+        }
+    }
+
+    return -1;
+}
+
+int find_server(int serv) {
+    for (int z = 0; z < server_count; z++) {
+        if (servers[z]->id() == serv) {
+            return z;
         }
     }
 

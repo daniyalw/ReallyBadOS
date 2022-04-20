@@ -20,8 +20,8 @@ int server_count = 0;
 class Server {
     int clients[10];
     int client_count = 0;
-    int id = -1;
-    int thread = -1;
+    int _id = -1;
+    int _thread = -1;
 
 public:
     int server_find_client(int id) {
@@ -61,26 +61,34 @@ public:
         return 1;
     }
 
-    int getid() {
-        return id;
+    int id() {
+        return _id;
     }
 
-    int getthread() {
-        return thread;
+    int thread() {
+        return _thread;
+    }
+
+    void close() {
+        for (int z = client_count - 1; z >= 0; z--) {
+            server_disconnect_client(clients[z]);
+        }
+
+        Kernel::CPU::exit(0);
     }
 
     int init(char *name, int sid, auto mainloop) {
         for (int z = 0; z < server_count; z++) {
-            if (servers[z]->getid() == sid) {
+            if (servers[z]->id() == sid) {
                 return -1;
             }
         }
 
-        id = sid;
-        thread = Kernel::CPU::create_process(name, (uint32_t)mainloop);
+        _id = sid;
+        _thread = Kernel::CPU::create_process(name, (uint32_t)mainloop);
         servers[server_count] = this;
         server_count++;
 
-        return id;
+        return _id;
     }
 };
