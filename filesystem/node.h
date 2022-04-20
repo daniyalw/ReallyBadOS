@@ -69,8 +69,9 @@ fs_node_t *create_node_ignore(char *name, char *parent_path, int type, int permi
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount);
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission);
 
-int list_dir(fs_node_t *node, int index);
+int list_dir(fs_node_t *node, int index, bool serial_only);
 int list_dir(char *dir);
+int list_dir_serial(char *dir);
 
 void create_root();
 void init_fs();

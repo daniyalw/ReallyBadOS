@@ -85,3 +85,4 @@ char *strjoin(char **buf, char *del, char *out);
 int sscanf(char *s, char *fmt, ...);
 char *append(char *a1, char *a2, char *out);
 int tokenize(char *s, char sep, char **buff);
+char *strstr(char *s, char *d);

@@ -184,6 +184,10 @@ fs_node_t *copy_node(char *old_path, char *new_path) {
 }
 
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount) {
+    if (contains(name, '/')) {
+        return NULL;
+    }
+
     fs_node_t *parent = find_node(parent_path);
 
     if (parent == NULL || parent->flags != FS_FOLDER)
@@ -215,13 +219,15 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
         node->write = parent->write;
         node->read = parent->read;
         node->mkfile = parent->mkfile;
+        node->mkdir = parent->mkdir;
 
         int ret = -1;
 
-        if (type == FS_FILE)
+        if (type == FS_FILE) {
             ret = node->mkfile(node);
-        else if (type == FS_FOLDER)
+        } else if (type == FS_FOLDER) {
             ret = node->mkdir(node);
+        }
 
         if (ret != 0) {
             free(node);
@@ -294,25 +300,26 @@ char *get_type(fs_node_t *node) {
     }
 }
 
-int list_dir(fs_node_t *node, int index) {
+int list_dir(fs_node_t *node, int index, bool serial_only) {
     if (node == NULL)
         return 1;
 
-    for (int z = 0; z < index; z++)
-        printf("    ");
+    if (!serial_only)
+        for (int z = 0; z < index; z++)
+            printf("    ");
 
     for (int z = 0; z < index; z++)
         Kernel::serial_write_string("    ");
 
     char *type = get_type(node);
 
-    printf("%s (%s)\n", node->name, type);
+    if (!serial_only) printf("%s (%s)\n", node->name, type);
     Kernel::serial_write_string("%s (%s) (%s)\n", node->name, type, node->path);
 
     free(type);
 
     for (int z = 0; z < node->children_count; z++)
-        list_dir(nodes[node->children[z]], index + 1);
+        list_dir(nodes[node->children[z]], index + 1, serial_only);
 
     return 0;
 }
@@ -323,7 +330,18 @@ int list_dir(char *dir) {
     if (node == NULL || node->flags == FS_FILE)
         return 1;
 
-    int ret = list_dir(node, 0);
+    int ret = list_dir(node, 0, false);
+
+    return ret;
+}
+
+int list_dir_serial(char *dir) {
+    fs_node_t *node = find_node(dir);
+
+    if (node == NULL || node->flags == FS_FILE)
+        return 1;
+
+    int ret = list_dir(node, 0, true);
 
     return ret;
 }

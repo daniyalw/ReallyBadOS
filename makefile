@@ -23,7 +23,6 @@ all:
 	make tasking
 	make user
 	make textmode
-	make map
 	make ramdisk
 	make iso
 	make run
@@ -43,32 +42,6 @@ interrupts:
 jmp:
 	nasm -f elf32 kernel/jmp.asm -o built/jmp.o
 
-map:
-	${NM} -C -n --radix=x built/main.o > ${BASE}/usr/share/kernel.map
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-	python3 ${MAP_SCRIPT}
-
-
-
 tasking:
 	nasm -f elf32 kernel/sys/multitasking/switch.asm -o built/switch.o
 	${AS} kernel/sys/multitasking/eip.asm -o built/eip.o
@@ -81,7 +54,17 @@ ramdisk:
 
 user:
 	make -C usr/src
-	make -C usr/apps
+	i686-elf-g++ -m32 -ffreestanding -Iusr/include -Wno-write-strings -std=c++20 -mno-red-zone -nostdlib -fconcepts-ts -c usr/apps/start.cpp -o usr/apps/start.o
+	make -C usr/apps/apps/write
+	make -C usr/apps/apps/read
+	make -C usr/apps/apps/echo
+	make -C usr/apps/apps/exec
+	make -C usr/apps/apps/info
+	make -C usr/apps/apps/ls
+	make -C usr/apps/apps/mkdir
+	make -C usr/apps/apps/mkfile
+	make -C usr/apps/apps/test
+	make -C usr/apps/apps/time
 
 textmode:
 	make bootloader

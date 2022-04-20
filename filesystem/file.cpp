@@ -8,6 +8,8 @@ int create_file(char *name, char *path, int permission) {
     if (node == NULL)
         return 1;
 
+    printf("Created file %s at id %d\n", node->path, node->id);
+
     return 0;
 }
 

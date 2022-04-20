@@ -9,6 +9,8 @@
 #define RBFS_DIR 0
 #define RBFS_FILE 1
 
+#define RBFS_MOUNT "/disk0"
+
 typedef struct {
     uint32_t magic; // should always be DISK_MAGIC
     uint32_t disk_size; // the size of the disk
@@ -36,10 +38,8 @@ typedef struct {
     int sector;
     int sectors;
     int type;
-    bool null = false;
+    int id;
 } __attribute__((packed)) RBFSIndex;
-
-Disk *rbfs_disk = NULL;
 
 RBFSIndex *indexed[1000];
 int index_count = 0;
