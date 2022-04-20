@@ -3,13 +3,15 @@
 #include "window.h"
 #include "object.h"
 
-struct UIButton : public UIObject {
-    virtual void event_handle(UIObject *object, Event *event) override {
-        //callback(this, event);
-        log::error("%s event", event->name);
+namespace UI {
+
+class Button : public UI::Object {
+public:
+    virtual void event_handle(UI::Object *object, UI::Event *event) override {
+        callback(this, event);
     }
 
-    virtual void draw(UIObject *object, coords_t _coords) override {
+    virtual void draw(UI::Object *object, UI::Coords _coords) override {
         if (object->bg != BG_TRANSPARENT) {
             Graphic::draw_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w, object->coords.h, object->bg);
         }
@@ -43,5 +45,10 @@ struct UIButton : public UIObject {
     int outer = 1; // outer is small little border; 1 - true; 0 - false
     int padding = 2;
 
-    void (*callback)(UIObject*, Event*);
+    void (*callback)(Object*, Event*);
 };
+
+Button *button(Window *win, char *text, int x, int y, auto callback);
+Button *button(UI::Window *win, char *text, int x, int y, int bg, int fg, auto callback);
+
+}

@@ -3,5 +3,5 @@
 #include <gui/coords.h>
 #include "object.h"
 
-void draw_widget(UIObject *obj);
-void hide_widget(UIObject *obj);
+void draw_widget(UI::Object *obj);
+void hide_widget(UI::Object *obj);

@@ -2,8 +2,10 @@
 #include <utils.h>
 #include "window.h"
 
-UIWindow *create_window(char *name, int bg, int fg, int font) {
-    UIWindow *win = new UIWindow();
+namespace UI {
+
+Window *window(char *name, int bg, int fg, int font) {
+    Window *win = new Window();
 
     memset(win->name, 0, 20);
     strcpy(win->name, name);
@@ -22,6 +24,8 @@ UIWindow *create_window(char *name, int bg, int fg, int font) {
     add_window(win);
 
     return win;
+}
+
 }
 
 int find_z_from_id(int id) {
@@ -66,11 +70,11 @@ void remove_window_id(int id) {
     ui_objects[id]->null = true;
 }
 
-void remove_window(UIWindow *win) {
+void remove_window(UI::Window *win) {
     remove_window_id(win->id);
 }
 
-void add_window(UIWindow *win) {
+void add_window(UI::Window *win) {
     win->id = ui_obj_count;
     ui_objects[win->id] = win;
     ui_obj_count++;
@@ -78,7 +82,7 @@ void add_window(UIWindow *win) {
     add_z_order(win->id);
 }
 
-void draw_window(UIWindow *win) {
+void draw_window(UI::Window *win) {
     win->draw(win, win->coords);
 }
 

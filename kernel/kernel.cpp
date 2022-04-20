@@ -12,7 +12,7 @@ extern "C" unsigned int _Unwind_Resume() { return 0; }
 extern "C" unsigned int __gxx_personality_v0() { return 0; }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -124,14 +124,10 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../gui/window.cpp"
 #include "../gui/entry.cpp"
 
-void callback(UIObject *obj, Event *event) {
-    if (strcmp(event->name, "keyboard") == 0) {
-        log::info("Keyboard event.\n");
-    } else if (strcmp(event->name, "mouse") == 0) {
-        log::info("Mouse event.\n");
-    } else {
-        log::info("Unknown event of type: %d name: %s\n", event->type, event->name);
-    }
+void callback(UI::Object *obj, UI::Event *event) {
+    log::info("Mouse event. x: %d, y: %d", obj->coords.x, obj->coords.y);
+    obj->bg = Graphic::rgb(100, 100, 100);
+    obj->draw(obj, ui_objects[obj->parent]->coords);
 }
 #endif
 
@@ -219,12 +215,12 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     Graphic::redraw_background_picture(array);
 
-    UIWindow *win = create_window("Test", DEFAULT_BG, DEFAULT_FG, DEFAULT_FONT);
+    UI::Window *win = UI::window("Test", DEFAULT_BG, DEFAULT_FG, DEFAULT_FONT);
 
-    UILabel *label = create_label(win, "Test label!", 4, 4);
+    UI::Label *label = UI::label(win, "Test label!", 4, 4);
     draw_widget(label);
 
-    UIButton *button = create_button(win, "Button", 10, 10, callback);
+    UI::Button *button = UI::button(win, "Button", 10, 10, callback);
     draw_widget(button);
 
     draw_window(win);

@@ -1,9 +1,9 @@
 #include "widget.h"
 
-void draw_widget(UIObject *obj) {
+void draw_widget(UI::Object *obj) {
     obj->to_draw = true;
 }
 
-void hide_widget(UIObject *obj) {
+void hide_widget(UI::Object *obj) {
     obj->to_draw = false;
 }

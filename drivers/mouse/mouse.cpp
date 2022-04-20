@@ -2,6 +2,9 @@
 #include <mouse/mouse.h>
 #include <gui/gui.h>
 
+int gui_roll = 0;
+int rollover = 4;
+
 void mouse_wait(unsigned char at) {
     unsigned int timeout = 100000;
 
@@ -60,13 +63,6 @@ void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
         bx -= 12;
         by++;
     }
-
-#ifdef GRAPHICS
-    coords_t coords;
-    coords.x = x;
-    coords.y = y;
-    handle_mouse_click(coords, right_c, left, middle);
-#endif
 }
 
 static void mouse_handler(registers_t *regs) {
@@ -159,6 +155,29 @@ static void mouse_handler(registers_t *regs) {
         middle = true;
     }
     draw_cursor(mouse_x, mouse_y, right, left, middle, offset);
+
+    #ifdef GRAPHICS
+        if (!gui_roll) {
+            gui_roll++;
+
+            if (gui_roll >= 4) {
+                gui_roll = 0;
+            }
+
+            UI::Coords coords;
+            coords.x = mouse_x;
+            coords.y = mouse_y;
+
+            handle_mouse_click(coords, right, left, middle);
+        }
+
+        gui_roll++;
+
+        if (gui_roll >= rollover) {
+            gui_roll = 0;
+        }
+    #endif
+
     right = false;
     left = false;
     middle = false;
