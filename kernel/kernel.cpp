@@ -114,6 +114,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "sys/multitasking/connection.cpp"
 #include "../filesystem/env.cpp"
 #include "../stdlib/strtol.cpp"
+#include "../drivers/video/tty.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -265,7 +266,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     //test_install();
 
-    rbfs_init();
+    //rbfs_init();
 
     //switch_to_user_mode();
     //shell();
