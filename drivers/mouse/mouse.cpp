@@ -62,7 +62,7 @@ void draw_cursor(int x, int y, bool right_c, bool left, bool middle, int offset)
     }
 
 #ifdef GRAPHICS
-    coords_t coords;
+    UI::Coords coords;
     coords.x = x;
     coords.y = y;
     handle_mouse_click(coords, right_c, left, middle);

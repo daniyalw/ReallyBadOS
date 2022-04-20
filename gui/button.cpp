@@ -1,13 +1,15 @@
 #include "button.h"
 
-UIButton *create_button(UIWindow *win, char *text, int x, int y, int bg, int fg, auto callback) {
-    UIButton *btn = new UIButton();
+namespace UI {
+
+Button *button(UI::Window *win, char *text, int x, int y, int bg, int fg, auto callback) {
+    Button *btn = new Button();
 
     memset(btn->text, 0, 100);
     strcpy(btn->text, text);
 
     memset(btn->name, 0, 20);
-    strcpy(btn->name, "UIButton");
+    strcpy(btn->name, "Button");
 
     btn->bg = bg;
     btn->fg = fg;
@@ -30,6 +32,8 @@ UIButton *create_button(UIWindow *win, char *text, int x, int y, int bg, int fg,
     return btn;
 }
 
-UIButton *create_button(UIWindow *win, char *text, int x, int y, auto callback) {
-    return create_button(win, text, x, y, DEFAULT_BG, DEFAULT_FG, callback);
+Button *button(Window *win, char *text, int x, int y, auto callback) {
+    return button(win, text, x, y, DEFAULT_BG, DEFAULT_FG, callback);
+}
+
 }

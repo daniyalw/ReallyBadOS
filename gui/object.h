@@ -1,5 +1,7 @@
 #pragma once
 
+namespace UI {
+
 struct Event {
     char name[20];
     int type;
@@ -7,10 +9,10 @@ struct Event {
     bool right = false, middle = false, left = false;
     char key = NULL;
 
-    coords_t coords;
+    UI::Coords coords;
 };
 
-struct UIObject {
+struct Object {
     char name[20];
 
     // colors
@@ -18,19 +20,21 @@ struct UIObject {
     int fsize; // font size
 
     // dimensions
-    coords_t coords;
+    UI::Coords coords;
 
-    UIObject *childs[10]; // children
+    Object *childs[10]; // children
     int child_count = 0;
 
     bool dragged = false, null = false, active = false, to_draw = false;
     int id, parent;
 
-    virtual void event_handle(UIObject*, Event*) {}
-    virtual void draw(UIObject*, coords_t) {}
+    virtual void event_handle(Object*, Event*) {}
+    virtual void draw(Object*, Coords) {}
 };
 
-UIObject *ui_objects[100];
+}
+
+UI::Object *ui_objects[100];
 int ui_obj_count = 0;
 
 int z_order[100];

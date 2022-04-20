@@ -19,8 +19,8 @@ using namespace Graphic;
 
 #include <gui/coords.h>
 
-inline void handle_mouse_click(coords_t coords, bool right, bool left, bool middle);
+inline void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle);
 inline void handle_key_entry(char key);
 
-inline Event *create_event();
+inline UI::Event *create_event();
 inline int get_mouse_click_type(bool right, bool left, bool middle);

@@ -3,12 +3,15 @@
 #include "window.h"
 #include "object.h"
 
-struct UILabel : public UIObject {
-    virtual void event_handle(UIObject *object, Event *event) override {
+namespace UI {
+
+class Label : public UI::Object {
+public:
+    virtual void event_handle(UI::Object *object, UI::Event *event) override {
         log::error("Label: received event of type %s\n", event->name);
     }
 
-    virtual void draw(UIObject *object, coords_t _coords) override {
+    virtual void draw(UI::Object *object, UI::Coords _coords) override {
         if (object->bg != BG_TRANSPARENT) {
             Graphic::draw_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w, object->coords.h, object->bg);
         }
@@ -40,5 +43,7 @@ struct UILabel : public UIObject {
     int padding = 0;
 };
 
-UILabel *create_label(UIWindow *win, char *text, int x, int y, int bg, int fg);
-UILabel *create_label(UIWindow *win, char *text, int x, int y);
+Label *label(Window *win, char *text, int x, int y, int bg, int fg);
+Label *label(Window *win, char *text, int x, int y);
+
+}
