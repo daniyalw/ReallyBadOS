@@ -29,7 +29,7 @@ void draw_char(char character, int x, int y, uint32_t color) {
     character &= 0x7F;
 
     for (font_y = 0; font_y < count_y; font_y++) {
-        shift_line = font[font_y * 128 + character];
+        shift_line = font_data[font_y * 128 + character];
         for (font_x = 0; font_x < count_x; font_x++) {
             if (shift_line & 0x80)
                 Graphic::SetPixel(font_x + x, font_y + y, color);
@@ -59,5 +59,5 @@ void draw_string(int x, int y, uint color, char *text, ...) {
     char *out = vsprintf("", text, va);
     va_end(va);
 
-    draw_string(va, x, y, color);
+    draw_string(out, x, y, color);
 }

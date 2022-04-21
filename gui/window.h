@@ -23,7 +23,7 @@ struct Window : public UI::Object {
     }
 };
 
-Window *window(char *name, int bg, int fg, int font);
+Window *window(char *name, int bg, int fg, int _font);
 Window *window(char *name);
 
 }

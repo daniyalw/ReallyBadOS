@@ -4,7 +4,7 @@
 
 namespace UI {
 
-Window *window(char *name, int bg, int fg, int font) {
+Window *window(char *name, int bg, int fg, int _font) {
     Window *win = new Window();
 
     memset(win->name, 0, 20);
@@ -12,7 +12,7 @@ Window *window(char *name, int bg, int fg, int font) {
 
     win->bg = bg;
     win->fg = fg;
-    win->fsize = font;
+    win->fsize = _font;
 
     win->coords.x = 100;
     win->coords.y = 100;

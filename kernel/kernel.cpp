@@ -12,7 +12,7 @@ extern "C" unsigned int _Unwind_Resume() { return 0; }
 extern "C" unsigned int __gxx_personality_v0() { return 0; }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
