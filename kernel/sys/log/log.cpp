@@ -17,7 +17,7 @@ namespace log {
 
     void error(char *data, ...) {
         va_list va;
-        auto red = get_color("40", "1;31");
+        auto red = get_color("40", "31");
 
         va_start(va, data);
         p_template(red, "Error: ", data, va);
@@ -28,7 +28,7 @@ namespace log {
 
     void warning(char *data, ...) {
         va_list va;
-        auto yellow = get_color("40", "1;33");
+        auto yellow = get_color("40", "33");
 
         va_start(va, data);
         p_template(yellow, "Warning: ", data, va);
@@ -39,7 +39,7 @@ namespace log {
 
     void warn(char *data, ...) {
         va_list va;
-        auto yellow = get_color("40", "1;33");
+        auto yellow = get_color("40", "33");
 
         va_start(va, data);
         p_template(yellow, "Warning: ", data, va);
