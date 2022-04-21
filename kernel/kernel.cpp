@@ -12,7 +12,7 @@ extern "C" unsigned int _Unwind_Resume() { return 0; }
 extern "C" unsigned int __gxx_personality_v0() { return 0; }
 
 //#define DEBUG
-#define GRAPHICS
+//#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -115,6 +115,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../filesystem/env.cpp"
 #include "../stdlib/strtol.cpp"
 #include "../drivers/video/tty.cpp"
+#include "../filesystem/filesystem.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/widget.cpp"
@@ -218,14 +219,22 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     UI::Window *win = UI::window("Test", DEFAULT_BG, DEFAULT_FG, DEFAULT_FONT);
 
-    UI::Label *label = UI::label(win, "Test label!", 4, 4);
+    int x = 1;
+    int y = 1;
+    fs_node_t *node = find_node("/");
+
+    UI::Label *label = UI::label(win, node->path, x, y);
     draw_widget(label);
 
-    UI::Button *button = UI::button(win, "Button", 10, 10, callback);
-    draw_widget(button);
+    x += font_width * 4;
+    y += font_height + 1;
 
-    UI::Entry *entry = UI::entry(win, 30, 30);
-    draw_widget(entry);
+    for (int z = 0; z < node->children_count; z++) {
+        fs_node_t *child = nodes[node->children[z]];
+        UI::Label *l = UI::label(win, child->name, x, y);
+        draw_widget(l);
+        y += font_height + 1;
+    }
 
     draw_window(win);
 

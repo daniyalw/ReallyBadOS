@@ -9,11 +9,23 @@ const char lower_letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
 
 C_HEADER
 
-extern int strlen(char * text);
-extern void strcpy(char *dest, char *orig);
+extern int strlen(const char * text);
+extern void strcpy(char *dest, const char *orig);
 extern void memset(void *dest, char val, int length);
-extern void memcpy(void *dest, void *orig, int length);
-extern int strcmp(char * str1, char * str2);
-char *strdup(char *str);
+extern void memcpy(void *dest, const void *orig, int length);
+extern int strcmp(const char * str1, const char * str2);
+char *strdup(const char *str);
 
 C_HEADER_END
+
+#ifdef __cplusplus
+namespace text {
+
+extern int len(const char *str);
+extern void copy(void *d, const void *s, int length = -1);
+extern int compare(const char *s1, const char *s2);
+extern char *duplicate(const char *s);
+extern void set(void *dest, char val, int length);
+
+}
+#endif

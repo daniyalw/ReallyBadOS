@@ -15,15 +15,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int result = mkdir(argv[1], argv[2]);
+    int result = Filesystem::folder(argv[1], argv[2]);
 
     if (result == 0)
     {
-        printf("Directory successfully created!\n");
+        text::write("Directory successfully created!\n");
     }
     else
     {
-        printf("Failed to create directory: %s\n", argv[1]);
+        text::write("Failed to create directory: %s\n", argv[1]);
     }
 
     return result;

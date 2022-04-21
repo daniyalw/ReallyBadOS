@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-    info_t info = get_sys_info();
+    auto info = System::info();
 
     bool just_version = false, just_os = false, just_data = false;
     bool cont = false;
@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
 
     char redirect[100];
 
-    strcpy(redirect, "/dev/stdout"); // default to stdout
+    text::copy(redirect, "/dev/stdout"); // default to stdout
 
     for (int z = 1; z < argc; z++) {
         if (cont && rd) {
-            memset(redirect, 0, 100);
-            strcpy(redirect, argv[z]);
+            text::set(redirect, 0, 100);
+            text::copy(redirect, argv[z]);
             cont = false;
             rd = false;
             continue;
@@ -26,34 +26,34 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        if (strcmp(argv[z], "-v") == 0) {
+        if (text::compare(argv[z], "-v") == 0) {
             if (!just_os) just_version = true;
             continue;
-        } else if (strcmp(argv[z], "-os") == 0) {
+        } else if (text::compare(argv[z], "-os") == 0) {
             if (!just_version) just_os = true;
             continue;
-        } else if (strcmp(argv[z], "-d") == 0) {
+        } else if (text::compare(argv[z], "-d") == 0) {
             just_data = true;
             continue;
-        } else if (strcmp(argv[z], ">") == 0) {
+        } else if (text::compare(argv[z], ">") == 0) {
             if (z + 1 < argc) {
                 cont = true;
                 rd = true;
                 continue;
             } else {
-                printf("Invalid redirection!\n");
+                text::write("Invalid redirection!\n");
                 return 1;
             }
         }
 
-        printf("Unknown argument: %s\n", argv[z]);
+        text::write("Unknown argument: %s\n", argv[z]);
         return 1;
     }
 
-    FILE *file = fopen(redirect, "w");
+    auto file = Filesystem::open(redirect, "w");
 
-    char *buffer = (char *)malloc(100);
-    memset(buffer, 0, 100);
+    char *buffer = (char *)mem::alloc(100);
+    text::set(buffer, 0, 100);
 
     if (!just_data) {
         if (!just_version && !just_os) {
@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    fwrite(buffer, 0, 100, file);
+    Filesystem::write(buffer, 0, 100, file);
 
-    fclose(file);
+    Filesystem::close(file);
 
     return 0;
 }

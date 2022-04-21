@@ -12,3 +12,9 @@ extern "C" time_t get_time()
     CALL_SYS1(a, TIME, &time);
     return time;
 }
+
+namespace Time {
+    time_t time() {
+        return get_time();
+    }
+}

@@ -56,6 +56,3 @@ public:
         return _push(_buffer);
     }
 };
-
-TTY **ttys;
-int tty_count = 0;

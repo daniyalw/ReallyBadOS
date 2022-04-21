@@ -11,3 +11,13 @@ extern void yield();
 extern void exit(int ret);
 
 C_HEADER_END
+
+#ifdef __cplusplus
+namespace Process {
+
+extern pid_t proc(char *name, uint32_t instruction);
+extern void next();
+extern void leave(int ret);
+
+}
+#endif

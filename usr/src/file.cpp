@@ -3,6 +3,7 @@
 #include <syscalls.h>
 #include <stdint.h>
 #include <file.h>
+#include <folder.h>
 
 extern "C" FILE *fopen(char *path, char *mode)
 {
@@ -160,4 +161,30 @@ extern "C" int fsetpos(FILE *file, fpos_t *pos)
 {
     file->ptr = *pos;
     return file->ptr;
+}
+
+namespace Filesystem {
+    FILE *open(char *path, char *mode) {
+        return fopen(path, mode);
+    }
+
+    int read(char *buf, int sz, int n, FILE *file) {
+        return fread(buf, sz, n, file);
+    }
+
+    int write(char *buf, int sz, int n, FILE *file) {
+        return fwrite(buf, sz, n, file);
+    }
+
+    int file(char *name, char *parent) {
+        return mkfile(name, parent, NULL);
+    }
+
+    int folder(char *name, char *parent) {
+        return mkdir(name, parent);
+    }
+
+    void close(FILE *stream) {
+        fclose(stream);
+    }
 }

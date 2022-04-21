@@ -19,3 +19,13 @@ extern "C" void free(void *buf)
     void *a;
     CALL_SYS1(a, FREE, buf);
 }
+
+namespace mem {
+    uint32_t alloc(int size) {
+        return malloc(size);
+    }
+
+    void release(void *buf) {
+        free(buf);
+    }
+}

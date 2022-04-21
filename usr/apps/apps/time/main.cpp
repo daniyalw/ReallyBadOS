@@ -3,13 +3,13 @@
 
 int main(int argc, char const *argv[])
 {
-    time_t time = get_time();
+    auto time = Time::time();
 
     // print time
     if (time.min >= 10)
-        printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+        text::write("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
     else
-        printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+        text::write("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
 
     char *months[] = {
         "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
@@ -20,7 +20,7 @@ int main(int argc, char const *argv[])
     };
 
     // print date
-    printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
+    text::write("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
 
     return 0;
 }

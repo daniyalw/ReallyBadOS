@@ -14,15 +14,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int res = mkfile(argv[1], argv[2], NULL);
+    int res = Filesystem::file(argv[1], argv[2]);
 
     if (!res)
     {
-        printf("Failed to create file %s!", argv[1]);
+        text::write("Failed to create file %s!", argv[1]);
     }
     else
     {
-        printf("Successfully created file %s!", argv[1]);
+        text::write("Successfully created file %s!", argv[1]);
     }
 
     return res;

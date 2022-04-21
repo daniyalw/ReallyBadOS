@@ -7,7 +7,7 @@ int getlength(int start, int argc, char *args[])
     int length = 0;
 
     for (int z = start; z < argc; z++)
-        length += strlen(args[z]);
+        length += text::len(args[z]);
 
     return length;
 }
@@ -16,24 +16,24 @@ int main(int argc, char *argv[])
 {
     if (argc >= 2)
     {
-        if (strcmp(argv[1], "-h") == 0)
+        if (text::compare(argv[1], "-h") == 0)
         {
-            printf("Help: write <file-path> <contents>\n");
-            printf("Options: \n"
+            text::write("Help: write <file-path> <contents>\n");
+            text::write("Options: \n"
                     " -h help\n"
                     " -v version info");
             return 0;
         }
-        else if (strcmp(argv[1], "-v") == 0)
+        else if (text::compare(argv[1], "-v") == 0)
         {
-            printf("Version: 0.2");
+            text::write("Version: 0.2");
             return 0;
         }
     }
 
     if (argc < 3)
     {
-        printf("Help: write <file-path> <contents>");
+        text::write("Help: write <file-path> <contents>");
         return 1;
     }
 
@@ -41,11 +41,11 @@ int main(int argc, char *argv[])
 
     char contents[length];
     int cz = 4;
-    memset(contents, 0, length);
+    text::set(contents, 0, length);
 
     for (int z = 2; z < argc; z++)
     {
-        for (int b = 0; b < strlen(argv[z]); b++)
+        for (int b = 0; b < text::len(argv[z]); b++)
         {
             contents[cz] = argv[z][b];
             cz++;
@@ -59,11 +59,11 @@ int main(int argc, char *argv[])
 
     char *c = (char *)&contents[4];
 
-    printf("To write: '%s'", c);
+    text::write("To write: '%s'", c);
 
-    FILE *file = fopen(argv[1], "w");
-    fwrite(c, 1, 10, file);
-    fclose(file);
+    FILE *file = Filesystem::open(argv[1], "w");
+    Filesystem::write(c, 1, 10, file);
+    Filesystem::close(file);
 
     return 0;
 }

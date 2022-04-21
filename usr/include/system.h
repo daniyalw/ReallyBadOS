@@ -14,3 +14,11 @@ C_HEADER
 extern info_t get_sys_info();
 
 C_HEADER_END
+
+#ifdef __cplusplus
+namespace System {
+
+extern info_t info();
+
+}
+#endif

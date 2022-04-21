@@ -12,3 +12,10 @@ typedef struct {
 extern time_t get_time();
 
 C_HEADER_END
+
+#ifdef __cplusplus
+namespace Time {
+
+extern time_t time();
+}
+#endif

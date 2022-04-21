@@ -318,10 +318,10 @@ int fscanf(FILE *file, char *fmt, ...) {
     return ret;
 }
 
-void fprintf(FILE *file, char *data) {
-    fwrite(file, 1, strlen(data), data);
+int fprintf(FILE *file, char *data) {
+    return fwrite(file, 1, strlen(data), data);
 }
 
-void fprintf(fs_node_t *node, char *data) {
-    node->write(node, 0, strlen(data), data);
+int fprintf(fs_node_t *node, char *data) {
+    return node->write(node, 0, strlen(data), data);
 }

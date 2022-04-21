@@ -16,3 +16,9 @@ extern "C" info_t get_sys_info()
 
     return info;
 }
+
+namespace System {
+    info_t info() {
+        return get_sys_info();
+    }
+}

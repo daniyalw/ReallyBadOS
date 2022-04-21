@@ -14,3 +14,12 @@ extern char * vsprintf(char *s, char *format, va_list va);
 extern char * vnprintf(char *s, int max, char *format, va_list va);
 
 C_HEADER_END
+
+#ifdef __cplusplus
+namespace text {
+
+extern int write(char *fmt, ...);
+
+}
+
+#endif

@@ -57,3 +57,6 @@ int fvsscanf(FILE *file, char *fmt, va_list va);
 int fscanf(FILE *file, char *fmt, ...);
 
 int get_flags_from_str(char *mode);
+
+int fprintf(FILE *file, char *data);
+int fprintf(fs_node_t *file, char *data);

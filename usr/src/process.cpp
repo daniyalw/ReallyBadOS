@@ -18,3 +18,18 @@ extern "C" void exit(int ret)
     void *a;
     CALL_SYS1(a, EXIT_PROC, ret);
 }
+
+namespace Process {
+    pid_t proc(char *name, uint32_t instruction) {
+        return create_process(name, instruction);
+    }
+
+    void next() {
+        yield();
+    }
+
+    void leave(int ret) {
+        exit(ret);
+    }
+
+}

@@ -4,7 +4,7 @@ int main(int argc, char **argv)
 {
     for (int z = 1; z < argc; z++)
     {
-        printf("%s ", argv[z]);
+        text::write("%s ", argv[z]);
     }
 
     return 0;
