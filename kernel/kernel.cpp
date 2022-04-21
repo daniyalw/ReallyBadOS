@@ -12,7 +12,7 @@ extern "C" unsigned int _Unwind_Resume() { return 0; }
 extern "C" unsigned int __gxx_personality_v0() { return 0; }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -118,7 +118,6 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../filesystem/filesystem.cpp"
 
 #ifdef GRAPHICS
-#include "../gui/widget.cpp"
 #include "../gui/button.cpp"
 #include "../gui/gui.cpp"
 #include "../gui/label.cpp"
@@ -126,9 +125,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../gui/entry.cpp"
 
 void callback(UI::Object *obj, UI::Event *event) {
-    log::info("Mouse event. x: %d, y: %d", obj->coords.x, obj->coords.y);
-    obj->bg = Graphic::rgb(100, 100, 100);
-    obj->draw(obj, ui_objects[obj->parent]->coords);
+    Kernel::shutdown_os();
 }
 
 #endif
@@ -215,8 +212,12 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     handle_tar(tar);
 
+    uint16_t *bytes;
+    bytes = DiskDrivers::ATA::ata_init(bytes);
+
     Graphic::redraw_background_picture(array);
 
+    /*
     UI::Window *win = UI::window("Test", DEFAULT_BG, DEFAULT_FG, DEFAULT_FONT);
 
     int x = 1;
@@ -237,6 +238,20 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     }
 
     draw_window(win);
+    */
+    UI::Window *win = UI::window("System Settings");
+    UI::Button *button = UI::button(win, 10, 10, callback, "Shutdown");
+    button->draw();
+    UI::Label *label = UI::label(win, 10, 40, "System info: %d MB", total_memory/1000000);
+    label->draw();
+    UI::Label *l = UI::label(win, 10, 70, "ReallyBadOS, copyright 2022");
+    l->draw();
+    UI::Label *la = UI::label(win, 10, 90, "github.com/dwarraich/ReallyBadOS");
+    la->draw();
+    draw_window(win);
+
+    UI::Window *w = UI::window("Test");
+    draw_window(w);
 
     Graphic::blit_changes();
 

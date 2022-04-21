@@ -2,12 +2,13 @@
 #include "window.h"
 
 namespace UI {
-    
-Label *label(UI::Window *win, char *text, int x, int y, int bg, int fg) {
+
+Label *label(UI::Window *win, int x, int y, int bg, int fg, char *text, va_list va) {
     Label *label = new Label();
 
     memset(label->text, 0, 100);
-    strcpy(label->text, text);
+    vsprintf(label->text, text, va);
+    va_end(va);
 
     memset(label->name, 0, 20);
     strcpy(label->name, "Label");
@@ -29,7 +30,15 @@ Label *label(UI::Window *win, char *text, int x, int y, int bg, int fg) {
     return label;
 }
 
-Label *label(UI::Window *win, char *text, int x, int y) {
-    return label(win, text, x, y, DEFAULT_BG, DEFAULT_FG);
+Label *label(UI::Window *win, int x, int y, int bg, int fg, char *text, ...) {
+    va_list va;
+    va_start(va, text);
+    return label(win, x, y, bg, fg, text, va);
+}
+
+Label *label(UI::Window *win, int x, int y, char *text, ...) {
+    va_list va;
+    va_start(va, text);
+    return label(win, x, y, DEFAULT_BG, DEFAULT_FG, text, va);
 }
 }

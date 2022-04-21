@@ -59,7 +59,7 @@ public:
         }
     }
 
-    virtual void draw(UI::Object *object, UI::Coords _coords) override {
+    virtual void draw_object(UI::Object *object, UI::Coords _coords) override {
         if (object->bg != BG_TRANSPARENT) {
             Graphic::draw_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w, object->coords.h, object->bg);
         }
@@ -69,7 +69,14 @@ public:
         draw_text();
     }
 
-    char text[20] = {NULL};
+    virtual int height() {
+        return font_height + padding + 2;
+    }
+
+    virtual int width() {
+        return font_width * 20 + padding + 2;
+    }
+
     int offset = 0;
     int wrap = 0; // 0 - false; 1 - true
     int outer = 1; // outer is small little border; 1 - true; 0 - false

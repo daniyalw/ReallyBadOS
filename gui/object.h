@@ -25,11 +25,23 @@ struct Object {
     Object *childs[10]; // children
     int child_count = 0;
 
+    char text[100];
+
     bool dragged = false, null = false, active = false, to_draw = false;
     int id, parent;
 
     virtual void event_handle(Object*, Event*) {}
-    virtual void draw(Object*, Coords) {}
+    virtual void draw_object(Object*, Coords) {}
+    virtual int height() { return 0; }
+    virtual int width() { return 0; }
+
+    void draw() {
+        to_draw = true;
+    }
+
+    void hide() {
+        to_draw = false;
+    }
 };
 
 }

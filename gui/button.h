@@ -11,7 +11,7 @@ public:
         callback(this, event);
     }
 
-    virtual void draw(UI::Object *object, UI::Coords _coords) override {
+    virtual void draw_object(UI::Object *object, UI::Coords _coords) override {
         if (object->bg != BG_TRANSPARENT) {
             Graphic::draw_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w, object->coords.h, object->bg);
         }
@@ -31,16 +31,19 @@ public:
             x += font_width;
 
             if (x >= max_w || y >= max_h) {
-                if (wrap)
-                    break;
-
-                y += font_height + 1;
-                x = orig_x;
+                break;
             }
         }
     }
 
-    char text[100] = {NULL};
+    virtual int height() {
+        return font_height + padding + 2;
+    }
+
+    virtual int width() {
+        return padding + 2 + strlen(text) * font_height;
+    }
+
     int wrap = 0; // 0 - false; 1 - true
     int outer = 1; // outer is small little border; 1 - true; 0 - false
     int padding = 2;
@@ -48,7 +51,8 @@ public:
     void (*callback)(Object*, Event*);
 };
 
-Button *button(Window *win, char *text, int x, int y, auto callback);
-Button *button(UI::Window *win, char *text, int x, int y, int bg, int fg, auto callback);
+Button *button(UI::Window *win, int x, int y, int bg, int fg, auto callback, char *text, va_list va);
+Button *button(UI::Window *win, int x, int y, int bg, int fg, auto callback, char *text, ...);
+Button *button(Window *win, int x, int y, auto callback, char *text, ...);
 
 }

@@ -16,7 +16,7 @@ Window *window(char *name, int bg, int fg, int font) {
 
     win->coords.x = 100;
     win->coords.y = 100;
-    win->coords.w = 300;
+    win->coords.w = 500;
     win->coords.h = 300;
 
     win->parent = -1;
@@ -24,6 +24,10 @@ Window *window(char *name, int bg, int fg, int font) {
     add_window(win);
 
     return win;
+}
+
+Window *window(char *name) {
+    return window(name, DEFAULT_BG, DEFAULT_FG, DEFAULT_FONT);
 }
 
 }
@@ -36,38 +40,30 @@ int find_z_from_id(int id) {
     return -1;
 }
 
-void move_z_order_up(int pos, int size) {
+void move_z_order_up(int pos) {
     for (int z = ui_obj_count - 1; z >= pos; z--) {
         z_order[z + 1] = z_order[z];
     }
 }
 
 void add_z_order(int id) {
-    move_z_order_up(0, 1);
+    move_z_order_up(0);
     z_order[0] = id;
 }
 
-void move_z_order_down(int pos, int size) {
+void move_z_order_down(int pos) {
     for (int z = pos; z < ui_obj_count; z++) {
         z_order[z] = z_order[z + 1];
     }
 }
 
-void remove_z(int id) {
+void remove_window_id(int id) {
     int z = find_z_from_id(id);
 
     if (z != -1) {
-        move_z_order_down(z, 1);
+        move_z_order_down(z);
+        ui_obj_count--;
     }
-}
-
-void remove_window_id(int id) {
-    if (id < 0 || id >= ui_obj_count)
-        return;
-
-    remove_z(id);
-
-    ui_objects[id]->null = true;
 }
 
 void remove_window(UI::Window *win) {
@@ -83,13 +79,19 @@ void add_window(UI::Window *win) {
 }
 
 void draw_window(UI::Window *win) {
-    win->draw(win, win->coords);
+    win->draw_object(win, win->coords);
 }
 
 void update_window_z(int id, int pos) {
     remove_window_id(id);
-    move_z_order_up(pos, 1);
+    move_z_order_up(pos);
     z_order[pos] = id;
+}
+
+void draw_all_windows() {
+    for (int z = ui_obj_count - 1; z >= 0; z--) {
+        draw_window((UI::Window *)ui_objects[z_order[z]]);
+    }
 }
 
 // debug

@@ -7,6 +7,8 @@
 #define DEFAULT_BG Graphic::rgb(175, 175, 175)
 #define DEFAULT_FG 0
 #define DEFAULT_FONT 16
+#define TITLEBAR_HEIGHT font_height + 4
+#define CLOSE_WIN_X TITLEBAR_HEIGHT
 
 #define EVENT_KEY 1
 #define EVENT_MOUSE_LEFT 2
