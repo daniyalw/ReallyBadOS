@@ -117,6 +117,8 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../drivers/video/tty.cpp"
 #include "../filesystem/filesystem.cpp"
 #include "../filesystem/null.cpp"
+#include "../filesystem/configs.cpp"
+#include "../filesystem/clipboard.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/button.cpp"
@@ -267,6 +269,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     init_vga();
     init_all_devs();
     init_null_fs();
+    init_clipboard();
 
     handle_tar(tar);
 
@@ -292,7 +295,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     //test_install();
 
-    //rbfs_init();
+    rbfs_init();
 
     //switch_to_user_mode();
     //shell();
