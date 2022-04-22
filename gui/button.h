@@ -46,7 +46,7 @@ public:
 
     int wrap = 0; // 0 - false; 1 - true
     int outer = 1; // outer is small little border; 1 - true; 0 - false
-    int padding = 2;
+    int padding = 10;
 
     void (*callback)(Object*, Event*);
 };

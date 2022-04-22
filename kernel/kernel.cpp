@@ -12,7 +12,7 @@ extern "C" unsigned int _Unwind_Resume() { return 0; }
 extern "C" unsigned int __gxx_personality_v0() { return 0; }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -126,9 +126,24 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../gui/label.cpp"
 #include "../gui/window.cpp"
 #include "../gui/entry.cpp"
+#include "../gui/list.cpp"
 
 void callback(UI::Object *obj, UI::Event *event) {
-    Kernel::shutdown_os();
+    if (event->type == EVENT_MOUSE_LEFT) {
+        UI::Window *win = (UI::Window *)ui_objects[obj->parent];
+        UI::List *list = (UI::List *)win->childs[0];
+        int selected = list->get_selected();
+
+        if (selected != -1) {
+            auto line = list->lines[selected];
+
+            UI::Label *label = (UI::Label *)win->childs[2];
+            memset(label->text, 0, 100);
+            strcpy(label->text, line);
+
+            draw_window(win);
+        }
+    }
 }
 
 #endif
@@ -243,18 +258,14 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     draw_window(win);
     */
     UI::Window *win = UI::window("System Settings");
-    UI::Button *button = UI::button(win, 10, 10, callback, "Shutdown");
-    button->draw();
-    UI::Label *label = UI::label(win, 10, 40, "System info: %d MB", total_memory/1000000);
+    UI::List *list = UI::list(win, 2, 2);
+    list->add("Hello!");
+    list->draw();
+    UI::Button *btn = UI::button(win, 170, 10, callback, "Next");
+    btn->draw();
+    UI::Label *label = UI::label(win, 170, 45, "");
     label->draw();
-    UI::Label *l = UI::label(win, 10, 70, "ReallyBadOS, copyright 2022");
-    l->draw();
-    UI::Label *la = UI::label(win, 10, 90, "github.com/dwarraich/ReallyBadOS");
-    la->draw();
     draw_window(win);
-
-    UI::Window *w = UI::window("Test");
-    draw_window(w);
 
     Graphic::blit_changes();
 
