@@ -51,7 +51,7 @@ void rbfs_ustr_from_str(uint8_t *out, char *str, int size) {
     }
 }
 
-void rbfs_add_index(char *name, char *path, int type, int offset, int sectors) {
+void rbfs_add_index(char *name, char *path, int type, int offset, int sectors, int perm) {
     RBFSIndex *index = new RBFSIndex();
 
     memset(index->name, 0, 20);
@@ -65,6 +65,7 @@ void rbfs_add_index(char *name, char *path, int type, int offset, int sectors) {
     index->sectors = sectors;
     index->magic = RBFS_DISK_MAGIC;
     index->id = index_count;
+    index->permission = perm;
 
     indexed[index_count] = index;
     index_count++;
@@ -104,7 +105,7 @@ void rbfs_index_disk() {
             continue;
         }
 
-        rbfs_add_index(node->name, node->path, node->type, z, node->sectors);
+        rbfs_add_index(node->name, node->path, node->type, z, node->sectors, node->permission);
 
         char *out = (char *)malloc(100);
         memset(out, 0, 100);
@@ -134,7 +135,7 @@ void rbfs_index_disk() {
     free(super);
 }
 
-void rescan() {
+void rbfs_rescan() {
     for (int z = 0; z < index_count; z++) {
         free(indexed[z]);
     }
@@ -213,7 +214,7 @@ int rbfs_add_node(char *path, int type, int perm, char *contents) {
     super->first_free += node.sectors;
 
     DiskDrivers::ATA::ata_write_one(RBFS_BEG, (uint8_t *)super);
-    rbfs_add_index(node.name, node.path, node.type, offset, node.sectors);
+    rbfs_add_index(node.name, node.path, node.type, offset, node.sectors, node.permission);
 
     free(super);
 
@@ -228,8 +229,36 @@ int rbfs_create_folder(char *path) {
     return rbfs_add_node(path, RBFS_DIR, 0, NULL);
 }
 
+int rbfs_create_file_auth(char *path, char *contents) {
+    return rbfs_add_node(path, RBFS_FILE, 1, contents);
+}
+
 RBFSIndex *rbfs_open(char *path) {
-    return rbfs_find_index(path);
+    auto index = rbfs_find_index(path);
+
+    if (index) {
+        if (index->permission >= RBFS_PERM_ROOT) {
+            return NULL;
+        }
+
+        return index;
+    }
+
+    return NULL;
+}
+
+RBFSIndex *rbfs_open_root(char *path) {
+    auto index = rbfs_find_index(path);
+
+    if (index) {
+        if (index->permission > RBFS_PERM_ROOT) {
+            return NULL;
+        }
+
+        return index;
+    }
+
+    return NULL;
 }
 
 void rbfs_move_sector_up(int sector) {
