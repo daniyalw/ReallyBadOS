@@ -71,6 +71,7 @@ static void mouse_handler(registers_t *regs) {
     int my = 0;
     bool left, right, middle;
     int offset = -1;
+    int w = -1, h = -1;
 
     switch(mouse_cycle) {
         case 0:
@@ -115,6 +116,9 @@ static void mouse_handler(registers_t *regs) {
             if (1 & (mouse_byte[0] >> 7)) {
                 return;
             }
+
+            w = mouse_x - oldx;
+            h = mouse_y - oldy;
 
             mouse_cycle=0;
             r = 1;
@@ -167,6 +171,8 @@ static void mouse_handler(registers_t *regs) {
             UI::Coords coords;
             coords.x = mouse_x;
             coords.y = mouse_y;
+            coords.w = w;
+            coords.h = h;
 
             handle_mouse_click(coords, right, left, middle);
         }

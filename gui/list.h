@@ -43,9 +43,10 @@ namespace UI {
                     auto _parent = ui_objects[parent];
                     auto _coords = _parent->coords;
 
+
                     Graphic::draw_rect(coords.x + _parent->coords.x, y, coords.w, font_height + padding, change);
                     Graphic::draw_empty_rect(coords.x + _coords.x - 1, coords.y + _coords.y - 1, coords.w, coords.h, 0);
-                    draw_string(coords.x + padding + _parent->coords.x, y + padding, fg, lines[selected]);
+                    draw_string(coords.x + padding + _parent->coords.x, y + padding, fg, lines[selected + 1]);
                 }
             }
         }
@@ -86,7 +87,7 @@ namespace UI {
             vsprintf(out, str, va);
             va_end(va);
 
-            strcpy(lines[line_count], out);
+            lines[line_count] = out;
             line_count++;
         }
 
@@ -108,7 +109,7 @@ namespace UI {
             return selected;
         }
 
-        char *lines[100];
+        char **lines;
         int line_count = 0;
         int padding = 2;
         int change;

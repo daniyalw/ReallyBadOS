@@ -9,6 +9,8 @@
 #define DEFAULT_FONT 16
 #define TITLEBAR_HEIGHT font_height + 4
 #define CLOSE_WIN_X TITLEBAR_HEIGHT
+#define HIDE_WIN_X CLOSE_WIN_X + CLOSE_WIN_X
+#define HIDE_WIN_Y CLOSE_WIN_X
 
 #define EVENT_KEY 1
 #define EVENT_MOUSE_LEFT 2

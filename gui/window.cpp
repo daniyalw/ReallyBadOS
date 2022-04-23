@@ -90,7 +90,11 @@ void update_window_z(int id, int pos) {
 
 void draw_all_windows() {
     for (int z = ui_obj_count - 1; z >= 0; z--) {
-        draw_window((UI::Window *)ui_objects[z_order[z]]);
+        UI::Window *win = (UI::Window *)ui_objects[z_order[z]];
+
+        if (win->to_draw) {
+            draw_window(win);
+        }
     }
 }
 
