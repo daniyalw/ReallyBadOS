@@ -2,17 +2,31 @@
 #include <filesystem.h>
 #include <stdlib.h>
 
+void show_err(char *operation) {
+    printf("An error occured while trying to %s file.\n", operation);
+}
+
 int main(int argc, char *argv[])
 {
-    int ret = text::write("AAAAB");
-    text::write("Ret: %d\n", ret);
+    auto file = Filesystem::open("/home/guest/documents/hello.txt", "r");
 
-    char *c = getenv("PATH");
+    if (!file) {
+        show_err("open");
+        return 1;
+    }
 
-    text::write("PATH from getenv(): %s\n", c);
+    char buf[100];
+    memset(buf, 0, 100);
 
-    text::write("Setting setenv() temp: %d\n", setenv("PATH", "SHIT", 0));
-    text::write("PATH from getenv(): %s\n", getenv("PATH"));
+    auto ret = Filesystem::read(buf, 1, 100, file);
 
+    if (ret) {
+        show_err("read");
+        return 1;
+    }
+
+    printf("Read: %s\n", buf);
+
+    Filesystem::close(file);
     return 0;
 }

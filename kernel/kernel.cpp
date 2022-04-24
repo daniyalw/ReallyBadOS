@@ -310,10 +310,10 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     //test_install();
 
-    rbfs_init();
+    //rbfs_init();
 
-    //switch_to_user_mode();
-    //shell();
+    switch_to_user_mode();
+    shell();
 
     list_dir_serial("/");
 

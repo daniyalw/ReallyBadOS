@@ -14,7 +14,14 @@ extern void strcpy(char *dest, const char *orig);
 extern void memset(void *dest, char val, int length);
 extern void memcpy(void *dest, const void *orig, int length);
 extern int strcmp(const char * str1, const char * str2);
-char *strdup(const char *str);
+extern char *strdup(const char *str);
+extern int strtol(char *nptr, char **endptr, int base);
+extern char * strchr(char * s, int c);
+extern int vsscanf(char *str, char *fmt, va_list va);
+extern int sscanf(char *s, char *fmt, ...);
+extern char *strstr(char *s, char *d);
+extern char *strtok_r(char *s, char *del, char **m);
+extern char *strtok(char *s, char *del);
 
 C_HEADER_END
 
