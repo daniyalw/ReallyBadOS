@@ -187,6 +187,10 @@ int s_setenv(char *name, char *val) {
     return setenv(name, val, 1);
 }
 
+int s_realloc(void *buf, int newsize) {
+    return realloc(buf, newsize);
+}
+
 // ----------------------------- //
 
 
@@ -269,6 +273,7 @@ void init_syscalls() {
     syscall_append((void *)s_exit);
     syscall_append((void *)s_getenv);
     syscall_append((void *)s_setenv);
+    syscall_append((void *)s_realloc);
     Kernel::CPU::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }

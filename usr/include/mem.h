@@ -8,6 +8,7 @@ C_HEADER
 
 extern uint32_t malloc(int size);
 extern void free(void *buf);
+extern uint32_t realloc(void *buf, int size);
 
 C_HEADER_END
 

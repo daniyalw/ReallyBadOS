@@ -20,6 +20,12 @@ extern "C" void free(void *buf)
     CALL_SYS1(a, FREE, buf);
 }
 
+extern "C" uint32_t realloc(void *buf, int size) {
+    uint32_t addr;
+    CALL_SYS2(addr, REALLOC, buf, size);
+    return addr;
+}
+
 namespace mem {
     uint32_t alloc(int size) {
         return malloc(size);
