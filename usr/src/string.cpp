@@ -75,7 +75,6 @@ static int convert_digit(char c) {
 
 #define strtox(max, type) \
 	if (base < 0 || base == 1 || base > 36) { \
-		errno = EINVAL; \
 		return max; \
 	} \
 	while (*nptr && isspace(*nptr)) nptr++; \

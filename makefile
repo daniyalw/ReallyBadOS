@@ -65,6 +65,7 @@ user:
 	make -C usr/apps/apps/mkfile
 	make -C usr/apps/apps/test
 	make -C usr/apps/apps/time
+	make -C usr/apps/apps/interpreter
 
 textmode:
 	make bootloader
