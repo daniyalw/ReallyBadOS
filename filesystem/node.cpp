@@ -183,6 +183,34 @@ fs_node_t *copy_node(char *old_path, char *new_path) {
     return copy_node(find_node(old_path), new_path);
 }
 
+int default_node_write(fs_node_t *node, int offset, int size, char *buf) {
+    if (node->flags != FS_FILE) {
+        return 1;
+    }
+
+    if (offset < 0) {
+        return 1;
+    }
+
+    strncpy(&node->contents[offset], buf, size);
+
+    return 0;
+}
+
+int default_node_read(fs_node_t *node, int offset, int size, char *buf) {
+    if (node->flags != FS_FILE) {
+        return 1;
+    }
+
+    if (offset < 0) {
+        return 1;
+    }
+
+    strncpy(buf, &node->contents[offset], size);
+
+    return 0;
+}
+
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount) {
     if (contains(name, '/')) {
         return NULL;
@@ -210,6 +238,10 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
     node->parent_id = parent->id;
     node->flags = type;
     node->permission = permission;
+    node->contents = NULL;
+
+    node->write = default_node_write;
+    node->read = default_node_read;
 
     if (parent->is_mount && ignore_mount == false) {
         node->mount_parent = parent->mount_parent;
@@ -262,12 +294,8 @@ int write_node(fs_node_t *node, int offset, int size, char *contents) {
 
     if (node->write != NULL)
         ret = node->write(node, offset, size, contents);
-    else if (node->flags != FS_FOLDER) {
-        node->contents = (char *)realloc(node->contents, strlen(contents) + 1);
-        strcpy(node->contents, contents);
-    } else {
+    else
         ret = 1;
-    }
 
     node->size = strlen(contents);
     nodes[node->id] = node;
@@ -280,8 +308,8 @@ int read_node(fs_node_t *node, int offset, int size, char *buffer) {
 
     if (node->read != NULL) {
         ret = node->read(node, offset, size, buffer);
-    } else if (node->flags != FS_FOLDER) {
-        set_string(buffer, node->contents);
+    } else {
+        ret = 1;
     }
 
     return ret;

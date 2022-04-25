@@ -116,6 +116,11 @@ int fwrite(FILE *file, int size, int n, char *buffer) {
     if ((file->flags & FLAGS_WRITE) == FLAGS_WRITE) {
         int ret = write_node(file->node, file->ptr, size * n, buffer);
 
+        file->ptr += size * n;
+
+        if (file->ptr >= file->node->size)
+            file->node->size = file->ptr;
+
         return ret;
     }
 
@@ -175,6 +180,10 @@ int fseek(FILE *file, int offset, int whence) {
             break;
         case SEEK_END:
             w = file->node->size;
+            break;
+
+        default:
+            w = 0;
             break;
     }
 
