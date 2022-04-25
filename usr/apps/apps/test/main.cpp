@@ -8,25 +8,15 @@ void show_err(char *operation) {
 
 int main(int argc, char *argv[])
 {
-    auto file = Filesystem::open("/home/guest/documents/hello.txt", "r");
+    auto file = Filesystem::open("/dev/stdout", "r");
 
     if (!file) {
         show_err("open");
         return 1;
     }
 
-    char buf[100];
-    memset(buf, 0, 100);
+    int ret = fprintf(file, "Hello, world!");
 
-    auto ret = Filesystem::read(buf, 1, 100, file);
-
-    if (ret) {
-        show_err("read");
-        return 1;
-    }
-
-    printf("Read: %s\n", buf);
-
-    Filesystem::close(file);
-    return 0;
+    printf("HSAA");
+    return ret;
 }

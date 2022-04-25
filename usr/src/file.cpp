@@ -163,6 +163,21 @@ extern "C" int fsetpos(FILE *file, fpos_t *pos)
     return file->ptr;
 }
 
+extern "C" int fprintf(FILE *stream, char *format, ...) {
+    va_list va;
+    int length = strlen(format);
+    char out[length + 100];
+
+    memset(out, 0, length + 100);
+    va_start(va, format);
+
+    vsprintf(out, format, va);
+
+    va_end(va);
+
+    return fwrite(out, 1, strlen(out), stream);
+}
+
 namespace Filesystem {
     FILE *open(char *path, char *mode) {
         return fopen(path, mode);
