@@ -38,9 +38,9 @@ int main(int argc, char **argv)
         text::set(buf, 0, 100);
 
         printf("Name: %s\n", file->node->name);
-        printf("Size: %d bytes\n", file->node->size);
+        printf("Size: %d bytes\n", file->node->get_size(file->node));
 
-        int ret = Filesystem::read(buf, file->node->size, 1, file);
+        int ret = Filesystem::read(buf, file->node->get_size(file->node), 1, file);
 
         if (ret) {
             text::write("Could not read from file %s\n", file->node->path);
