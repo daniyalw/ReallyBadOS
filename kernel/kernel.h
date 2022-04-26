@@ -13,3 +13,4 @@ int current_display_len = 0;
 bool in_ring3 = false;
 
 char *username;
+int current_login = -1;

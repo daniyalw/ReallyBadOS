@@ -3,6 +3,7 @@
 #include "thread.h"
 #include "ipc.h"
 #include <shell/shell.h>
+#include <kernel/kernel.h>
 
 namespace Kernel {
 
@@ -140,6 +141,7 @@ pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int ar
     task->blocked = false;
     task->is_thread = thread;
     task->parent = parent;
+    task->owner = current_login;
 
     task->start = begin;
     task->argc = argc;

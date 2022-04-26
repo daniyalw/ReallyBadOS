@@ -191,6 +191,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
         return; // stop any more kernel code running since it's not multiboot
     }
 
+    current_login = GUEST_OWNER;
+
     log::info("Entered %s kernel.", System::SYSTEM);
 
     Kernel::init_serial(SERIAL_PORT);

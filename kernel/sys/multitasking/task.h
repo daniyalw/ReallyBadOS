@@ -21,7 +21,7 @@ typedef struct
     bool null, blocked;
     int ret;
     bool is_thread;
-    int parent;
+    int parent, owner;
     uint32_t start;
     int argc;
     char *argv[64];
