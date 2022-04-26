@@ -18,10 +18,20 @@ extern "C" char * vnprintf(char *s, int max, char *format, va_list va)
             {
                 char *str = (char *)va_arg(va, char*);
 
-                for (int b = 0; b < strlen(str); b++)
+                if (!str)
                 {
-                    s[sz] = str[b];
-                    sz++;
+                    for (int b = 0; b < strlen("(null)"); b++) {
+                        s[sz] = "(null)"[b];
+                        sz++;
+                    }
+                }
+                else
+                {
+                    for (int b = 0; b < strlen(str); b++)
+                    {
+                        s[sz] = str[b];
+                        sz++;
+                    }
                 }
             }
             else if (format[z] == 'c')

@@ -81,10 +81,16 @@ char * vsnprintf(char *s, int max, char *format, va_list va) {
         if (format[z] == 's') {
             char *str = (char *)va_arg(va, char*);
 
-            for (int b = 0; b < len(str); b++)
-            {
-                s[sz] = str[b];
-                sz++;
+            if (!str) {
+                for (int b = 0; b < strlen("(null)"); b++) {
+                    s[sz] = "(null)"[b];
+                    sz++;
+                }
+            } else {
+                for (int b = 0; b < strlen(str); b++) {
+                    s[sz] = str[b];
+                    sz++;
+                }
             }
         } else if (format[z] == 'c') {
             int ch = (int)va_arg(va, int);
