@@ -62,6 +62,7 @@ void rbfs_ustr_from_str(uint8_t *out, char *str, int size);
 
 int rbfs_add_node(char *path, int type, int perm, char *contents);
 int rbfs_create_file(char *path, char *contents);
+int rbfs_create_file_auth(char *path, char *contents);
 int rbfs_create_folder(char *path);
 
 void rbfs_move_sector_up(int sector);

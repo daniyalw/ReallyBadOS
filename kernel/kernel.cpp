@@ -121,6 +121,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../filesystem/null.cpp"
 #include "../filesystem/configs.cpp"
 #include "../filesystem/clipboard.cpp"
+#include "login.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/button.cpp"
@@ -295,7 +296,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     uint16_t *bytes;
     bytes = DiskDrivers::ATA::ata_init(bytes);
 
-    print_init_msg();
     /*
     uint8_t addr[] = {
         10, 0, 0, 199
@@ -312,7 +312,15 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     //test_install();
 
-    //rbfs_init();
+    /*
+    rbfs_create_folder("/");
+    rbfs_create_folder("/users");
+    rbfs_create_folder("/users/guest");
+    rbfs_create_file_auth("/users/guest/auth", "guest");
+    rbfs_create_file_auth("/users/guest/uid", "1");
+    */
+
+    print_init_msg();
 
     switch_to_user_mode();
     shell();

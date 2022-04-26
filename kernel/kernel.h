@@ -12,5 +12,7 @@ char current_display[128];
 int current_display_len = 0;
 bool in_ring3 = false;
 
-char *username;
-int current_login = -1;
+char *user;
+int current_login = 1;
+
+void login();
