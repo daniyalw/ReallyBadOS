@@ -8,16 +8,16 @@ extern "C" char getch()
     // read files
     FILE *file = fopen("/dev/stdin", "r");
 
-    if (file == NULL)
+    if (file == NULL || !file->node || !file->node->read)
         return NULL;
 
-    char buf[100];
+    char c;
 
-    file->node->read(file->node, 0, 100, buf);
+    file->node->read(file->node, 0, 100, &c);
 
     fclose(file);
 
-    return buf[0];
+    return c;
 }
 
 extern "C" char *scanf(char *buf)
@@ -26,15 +26,12 @@ extern "C" char *scanf(char *buf)
     (void)(buf);
     FILE *file = fopen("/dev/stdin", "r");
 
-    if (file == NULL)
+    if (file == NULL || !file->node || !file->node->read)
         return NULL;
 
-    char *out = (char *)malloc(100);
-    memset(out, 0, 100);
-
-    file->node->read(file->node, 0, 100, out);
+    file->node->read(file->node, 0, 100, buf);
 
     fclose(file);
 
-    return out;
+    return buf;
 }

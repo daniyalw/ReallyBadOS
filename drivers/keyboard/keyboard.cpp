@@ -88,18 +88,19 @@ void get_key(unsigned char code) {
     }
 }
 
-int read_keyboard(fs_node_t * node, int offset, int size, char *buff) {
-    buff = scanf();
-    printf("done");
+int read_keyboard(fs_node_t * node, int offset, int size, char *buf) {
+    char *ret = scanf();
+    strcpy(buf, ret);
+    free(ret);
 
     return 0;
 }
 
-char *read_getch(fs_node_t * node, int offset, int size, char *buff) {
+char *read_getch(fs_node_t * node, int offset, int size, char *buf) {
     char k = getch();
-    buff[0] = k;
+    buf[0] = k;
 
-    return buff;
+    return buf;
 }
 
 int write_keyboard(fs_node_t * node, int offset, int size, char *buff) { return 1; }

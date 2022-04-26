@@ -17,7 +17,8 @@ int main(int argc, char *argv[])
 
     int ret = fprintf(file, "Hello, world!");
 
-    char *out = scanf(NULL);
+    char out[100];
+    scanf(out);
     printf("Out: %s\nLength: %d\n", out, text::len(out));
     free(out);
     return ret;
