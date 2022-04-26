@@ -115,8 +115,8 @@ char *find_fixed(char *path) {
 }
 
 fs_node_t *absolute_path_node(char *cwd, char *fmt) {
-    char path[100];
-    memset(path, 0, 100);
+    char path[PATH_LIMIT];
+    memset(path, 0, PATH_LIMIT);
 
     if (cwd[strlen(cwd) - 1] != '/') {
         get(cwd, "%s/", cwd);

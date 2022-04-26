@@ -10,7 +10,7 @@ int clipboard_read(fs_node_t *node, int offset, int size, char *buf) {
 
 int clipboard_write(fs_node_t *node, int offset, int size, char *buf) {
     memset(_clipboard, 0, 100);
-    strcpy(_clipboard, buf);
+    strncpy(_clipboard, &buf[offset], size);
     return 0;
 }
 

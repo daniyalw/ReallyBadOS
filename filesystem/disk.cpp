@@ -55,7 +55,7 @@ void rbfs_add_index(char *name, char *path, int type, int offset, int sectors, i
     RBFSIndex *index = new RBFSIndex();
 
     memset(index->name, 0, 20);
-    memset(index->path, 0, 100);
+    memset(index->path, 0, PATH_LIMIT);
 
     strcpy(index->name, name);
     strcpy(index->path, path);
@@ -107,8 +107,8 @@ void rbfs_index_disk() {
 
         rbfs_add_index(node->name, node->path, node->type, z, node->sectors, node->permission);
 
-        char *out = (char *)malloc(100);
-        memset(out, 0, 100);
+        char *out = (char *)malloc(PATH_LIMIT);
+        memset(out, 0, PATH_LIMIT);
         char *parent = find_parent(node->path);
 
         if (strcmp(parent, "/") == 0) {

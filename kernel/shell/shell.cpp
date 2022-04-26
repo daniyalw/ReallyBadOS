@@ -173,8 +173,8 @@ void shell_quit() {
 }
 
 void shell() {
-    cwd = (char *)malloc(100);
-    memset(cwd, 0, 100);
+    cwd = (char *)malloc(256);
+    memset(cwd, 0, 256);
 
     while (true) {
         if (current_display_len != 0 && current_display_len != 1) {

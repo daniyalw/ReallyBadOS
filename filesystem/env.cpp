@@ -3,8 +3,8 @@
 #include "env.h"
 
 char *getenv(char *name) {
-    char *path = (char *)malloc(100);
-    memset(path, 0, 100);
+    char *path = (char *)malloc(PATH_LIMIT);
+    memset(path, 0, PATH_LIMIT);
     get(path, "/env/%s", name);
 
     FILE *file = fopen(path, "r");
@@ -27,8 +27,8 @@ char *getenv(char *name) {
 
 int setenv(char *name, char *val, int overwrite) {
     if (overwrite) {
-        char *path = (char *)malloc(100);
-        memset(path, 0, 100);
+        char *path = (char *)malloc(PATH_LIMIT);
+        memset(path, 0, PATH_LIMIT);
         get(path, "/env/%s", name);
 
         FILE *file = fopen(path, "w");

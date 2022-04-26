@@ -25,7 +25,7 @@ typedef struct {
 typedef struct {
     uint32_t magic;
     char name[20]; // name without the rest of the path
-    char path[100]; // entire path
+    char path[PATH_LIMIT]; // entire path
     int uid; // user id
     int gid; // group id
     int error; // clean - 0; error - 1
@@ -37,7 +37,7 @@ typedef struct {
 typedef struct {
     uint32_t magic;
     char name[20];
-    char path[100];
+    char path[PATH_LIMIT];
     int sector;
     int sectors;
     int type;

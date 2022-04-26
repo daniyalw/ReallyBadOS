@@ -2,6 +2,7 @@
 
 #define FILENAME_LIMIT 20
 #define CHILDREN_LIMIT 20
+#define PATH_LIMIT 256
 
 #define ROOT_PERMISSION 0
 #define USER_PERMISSION 1
@@ -36,7 +37,7 @@ struct fs_driver_t {
 struct fs_node_t
 {
     char name[FILENAME_LIMIT];
-    char path[FILENAME_LIMIT * 10];
+    char path[PATH_LIMIT];
 
     int id, parent_id;
     int flags;

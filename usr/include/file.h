@@ -8,6 +8,7 @@
 #define SEEK_SET 0
 #define SEEK_END -1
 #define SEEK_CUR -2
+#define PATH_LIMIT 256
 
 struct fs_node;
 
@@ -38,7 +39,7 @@ struct fs_driver_t {
 struct fs_node_t
 {
     char name[FILENAME_LIMIT];
-    char path[FILENAME_LIMIT * 10];
+    char path[PATH_LIMIT];
 
     int id, parent_id;
     int flags;
