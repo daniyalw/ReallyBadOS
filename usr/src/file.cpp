@@ -8,13 +8,17 @@
 extern "C" FILE *fopen(char *path, char *mode)
 {
     void *a;
-    uint32_t *addr;
+    uint32_t addr;
 
-    CALL_SYS3(a, FOPEN, path, mode, addr);
+    CALL_SYS3(a, FOPEN, path, mode, &addr);
 
-    FILE *file = (FILE *)(addr[0]);
+    FILE *file = (FILE *)addr;
 
-    return (FILE *)addr[0];
+    if (!file) {
+        return NULL;
+    }
+
+    return file;
 }
 
 extern "C" void fclose(FILE *file)
@@ -50,15 +54,12 @@ extern "C" int mkfile(char *name, char *dir, char *contents)
 
 extern "C" int fwrite(char *buf, int size, int n, FILE *file)
 {
-    void *a;
-    int ret;
-    int off[1];
-    int s[1];
+    int ret = file->node->write(file->node, file->ptr, size * n, buf);
+    file->ptr += size * n;
 
-    off[0] = size;
-    s[1] = n;
-
-    CALL_SYS4(ret, WRITE_FILE, buf, off, s, file->node->id);
+    if (file->ptr >= file->node->size) {
+        file->node->size = file->ptr;
+    }
 
     return ret;
 }
@@ -76,10 +77,12 @@ extern "C" int fileno(FILE *stream) {
 
 extern "C" int fread(char *buffer, int size, int n, FILE *file)
 {
-    int ret;
-
-    CALL_SYS4(ret, READ_FILE, buffer, size, n, fileno(file));
+    int ret = file->node->read(file->node, file->ptr, size * n, buffer);
     file->ptr += size * n;
+
+    if (file->ptr >= fsize(file)) {
+        file->eof = EOF;
+    }
 
     return ret;
 }

@@ -22,14 +22,19 @@ extern "C" char getch()
 
 extern "C" char *scanf(char *buf)
 {
+    // TODO parse parameter
+    (void)(buf);
     FILE *file = fopen("/dev/stdin", "r");
 
     if (file == NULL)
         return NULL;
 
-    file->node->read(file->node, 0, 100, buf);
+    char *out = (char *)malloc(100);
+    memset(out, 0, 100);
+
+    file->node->read(file->node, 0, 100, out);
 
     fclose(file);
 
-    return buf;
+    return out;
 }

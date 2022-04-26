@@ -21,6 +21,8 @@ struct fs_node_t;
 
 typedef int (*__write)(fs_node_t*, int, int, char *);
 typedef int (*__read)(fs_node_t*, int, int, char *);
+typedef int (*__mkfile)(fs_node_t*);
+typedef int (*__mkdir)(fs_node_t *);
 
 struct fs_node_t
 {
@@ -37,13 +39,19 @@ struct fs_node_t
     int size = 0;
     char *contents;
 
+    bool is_mountpoint;
+    char mount_dir[FILENAME_LIMIT];
+    int mount_parent;
+    bool is_mount;
+    __mkfile mkfile = NULL;
+
     __write write = NULL;
     __read read = NULL;
+    __mkdir mkdir = NULL;
 
     int children[CHILDREN_LIMIT];
     int children_count = NULL;
 };
-
 struct FILE;
 typedef int fpos_t;
 

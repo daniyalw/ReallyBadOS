@@ -73,11 +73,12 @@ int s_info(info_t *info) {
 int s_file(char *path, char *mode, uint32_t *addr) {
     FILE *file = fopen(find_fixed(path), mode);
 
-    if (file == NULL)
+    if (!file) {
         addr[0] = NULL;
-    else
-        addr[0] = (uint32_t)file;
+        return 1;
+    }
 
+    addr[0] = (uint32_t)file;
     return 0;
 }
 

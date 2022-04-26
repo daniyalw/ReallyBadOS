@@ -286,12 +286,16 @@ namespace text {
         return strlen(str);
     }
 
-    void copy(void *d, const void *s, int length = -1) {
+    void copy(void *d, const void *s, int length) {
         if (length == -1) {
             length = text::len((const char *)s);
         }
 
         memcpy(d, s, length);
+    }
+
+    void copy(char *d, const char *s) {
+        copy(d, s, text::len(s));
     }
 
     int compare(const char *s1, const char *s2) {

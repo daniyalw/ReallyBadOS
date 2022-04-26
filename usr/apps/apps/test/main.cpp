@@ -8,7 +8,7 @@ void show_err(char *operation) {
 
 int main(int argc, char *argv[])
 {
-    auto file = Filesystem::open("/dev/stdout", "r");
+    auto file = Filesystem::open("/dev/stdout\0", "r");
 
     if (!file) {
         show_err("open");
@@ -17,6 +17,8 @@ int main(int argc, char *argv[])
 
     int ret = fprintf(file, "Hello, world!");
 
-    printf("HSAA");
+    char *out = scanf(NULL);
+    printf("Out: %s\nLength: %d\n", out, text::len(out));
+    free(out);
     return ret;
 }

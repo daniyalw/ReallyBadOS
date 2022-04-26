@@ -30,7 +30,8 @@ C_HEADER_END
 namespace text {
 
 extern int len(const char *str);
-extern void copy(void *d, const void *s, int length = -1);
+extern void copy(void *d, const void *s, int length);
+extern void copy(char *d, const char *s);
 extern int compare(const char *s1, const char *s2);
 extern char *duplicate(const char *s);
 extern void set(void *dest, char val, int length);
