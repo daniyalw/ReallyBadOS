@@ -151,12 +151,12 @@ fs_node_t *mount_fs(char *name, char *parent, fs_driver_t driver, int permission
     node->is_mount = true;
     node->mount_parent = node->id;
 
-    driver.write = default_node_write;
-    driver.read = default_node_read;
-    driver.open = default_node_open;
-    driver.close = default_node_close;
-    driver.mkdir = default_node_mkdir;
-    driver.mkfile = default_node_mkfile;
+    node->write = default_node_write;
+    node->read = default_node_read;
+    node->open = default_node_open;
+    node->close = default_node_close;
+    node->mkdir = default_node_mkdir;
+    node->mkfile = default_node_mkfile;
 
     if (driver.write) node->write = driver.write;
     if (driver.read) node->read = driver.read;
