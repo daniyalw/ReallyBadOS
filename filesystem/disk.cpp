@@ -456,9 +456,18 @@ int rbfs_vfs_mkdir(fs_node_t *node) {
     return ret;
 }
 
+fs_driver_t rbfs_vfs_driver = {
+    NULL,
+    NULL,
+    rbfs_vfs_write,
+    rbfs_vfs_read,
+    rbfs_vfs_mkfile,
+    rbfs_vfs_mkdir
+};
+
 // --------------- init ----------------- //
 void rbfs_init() {
-    auto node = mount_fs("disk0", "/", rbfs_vfs_write, rbfs_vfs_read, rbfs_vfs_mkfile, rbfs_vfs_mkdir, USER_PERMISSION);
+    auto node = mount_fs("disk0", "/", rbfs_vfs_driver, USER_PERMISSION);
 
     if (node) {
         log::info("rbfs: %s: successfully mounted disk", __FUNCTION__);

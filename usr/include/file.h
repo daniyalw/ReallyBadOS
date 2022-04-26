@@ -19,10 +19,21 @@ struct fs_node;
 
 struct fs_node_t;
 
+typedef int (*__open)(fs_node_t*);
+typedef int (*__close)(fs_node_t*);
 typedef int (*__write)(fs_node_t*, int, int, char *);
 typedef int (*__read)(fs_node_t*, int, int, char *);
 typedef int (*__mkfile)(fs_node_t*);
 typedef int (*__mkdir)(fs_node_t *);
+
+struct fs_driver_t {
+    __open open;
+    __close close;
+    __write write;
+    __read read;
+    __mkfile mkfile;
+    __mkdir mkdir;
+};
 
 struct fs_node_t
 {
@@ -48,6 +59,8 @@ struct fs_node_t
     __write write = NULL;
     __read read = NULL;
     __mkdir mkdir = NULL;
+    __open open;
+    __close close;
 
     int children[CHILDREN_LIMIT];
     int children_count = NULL;

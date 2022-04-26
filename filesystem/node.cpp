@@ -2,6 +2,50 @@
 #include <errno.h>
 #include "utils.h"
 
+int default_node_open(fs_node_t *node) {
+    return 0;
+}
+
+int default_node_close(fs_node_t *node) {
+    return 0;
+}
+
+int default_node_write(fs_node_t *node, int offset, int size, char *buf) {
+    if (node->flags != FS_FILE) {
+        return 1;
+    }
+
+    if (offset < 0) {
+        return 1;
+    }
+
+    strncpy(&node->contents[offset], buf, size);
+
+    return 0;
+}
+
+int default_node_read(fs_node_t *node, int offset, int size, char *buf) {
+    if (node->flags != FS_FILE) {
+        return 1;
+    }
+
+    if (offset < 0) {
+        return 1;
+    }
+
+    strncpy(buf, &node->contents[offset], size);
+
+    return 0;
+}
+
+int default_node_mkfile(fs_node_t *node) {
+    return 1;
+}
+
+int default_node_mkdir(fs_node_t *node) {
+    return 1;
+}
+
 fs_node_t *find_node(char *path) {
     for (int z = 0; z < node_count; z++) {
         fs_node_t *node = nodes[z];
@@ -93,7 +137,7 @@ char *absolute_path(char *cwd, char *fmt) {
     return absolute_path_node(cwd, fmt)->path;
 }
 
-fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, __mkdir mkdir, int permission) {
+fs_node_t *mount_fs(char *name, char *parent, fs_driver_t driver, int permission) {
     fs_node_t *node = create_node(name, parent, FS_FOLDER, permission);
 
     if (node == NULL)
@@ -102,10 +146,21 @@ fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfi
     node->is_mountpoint = true;
     node->is_mount = true;
     node->mount_parent = node->id;
-    node->write = write;
-    node->read = read;
-    node->mkfile = mkfile;
-    node->mkdir = mkdir;
+
+    driver.write = default_node_write;
+    driver.read = default_node_read;
+    driver.open = default_node_open;
+    driver.close = default_node_close;
+    driver.mkdir = default_node_mkdir;
+    driver.mkfile = default_node_mkfile;
+
+    if (driver.write) node->write = driver.write;
+    if (driver.read) node->read = driver.read;
+    if (driver.mkfile) node->mkfile = driver.mkfile;
+    if (driver.mkdir) node->mkdir = driver.mkdir;
+    if (driver.open) node->open = driver.open;
+    if (driver.close)node->close = driver.close;
+
     strcpy(node->mount_dir, name);
 
     nodes[node->id] = node;
@@ -183,34 +238,6 @@ fs_node_t *copy_node(char *old_path, char *new_path) {
     return copy_node(find_node(old_path), new_path);
 }
 
-int default_node_write(fs_node_t *node, int offset, int size, char *buf) {
-    if (node->flags != FS_FILE) {
-        return 1;
-    }
-
-    if (offset < 0) {
-        return 1;
-    }
-
-    strncpy(&node->contents[offset], buf, size);
-
-    return 0;
-}
-
-int default_node_read(fs_node_t *node, int offset, int size, char *buf) {
-    if (node->flags != FS_FILE) {
-        return 1;
-    }
-
-    if (offset < 0) {
-        return 1;
-    }
-
-    strncpy(buf, &node->contents[offset], size);
-
-    return 0;
-}
-
 fs_node_t *create_node(char *name, char *parent_path, int type, int permission, bool ignore_mount) {
     if (contains(name, '/')) {
         return NULL;
@@ -242,6 +269,10 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
 
     node->write = default_node_write;
     node->read = default_node_read;
+    node->open = default_node_open;
+    node->close = default_node_close;
+    node->mkfile = default_node_mkfile;
+    node->mkdir = default_node_mkdir;
 
     if (parent->is_mount && ignore_mount == false) {
         node->mount_parent = parent->mount_parent;
@@ -252,6 +283,8 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
         node->read = parent->read;
         node->mkfile = parent->mkfile;
         node->mkdir = parent->mkdir;
+        node->open = parent->open;
+        node->close = parent->close;
 
         int ret = -1;
 

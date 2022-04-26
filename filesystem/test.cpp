@@ -21,8 +21,17 @@ int test_mkdir(fs_node_t *node) {
     return 0;
 }
 
+fs_driver_t fs_test_driver = {
+    NULL,
+    NULL,
+    test_write,
+    test_read,
+    test_mkfile,
+    test_mkdir
+};
+
 void test_install() {
-    fs_node_t *node = mount_fs("test", "/", test_write, test_read, test_mkfile, test_mkdir, USER_PERMISSION);
+    fs_node_t *node = mount_fs("test", "/", fs_test_driver, USER_PERMISSION);
 
     if (node == NULL)
         log::info("Failed to mount 'test' at '/'\n");

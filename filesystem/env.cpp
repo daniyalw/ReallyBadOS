@@ -105,8 +105,17 @@ int env_mkfile(fs_node_t *node) {
      return 0;
 }
 
+fs_driver_t env_driver = {
+    NULL,
+    NULL,
+    env_write,
+    env_read,
+    env_mkfile,
+    env_mkdir
+};
+
 int env_init() {
-    env_node = mount_fs("env", "/", env_write, env_read, env_mkfile, env_mkdir, USER_PERMISSION);
+    env_node = mount_fs("env", "/", env_driver, USER_PERMISSION);
 
     if (!env_node) {
         log::warning("env: could not create env filesystem");

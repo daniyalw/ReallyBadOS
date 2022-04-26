@@ -17,10 +17,21 @@
 
 struct fs_node_t;
 
+typedef int (*__open)(fs_node_t*);
+typedef int (*__close)(fs_node_t*);
 typedef int (*__write)(fs_node_t*, int, int, char *);
 typedef int (*__read)(fs_node_t*, int, int, char *);
 typedef int (*__mkfile)(fs_node_t*);
 typedef int (*__mkdir)(fs_node_t *);
+
+struct fs_driver_t {
+    __open open;
+    __close close;
+    __write write;
+    __read read;
+    __mkfile mkfile;
+    __mkdir mkdir;
+};
 
 struct fs_node_t
 {
@@ -41,11 +52,13 @@ struct fs_node_t
     char mount_dir[FILENAME_LIMIT];
     int mount_parent;
     bool is_mount;
-    __mkfile mkfile = NULL;
 
+    __mkfile mkfile = NULL;
     __write write = NULL;
     __read read = NULL;
     __mkdir mkdir = NULL;
+    __open open;
+    __close close;
 
     int children[CHILDREN_LIMIT];
     int children_count = NULL;
@@ -56,7 +69,7 @@ int node_count = 0;
 
 fs_node_t *root;
 
-fs_node_t *mount_fs(char *name, char *parent, __write write, __read read, __mkfile mkfile, __mkdir mkdir, int permission);
+fs_node_t *mount_fs(char *name, char *parent, fs_driver_t driver, int permission);
 
 fs_node_t *find_node(char *path);
 fs_node_t *find_node(int fd);
