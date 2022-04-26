@@ -44,28 +44,29 @@ struct fs_node_t
     int id, parent_id;
     int flags;
 
-    int permission;
+    int permission, owner;
 
     bool null = false;
 
-    int size = 0;
     char *contents;
 
     bool is_mountpoint;
     char mount_dir[FILENAME_LIMIT];
     int mount_parent;
     bool is_mount;
-    __mkfile mkfile = NULL;
 
+    __mkfile mkfile = NULL;
     __write write = NULL;
     __read read = NULL;
     __mkdir mkdir = NULL;
     __open open;
     __close close;
+    __get_size get_size;
 
     int children[CHILDREN_LIMIT];
     int children_count = NULL;
 };
+
 struct FILE;
 typedef int fpos_t;
 

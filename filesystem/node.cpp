@@ -276,6 +276,7 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
     node->flags = type;
     node->permission = permission;
     node->contents = NULL;
+    node->owner = GUEST_OWNER;
 
     node->write = default_node_write;
     node->read = default_node_read;
@@ -297,6 +298,7 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
         node->open = parent->open;
         node->close = parent->close;
         node->get_size = parent->get_size;
+        node->owner = parent->owner;
 
         int ret = -1;
 

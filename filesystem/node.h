@@ -16,6 +16,9 @@
 #define FS_FOLDER 0x1
 #define FS_FILE 0x2
 
+#define GUEST_OWNER 1
+#define ROOT_OWNER 0
+
 struct fs_node_t;
 
 typedef int (*__open)(fs_node_t*);
@@ -44,7 +47,7 @@ struct fs_node_t
     int id, parent_id;
     int flags;
 
-    int permission;
+    int permission, owner;
 
     bool null = false;
 
