@@ -46,6 +46,10 @@ int default_node_mkdir(fs_node_t *node) {
     return 1;
 }
 
+int default_node_get_size(fs_node_t *node) {
+    return strlen(node->contents);
+}
+
 fs_node_t *find_node(char *path) {
     for (int z = 0; z < node_count; z++) {
         fs_node_t *node = nodes[z];
@@ -216,7 +220,13 @@ fs_node_t *copy_node(fs_node_t *node, char *new_path) {
 
     fs_node_t *_node = create_node(name, parent, node->flags, node->permission, false);
     _node->contents = node->contents;
-    _node->size = node->size;
+    _node->write = node->write;
+    _node->read = node->read;
+    _node->mkfile = node->mkfile;
+    _node->mkdir = node->mkdir;
+    _node->open = node->open;
+    _node->close = node->close;
+    _node->get_size = node->get_size;
 
     free(parent);
     free(name);
@@ -273,6 +283,7 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
     node->close = default_node_close;
     node->mkfile = default_node_mkfile;
     node->mkdir = default_node_mkdir;
+    node->get_size = default_node_get_size;
 
     if (parent->is_mount && ignore_mount == false) {
         node->mount_parent = parent->mount_parent;
@@ -285,6 +296,7 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
         node->mkdir = parent->mkdir;
         node->open = parent->open;
         node->close = parent->close;
+        node->get_size = parent->get_size;
 
         int ret = -1;
 
@@ -330,7 +342,6 @@ int write_node(fs_node_t *node, int offset, int size, char *contents) {
     else
         ret = 1;
 
-    node->size = strlen(contents);
     nodes[node->id] = node;
 
     return ret;

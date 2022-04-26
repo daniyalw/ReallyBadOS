@@ -23,7 +23,6 @@ int create_file(char *name, char *path, char *contents, int permission) {
     if (node == NULL)
         return 1;
 
-    node->size = strlen(contents);
     node->contents = contents;
 
     nodes[node->id] = node;
@@ -118,9 +117,6 @@ int fwrite(FILE *file, int size, int n, char *buffer) {
 
         file->ptr += size * n;
 
-        if (file->ptr >= file->node->size)
-            file->node->size = file->ptr;
-
         return ret;
     }
 
@@ -132,7 +128,7 @@ int fgetc(FILE *file) {
     fread(file, 1, 1, buf);
     file->ptr++;
 
-    if (file->ptr == file->node->size)
+    if (file->ptr == file->node->get_size(file->node))
         file->eof = EOF;
 
     return buf[0];
@@ -144,7 +140,7 @@ int fread(FILE *file, int size, int n, char *buffer) {
 
         file->ptr += size * n;
 
-        if (file->ptr >= file->node->size)
+        if (file->ptr >= file->node->get_size(file->node))
             file->ptr = EOF;
 
         return ret;
@@ -179,7 +175,7 @@ int fseek(FILE *file, int offset, int whence) {
             w = file->ptr;
             break;
         case SEEK_END:
-            w = file->node->size;
+            w = file->node->get_size(file->node);
             break;
 
         default:
@@ -218,8 +214,8 @@ int fsetpos(FILE *file, fpos_t *pos) {
 
 int fvsscanf(FILE *file, char *fmt, va_list va) {
 	int cz = 0;
-    char *str = (char *)malloc(file->node->size - file->ptr + 1);
-    fread(file, 1, file->node->size - file->ptr, str);
+    char *str = (char *)malloc(file->node->get_size(file->node) - file->ptr + 1);
+    fread(file, 1, file->node->get_size(file->node) - file->ptr, str);
 
 	while (*fmt) {
 		if (*fmt == ' ') {

@@ -24,6 +24,7 @@ typedef int (*__write)(fs_node_t*, int, int, char *);
 typedef int (*__read)(fs_node_t*, int, int, char *);
 typedef int (*__mkfile)(fs_node_t*);
 typedef int (*__mkdir)(fs_node_t *);
+typedef int (*__get_size)(fs_node_t *);
 
 struct fs_driver_t {
     __open open;
@@ -32,6 +33,7 @@ struct fs_driver_t {
     __read read;
     __mkfile mkfile;
     __mkdir mkdir;
+    __get_size get_size;
 };
 
 struct fs_node_t
@@ -46,7 +48,6 @@ struct fs_node_t
 
     bool null = false;
 
-    int size = 0;
     char *contents;
 
     bool is_mountpoint;
@@ -60,6 +61,7 @@ struct fs_node_t
     __mkdir mkdir = NULL;
     __open open;
     __close close;
+    __get_size get_size;
 
     int children[CHILDREN_LIMIT];
     int children_count = NULL;
