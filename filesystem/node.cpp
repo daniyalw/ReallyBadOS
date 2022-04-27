@@ -286,6 +286,10 @@ fs_node_t *create_node(char *name, char *parent_path, int type, int permission, 
     node->mkdir = default_node_mkdir;
     node->get_size = default_node_get_size;
 
+    node->atime = Time::get_time();
+    node->ctime = node->atime;
+    node->mtime = node->atime;
+
     if (parent->is_mount && ignore_mount == false) {
         node->mount_parent = parent->mount_parent;
         node->is_mount = true;
@@ -339,10 +343,12 @@ void close_node(fs_node_t *node) {
 int write_node(fs_node_t *node, int offset, int size, char *contents) {
     int ret = 0;
 
-    if (node->write != NULL)
+    if (node->write != NULL) {
         ret = node->write(node, offset, size, contents);
-    else
+        node->mtime = Time::get_time();
+    } else {
         ret = 1;
+    }
 
     nodes[node->id] = node;
 
@@ -354,6 +360,7 @@ int read_node(fs_node_t *node, int offset, int size, char *buffer) {
 
     if (node->read != NULL) {
         ret = node->read(node, offset, size, buffer);
+        node->atime = Time::get_time();
     } else {
         ret = 1;
     }

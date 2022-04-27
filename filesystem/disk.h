@@ -32,6 +32,7 @@ typedef struct {
     int permission; // what permissions does file have
     int sectors; // how many sectors used by the contents of node; if dir, it means 0
     int type; // dir - 0; file - 1
+    time_t ctime;
 } __attribute__((packed)) RBFSNode;
 
 typedef struct {
@@ -43,6 +44,7 @@ typedef struct {
     int type;
     int id;
     int permission;
+    time_t ctime;
 } __attribute__((packed)) RBFSIndex;
 
 RBFSIndex *indexed[1000];
@@ -53,7 +55,8 @@ void rbfs_init();
 
 RBFSIndex *rbfs_find_index(char *path);
 void print_indexes();
-void rbfs_add_index(char *name, char *path, int type, int offset, int sectors, int perm);
+void rbfs_add_index(RBFSNode *node, int offset);
+void rbfs_add_index(RBFSNode node, int offset);
 void rbfs_index_disk();
 void rbfs_rescan();
 

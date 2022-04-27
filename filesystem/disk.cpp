@@ -51,21 +51,43 @@ void rbfs_ustr_from_str(uint8_t *out, char *str, int size) {
     }
 }
 
-void rbfs_add_index(char *name, char *path, int type, int offset, int sectors, int perm) {
+void rbfs_add_index(RBFSNode *node, int offset) {
     RBFSIndex *index = new RBFSIndex();
 
     memset(index->name, 0, 20);
     memset(index->path, 0, PATH_LIMIT);
 
-    strcpy(index->name, name);
-    strcpy(index->path, path);
+    strcpy(index->name, node->name);
+    strcpy(index->path, node->path);
 
-    index->type = type;
+    index->type = node->type;
     index->sector = offset;
-    index->sectors = sectors;
+    index->sectors = node->sectors;
     index->magic = RBFS_DISK_MAGIC;
     index->id = index_count;
-    index->permission = perm;
+    index->permission = node->permission;
+    index->ctime = node->ctime;
+
+    indexed[index_count] = index;
+    index_count++;
+}
+
+void rbfs_add_index(RBFSNode node, int offset) {
+    RBFSIndex *index = new RBFSIndex();
+
+    memset(index->name, 0, 20);
+    memset(index->path, 0, PATH_LIMIT);
+
+    strcpy(index->name, node.name);
+    strcpy(index->path, node.path);
+
+    index->type = node.type;
+    index->sector = offset;
+    index->sectors = node.sectors;
+    index->magic = RBFS_DISK_MAGIC;
+    index->id = index_count;
+    index->permission = node.permission;
+    index->ctime = node.ctime;
 
     indexed[index_count] = index;
     index_count++;
@@ -105,7 +127,7 @@ void rbfs_index_disk() {
             continue;
         }
 
-        rbfs_add_index(node->name, node->path, node->type, z, node->sectors, node->permission);
+        rbfs_add_index(node, z);
 
         char *out = (char *)malloc(PATH_LIMIT);
         memset(out, 0, PATH_LIMIT);
@@ -184,6 +206,7 @@ int rbfs_add_node(char *path, int type, int perm, char *contents) {
     node.error = RBFS_CLEAN;
     node.magic = RBFS_DISK_MAGIC;
     node.sectors = strlen(contents)/512 + 1;
+    node.ctime = Time::get_time();
 
     uint8_t _super[512];
     memset(_super, 0, 512);
@@ -214,7 +237,7 @@ int rbfs_add_node(char *path, int type, int perm, char *contents) {
     super->first_free += node.sectors;
 
     DiskDrivers::ATA::ata_write_one(RBFS_BEG, (uint8_t *)super);
-    rbfs_add_index(node.name, node.path, node.type, offset, node.sectors, node.permission);
+    rbfs_add_index(node, offset);
 
     free(super);
 
@@ -430,6 +453,7 @@ int rbfs_vfs_mkfile(fs_node_t *node) {
     auto index = rbfs_open(path);
 
     if (index) {
+        node->ctime = index->ctime;
         // the file is on disk, just need to tell vfs
         return 0;
     }

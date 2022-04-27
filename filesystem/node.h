@@ -49,6 +49,10 @@ struct fs_node_t
 
     int permission, owner;
 
+    time_t atime;
+    time_t mtime;
+    time_t ctime;
+
     bool null = false;
 
     char *contents;
