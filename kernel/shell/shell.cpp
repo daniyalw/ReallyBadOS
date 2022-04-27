@@ -174,8 +174,6 @@ void shell_quit() {
 }
 
 void shell() {
-    hist_init();
-
     cwd = (char *)malloc(256);
     memset(cwd, 0, 256);
     hist_add("enter");
@@ -220,7 +218,6 @@ void shell() {
         }
 
         hist_add(cmd);
-        hist_push();
         run_commands(cmd);
 
         putchar('\n');
