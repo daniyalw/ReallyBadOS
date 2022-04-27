@@ -130,6 +130,16 @@ public:
         }
     }
 
+    void replace(int z, T val) {
+        if (z < 0 || z >= mkey_count) {
+            return;
+        }
+
+        auto key = keys[z];
+        key.val = val;
+        keys[z] = key;
+    }
+
     T operator[](int pos) {
         return find(pos);
     }
