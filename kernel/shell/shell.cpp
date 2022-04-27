@@ -15,6 +15,7 @@
 #include <kernel/sys/serial.h>
 #include <sys/multitasking/task.h>
 #include <errno.h>
+#include "history.h"
 
 using namespace std;
 using namespace Time;
@@ -175,6 +176,7 @@ void shell_quit() {
 void shell() {
     cwd = (char *)malloc(256);
     memset(cwd, 0, 256);
+    hist_add("enter");
 
     while (true) {
         if (current_display_len != 0 && current_display_len != 1) {
@@ -194,7 +196,7 @@ void shell() {
 
         if (check_name(cmd, "exit")) {
             Kernel::CPU::exit(0);
-        } else if (check_name(cwd, "cd")) {
+        } else if (check_name(cmd, "cd")) {
             args_t args = parse_args(cmd);
 
             if (args.argc > 1) {
@@ -208,8 +210,14 @@ void shell() {
             } else {
                 printf("cd: incomplete command\n");
             }
+
+            continue;
+        } else if (check_name(cmd, "history")) {
+            hist_traverse();
+            continue;
         }
 
+        hist_add(cmd);
         run_commands(cmd);
 
         putchar('\n');

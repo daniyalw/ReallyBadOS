@@ -122,6 +122,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../filesystem/configs.cpp"
 #include "../filesystem/clipboard.cpp"
 #include "login.cpp"
+#include "shell/history.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/button.cpp"
