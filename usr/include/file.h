@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <time.h>
 #include "_header.h"
 
 #define EOF -1
@@ -47,6 +48,10 @@ struct fs_node_t
     int flags;
 
     int permission, owner;
+
+    time_t atime;
+    time_t mtime;
+    time_t ctime;
 
     bool null = false;
 

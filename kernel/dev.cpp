@@ -1,3 +1,8 @@
+#include <filesystem/port.h>
+#include <filesystem/null.h>
+#include <filesystem/clipboard.h>
+#include <filesystem/env.h>
+
 int null_read(fs_node_t * node, int offset, int size, char *buf)
 {
     UNUSED(buf);
@@ -36,4 +41,16 @@ void init_all_devs()
 
     // serial
     create_file("serial", "/dev", null_read, write_info);
+
+    // clipboard
+    init_clipboard();
+
+    // null
+    init_null_fs();
+
+    // port
+    init_portfs();
+
+    // env
+    env_init();
 }
