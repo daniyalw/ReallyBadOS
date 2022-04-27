@@ -7,11 +7,11 @@ FILE *open(char *name, char *mode) {
 }
 
 int read(char *buf, int sz, int n, FILE *file) {
-    return fread(file, sz, n, buf);
+    return fread(buf, sz, n, file);
 }
 
 int write(char *buf, int sz, int n, FILE *file) {
-    return fwrite(file, sz, n, buf);
+    return fwrite(buf, sz, n, file);
 }
 
 int printf(FILE *file, char *buf) {

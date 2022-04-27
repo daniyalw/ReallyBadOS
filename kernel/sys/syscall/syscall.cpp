@@ -119,7 +119,7 @@ int s_write_file(char *contents, int *size, int *n, int fd) {
     if (file == NULL)
         return 1;
 
-    int ret = fwrite(file, size[0], n[0], contents);
+    int ret = fwrite(contents, size[0], n[0], file);
 
     fclose(file);
 
@@ -158,7 +158,7 @@ int s_read_file(char *buf, int *size, int *n, int fd) {
     if (file == NULL)
         return 1;
     else
-        ret = fread(file, size[0], n[0], buf);
+        ret = fread(buf, size[0], n[0], file);
 
     fclose(file);
 

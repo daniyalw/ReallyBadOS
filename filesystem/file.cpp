@@ -109,7 +109,7 @@ void fclose(FILE *file) {
     free(file);
 }
 
-int fwrite(FILE *file, int size, int n, char *buffer) {
+int fwrite(char *buffer, int size, int n, FILE *file) {
     if ((file->flags & FLAGS_WRITE) == FLAGS_WRITE) {
         int ret = write_node(file->node, file->ptr, size * n, buffer);
 
@@ -123,7 +123,7 @@ int fwrite(FILE *file, int size, int n, char *buffer) {
 
 int fgetc(FILE *file) {
     char buf[1];
-    fread(file, 1, 1, buf);
+    fread(buf, 1, 1, file);
     file->ptr++;
 
     if (file->ptr == file->node->get_size(file->node))
@@ -132,7 +132,7 @@ int fgetc(FILE *file) {
     return buf[0];
 }
 
-int fread(FILE *file, int size, int n, char *buffer) {
+int fread(char *buffer, int size, int n, FILE *file) {
     if ((file->flags & FLAGS_READ) == FLAGS_READ) {
         int ret = read_node(file->node, file->ptr, size * n, buffer);
 
@@ -152,7 +152,7 @@ int feof(FILE *file) {
 }
 
 char *fgets(char *str, int n, FILE *file) {
-    fread(file, 1, n, str);
+    fread(str, 1, n, file);
     return str;
 }
 
@@ -213,7 +213,7 @@ int fsetpos(FILE *file, fpos_t *pos) {
 int fvsscanf(FILE *file, char *fmt, va_list va) {
 	int cz = 0;
     char *str = (char *)malloc(file->node->get_size(file->node) - file->ptr + 1);
-    fread(file, 1, file->node->get_size(file->node) - file->ptr, str);
+    fread(str, 1, file->node->get_size(file->node) - file->ptr, file);
 
 	while (*fmt) {
 		if (*fmt == ' ') {
@@ -322,7 +322,7 @@ int fscanf(FILE *file, char *fmt, ...) {
 }
 
 int fprintf(FILE *file, char *data) {
-    return fwrite(file, 1, strlen(data), data);
+    return fwrite(data, 1, strlen(data), file);
 }
 
 int fprintf(fs_node_t *node, char *data) {

@@ -17,7 +17,7 @@ char *getenv(char *name) {
 
     char *buffer = (char *)malloc(size + 1);
     memset(buffer, 0, size + 1);
-    fread(file, 1, size, buffer);
+    fread(buffer, 1, size, file);
 
     free(path);
     fclose(file);
@@ -37,7 +37,7 @@ int setenv(char *name, char *val, int overwrite) {
             return NULL;
         }
 
-        int ret = fwrite(file, 0, strlen(val), val);
+        int ret = fwrite(val, 0, strlen(val), file);
 
         free(path);
         fclose(file);

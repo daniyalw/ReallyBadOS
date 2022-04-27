@@ -34,9 +34,9 @@ int create_file(char *name, char *path, __read read, __write write, int permissi
 int create_file(char *name, char *path, __read read, __write write);
 int kcreate_file(char *name, char *path, __read read, __write write);
 
-int fread(FILE *file, int size, int n, char *buffer);
+int fread(char *buffer, int size, int n, FILE *file);
 
-int fwrite(FILE *file, int size, int n, char *buffer);
+int fwrite(char *buffer, int size, int n, FILE *file);
 
 FILE *fopen(char *path, char *mode);
 void fclose(FILE *file);
