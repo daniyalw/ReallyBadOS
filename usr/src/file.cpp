@@ -57,10 +57,6 @@ extern "C" int fwrite(char *buf, int size, int n, FILE *file)
     int ret = file->node->write(file->node, file->ptr, size * n, buf);
     file->ptr += size * n;
 
-    if (file->ptr >= file->node->size) {
-        file->node->size = file->ptr;
-    }
-
     return ret;
 }
 
@@ -92,7 +88,7 @@ extern "C" int fgetc(FILE *file)
     char buf[1];
     fread(buf, 1, 1, file);
 
-    if (file->ptr == file->node->size)
+    if (file->ptr == file->node->get_size(file->node))
         file->eof = EOF;
 
     return buf[0];
@@ -129,7 +125,7 @@ extern "C" int fseek(FILE *file, int offset, int whence)
             w = file->ptr;
             break;
         case SEEK_END:
-            w = file->node->size;
+            w = file->node->get_size(file->node);
             break;
     }
 
