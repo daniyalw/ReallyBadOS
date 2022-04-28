@@ -18,7 +18,7 @@ Entry *entry(UI::Window *win, int x, int y, int bg, int fg) {
     entry->coords.h = font_height + (entry->padding * 2);
 
     entry->id = win->child_count;
-    entry->parent = win->id;
+    entry->parent = win;
 
     win->childs[entry->id] = entry;
     win->child_count++;

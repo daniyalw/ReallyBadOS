@@ -16,7 +16,7 @@ UI::List *list(UI::Window *win, int x, int y, int bg, int fg, int change) {
     list->fg = fg;
 
     list->id = win->child_count;
-    list->parent = win->id;
+    list->parent = win;
 
     win->childs[list->id] = list;
     win->child_count++;

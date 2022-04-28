@@ -12,7 +12,7 @@ extern "C" unsigned int _Unwind_Resume() { return 0; }
 extern "C" unsigned int __gxx_personality_v0() { return 0; }
 
 //#define DEBUG
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -135,7 +135,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 
 void callback(UI::Object *obj, UI::Event *event) {
     if (event->type == EVENT_MOUSE_LEFT) {
-        UI::Window *win = (UI::Window *)ui_objects[obj->parent];
+        UI::Window *win = (UI::Window *)obj->parent;
         UI::List *list = (UI::List *)win->childs[0];
         int selected = list->get_selected();
 

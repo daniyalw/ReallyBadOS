@@ -30,7 +30,7 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
         }
 
         if (win->coords.y >= coords.y && (win->coords.y - TITLEBAR_HEIGHT) <= coords.y) {
-            if (event->type != EVENT_MOUSE_LEFT) {
+            if (!left) {
                 return;
             }
             // titlebar clicked

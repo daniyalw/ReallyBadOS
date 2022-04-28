@@ -8,7 +8,7 @@ Button *button(UI::Window *win, int x, int y, int bg, int fg, auto callback, cha
     memset(btn->text, 0, 100);
     vsprintf(btn->text, text, va);
     va_end(va);
-    
+
     memset(btn->name, 0, 20);
     strcpy(btn->name, "Button");
 
@@ -21,7 +21,7 @@ Button *button(UI::Window *win, int x, int y, int bg, int fg, auto callback, cha
     btn->coords.h = font_height + (btn->padding * 2);
 
     btn->id = win->child_count;
-    btn->parent = win->id;
+    btn->parent = win;
 
     btn->callback = callback;
 

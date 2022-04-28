@@ -22,7 +22,7 @@ Label *label(UI::Window *win, int x, int y, int bg, int fg, char *text, va_list 
     label->coords.h = font_height;
 
     label->id = win->child_count;
-    label->parent = win->id;
+    label->parent = win;
 
     win->childs[label->id] = label;
     win->child_count++;

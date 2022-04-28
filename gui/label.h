@@ -40,7 +40,7 @@ public:
 
     virtual int height() override {
         int h = 0;
-        auto _coords = ui_objects[parent]->coords;
+        auto _coords = parent->coords;
         auto object = this;
 
         const int max_w = _coords.x + object->coords.x + object->coords.w;

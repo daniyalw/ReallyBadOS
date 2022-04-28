@@ -28,7 +28,9 @@ struct Object {
     char text[100];
 
     bool dragged = false, null = false, active = false, to_draw = false;
-    int id, parent;
+    int id;
+
+    Object *parent;
 
     virtual void event_handle(Object*, Event*) {}
     virtual void draw_object(Object*, Coords) {}

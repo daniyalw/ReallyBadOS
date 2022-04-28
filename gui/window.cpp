@@ -19,7 +19,7 @@ Window *window(char *name, int bg, int fg, int _font) {
     win->coords.w = 500;
     win->coords.h = 300;
 
-    win->parent = -1;
+    win->parent = NULL;
 
     add_window(win);
 

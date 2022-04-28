@@ -8,7 +8,7 @@ namespace UI {
             log::info("list: event");
             if (event->type == EVENT_MOUSE_LEFT) {
                 log::info("list: left");
-                int y = coords.y + padding + ui_objects[parent]->coords.y;
+                int y = coords.y + padding + parent->coords.y;
                 int old = selected;
                 selected = -1;
                 bool done = false;
@@ -40,13 +40,12 @@ namespace UI {
                 log::info("list: selected: %d", selected);
 
                 if (selected >= 0) {
-                    auto _parent = ui_objects[parent];
-                    auto _coords = _parent->coords;
+                    auto _coords = parent->coords;
 
 
-                    Graphic::draw_rect(coords.x + _parent->coords.x, y, coords.w, font_height + padding, change);
+                    Graphic::draw_rect(coords.x + parent->coords.x, y, coords.w, font_height + padding, change);
                     Graphic::draw_empty_rect(coords.x + _coords.x - 1, coords.y + _coords.y - 1, coords.w, coords.h, 0);
-                    draw_string(coords.x + padding + _parent->coords.x, y + padding, fg, lines[selected + 1]);
+                    draw_string(coords.x + padding + parent->coords.x, y + padding, fg, lines[selected + 1]);
                 }
             }
         }

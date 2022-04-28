@@ -8,8 +8,8 @@ namespace UI {
 class Entry : public UI::Object {
 public:
     void draw_text() {
-        int x = coords.x + ui_objects[parent]->coords.x;
-        int y = coords.y + ui_objects[parent]->coords.y;
+        int x = coords.x + parent->coords.x;
+        int y = coords.y + parent->coords.y;
 
         const int orig_x = x;
         const int orig_y = y;
