@@ -27,7 +27,7 @@ void bga_set_bank(unsigned short bank_number) {
 }
 
 bool is_bga_device() {
-    Kernel::PCIDevice *device = Kernel::find_device(0x1111, 0x1234);
+    PCI::PCIDevice *device = PCI::find_device(0x1111, 0x1234);
 
     if (device == NULL)
         return false;

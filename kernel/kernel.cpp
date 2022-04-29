@@ -291,7 +291,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     handle_tar(tar);
 
-    Kernel::init_pci();
+    PCI::init_pci();
 
     uint16_t *bytes;
     bytes = DiskDrivers::ATA::ata_init(bytes);

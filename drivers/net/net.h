@@ -3,7 +3,7 @@
 class NetDriver {
 protected:
     uint8_t mac_addr[6] = {0, 0, 0, 0, 0, 0};
-    Kernel::PCIDevice *device;
+    PCI::PCIDevice *device;
     char *name;
 
     void set_name(char *_name) {

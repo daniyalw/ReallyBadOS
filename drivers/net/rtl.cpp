@@ -80,7 +80,7 @@ void rtl8139::send(void *data, int length) {
 }
 
 int rtl8139::start() {
-    device = Kernel::find_device(RTL_VENDOR, RTL_ID);
+    device = PCI::find_device(RTL_VENDOR, RTL_ID);
 
     if (device == NULL) {
         // there is no rtl8139
@@ -90,12 +90,12 @@ int rtl8139::start() {
 
     Kernel::CPU::register_interrupt_handler(47, net_irq_handler);
 
-    uint16_t ret = Kernel::read_pci(device->bus, device->device, device->function, 0x04);
+    uint16_t ret = PCI::read_pci(device->bus, device->device, device->function, 0x04);
 
     // we gotta be careful if it is already enabled
     if (!BIT_GET(ret, 2)) {
         BIT_SET(ret, 2);
-        Kernel::write_pci(device->bus, device->device, device->function, 0x04, ret);
+        PCI::write_pci(device->bus, device->device, device->function, 0x04, ret);
     }
 
     power_on();

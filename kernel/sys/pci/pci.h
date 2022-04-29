@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Kernel {
+namespace PCI {
 
 struct PCIDevice
 {

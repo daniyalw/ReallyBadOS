@@ -1,6 +1,6 @@
 #include <sys/pci/pci.h>
 
-namespace Kernel {
+namespace PCI {
 
 char *find_class_name(uint16_t classID) {
     for (int z = 0; z < class_name_count; z++) {
@@ -85,23 +85,23 @@ void scan_buses() {
                 pci_device->interfaceID = read_pci(bus, device, function, 0x09);
 
                 for (int z = 0; z < 6; z++) {
-                    Kernel::addr_reg reg = get_addr_reg(bus, device, function, z);
+                    PCI::addr_reg reg = get_addr_reg(bus, device, function, z);
 
                     if (reg.addr && (reg.type == 1)) {
                         pci_device->base = (uint32_t)reg.addr;
                     }
                 }
 
-                Kernel::devices[device_count] = pci_device;
-                Kernel::device_count++;
+                PCI::devices[device_count] = pci_device;
+                PCI::device_count++;
             }
         }
     }
 }
 
 void go_through_and_print() {
-    for (int z = 0; z < Kernel::device_count; z++) {
-        auto dev = Kernel::devices[z];
+    for (int z = 0; z < PCI::device_count; z++) {
+        auto dev = PCI::devices[z];
         log::info("PCI device %d: \n\tclassID: %x\n\tclass name: %s\n\tsubclassID: %x\n\tsubclass name: %s\n\tdeviceID: 0x%x\n\tvendorID: 0x%x\n\tinterface: %x\n",
                     z, dev->classID, find_class_name(dev->classID), dev->subclassID, find_subclass_name(dev->classID, dev->subclassID), dev->deviceID, dev->vendorID, dev->interfaceID);
 
@@ -110,20 +110,20 @@ void go_through_and_print() {
         }
     }
 
-    printf("\n\nTotal devices: %d\n", Kernel::device_count);
+    printf("\n\nTotal devices: %d\n", PCI::device_count);
 }
 
-Kernel::PCIDevice * find_device(uint16_t vendor, uint16_t device) {
+PCI::PCIDevice * find_device(uint16_t vendor, uint16_t device) {
     // pci must already be initialized
     for (int z = 0; z < device_count; z++)
-        if (Kernel::devices[z]->vendorID == vendor && Kernel::devices[z]->deviceID == device)
-            return Kernel::devices[z];
+        if (PCI::devices[z]->vendorID == vendor && PCI::devices[z]->deviceID == device)
+            return PCI::devices[z];
 
     return NULL;
 }
 
-Kernel::addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, uint16_t bar) {
-    Kernel::addr_reg result;
+PCI::addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, uint16_t bar) {
+    PCI::addr_reg result;
 
     uint32_t barRegister = 0x10 + (bar * sizeof(uint32_t));
     uint32_t bar_v = read_pci(bus, device, function, barRegister);
