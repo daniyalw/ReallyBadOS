@@ -2,6 +2,26 @@
 
 namespace Kernel {
 
+char *find_class_name(uint16_t classID) {
+    for (int z = 0; z < class_name_count; z++) {
+        if (class_names[z].id == classID) {
+            return class_names[z].name;
+        }
+    }
+
+    return NULL;
+}
+
+char *find_subclass_name(uint16_t classID, uint16_t subclassID) {
+    for (int z = 0; z < sub_count; z++) {
+        if (sub_names[z].cid == classID && sub_names[z].sid == subclassID) {
+            return sub_names[z].name;
+        }
+    }
+
+    return NULL;
+}
+
 uint16_t read_pci(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
     uint32_t address;
     uint16_t tmp = 0;
@@ -81,21 +101,13 @@ void scan_buses() {
 
 void go_through_and_print() {
     for (int z = 0; z < Kernel::device_count; z++) {
-        printf("classID: %x ::: SubID: %x ::: DeviceID: 0x%x ::: VendorID: 0x%x\n",
-                Kernel::devices[z]->classID,
-                Kernel::devices[z]->subclassID,
-                Kernel::devices[z]->deviceID,
-                Kernel::devices[z]->vendorID
-            );
+        auto dev = Kernel::devices[z];
+        log::info("PCI device %d: \n\tclassID: %x\n\tclass name: %s\n\tsubclassID: %x\n\tsubclass name: %s\n\tdeviceID: 0x%x\n\tvendorID: 0x%x\n\tinterface: %x\n",
+                    z, dev->classID, find_class_name(dev->classID), dev->subclassID, find_subclass_name(dev->classID, dev->subclassID), dev->deviceID, dev->vendorID, dev->interfaceID);
 
-        if (Kernel::devices[z]->interrupt != NULL)
-            printf("\tInterrupt: %d", Kernel::devices[z]->interrupt + 32);
-
-        if (Kernel::devices[z]->interrupt == NULL) {
-            printf("             ");
-            putchar('\t');
+        if (dev->interrupt) {
+            Kernel::serial_write_string("\tinterrupt: %d\n", dev->interrupt + 32);
         }
-        printf("\tinterface: %x\n", Kernel::devices[z]->interfaceID);
     }
 
     printf("\n\nTotal devices: %d\n", Kernel::device_count);
@@ -151,6 +163,26 @@ Kernel::addr_reg get_addr_reg(uint16_t bus, uint16_t device, uint16_t function, 
         result.size = (uint16_t)(~(sizeMask & ~0x3) + 1);
     }
     return result;
+}
+
+void init_pci() {
+    scan_buses();
+
+    int z = 0;
+
+    while (class_names[z].name) {
+        z++;
+    }
+
+    class_name_count = z + 1;
+
+    z = 0;
+
+    while (sub_names[z].name) {
+        z++;
+    }
+
+    sub_count = z;
 }
 
 }
