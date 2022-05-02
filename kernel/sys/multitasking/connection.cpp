@@ -5,14 +5,14 @@ void send_data(int to, char *data) {
     d->to = to;
     d->from = Kernel::CPU::current_task;
     strncpy(d->data, data, 100);
-    ipc_send_msg(to, (char *)d);
+    ipc::send_msg(to, (char *)d);
 }
 
 Data **get_all_data() {
     Data **data;
     Message **msgs;
 
-    for (int z = 0; z < ipc_find_messages(msgs); z++) {
+    for (int z = 0; z < ipc::find_messages(msgs); z++) {
         data[z] = (Data *)msgs[z]->data;
     }
 
@@ -20,7 +20,7 @@ Data **get_all_data() {
 }
 
 Data *get_last() {
-    return (Data *)ipc_read_last_msg()->data;
+    return (Data *)ipc::read_last_msg()->data;
 }
 
 int sid_to_pid(int sid) {

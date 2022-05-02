@@ -1,7 +1,9 @@
 #include "ipc.h"
 #include "task.h"
 
-int ipc_task_msg_count(int n) {
+namespace ipc {
+
+int task_msg_count(int n) {
     if (n < 0 || n >= Kernel::CPU::task_count) {
         return -1;
     }
@@ -17,20 +19,20 @@ int ipc_task_msg_count(int n) {
     return length;
 }
 
-Message * ipc_create_msg(int to, int from, char *message) {
+Message * create_msg(int to, int from, char *message) {
     Message * msg = new Message();
 
     msg->data = message;
     msg->to = to;
     msg->from = from;
-    msg->id = ipc_task_msg_count(to);
+    msg->id = task_msg_count(to);
     msg->pos = msg_count;
 
     return msg;
 }
 
-int ipc_send_msg(int to, int from, char *message) {
-    Message * msg = ipc_create_msg(to, from, message);
+int send_msg(int to, int from, char *message) {
+    Message * msg = create_msg(to, from, message);
 
     if (msg->id == -1) {
         return -1;
@@ -42,25 +44,25 @@ int ipc_send_msg(int to, int from, char *message) {
     return 0;
 }
 
-int ipc_send_msg(int to, char *message) {
-    return ipc_send_msg(to, Kernel::CPU::current_task, message);
+int send_msg(int to, char *message) {
+    return send_msg(to, Kernel::CPU::current_task, message);
 }
 
-Message *ipc_send_wait(int to, char *message, int timeout /* useful if a process never replies */) {
-    if (ipc_send_msg(to, message) == -1) {
+Message *send_wait(int to, char *message, int timeout /* useful if a process never replies */) {
+    if (send_msg(to, message) == -1) {
         return NULL;
     }
 
     sleep_sec(timeout);
 
-    return ipc_read_last_msg();
+    return read_last_msg();
 }
 
-Message *ipc_send_wait(int to, char *message) {
-    return ipc_send_wait(to, message, 2);
+Message *send_wait(int to, char *message) {
+    return send_wait(to, message, 2);
 }
 
-int ipc_find_messages(int task, Message **msgs) {
+int find_messages(int task, Message **msgs) {
     if (task < 0 || task >= Kernel::CPU::task_count) {
         return NULL;
     }
@@ -77,11 +79,11 @@ int ipc_find_messages(int task, Message **msgs) {
     return c;
 }
 
-int ipc_find_messages(Message **msgs) {
-    return ipc_find_messages(Kernel::CPU::current_task, msgs);
+int find_messages(Message **msgs) {
+    return find_messages(Kernel::CPU::current_task, msgs);
 }
 
-Message * ipc_read_last_msg(int _task) {
+Message * read_last_msg(int _task) {
     if (_task < 0 || _task >= Kernel::CPU::task_count) {
         return NULL;
     }
@@ -95,11 +97,11 @@ Message * ipc_read_last_msg(int _task) {
     return NULL;
 }
 
-Message * ipc_read_last_msg() {
-    return ipc_read_last_msg(Kernel::CPU::current_task);
+Message * read_last_msg() {
+    return read_last_msg(Kernel::CPU::current_task);
 }
 
-Message * ipc_read_first_msg(int task) {
+Message * read_first_msg(int task) {
     if (task < 0 || task >= Kernel::CPU::task_count) {
         return NULL;
     }
@@ -113,11 +115,11 @@ Message * ipc_read_first_msg(int task) {
     return NULL;
 }
 
-Message * ipc_read_first_msg() {
-    return ipc_read_first_msg(Kernel::CPU::current_task);
+Message * read_first_msg() {
+    return read_first_msg(Kernel::CPU::current_task);
 }
 
-void ipc_msg_finish(Message * msg, int _task) {
+void msg_finish(Message * msg, int _task) {
     int id = msg->id; // copy id before destroying the message
     int pos = msg->pos;
 
@@ -130,6 +132,8 @@ void ipc_msg_finish(Message * msg, int _task) {
     msg_count--;
 }
 
-void ipc_msg_finish(Message *msg) {
-    return ipc_msg_finish(msg, Kernel::CPU::current_task);
+void msg_finish(Message *msg) {
+    return msg_finish(msg, Kernel::CPU::current_task);
+}
+
 }

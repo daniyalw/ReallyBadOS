@@ -15,7 +15,7 @@ int idle_task() {
 }
 
 int ipc_test() {
-    auto msg = ipc_send_wait(2, strdup("Hello!"));
+    auto msg = ipc::send_wait(2, strdup("Hello!"));
 
     if (msg) printf("Msg: %s\n", msg->data);
     else printf("Msg is NULL\n");
@@ -25,13 +25,13 @@ int ipc_test() {
 
 int ipc_test11() {
     while (true) {
-        Message *msg = ipc_read_last_msg();
+        Message *msg = ipc::read_last_msg();
 
         if (msg != NULL) {
             printf("Received message: %s\n", msg->data);
-            ipc_send_msg(msg->from, strdup("Bye!"));
+            ipc::send_msg(msg->from, strdup("Bye!"));
             free(msg->data);
-            ipc_msg_finish(msg);
+            ipc::msg_finish(msg);
             exit(0);
         }
     }

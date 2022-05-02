@@ -208,11 +208,11 @@ int s_get_tag(int tag, char *out) {
 }
 
 int s_send_ipc(int to, char *msg) {
-    return ipc_send_msg(to, msg);
+    return ipc::send_msg(to, msg);
 }
 
 int s_recv_msg(Message **msgs) {
-    return ipc_find_messages(msgs);
+    return ipc::find_messages(msgs);
 }
 
 // ----------------------------- //
