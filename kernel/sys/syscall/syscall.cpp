@@ -207,6 +207,14 @@ int s_get_tag(int tag, char *out) {
     return 0;
 }
 
+int s_send_ipc(int to, char *msg) {
+    return ipc_send_msg(to, msg);
+}
+
+int s_recv_msg(Message **msgs) {
+    return ipc_find_messages(msgs);
+}
+
 // ----------------------------- //
 
 
@@ -291,6 +299,8 @@ void init_syscalls() {
     syscall_append((void *)s_setenv);
     syscall_append((void *)s_realloc);
     syscall_append((void *)s_get_tag);
+    syscall_append((void *)s_send_ipc);
+    syscall_append((void *)s_recv_msg);
     Kernel::CPU::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }

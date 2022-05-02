@@ -25,6 +25,8 @@
 #define SETENV 22
 #define REALLOC 23
 #define GET_TAG 24
+#define IPC_SEND 25
+#define IPC_RECV 26
 
 #define CALL_SYS0(ret, num) \
         asm volatile("int $48" : "=a" (ret) : "0" (num));
