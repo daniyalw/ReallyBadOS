@@ -14,7 +14,7 @@ void login() {
     printf("Password: ");
     password = scanf();
 
-    rbfs_init();
+    rbfs::init();
 
     char uname_auth[100];
     memset(uname_auth, 0, 100);
@@ -22,13 +22,13 @@ void login() {
 
     printf("UNAME: %s\n", uname_auth);
 
-    auto file = rbfs_open_root(uname_auth);
+    auto file = rbfs::open_root(uname_auth);
 
     if (file) {
         char pswd[100];
         memset(pswd, 0, 100);
 
-        int ret = rbfs_read(pswd, 0, 100, file);
+        int ret = rbfs::read(pswd, 0, 100, file);
 
         if (ret) {
             printf("Uh oh! Failed to read password file.\n");
@@ -47,7 +47,7 @@ void login() {
             memset(uid, 0, 5);
             sprintf(uid_auth, "/users/%s/uid", username);
 
-            auto ufile = rbfs_open_root(uid_auth);
+            auto ufile = rbfs::open_root(uid_auth);
 
             if (!ufile) {
                 printf("Uh oh! Failed to find user ID.\n");
@@ -56,7 +56,7 @@ void login() {
                 login();
             }
 
-            int r = rbfs_read(uid, 0, 5, ufile);
+            int r = rbfs::read(uid, 0, 5, ufile);
 
             if (r) {
                 printf("Uh oh! Failed to find user ID.\n");

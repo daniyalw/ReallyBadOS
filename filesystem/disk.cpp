@@ -2,7 +2,9 @@
 #include <drivers/disk/disk.h>
 #include "utils.h"
 
-void rbfs_format() {
+namespace rbfs {
+
+void format() {
     for (int z = 0; z < index_count; z++) {
         free(indexed[z]);
     }
@@ -23,7 +25,7 @@ void rbfs_format() {
     DiskDrivers::ATA::ata_write_one(RBFS_BEG, (uint8_t *)super);
 }
 
-RBFSIndex *rbfs_find_index(char *path) {
+RBFSIndex *find_index(char *path) {
     for (int z = 0; z < index_count; z++) {
         if (strcmp(indexed[z]->path, path) == 0) {
             return indexed[z];
@@ -39,19 +41,19 @@ void print_indexes() {
     }
 }
 
-void rbfs_str_from_ustr(char *str, uint8_t *ustr, int size) {
+void str_from_ustr(char *str, uint8_t *ustr, int size) {
     for (int z = 0; z < size; z++) {
         str[z] = (char)ustr[z];
     }
 }
 
-void rbfs_ustr_from_str(uint8_t *out, char *str, int size) {
+void ustr_from_str(uint8_t *out, char *str, int size) {
     for (int z = 0; z < size; z++) {
         out[z] = (uint8_t)str[z];
     }
 }
 
-void rbfs_add_index(RBFSNode *node, int offset) {
+void add_index(RBFSNode *node, int offset) {
     RBFSIndex *index = new RBFSIndex();
 
     memset(index->name, 0, 20);
@@ -72,7 +74,7 @@ void rbfs_add_index(RBFSNode *node, int offset) {
     index_count++;
 }
 
-void rbfs_add_index(RBFSNode node, int offset) {
+void add_index(RBFSNode node, int offset) {
     RBFSIndex *index = new RBFSIndex();
 
     memset(index->name, 0, 20);
@@ -93,7 +95,7 @@ void rbfs_add_index(RBFSNode node, int offset) {
     index_count++;
 }
 
-void rbfs_index_disk() {
+void index_disk() {
     uint8_t *_super = (uint8_t *)malloc(512);
     memset(_super, 0, 512);
 
@@ -127,7 +129,7 @@ void rbfs_index_disk() {
             continue;
         }
 
-        rbfs_add_index(node, z);
+        add_index(node, z);
 
         char *out = (char *)malloc(PATH_LIMIT);
         memset(out, 0, PATH_LIMIT);
@@ -157,25 +159,25 @@ void rbfs_index_disk() {
     free(super);
 }
 
-void rbfs_rescan() {
+void rescan() {
     for (int z = 0; z < index_count; z++) {
         free(indexed[z]);
     }
 
     index_count = 0;
 
-    rbfs_index_disk();
+    index_disk();
 }
 
-int rbfs_add_node(char *path, int type, int perm, char *contents) {
-    if (rbfs_find_index(path)) {
+int add_node(char *path, int type, int perm, char *contents) {
+    if (find_index(path)) {
         return 1;
     }
 
     if (strcmp(path, "/")) {
         char *parent = find_parent(path);
 
-        if (!rbfs_find_index(parent)) {
+        if (!find_index(parent)) {
             free(parent);
             return 1;
         }
@@ -228,7 +230,7 @@ int rbfs_add_node(char *path, int type, int perm, char *contents) {
         int length = strlen(contents);
         uint8_t bytes[length + 1];
         memset(bytes, 0, length + 1);
-        rbfs_ustr_from_str(bytes, contents, length);
+        ustr_from_str(bytes, contents, length);
         DiskDrivers::ATA::ata_write(offset + 1, node.sectors, bytes);
     }
 
@@ -237,27 +239,27 @@ int rbfs_add_node(char *path, int type, int perm, char *contents) {
     super->first_free += node.sectors;
 
     DiskDrivers::ATA::ata_write_one(RBFS_BEG, (uint8_t *)super);
-    rbfs_add_index(node, offset);
+    add_index(node, offset);
 
     free(super);
 
     return 0;
 }
 
-int rbfs_create_file(char *path, char *contents) {
-    return rbfs_add_node(path, RBFS_FILE, 0, contents);
+int create_file(char *path, char *contents) {
+    return add_node(path, RBFS_FILE, 0, contents);
 }
 
-int rbfs_create_folder(char *path) {
-    return rbfs_add_node(path, RBFS_DIR, 0, NULL);
+int create_folder(char *path) {
+    return add_node(path, RBFS_DIR, 0, NULL);
 }
 
-int rbfs_create_file_auth(char *path, char *contents) {
-    return rbfs_add_node(path, RBFS_FILE, 1, contents);
+int create_file_auth(char *path, char *contents) {
+    return add_node(path, RBFS_FILE, 1, contents);
 }
 
-RBFSIndex *rbfs_open(char *path) {
-    auto index = rbfs_find_index(path);
+RBFSIndex *open(char *path) {
+    auto index = find_index(path);
 
     if (index) {
         if (index->permission >= RBFS_PERM_ROOT) {
@@ -270,8 +272,8 @@ RBFSIndex *rbfs_open(char *path) {
     return NULL;
 }
 
-RBFSIndex *rbfs_open_root(char *path) {
-    auto index = rbfs_find_index(path);
+RBFSIndex *open_root(char *path) {
+    auto index = find_index(path);
 
     if (index) {
         if (index->permission > RBFS_PERM_ROOT) {
@@ -284,7 +286,7 @@ RBFSIndex *rbfs_open_root(char *path) {
     return NULL;
 }
 
-void rbfs_move_sector_up(int sector) {
+void move_sector_up(int sector) {
     uint8_t *bytes = (uint8_t *)malloc(512);
     memset(bytes, 0, 512);
     DiskDrivers::ATA::ata_read(bytes, RBFS_BEG, 1);
@@ -308,7 +310,7 @@ void rbfs_move_sector_up(int sector) {
 }
 
 // sector can be overwritten
-void rbfs_move_sector_down(int sector) {
+void move_sector_down(int sector) {
     uint8_t *bytes = (uint8_t *)malloc(512);
     memset(bytes, 0, 512);
     DiskDrivers::ATA::ata_read(bytes, RBFS_BEG, 1);
@@ -331,31 +333,31 @@ void rbfs_move_sector_down(int sector) {
     free(super);
 }
 
-void rbfs_sectors_up(int sector, int sectors) {
+void sectors_up(int sector, int sectors) {
     for (int z = 0; z < sectors; z++)
-        rbfs_move_sector_up(sector + z);
+        move_sector_up(sector + z);
 }
 
-void rbfs_sectors_down(int sector, int sectors) {
+void sectors_down(int sector, int sectors) {
     for (int z = sectors; z >= 0; z--)
-        rbfs_move_sector_down(sector + z);
+        move_sector_down(sector + z);
 }
 
-void rbfs_modify_file(RBFSIndex *index, char *contents) {
+void modify_file(RBFSIndex *index, char *contents) {
     int sectors = strlen(contents)/512 + 1;
     int contents_beg = index->sector + 1;
 
     if (sectors < index->sectors)
-        rbfs_sectors_down(contents_beg + (index->sectors - sectors), index->sectors - sectors);
+        sectors_down(contents_beg + (index->sectors - sectors), index->sectors - sectors);
     else if (sectors > index->sectors)
-        rbfs_sectors_up(contents_beg + index->sectors, sectors - index->sectors);
+        sectors_up(contents_beg + index->sectors, sectors - index->sectors);
 
     index->sectors = sectors;
 
     int _len = strlen(contents);
     uint8_t *b = (uint8_t *)malloc(_len + 1);
     memset(b, 0, _len + 1);
-    rbfs_ustr_from_str(b, contents, _len);
+    ustr_from_str(b, contents, _len);
 
     uint8_t *bytes = (uint8_t *)malloc(512);
     memset(bytes, 0, 512);
@@ -390,13 +392,13 @@ void rbfs_modify_file(RBFSIndex *index, char *contents) {
     return;
 }
 
-void rbfs_delete_node(RBFSIndex *index) {
+void delete_node(RBFSIndex *index) {
     int offset = index->sector;
     int sectors = index->sectors;
-    rbfs_sectors_down(offset, sectors + 1);
+    sectors_down(offset, sectors + 1);
 }
 
-int rbfs_read(char *out, int offset, int size, RBFSIndex *index) {
+int read(char *out, int offset, int size, RBFSIndex *index) {
     int beg_sector = index->sector + 1;
     int sectors = index->sectors;
 
@@ -405,22 +407,22 @@ int rbfs_read(char *out, int offset, int size, RBFSIndex *index) {
 
     DiskDrivers::ATA::ata_read(bytes, beg_sector, sectors);
 
-    rbfs_str_from_ustr(out, &bytes[offset], size);
+    str_from_ustr(out, &bytes[offset], size);
     free(bytes);
     return 0;
 }
 
-int rbfs_write(char *buf, int offset, int size, RBFSIndex *index) {
-    rbfs_modify_file(index, buf);
+int write(char *buf, int offset, int size, RBFSIndex *index) {
+    modify_file(index, buf);
 
     return 0;
 }
 
 // ---------------- VFS functions --------- //
-int rbfs_vfs_write(fs_node_t *node, int offset, int size, char *buf) {
+int vfs_write(fs_node_t *node, int offset, int size, char *buf) {
     char *orig = strdup(node->path);
     char *path = &orig[strlen(RBFS_MOUNT)];
-    auto index = rbfs_find_index(path);
+    auto index = find_index(path);
 
     if (!index) {
         return 1;
@@ -428,13 +430,13 @@ int rbfs_vfs_write(fs_node_t *node, int offset, int size, char *buf) {
 
     free(orig);
 
-    return rbfs_write(buf, offset, size, index);
+    return write(buf, offset, size, index);
 }
 
-int rbfs_vfs_read(fs_node_t *node, int offset, int size, char *buf) {
+int vfs_read(fs_node_t *node, int offset, int size, char *buf) {
     char *orig = strdup(node->path);
     char *path = &orig[strlen(RBFS_MOUNT)];
-    auto index = rbfs_find_index(path);
+    auto index = find_index(path);
 
     if (!index) {
         return 1;
@@ -442,15 +444,15 @@ int rbfs_vfs_read(fs_node_t *node, int offset, int size, char *buf) {
 
     free(orig);
 
-    return rbfs_read(buf, offset, size, index);
+    return read(buf, offset, size, index);
 }
 
-int rbfs_vfs_mkfile(fs_node_t *node) {
+int vfs_mkfile(fs_node_t *node) {
     char *orig = strdup(node->path);
     char *path = &orig[strlen(RBFS_MOUNT)];
 
     // verify that the file doesn't exist
-    auto index = rbfs_open(path);
+    auto index = open(path);
 
     if (index) {
         node->ctime = index->ctime;
@@ -458,45 +460,47 @@ int rbfs_vfs_mkfile(fs_node_t *node) {
         return 0;
     }
 
-    int ret = rbfs_create_file(path, " ");
+    int ret = create_file(path, " ");
     free(orig);
     return ret;
 }
 
-int rbfs_vfs_mkdir(fs_node_t *node) {
+int vfs_mkdir(fs_node_t *node) {
     char *orig = strdup(node->path);
     char *path = &orig[strlen(RBFS_MOUNT)];
 
     // verify that the file doesn't exist
-    auto index = rbfs_open(path);
+    auto index = open(path);
 
     if (index) {
         // the file is on disk, just need to tell vfs
         return 0;
     }
 
-    int ret = rbfs_create_folder(path);
+    int ret = create_folder(path);
     free(orig);
     return ret;
 }
 
-fs_driver_t rbfs_vfs_driver = {
+fs_driver_t vfs_driver = {
     NULL,
     NULL,
-    rbfs_vfs_write,
-    rbfs_vfs_read,
-    rbfs_vfs_mkfile,
-    rbfs_vfs_mkdir
+    vfs_write,
+    vfs_read,
+    vfs_mkfile,
+    vfs_mkdir
 };
 
 // --------------- init ----------------- //
-void rbfs_init() {
-    auto node = mount_fs("disk0", "/", rbfs_vfs_driver, USER_PERMISSION);
+void init() {
+    auto node = mount_fs("disk0", "/", vfs_driver, USER_PERMISSION);
 
     if (node) {
         log::info("rbfs: %s: successfully mounted disk", __FUNCTION__);
-        rbfs_index_disk();
+        index_disk();
     } else {
         log::error("rbfs: %s: failed to mount disk", __FUNCTION__);
     }
+}
+
 }

@@ -334,7 +334,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     print_init_msg();
 
-    rbfs_init();
+    rbfs::init();
 
     switch_to_user_mode();
     shell();

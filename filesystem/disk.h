@@ -50,37 +50,41 @@ typedef struct {
 RBFSIndex *indexed[1000];
 int index_count = 0;
 
-void rbfs_format();
-void rbfs_init();
+namespace rbfs {
 
-RBFSIndex *rbfs_find_index(char *path);
+void format();
+void init();
+
+RBFSIndex *find_index(char *path);
 void print_indexes();
-void rbfs_add_index(RBFSNode *node, int offset);
-void rbfs_add_index(RBFSNode node, int offset);
-void rbfs_index_disk();
-void rbfs_rescan();
+void add_index(RBFSNode *node, int offset);
+void add_index(RBFSNode node, int offset);
+void index_disk();
+void rescan();
 
-void rbfs_str_from_ustr(char *str, uint8_t *ustr, int size);
-void rbfs_ustr_from_str(uint8_t *out, char *str, int size);
+void str_from_ustr(char *str, uint8_t *ustr, int size);
+void ustr_from_str(uint8_t *out, char *str, int size);
 
-int rbfs_add_node(char *path, int type, int perm, char *contents);
-int rbfs_create_file(char *path, char *contents);
-int rbfs_create_file_auth(char *path, char *contents);
-int rbfs_create_folder(char *path);
+int add_node(char *path, int type, int perm, char *contents);
+int create_file(char *path, char *contents);
+int create_file_auth(char *path, char *contents);
+int create_folder(char *path);
 
-void rbfs_move_sector_up(int sector);
-void rbfs_move_sector_down(int sector);
-void rbfs_sectors_up(int sector, int sectors);
-void rbfs_sectors_down(int sector, int sectors);
+void move_sector_up(int sector);
+void move_sector_down(int sector);
+void sectors_up(int sector, int sectors);
+void sectors_down(int sector, int sectors);
 
-void rbfs_modify_file(RBFSIndex *index, char *contents);
-RBFSIndex *rbfs_open(char *path);
-RBFSIndex *rbfs_open_root(char *path);
-void rbfs_delete_node(RBFSIndex *index);
-int rbfs_read(char *out, int offset, int size, RBFSIndex *index);
-int rbfs_write(char *buf, int offset, int size, RBFSIndex *index);
+void modify_file(RBFSIndex *index, char *contents);
+RBFSIndex *open(char *path);
+RBFSIndex *open_root(char *path);
+void delete_node(RBFSIndex *index);
+int read(char *out, int offset, int size, RBFSIndex *index);
+int write(char *buf, int offset, int size, RBFSIndex *index);
 
-int rbfs_vfs_write(fs_node_t *node, int offset, int size, char *buf);
-int rbfs_vfs_read(fs_node_t *node, int offset, int size, char *buf);
-int rbfs_vfs_mkfile(fs_node_t *node);
-int rbfs_vfs_mkdir(fs_node_t *node);
+int vfs_write(fs_node_t *node, int offset, int size, char *buf);
+int vfs_read(fs_node_t *node, int offset, int size, char *buf);
+int vfs_mkfile(fs_node_t *node);
+int vfs_mkdir(fs_node_t *node);
+
+}
