@@ -22,7 +22,7 @@ void login() {
 
     printf("UNAME: %s\n", uname_auth);
 
-    auto file = rbfs::open_root(uname_auth);
+    auto file = rbfs::open(uname_auth);
 
     if (file) {
         char pswd[100];
@@ -47,7 +47,7 @@ void login() {
             memset(uid, 0, 5);
             sprintf(uid_auth, "/users/%s/uid", username);
 
-            auto ufile = rbfs::open_root(uid_auth);
+            auto ufile = rbfs::open(uid_auth);
 
             if (!ufile) {
                 printf("Uh oh! Failed to find user ID.\n");

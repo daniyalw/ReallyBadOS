@@ -325,11 +325,11 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     //test_install();
 
     /*
-    rbfs_create_folder("/");
-    rbfs_create_folder("/users");
-    rbfs_create_folder("/users/guest");
-    rbfs_create_file_auth("/users/guest/auth", "guest");
-    rbfs_create_file_auth("/users/guest/uid", "1");
+    rbfs::create_folder("/");
+    rbfs::create_folder("/users");
+    rbfs::create_folder("/users/guest");
+    rbfs::create_file_auth("/users/guest/auth", "guest");
+    rbfs::create_file_auth("/users/guest/uid", "1");
     */
 
     print_init_msg();
