@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <file.h>
 #include <folder.h>
+#include <errno.h>
 
 extern "C" FILE *fopen(char *path, char *mode)
 {
@@ -15,6 +16,7 @@ extern "C" FILE *fopen(char *path, char *mode)
     FILE *file = (FILE *)addr;
 
     if (!file) {
+        errno = ENOENT;
         return NULL;
     }
 
