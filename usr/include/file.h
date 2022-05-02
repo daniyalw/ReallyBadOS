@@ -53,6 +53,9 @@ struct fs_node_t
     time_t mtime;
     time_t ctime;
 
+    int tags[100];
+    int tag_count;
+
     bool null = false;
 
     char *contents;
@@ -100,6 +103,8 @@ extern int fsetpos(FILE *file, fpos_t *pos);
 extern int fprintf(FILE *stream, char *format, ...);
 
 extern int fileno(FILE *stream);
+
+extern char *get_tag(char *out, int tag);
 
 C_HEADER_END
 

@@ -23,6 +23,12 @@ extern "C" FILE *fopen(char *path, char *mode)
     return file;
 }
 
+extern "C" char *get_tag(char *out, int tag) {
+    void *a;
+    CALL_SYS2(a, GET_TAG, tag, out);
+    return out;
+}
+
 extern "C" void fclose(FILE *file)
 {
     void *a;

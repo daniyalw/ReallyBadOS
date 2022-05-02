@@ -124,3 +124,10 @@ fs_node_t *copy_node(fs_node_t *node, char *new_path);
 fs_node_t *copy_node(char *old_path, char *new_path);
 fs_node_t *move_node(fs_node_t *node, char *new_path);
 fs_node_t *move_node(char *old, char *new_path);
+
+int num_from_tag(char *tag);
+char *find_tag(int z);
+bool has_tag(fs_node_t *node, char *tag);
+bool exists_tag(char *tag);
+void create_tag(char *tag);
+void add_tag(fs_node_t *node, char *tag);

@@ -202,6 +202,11 @@ int s_realloc(void *buf, int newsize) {
     return realloc(buf, newsize);
 }
 
+int s_get_tag(int tag, char *out) {
+    set_string(out, find_tag(tag));
+    return 0;
+}
+
 // ----------------------------- //
 
 
@@ -285,6 +290,7 @@ void init_syscalls() {
     syscall_append((void *)s_getenv);
     syscall_append((void *)s_setenv);
     syscall_append((void *)s_realloc);
+    syscall_append((void *)s_get_tag);
     Kernel::CPU::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }
