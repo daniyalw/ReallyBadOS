@@ -141,6 +141,77 @@ char *absolute_path(char *cwd, char *fmt) {
     return absolute_path_node(cwd, fmt)->path;
 }
 
+int num_from_tag(char *tag) {
+    for (int z = 0; z < tag_count; z++) {
+        if (strcmp(fs_tags[z], tag) == 0) {
+            return z;
+        }
+    }
+
+    return -1;
+}
+
+char *find_tag(int z) {
+    if (z < 0 || z >= tag_count) {
+        return NULL;
+    }
+
+    return fs_tags[z];
+}
+
+bool has_tag(fs_node_t *node, char *tag) {
+    bool found = false;
+
+    for (int z = 0; z < node->tag_count; z++) {
+        int t = node->tags[z];
+        auto name = find_tag(z);
+
+        if (!name) {
+            continue;
+        }
+
+        if (strcmp(name, tag) == 0) {
+            found = true;
+            break;
+        }
+    }
+
+    return found;
+}
+
+bool exists_tag(char *tag) {
+    for (int z = 0; z < tag_count; z++) {
+        if (strcmp(fs_tags[z], tag) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void create_tag(char *tag) {
+    int z = num_from_tag(tag);
+
+    if (z == -1) {
+        fs_tags[tag_count] = strdup(tag);
+        tag_count++;
+    }
+}
+
+void add_tag(fs_node_t *node, char *tag) {
+    int z = -1;
+
+    if (!has_tag(node, tag)) {
+        create_tag(tag);
+        z = tag_count - 1;
+    } else {
+        z = num_from_tag(tag);
+    }
+
+    node->tags[node->tag_count] = z;
+    node->tag_count++;
+}
+
 fs_node_t *mount_fs(char *name, char *parent, fs_driver_t driver, int permission) {
     fs_node_t *node = create_node(name, parent, FS_FOLDER, permission);
 

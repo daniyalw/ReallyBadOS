@@ -39,6 +39,11 @@ struct fs_driver_t {
     __get_size get_size;
 };
 
+typedef char *fs_tag_t;
+
+fs_tag_t *fs_tags;
+int tag_count = 0;
+
 struct fs_node_t
 {
     char name[FILENAME_LIMIT];
@@ -52,6 +57,9 @@ struct fs_node_t
     time_t atime;
     time_t mtime;
     time_t ctime;
+
+    int tags[100];
+    int tag_count;
 
     bool null = false;
 

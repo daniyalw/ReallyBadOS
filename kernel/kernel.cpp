@@ -164,11 +164,23 @@ void handle_tar(Tar tar) {
             memset(path, 0, strlen(tar.blocks[z].name) + 3);
             get(path, "/%s", tar.blocks[z].name);
             make_dir(find_name(path), find_parent(path));
+
+            auto node = find_node(path);
+
+            if (node) {
+                add_tag(node, "ramdisk");
+            }
         } else if (tar.blocks[z].type == TAR_FILE) {
             char *path = (char *)malloc(strlen(tar.blocks[z].name) + 3);
             memset(path, 0, strlen(tar.blocks[z].name) + 3);
             get(path, "/%s", tar.blocks[z].name);
             create_file(find_name(path), find_parent(path), tar.blocks[z].contents);
+
+            auto node = find_node(path);
+
+            if (node) {
+                add_tag(node, "ramdisk");
+            }
         } else {
             log::warning("Tar file of type '%s'\n", tar_find_type(tar.blocks[z].type));
         }
