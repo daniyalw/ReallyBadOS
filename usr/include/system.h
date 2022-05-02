@@ -2,11 +2,14 @@
 
 #include "_header.h"
 
-typedef struct
-{
+typedef struct {
     char *name;
     char *version;
+    char *vendor;
+    char cpu_name[30];
     bool dev;
+    bool hypervisor;
+    int model;
 } info_t;
 
 C_HEADER

@@ -1,11 +1,14 @@
 #include <syscalls.h>
 #include <mem.h>
 
-typedef struct
-{
+typedef struct {
     char *name;
     char *version;
+    char *vendor;
+    char cpu_name[30];
     bool dev;
+    bool hypervisor;
+    int model;
 } info_t;
 
 extern "C" info_t get_sys_info()

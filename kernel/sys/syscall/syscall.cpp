@@ -59,12 +59,22 @@ int s_test(int chocolate) {
 typedef struct {
     char *name;
     char *version;
+    char *vendor;
+    char cpu_name[30];
     bool dev;
+    bool hypervisor;
+    int model;
 } info_t;
 
 int s_info(info_t *info) {
+    memset(info[0].cpu_name, 0, 30);
+
     info[0].name = (char *)System::SYSTEM;
     info[0].version = (char *)System::VERSION;
+    info[0].hypervisor = System::hypervisor();
+    info[0].vendor = System::get_vendor();
+    info[0].model = System::get_model();
+    System::get_cpu_name(info[0].cpu_name);
     info[0].dev = System::dev;
 
     return 0;

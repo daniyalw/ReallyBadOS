@@ -2,6 +2,8 @@
 #include <sys/io.h>
 #include <cpuid.h>
 
+namespace System {
+
 static int get_model() {
     int ebx, unused;
     __cpuid(0, unused, ebx, unused, unused);
@@ -14,9 +16,10 @@ static inline void __cpuid__(u32 reg, u32 *eax, u32 *ebx, u32 *ecx, u32 *edx) {
         : "0" (reg));
 }
 
-char *  get_vendor() {
+char * get_vendor() {
     u32 largestStandardFunc;
-    char * vendor;
+    char * vendor = (char *)malloc(13);
+    memset(vendor, 0, 13);
     __cpuid__(0, &largestStandardFunc, (u32 *)(vendor + 0), (u32 *)(vendor + 8), (u32 *)(vendor + 4));
     vendor[12] = '\0';
 
@@ -30,8 +33,7 @@ bool hypervisor() {
     return edx & (1 << 31);
 }
 
-char * get_cpu_name() {
-    char * name;
+char * get_cpu_name(char *name) {
     __cpuid__(0x80000002, (u32 *)(name +  0), (u32 *)(name +  4), (u32 *)(name +  8), (u32 *)(name + 12));
     __cpuid__(0x80000003, (u32 *)(name + 16), (u32 *)(name + 20), (u32 *)(name + 24), (u32 *)(name + 28));
     __cpuid__(0x80000004, (u32 *)(name + 32), (u32 *)(name + 36), (u32 *)(name + 40), (u32 *)(name + 44));
@@ -69,4 +71,6 @@ unsigned short get_available_memory() {
     total = lowmem | highmem << 8;
 
     return total;
+}
+
 }

@@ -59,7 +59,7 @@ user:
 	make -C usr/apps/apps/read
 	make -C usr/apps/apps/echo
 	make -C usr/apps/apps/exec
-	make -C usr/apps/apps/info
+	make -C usr/apps/apps/uname
 	make -C usr/apps/apps/ls
 	make -C usr/apps/apps/mkdir
 	make -C usr/apps/apps/mkfile
