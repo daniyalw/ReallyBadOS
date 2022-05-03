@@ -13,6 +13,7 @@ class TTY {
     int bufsz = 0;
     int _offset = 0;
     int _state = TTY_CLEAN;
+    int _auto = 0;
 
 public:
     TTY(char *buf, int max) {
@@ -54,5 +55,22 @@ public:
 
     int push() {
         return _push(_buffer);
+    }
+
+    int push(char *str) {
+        return _push(str);
+    }
+
+    void auto_push(int ap) {
+        _auto = ap;
+    }
+
+    void auto_push() {
+        _auto = !_auto;
+        auto_push(_auto);
+    }
+
+    int get_auto() {
+        return _auto;
     }
 };

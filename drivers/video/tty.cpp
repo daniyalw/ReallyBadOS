@@ -22,6 +22,10 @@ int TTY::puts(char *str) {
         done++;
     }
 
+    if (_auto) {
+        this->push(str);
+    }
+
     return done;
 }
 
