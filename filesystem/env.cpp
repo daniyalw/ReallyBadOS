@@ -48,6 +48,44 @@ int setenv(char *name, char *val, int overwrite) {
     return 0;
 }
 
+int putenv(char *envvar) {
+    const int length = strlen(envvar);
+    int loc = -1;
+    // search for =
+    for (int z = 0; z < length; z++) {
+        if (envvar[z] == '=') {
+            loc = z;
+            break;
+        }
+    }
+
+    if (loc == -1) {
+        // could not find
+        errno = EINVAL;
+        return -1;
+    }
+
+    char name[loc + 1];
+    memset(name, 0, loc + 1);
+    strncpy(name, envvar, loc);
+
+    char *ret = getenv(name);
+
+    if (!ret) {
+        create_file(name, "/env");
+    }
+
+    char contents[length];
+    memset(contents, 0, length);
+    strcpy(contents, &envvar[loc + 1]);
+
+    char *c = strdup(contents);
+    setenv(name, c, 1);
+    free(c);
+
+    return 0;
+}
+
 int append_env(char *name, char *val) {
     char *env = getenv(name);
 
