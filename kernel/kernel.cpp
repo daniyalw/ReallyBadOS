@@ -1,4 +1,5 @@
 #include <kernel/kernel.h>
+#include <kernel/sys/debug.h>
 
 extern "C" {
     extern void jmp_somewhere(unsigned int place);
@@ -11,7 +12,14 @@ extern "C" {
 extern "C" unsigned int _Unwind_Resume() { return 0; }
 extern "C" unsigned int __gxx_personality_v0() { return 0; }
 
-//#define DEBUG
+#define _DEBUG 0
+#define DEBUG_URGENT 0
+
+#if _DEBUG == 1
+# define DEBUG(text) debug(text, (char *)__FILE__, (char *)__PRETTY_FUNCTION__, __LINE__)
+#else
+# define DEBUG(text, ...)
+#endif
 //#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
@@ -124,6 +132,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "login.cpp"
 #include "shell/history.cpp"
 #include "../filesystem/port.cpp"
+#include "sys/debug.cpp"
 
 #ifdef GRAPHICS
 #include "../gui/button.cpp"

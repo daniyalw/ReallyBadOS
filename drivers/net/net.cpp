@@ -2,18 +2,13 @@
 
 void net_irq_handler(registers_t *regs) {
    if (selected_driver >= 0) {
-#ifdef DEBUG
        char *name = drivers[selected_driver]->get_name();
-       printf("Driver '%s' handling IRQ\n", name);
+       DEBUG("Driver '%s' handling IRQ\n", name);
        free(name);
-#endif
        drivers[selected_driver]->handle_irq(regs);
+   } else {
+       DEBUG("No driver installed!\n");
    }
-#ifdef DEBUG
-   else {
-       printf("No driver installed!\n");
-   }
-#endif
 }
 
 namespace Net {

@@ -27,10 +27,8 @@ void init_mem(auto mbd, uint32_t beginning_addr) {
         multiboot_memory_map_t* mmmt =
             (multiboot_memory_map_t*) (mbd->mmap_addr + i);
 
-            #ifdef DEBUG
-            log::info("TT: Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+            DEBUG("TT: Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
                 mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
-            #endif
 
         total += mmmt->len_low;
 
@@ -43,10 +41,8 @@ void init_mem(auto mbd, uint32_t beginning_addr) {
 
                 total_usable += mmmt->len_low;
 
-                #ifdef DEBUG
-                log::info("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+                DEBUG("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
                     addr, mmmt->len_low - (addr - 0x100000), mmmt->size, mmmt->type);
-                #endif
 
                 mem_t m;
                 m.addr = addr;
@@ -73,9 +69,7 @@ void init_mem(auto mbd, uint32_t beginning_addr) {
 
     total_memory = total;
 
-#ifdef DEBUG
-    log::info("Total: %d\n", total);
-#endif
+    DEBUG("Total: %d\n", total);
 }
 
 void print_lists() {

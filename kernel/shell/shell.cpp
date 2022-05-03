@@ -88,10 +88,6 @@ int run_command(char * command) {
             }
         }
     }
-#ifdef DEBUG
-    printf("found app!\n");
-    printf("Arg count: %d\n", args.argc);
-#endif
 
     char *argv[args.argc];
 
@@ -108,9 +104,7 @@ int run_command(char * command) {
         ret = elf_start((uint8_t *)file->node->contents, args.argc, argv);
     }
 
-#ifdef DEBUG
-    log::error("Return code: %d\n", ret);
-#endif
+    DEBUG("shell: return code: %d\n", ret);
 
     //fclose(file);
 
