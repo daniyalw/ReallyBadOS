@@ -15,7 +15,7 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
     for (int z = ui_obj_count - 1; z >= 0; z--) {
         int id = z_order[z];
 
-        UI::Window *win = (UI::Window *)ui_objects[z];
+        UI::Window *win = (UI::Window *)ui_objects[id];
 
         if (!win)
             continue;
@@ -81,10 +81,14 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
                             for (int i = 0; i < w->child_count; i++) {
                                 UI::Object *wi = w->childs[i];
                                 wi->active = false;
+
+                                w->childs[i] = wi;
+                                ui_objects[c] = w;
                             }
                         }
 
                         widget->active = true;
+                        win->childs[b] = widget;
                     }
 
                     UI::Event *event = create_event();
@@ -119,21 +123,22 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
     }
 }
 
-inline void handle_key_entry(char key) {
+void handle_key_entry(char key) {
     bool done = false;
 
     for (int z = 0; z < ui_obj_count; z++) {
         int id = z_order[z];
 
-        auto win = ui_objects[id];
+        UI::Window *win = (UI::Window *)ui_objects[z];
 
-        if (win->null)
+        if (!win) {
             continue;
+        }
 
         for (int b = 0; b < win->child_count; b++) {
             auto widget = win->childs[b];
 
-            if (widget->active) {
+            if (strcmp(widget->name, "Entry") == 0) {
                 UI::Event *event = create_event();
                 strcpy(event->name, "keyboard");
                 event->type = EVENT_KEY;

@@ -27,43 +27,11 @@ public:
             draw_char(text[z], x, y, object->fg);
 
             x += font_width;
-
-            if (x >= max_w || y >= max_h) {
-                if (wrap)
-                    break;
-
-                y += font_height + 1;
-                x = orig_x;
-            }
         }
     }
 
     virtual int height() override {
-        int h = 0;
-        auto _coords = parent->coords;
-        auto object = this;
-
-        const int max_w = _coords.x + object->coords.x + object->coords.w;
-        const int max_h = _coords.y + object->coords.y + object->coords.h;
-
-        int x = object->coords.x + _coords.x + padding;
-        int y = object->coords.y + _coords.y + padding;
-        const int orig_x = x;
-
-        for (int z = 0; z < strlen(text); z++) {
-            x += font_width;
-
-            if (x >= max_w || y >= max_h) {
-                if (wrap)
-                    break;
-
-                y += font_height + 1;
-                x = orig_x;
-                h += font_height + 1;
-            }
-        }
-
-        return h;
+        return padding * 2 + font_height;
     }
 
     virtual int width() override {

@@ -32,8 +32,14 @@ struct Object {
 
     Object *parent;
 
-    virtual void event_handle(Object*, Event*) {}
-    virtual void draw_object(Object*, Coords) {}
+    virtual void event_handle(Object*, Event*) {
+        log::warn("Default event handler called");
+    }
+
+    virtual void draw_object(Object*, Coords) {
+        log::warn("Default draw object called");
+    }
+    
     virtual int height() { return 0; }
     virtual int width() { return 0; }
 

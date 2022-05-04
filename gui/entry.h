@@ -8,45 +8,18 @@ namespace UI {
 class Entry : public UI::Object {
 public:
     void draw_text() {
-        int x = coords.x + parent->coords.x;
-        int y = coords.y + parent->coords.y;
+        int x = coords.x + parent->coords.x + padding;
+        int y = coords.y + parent->coords.y + padding;
 
         const int orig_x = x;
         const int orig_y = y;
 
-        const int max_w = x + coords.w;
-        const int max_h = y + coords.h;
+        const int max_x = x + coords.w;
+        const int max_y = y + coords.h;
 
-        if (strlen(text) <= 20) {
-            for (int z = 0; z < strlen(text); z++) {
-                draw_char(text[z], x, y, fg);
-
-                x += font_width;
-
-                if (x >= max_w || y >= max_h) {
-                    if (wrap)
-                        break;
-
-                    y += font_height + 1;
-                    x = orig_x;
-                }
-            }
-        } else {
-            int length = strlen(text);
-
-            for (int z = length - 20; z < length; z++) {
-                draw_char(text[z], x, y, fg);
-
-                x += font_width;
-
-                if (x >= max_w || y >= max_h) {
-                    if (wrap)
-                        break;
-
-                    y += font_height + 1;
-                    x = orig_x;
-                }
-            }
+        for (int z = 0; z < offset; z++) {
+            draw_char(text[z], x, y, fg);
+            x += font_width;
         }
     }
 
@@ -61,7 +34,7 @@ public:
 
     virtual void draw_object(UI::Object *object, UI::Coords _coords) override {
         if (object->bg != BG_TRANSPARENT) {
-            Graphic::draw_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w, object->coords.h, object->bg);
+            Graphic::draw_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w + padding * 2, object->coords.h + padding * 2, object->bg);
         }
 
         Graphic::draw_empty_rect(object->coords.x + _coords.x, object->coords.y + _coords.y, object->coords.w, object->coords.h, object->fg);
@@ -75,6 +48,10 @@ public:
 
     virtual int width() {
         return font_width * 20 + padding + 2;
+    }
+
+    char *get() {
+        return strdup(text);
     }
 
     int offset = 0;

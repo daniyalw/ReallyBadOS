@@ -579,6 +579,10 @@ int memcmp(void* buf1, void* buf2, int count) {
 }
 
 int strlen(char * data) {
+    if (!data) {
+        return 0;
+    }
+    
     int z = 0;
 
     while (data[z])

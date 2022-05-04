@@ -24,7 +24,7 @@ using namespace Graphic;
 #include <gui/coords.h>
 
 void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle);
-inline void handle_key_entry(char key);
+void handle_key_entry(char key);
 
 inline UI::Event *create_event();
 inline int get_mouse_click_type(bool right, bool left, bool middle);
