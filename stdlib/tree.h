@@ -2,19 +2,26 @@
 
 #include <list.h>
 
+namespace Utils {
+
 class Tree {
 private:
-    void *data;
+    void *_data;
+    Tree *_parent;
     std::vector<Tree *> children;
 public:
 
     Tree() {}
-    Tree(void *_data) { data = _data; }
+    Tree(void *data) { _data = data; }
 
     void add(Tree *tree);
-    void set(void *_data);
+    void set(void *data);
     void remove(int tree);
-    void *get() { return data; }
-    Tree *get(int z) { return children.get(z); }
+    void *data() { return _data; }
+    Tree *child(int z) { return children.get(z); }
     int size() { return children.size(); }
+    Tree *parent() { return _parent; }
+    void parent(Tree *par) { _parent = par; }
 };
+
+}
