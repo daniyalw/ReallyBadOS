@@ -2,15 +2,18 @@
 
 namespace UI {
 
-Entry *entry(UI::Window *win, int x, int y, int bg, int fg) {
+Entry *entry(UI::Window *win, int x, int y, int bg, int fg, char *placeholder) {
     Entry *entry = new Entry();
 
     memset(entry->text, 0, 100);
     memset(entry->name, 0, 20);
+    memset(entry->placeholder, 0, 100);
     strcpy(entry->name, "Entry");
+    strcpy(entry->placeholder, placeholder);
 
     entry->bg = bg;
     entry->fg = fg;
+    entry->replace_c = Graphic::rgb(175, 175, 175);
 
     entry->coords.x = x;
     entry->coords.y = y;
@@ -28,7 +31,7 @@ Entry *entry(UI::Window *win, int x, int y, int bg, int fg) {
     return entry;
 }
 
-Entry *entry(UI::Window *win, int x, int y) {
-    return entry(win, x, y, DEFAULT_BG, DEFAULT_FG);
+Entry *entry(UI::Window *win, int x, int y, char *placeholder) {
+    return entry(win, x, y, DEFAULT_BG, DEFAULT_FG, placeholder);
 }
 }

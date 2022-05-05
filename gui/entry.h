@@ -17,9 +17,23 @@ public:
         const int max_x = x + coords.w;
         const int max_y = y + coords.h;
 
-        for (int z = 0; z < offset; z++) {
-            draw_char(text[z], x, y, fg);
-            x += font_width;
+        if (offset == 0) {
+            for (int z = 0; z < strlen(placeholder); z++) {
+                draw_char(placeholder[z], x, y, 0);
+                x += font_width;
+            }
+        } else {
+            for (int z = 0; z < _limit; z++) {
+                draw_char('a', x, y, bg);
+                x += font_height;
+            }
+
+            x = orig_x;
+
+            for (int z = 0; z < offset; z++) {
+                draw_char(text[z], x, y, fg);
+                x += font_width;
+            }
         }
     }
 
@@ -47,7 +61,7 @@ public:
     }
 
     virtual int width() {
-        return font_width * 20 + padding + 2;
+        return font_width * _limit + padding + 2;
     }
 
     char *get() {
@@ -58,9 +72,11 @@ public:
     int wrap = 0; // 0 - false; 1 - true
     int outer = 1; // outer is small little border; 1 - true; 0 - false
     int padding = 2;
+    int _limit = 20;
+    char placeholder[100];
 };
 
-Entry *entry(UI::Window *win, int x, int y, int bg, int fg);
-Entry *entry(UI::Window *win, int x, int y);
+Entry *entry(UI::Window *win, int x, int y, int bg, int fg, char *placeholder);
+Entry *entry(UI::Window *win, int x, int y, char *placeholder);
 
 }

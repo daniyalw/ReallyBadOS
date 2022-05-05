@@ -280,7 +280,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     draw_window(win);
     */
     UI::Window *win = UI::window("System Settings");
-    UI::Entry *entry = UI::entry(win, 10, 10);
+    UI::Entry *entry = UI::entry(win, 10, 10, "Enter...");
     entry->draw();
 
     UI::Button *btn = UI::button(win, 10, 30, callback, "Next");

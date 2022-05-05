@@ -16,7 +16,7 @@ struct Object {
     char name[20];
 
     // colors
-    int bg, fg;
+    int bg, fg, replace_c;
     int fsize; // font size
 
     // dimensions
@@ -39,7 +39,7 @@ struct Object {
     virtual void draw_object(Object*, Coords) {
         log::warn("Default draw object called");
     }
-    
+
     virtual int height() { return 0; }
     virtual int width() { return 0; }
 
