@@ -220,6 +220,11 @@ int s_name_from_pid(int pid, char *buf) {
     return 0;
 }
 
+int s_pid_from_name(int *pid, char *buf) {
+    pid[0] = pid_from_name(buf);
+    return 0;
+}
+
 // ----------------------------- //
 
 
@@ -307,6 +312,7 @@ void init_syscalls() {
     syscall_append((void *)s_send_ipc);
     syscall_append((void *)s_recv_msg);
     syscall_append((void *)s_name_from_pid);
+    syscall_append((void *)s_pid_from_name);
     Kernel::CPU::register_interrupt_handler(IRQ16, syscall_handler);
     log::info("Syscalls initialized at interrupt 48!");
 }

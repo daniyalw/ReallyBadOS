@@ -68,6 +68,7 @@ void wrapper();
 bool task_valid(task_t *task);
 int get_child_count(int task);
 char *name_from_pid(pid_t pid);
+int pid_from_name(char *name);
 
 }
 

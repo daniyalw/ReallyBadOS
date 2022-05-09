@@ -279,6 +279,16 @@ char *name_from_pid(pid_t pid) {
     return strdup(tasks[pid]->name);
 }
 
+int pid_from_name(char *name) {
+    for (int z = 0; z < task_count; z++) {
+        if (strcmp(tasks[z]->name, name) == 0) {
+            return tasks[z]->pid;
+        }
+    }
+
+    return -1;
+}
+
 // this is useful since passing argv via stack doesn't work
 void wrapper() {
     task_t *task = tasks[current_task];
