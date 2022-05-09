@@ -27,6 +27,7 @@
 #define GET_TAG 24
 #define IPC_SEND 25
 #define IPC_RECV 26
+#define TASKING_NAME 27
 
 #define CALL_SYS0(ret, num) \
         asm volatile("int $48" : "=a" (ret) : "0" (num));

@@ -271,6 +271,14 @@ uint32_t allocate_stack() {
     return malloc(4 * 1024);
 }
 
+char *name_from_pid(pid_t pid) {
+    if (pid < 0 || pid >= task_count) {
+        return NULL;
+    }
+
+    return strdup(tasks[pid]->name);
+}
+
 // this is useful since passing argv via stack doesn't work
 void wrapper() {
     task_t *task = tasks[current_task];

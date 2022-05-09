@@ -65,6 +65,10 @@ void unblock_task_id(int taskid);
 int wait_retcode(pid_t pid);
 void wrapper();
 
+bool task_valid(task_t *task);
+int get_child_count(int task);
+char *name_from_pid(pid_t pid);
+
 }
 
 }
