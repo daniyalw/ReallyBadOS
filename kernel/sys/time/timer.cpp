@@ -92,3 +92,7 @@ void sleep_sec(int sec)
 {
     timer_wait(sec * hz);
 }
+
+inline int get_uptime() {
+    return tick;
+}

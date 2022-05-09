@@ -13,3 +13,4 @@ static void timer_callback(registers_t regs);
 void timer_wait(int ticks);
 void sleep(int ms);
 void sleep_sec(int sec);
+inline int get_uptime();
