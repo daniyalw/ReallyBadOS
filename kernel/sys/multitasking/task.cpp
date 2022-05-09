@@ -194,11 +194,6 @@ void kill(int pid, int ret) {
 
     task_t *task = tasks[pid];
 
-    // let's not be able to kill random processes at will
-    if (task->parent != current_task) {
-        return;
-    }
-
     task->ret = ret;
     free((void *)task->stack);
     task->null = true;
