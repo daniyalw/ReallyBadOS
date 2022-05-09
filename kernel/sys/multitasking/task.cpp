@@ -187,6 +187,26 @@ pid_t create_process(char *name, uint32_t begin, bool thread, int parent, int ar
     return task->pid;
 }
 
+bool task_valid(task_t *task) {
+    if (task->blocked || task->null) {
+        return false;
+    }
+
+    return true;
+}
+
+int get_child_count(int task) {
+    int count = 0;
+
+    for (int z = 0; z < task_count; z++) {
+        if (task_valid(tasks[z]) && tasks[z]->parent == task) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
 void kill(int pid, int ret) {
     if (pid < 0 || pid > task_count) {
         return;
@@ -199,6 +219,13 @@ void kill(int pid, int ret) {
     task->null = true;
 
     tasks[pid] = task;
+
+    // kill children threads as well
+    for (int z = 0; z < task_count; z++) {
+        if (task_valid(tasks[z]) && tasks[z]->parent == pid) {
+            kill(tasks[z], ret);
+        }
+    }
 }
 
 void kill(int pid) {
