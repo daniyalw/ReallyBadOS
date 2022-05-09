@@ -220,9 +220,8 @@ int s_name_from_pid(int pid, char *buf) {
     return 0;
 }
 
-int s_pid_from_name(int *pid, char *buf) {
-    pid[0] = Kernel::CPU::pid_from_name(buf);
-    return 0;
+int s_pid_from_name(char *buf) {
+    return Kernel::CPU::pid_from_name(buf);
 }
 
 // ----------------------------- //
