@@ -320,7 +320,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Net::ARP::send_request(addr);
     */
 
-    //Kernel::CPU::init_tasking();
+    Kernel::CPU::init_tasking();
 
     //PANIC("s");
 

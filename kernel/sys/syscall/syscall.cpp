@@ -216,12 +216,12 @@ int s_recv_msg(Message **msgs) {
 }
 
 int s_name_from_pid(int pid, char *buf) {
-    set_string(buf, name_from_pid(pid));
+    set_string(buf, Kernel::CPU::name_from_pid(pid));
     return 0;
 }
 
 int s_pid_from_name(int *pid, char *buf) {
-    pid[0] = pid_from_name(buf);
+    pid[0] = Kernel::CPU::pid_from_name(buf);
     return 0;
 }
 

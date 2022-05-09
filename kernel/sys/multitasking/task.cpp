@@ -15,7 +15,7 @@ int idle_task() {
 }
 
 int ipc_test() {
-    auto msg = ipc::send_wait(2, strdup("Hello!"));
+    auto msg = ipc::send_wait(pid_from_name("ipc-test-1"), strdup("Hello!"));
 
     if (msg) printf("Msg: %s\n", msg->data);
     else printf("Msg is NULL\n");
@@ -223,7 +223,7 @@ void kill(int pid, int ret) {
     // kill children threads as well
     for (int z = 0; z < task_count; z++) {
         if (task_valid(tasks[z]) && tasks[z]->parent == pid) {
-            kill(tasks[z], ret);
+            kill(tasks[z]->pid, ret);
         }
     }
 }
@@ -349,8 +349,8 @@ int adddd() {
 
 void init_tasking() {
     create_process("idle", (uint32_t)&idle_task);
-    //create_process("ipc-test", (uint32_t)&ipc_test);
-    //create_process("ipc-test-1", (uint32_t)&ipc_test11);
+    create_process("ipc-test", (uint32_t)&ipc_test);
+    create_process("ipc-test-1", (uint32_t)&ipc_test11);
     //create_process("err-check", (uint32_t)&task_err_check);
     //create_process("shell", (uint32_t)&shell);
     char *argv[] = {"echo", "hello"};
