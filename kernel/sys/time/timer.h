@@ -3,7 +3,7 @@
 
 u32 tick = 0;
 int seconds = 0;
-u32 ctick;
+u32 ctick = 0;
 u32 hz;
 
 int task_counter = 0;

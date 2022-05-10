@@ -38,23 +38,6 @@ void timer_int(registers_t *regs) {
             Kernel::CPU::switch_task(regs, true);
         }
     }
-
-    /*
-    for (int z = 0; z < timers.size(); z++) {
-        timer_t timer = timers[z];
-        timer.remaining_ms--;
-        timers.replace(timer, z);
-    }
-
-    for (int z = 0; z < timers.size(); z++) {
-        timer_t timer = timers[z];
-
-        if (timer.remaining_ms == 0) {
-            timers.remove(z);
-            timer.func();
-        }
-    }
-    */
 }
 
 namespace Kernel {
@@ -88,8 +71,7 @@ void sleep(int ms) {
     timer_wait(ms);
 }
 
-void sleep_sec(int sec)
-{
+void sleep_sec(int sec) {
     timer_wait(sec * hz);
 }
 

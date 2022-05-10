@@ -56,6 +56,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include <strmap.h>
 #include <array.h>
 #include <lock.h>
+#include <stopwatch.h>
 
 #include "sys/io.cpp"
 #include "../stdlib/math.cpp"
@@ -320,7 +321,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Net::ARP::send_request(addr);
     */
 
-    Kernel::CPU::init_tasking();
+    //Kernel::CPU::init_tasking();
 
     //PANIC("s");
 
@@ -333,7 +334,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     rbfs::create_file_auth("/users/guest/auth", "guest");
     rbfs::create_file_auth("/users/guest/uid", "1");
     */
-
+    
     print_init_msg();
 
     rbfs::init();
