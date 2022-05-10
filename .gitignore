@@ -3,3 +3,5 @@
 *.iso
 *.tar
 *.DS_Store
+*.cfg
+*.h # header files count as C for some reason
