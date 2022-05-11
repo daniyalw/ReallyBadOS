@@ -258,28 +258,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     Graphic::redraw_background_picture(array);
 
-    /*
-    UI::Window *win = UI::window("Test", DEFAULT_BG, DEFAULT_FG, DEFAULT_FONT);
-
-    int x = 1;
-    int y = 1;
-    fs_node_t *node = find_node("/");
-
-    UI::Label *label = UI::label(win, node->path, x, y);
-    draw_widget(label);
-
-    x += font_width * 4;
-    y += font_height + 1;
-
-    for (int z = 0; z < node->children_count; z++) {
-        fs_node_t *child = nodes[node->children[z]];
-        UI::Label *l = UI::label(win, child->name, x, y);
-        draw_widget(l);
-        y += font_height + 1;
-    }
-
-    draw_window(win);
-    */
     UI::Window *win = UI::window("System Settings");
     UI::Entry *entry = UI::entry(win, 10, 10, "Enter...");
     entry->draw();
@@ -322,18 +300,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     */
 
     //Kernel::CPU::init_tasking();
-
-    //PANIC("s");
-
-    //test_install();
-
-    /*
-    rbfs::create_folder("/");
-    rbfs::create_folder("/users");
-    rbfs::create_folder("/users/guest");
-    rbfs::create_file_auth("/users/guest/auth", "guest");
-    rbfs::create_file_auth("/users/guest/uid", "1");
-    */
 
     print_init_msg();
 
