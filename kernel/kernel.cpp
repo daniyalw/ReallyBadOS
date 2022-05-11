@@ -309,11 +309,11 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
         if (strcmp(option, "1") == 0) {
             free(option);
-            login();
+            auth::login();
             break;
         } else if (strcmp(option, "2") == 0) {
             free(option);
-            signup();
+            auth::signup();
             break;
         }
 

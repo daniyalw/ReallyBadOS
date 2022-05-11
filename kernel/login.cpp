@@ -2,6 +2,8 @@
 #include <filesystem/disk.h>
 #include <stdio.h>
 
+namespace auth {
+
 void login() {
     int fpswd = 0x900;
     int fuid = 0x800;
@@ -112,4 +114,6 @@ void signup() {
         printf("Uh oh! Passwords do not match.\n");
         signup();
     }
+}
+
 }
