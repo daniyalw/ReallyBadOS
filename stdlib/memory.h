@@ -8,3 +8,5 @@
 #include <sys/mem/calloc.h>
 
 void init_mem(auto mbd);
+int get_total_allocated();
+int get_total_free();

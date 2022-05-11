@@ -87,6 +87,22 @@ void print_lists() {
     }
 }
 
+int get_total_allocated() {
+    int total = 0;
+
+    for (int z = 0; z < total_used; z++) {
+        if (used[z].null == false) {
+            total += used[z].size;
+        }
+    }
+
+    return total;
+}
+
+int get_total_free() {
+    return total_memory - get_total_allocated();
+}
+
 void __mem_test() {
     print_lists();
 
