@@ -39,7 +39,7 @@ void login() {
 
         if (strcmp(password, pswd) == 0) {
             user = username;
-            printf("Successfully logged in!");
+            printf("Successfully logged in!\n");
             return;
         }
     } else {
@@ -104,7 +104,7 @@ void signup() {
         free(check);
         free(password);
 
-        printf("Successfully signed up!");
+        printf("Successfully signed up!\n");
         return;
     } else {
         free(username);
@@ -113,6 +113,56 @@ void signup() {
 
         printf("Uh oh! Passwords do not match.\n");
         signup();
+    }
+}
+
+void change_pswd() {
+    char *npswd;
+    char *check;
+    char *username;
+
+    printf("Username: ");
+    username = scanf();
+    printf("New password: ");
+    npswd = scanf();
+    printf("Re-enter new password: ");
+    check = scanf();
+
+    rbfs::init();
+
+    if (strcmp(npswd, check) == 0) {
+        char uname_auth[100];
+        memset(uname_auth, 0, 100);
+        sprintf(uname_auth, "/users/%s/auth", username);
+
+        auto file = rbfs::open(uname_auth);
+
+        if (!file) {
+            free(npswd);
+            free(check);
+
+            printf("Uh oh! Failed to find user '%s'.\n", username);
+
+            free(username);
+            change_pswd();
+        }
+
+        rbfs::write(npswd, 0, 100, file);
+
+        free(npswd);
+        free(check);
+
+        user = username;
+
+        printf("Changed password!\n");
+        return;
+    } else {
+        free(username);
+        free(npswd);
+        free(check);
+
+        printf("Uh oh! Passwords do not match.\n");
+        change_pswd();
     }
 }
 

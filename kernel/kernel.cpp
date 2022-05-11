@@ -304,7 +304,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     print_init_msg();
 
     while (true) {
-        printf("Enter 1 to login, 2 to signup: ");
+        printf("Enter 1 to login, 2 to signup, 3 to change password: ");
         char *option = scanf();
 
         if (strcmp(option, "1") == 0) {
@@ -314,6 +314,10 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
         } else if (strcmp(option, "2") == 0) {
             free(option);
             auth::signup();
+            break;
+        } else if (strcmp(option, "3") == 0) {
+            free(option);
+            auth::change_pswd();
             break;
         }
 
