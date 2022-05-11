@@ -52,6 +52,9 @@ tss:
 ramdisk:
 	cd ${BASE} && make build && cd ..
 
+lines:
+	python3 check_src_lines.py
+
 user:
 	make -C usr/src
 	i686-elf-g++ -m32 -ffreestanding -Iusr/include -Wno-write-strings -std=c++20 -mno-red-zone -nostdlib -fconcepts-ts -c usr/apps/start.cpp -o usr/apps/start.o
