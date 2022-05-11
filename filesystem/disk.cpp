@@ -212,7 +212,7 @@ int add_node(char *path, int type, int perm, char *contents) {
 
     uint8_t _super[512];
     memset(_super, 0, 512);
-    DiskDrivers::ATA::ata_read(_super, RBFS_BEG, 1); // TODO <--- fix bug here
+    DiskDrivers::ATA::ata_read(_super, RBFS_BEG, 1);
 
     RBFSSuperblock *super = (RBFSSuperblock *)_super;
 

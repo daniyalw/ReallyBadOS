@@ -20,8 +20,6 @@ void login() {
     memset(uname_auth, 0, 100);
     sprintf(uname_auth, "/users/%s/auth", username);
 
-    printf("UNAME: %s\n", uname_auth);
-
     auto file = rbfs::open(uname_auth);
 
     if (file) {
@@ -39,39 +37,79 @@ void login() {
 
         if (strcmp(password, pswd) == 0) {
             user = username;
-            free(password);
-
-            char uid[5];
-            char uid_auth[100];
-            memset(uid_auth, 0, 100);
-            memset(uid, 0, 5);
-            sprintf(uid_auth, "/users/%s/uid", username);
-
-            auto ufile = rbfs::open(uid_auth);
-
-            if (!ufile) {
-                printf("Uh oh! Failed to find user ID.\n");
-                printf("Error code: 0x%x\n", fuid);
-                printf("Please try again.\n");
-                login();
-            }
-
-            int r = rbfs::read(uid, 0, 5, ufile);
-
-            if (r) {
-                printf("Uh oh! Failed to find user ID.\n");
-                printf("Error code: 0x%x\n", fuid);
-                login();
-            }
-
-            current_login = atoi(uid);
-
-            printf("Successfully logged in!\n");
+            printf("Successfully logged in!");
+            return;
         }
     } else {
         printf("Uh oh! There seems to be no username of %s.\n", username);
         printf("Error code: 0x%x\n", funame);
         printf("Please try again.\n");
         login();
+    }
+}
+
+void signup() {
+    char *username;
+    char *password;
+    char *check;
+
+    printf("New username: ");
+    username = scanf();
+    printf("New password: ");
+    password = scanf();
+    printf("Re-enter password: ");
+    check = scanf();
+
+    rbfs::init();
+
+    if (strcmp(password, check) == 0) {
+        char uname_auth[100];
+        memset(uname_auth, 0, 100);
+        sprintf(uname_auth, "/users/%s/auth", username);
+
+        auto file = rbfs::open(uname_auth);
+
+        if (file) {
+            free(password);
+            free(check);
+
+            printf("Uh oh! There already seems to be user %s.\n", username);
+
+            free(username);
+            signup();
+        }
+
+        char uname_auth_f[100];
+        memset(uname_auth_f, 0, 100);
+        sprintf(uname_auth_f, "/users/%s", username);
+
+        auto u = strdup(uname_auth);
+
+        rbfs::create_folder(uname_auth_f);
+        int ret = rbfs::create_file(u, password);
+        free(u);
+
+        if (ret) {
+            printf("Uh oh! Failed to create account.\n");
+            free(check);
+            free(username);
+            free(password);
+            signup();
+        }
+
+        user = username;
+
+        free(check);
+        free(password);
+
+        printf("Successfully signed up!");
+        return;
+    } else {
+        free(username);
+        free(password);
+        free(check);
+
+        printf("Uh oh! Passwords do not match.\n");
+        signup();
     }
 }

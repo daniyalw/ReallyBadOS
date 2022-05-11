@@ -337,12 +337,26 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     print_init_msg();
 
-    rbfs::init();
+    while (true) {
+        printf("Enter 1 to login, 2 to signup: ");
+        char *option = scanf();
+
+        if (strcmp(option, "1") == 0) {
+            free(option);
+            login();
+            break;
+        } else if (strcmp(option, "2") == 0) {
+            free(option);
+            signup();
+            break;
+        }
+
+        printf("Uh oh! '%s' is not valid.\n", option);
+        free(option);
+    }
 
     switch_to_user_mode();
     shell();
-
-    list_dir_serial("/");
 
     Kernel::serial_write_string("\n");
     while (true) {}
