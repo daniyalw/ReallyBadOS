@@ -1,5 +1,5 @@
 #include <kernel/kernel.h>
-#include <filesystem/disk.h>
+#include <filesystem/rbfs.h>
 #include <stdio.h>
 
 namespace auth {

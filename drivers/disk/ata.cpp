@@ -194,20 +194,6 @@ uint32_t total_bytes() {
     return total_sectors() * 512;
 }
 
-/*
-FILE * read_file_from_disk(uint32_t LBA, uint32_t sectors)
-{
-    FILE * file;
-    uint8_t * bytes;
-
-    ata_read(bytes, LBA, sectors);
-
-    file = (FILE *)bytes;
-
-    return file;
-}
-*/
-
 uint16_t *ata_init(uint16_t *bytes) {
     Kernel::CPU::register_interrupt_handler(32 + 14, ata_irq_handler);
 

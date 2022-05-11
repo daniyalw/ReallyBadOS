@@ -119,7 +119,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "sys/multitasking/thread.cpp"
 #include "sys/multitasking/scheduler.cpp"
 #include "sys/multitasking/ipc.cpp"
-#include "../filesystem/disk.cpp"
+#include "../filesystem/rbfs.cpp"
 #include "../drivers/net/net.cpp"
 #include "../filesystem/utils.cpp"
 #include "sys/multitasking/connection.cpp"

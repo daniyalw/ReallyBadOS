@@ -1,5 +1,5 @@
 #include "history.h"
-#include <filesystem/disk.h>
+#include <filesystem/rbfs.h>
 
 void hist_add(char *cmd) {
     history[hist_count] = cmd;
