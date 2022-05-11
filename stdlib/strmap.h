@@ -3,7 +3,7 @@
 
 namespace std {
 
-class strmap : map<char *> {
+class strmap : public map<char *> {
 public:
     void parse(char *str) {
         char **buf;

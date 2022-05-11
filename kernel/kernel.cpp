@@ -334,7 +334,7 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     rbfs::create_file_auth("/users/guest/auth", "guest");
     rbfs::create_file_auth("/users/guest/uid", "1");
     */
-    
+
     print_init_msg();
 
     rbfs::init();
