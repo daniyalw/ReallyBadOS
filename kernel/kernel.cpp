@@ -20,7 +20,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #else
 # define DEBUG(text, ...)
 #endif
-//#define GRAPHICS
+#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
@@ -142,17 +142,12 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../gui/window.cpp"
 #include "../gui/entry.cpp"
 #include "../gui/list.cpp"
+#include "../gui/checkbox.cpp"
 
 void callback(UI::Object *obj, UI::Event *event) {
-    auto parent = obj->parent;
-    UI::Entry *entry = (UI::Entry *)parent->childs[0];
-    auto label = parent->childs[2];
+    auto box = (UI::Checkbox *)obj; // convert it to a Checkbox
 
-    char *text = entry->get();
-    memset(label->text, 0, 100);
-    strncpy(label->text, text, 100);
-
-    draw_window((UI::Window *)parent);
+    log::info("CHECKBOX: status: %s", (char *)(box->is() ? "checked" : "not checked"));
 }
 
 #endif
@@ -259,14 +254,8 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     Graphic::redraw_background_picture(array);
 
     UI::Window *win = UI::window("System Settings");
-    UI::Entry *entry = UI::entry(win, 10, 10, "Enter...");
-    entry->draw();
-
-    UI::Button *btn = UI::button(win, 10, 30, callback, "Next");
-    btn->draw();
-
-    UI::Label *label = UI::label(win, 10, 70, "");
-    label->draw();
+    UI::Checkbox *box = UI::checkbox(win, 10, 10, callback);
+    box->draw();
     draw_window(win);
 
     Graphic::blit_changes();

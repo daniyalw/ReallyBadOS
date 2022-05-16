@@ -28,3 +28,5 @@ void handle_key_entry(char key);
 
 inline UI::Event *create_event();
 inline int get_mouse_click_type(bool right, bool left, bool middle);
+
+void default_callback(UI::Object *obj, UI::Event *event);

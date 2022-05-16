@@ -172,3 +172,6 @@ inline int get_mouse_click_type(bool right, bool left, bool middle) {
 
     return EVENT_MOUSE_HOVER;
 }
+
+void default_callback(UI::Object *obj, UI::Event *event) {
+}
