@@ -25,7 +25,7 @@ void redraw();
 inline void draw_rect(int x, int y, int w, int h, int c);
 inline void draw_rect(int x, int y, int w, int h, int *arr);
 inline void draw_rect_arr(int x, int y, int w, int h, int *arr);
-void draw_empty_rect(int x, int y, int w, int h, int c);
+inline void draw_empty_rect(int x, int y, int w, int h, int c);
 
 void clear_screen();
 
@@ -38,25 +38,25 @@ inline void draw_line(int x0, int y0, int x1, int y1, int color);
 void center_text_graphics(char * string, int x, int y, int w, int color);
 
 // circle
-void topleft_plotpoints(int x, int y, int cx, int cy, int color);
-void topright_plotpoints(int x, int y, int cx, int cy, int color);
-void bottomright_plotpoints(int x, int y, int cx, int cy, int color);
-void bottomleft_plotpoints(int x, int y, int cx, int cy, int color);
-void full_plotpoints(int x, int y, int cx, int cy, int color);
-void topleft_circle(int cx, int cy, int r, int color);
-void topright_circle(int cx, int cy, int r, int color);
-void bottomleft_circle(int cx, int cy, int r, int color);
-void bottomright_circle(int cx, int cy, int r, int color);
-void fill_topleft_corner(int cx, int cy, int radius, int color, int position);
-void circle(int cx, int cy, int r, int color);
-void fill_circle(int cx, int cy, int radius, int color);
-void rounded_rectangle(int x, int y, int w, int h, int r, int color);
-void fill_rounded_rectangle(int x, int y, int w, int h, int r, int color);
-void tint(int * arr, int w, int h, int color);
+inline void topleft_plotpoints(int x, int y, int cx, int cy, int color);
+inline void topright_plotpoints(int x, int y, int cx, int cy, int color);
+inline void bottomright_plotpoints(int x, int y, int cx, int cy, int color);
+inline void bottomleft_plotpoints(int x, int y, int cx, int cy, int color);
+inline void full_plotpoints(int x, int y, int cx, int cy, int color);
+inline void topleft_circle(int cx, int cy, int r, int color);
+inline void topright_circle(int cx, int cy, int r, int color);
+inline void bottomleft_circle(int cx, int cy, int r, int color);
+inline void bottomright_circle(int cx, int cy, int r, int color);
+inline void fill_topleft_corner(int cx, int cy, int radius, int color, int position);
+inline void circle(int cx, int cy, int r, int color);
+inline void fill_circle(int cx, int cy, int radius, int color);
+inline void rounded_rectangle(int x, int y, int w, int h, int r, int color);
+inline void fill_rounded_rectangle(int x, int y, int w, int h, int r, int color);
+inline void tint(int * arr, int w, int h, int color);
 
 // colors
-colors_t get_colors(int color);
-int mix(int color1, int color2);
-int get_color(int red, int green, int blue);
-int rgb(int red, int green, int blue);
+inline colors_t get_colors(int color);
+inline int mix(int color1, int color2);
+inline int get_color(int red, int green, int blue);
+inline int rgb(int red, int green, int blue);
 }

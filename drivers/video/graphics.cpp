@@ -110,7 +110,7 @@ inline void draw_rect_arr(int x, int y, int w, int h, int *arr) {
     }
 }
 
-void draw_empty_rect(int x, int y, int w, int h, int c) {
+inline void draw_empty_rect(int x, int y, int w, int h, int c) {
     for (int z = x; z < x + w; z++)
         Graphic::SetPixel(z, y, c);
 
@@ -196,31 +196,31 @@ inline void draw_line(int x0, int y0, int x1, int y1, int color) {
     }
 }
 
-void center_text_graphics(char * string, int x, int y, int w, int color) {
+inline void center_text_graphics(char * string, int x, int y, int w, int color) {
     draw_string(string, x+((w - len(string) * 8)/2), y, color);
 }
 
-void topleft_plotpoints(int x, int y, int cx, int cy, int color) {
+inline void topleft_plotpoints(int x, int y, int cx, int cy, int color) {
     Graphic::SetPixel(cx - x, cy - y, color);
     Graphic::SetPixel(cx - y, cy - x, color);
 }
 
-void topright_plotpoints(int x, int y, int cx, int cy, int color) {
+inline void topright_plotpoints(int x, int y, int cx, int cy, int color) {
     Graphic::SetPixel(cx + x, cy - y, color);
     Graphic::SetPixel(cx + y, cy - x, color);
 }
 
-void bottomright_plotpoints(int x, int y, int cx, int cy, int color) {
+inline void bottomright_plotpoints(int x, int y, int cx, int cy, int color) {
     Graphic::SetPixel(cx + x, cy + y, color);
     Graphic::SetPixel(cx + y, cy + x, color);
 }
 
-void bottomleft_plotpoints(int x, int y, int cx, int cy, int color) {
+inline void bottomleft_plotpoints(int x, int y, int cx, int cy, int color) {
     Graphic::SetPixel(cx - x, cy + y, color);
     Graphic::SetPixel(cx - y, cy + x, color);
 }
 
-void full_plotpoints(int x, int y, int cx, int cy, int color) {
+inline void full_plotpoints(int x, int y, int cx, int cy, int color) {
     Graphic::SetPixel(cx + x, cy + y, color);
     Graphic::SetPixel(cx - x, cy + y, color);
     Graphic::SetPixel(cx + x, cy - y, color);
@@ -231,7 +231,7 @@ void full_plotpoints(int x, int y, int cx, int cy, int color) {
     Graphic::SetPixel(cx - y, cy - x, color);
 }
 
-void topleft_circle(int cx, int cy, int r, int color) {
+inline void topleft_circle(int cx, int cy, int r, int color) {
     int x = 0, y, p;
     y = r;
     p = 1 - r;
@@ -248,7 +248,7 @@ void topleft_circle(int cx, int cy, int r, int color) {
     }
 }
 
-void topright_circle(int cx, int cy, int r, int color) {
+inline void topright_circle(int cx, int cy, int r, int color) {
     int x = 0, y, p;
     y = r;
     p = 1 - r;
@@ -265,7 +265,7 @@ void topright_circle(int cx, int cy, int r, int color) {
     }
 }
 
-void bottomleft_circle(int cx, int cy, int r, int color) {
+inline void bottomleft_circle(int cx, int cy, int r, int color) {
     int x = 0, y, p;
     y = r;
     p = 1 - r;
@@ -282,7 +282,7 @@ void bottomleft_circle(int cx, int cy, int r, int color) {
     }
 }
 
-void bottomright_circle(int cx, int cy, int r, int color) {
+inline void bottomright_circle(int cx, int cy, int r, int color) {
     int x = 0, y, p;
     y = r;
     p = 1 - r;
@@ -299,21 +299,21 @@ void bottomright_circle(int cx, int cy, int r, int color) {
     }
 }
 
-void fill_topleft_corner(int cx, int cy, int radius, int color, int position) {
+inline void fill_topleft_corner(int cx, int cy, int radius, int color, int position) {
     for (int y = -radius; y <= 0; y++)
         for (int x = -radius; x <= 0; x++)
             if (x * x + y * y <= radius * radius)
                 Graphic::SetPixel(cx+x, cy+y, color);
 }
 
-void circle(int cx, int cy, int r, int color) {
+inline void circle(int cx, int cy, int r, int color) {
     bottomleft_circle(cx, cy, r, color);
     bottomright_circle(cx, cy, r, color);
     topleft_circle(cx, cy, r, color);
     topright_circle(cx, cy, r, color);
 }
 
-void fill_circle(int cx, int cy, int radius, int color) {
+inline void fill_circle(int cx, int cy, int radius, int color) {
     circle(cx, cy, radius, color);
 
     for (int y = -radius; y <= radius; y++)
@@ -322,7 +322,7 @@ void fill_circle(int cx, int cy, int radius, int color) {
                 Graphic::SetPixel(cx+x, cy+y, color);
 }
 
-void rounded_rectangle(int x, int y, int w, int h, int r, int color) {
+inline void rounded_rectangle(int x, int y, int w, int h, int r, int color) {
     // draw rounded corners
     topleft_circle(x+r, y+r, r, color);
     topright_circle((x+w)-r, y+r, r, color);
@@ -343,7 +343,7 @@ void rounded_rectangle(int x, int y, int w, int h, int r, int color) {
         SetPixel(z, y + h, color);
 }
 
-void fill_rounded_rectangle(int x, int y, int w, int h, int r, int color) {
+inline void fill_rounded_rectangle(int x, int y, int w, int h, int r, int color) {
     fill_circle(x+r, y+r, r, color);
     fill_circle((x+w)-r, y+r, r, color);
     fill_circle((x+w)-r, (y+h)-r, r, color);
@@ -352,7 +352,7 @@ void fill_rounded_rectangle(int x, int y, int w, int h, int r, int color) {
     draw_rect(x, y+r, w+1, h-(r*2), color);
 }
 
-void tint(int * arr, int w, int h, int color) {
+inline void tint(int * arr, int w, int h, int color) {
     for (int z = 0; z < w; z++) {
         for (int b = 0; b < h; b++) {
             arr[z+b*w] = Graphic::mix(arr[z+b*w], color);
@@ -360,7 +360,7 @@ void tint(int * arr, int w, int h, int color) {
     }
 }
 
-colors_t get_colors(int color) {
+inline colors_t get_colors(int color) {
     colors_t colors;
     colors.blue = color & 255;
     colors.green = (color >> 8) & 255;
@@ -369,17 +369,17 @@ colors_t get_colors(int color) {
 }
 
 // add red and green and blue to form one color
-int get_color(int red, int green, int blue) {
+inline int get_color(int red, int green, int blue) {
     return ((red & 0xff) << 16) + ((green & 0xff) << 8) + (blue & 0xff);
 }
 
 // basically do the same thing as above
-int rgb(int red, int green, int blue) {
+inline int rgb(int red, int green, int blue) {
     return get_color(red, green, blue);
 }
 
 // mix as in red + black = dark red
-int mix(int color1, int color2) {
+inline int mix(int color1, int color2) {
     colors_t c1, c2;
     int r, g, b;
     c1 = Graphic::get_colors(color1);
