@@ -12,6 +12,14 @@
 #define HIDE_WIN_X CLOSE_WIN_X + CLOSE_WIN_X
 #define HIDE_WIN_Y CLOSE_WIN_X
 
+#define TITLEBAR_ACTIVE_BG Graphic::rgb(0, 0, 255)
+#define TITLEBAR_INACTIVE_BG Graphic::rgb(200, 200, 200)
+#define TITLEBAR_ACTIVE_FG Graphic::rgb(255, 255, 255)
+#define TITLEBAR_INACTIVE_FG Graphic::rgb(0, 0, 0)
+
+#define TITLEBAR_HIDE_COLOR Graphic::rgb(255, 255, 0)
+#define TITLEBAR_CLOSE_COLOR Graphic::rgb(255, 0, 0)
+
 #define EVENT_KEY 1
 #define EVENT_MOUSE_LEFT 2
 #define EVENT_MOUSE_RIGHT 3

@@ -4,7 +4,7 @@
 
 namespace UI {
 
-Window *window(char *name, int bg, int fg, int _font) {
+Window *window(char *name, int bg, int fg, int x, int y) {
     Window *win = new Window();
 
     memset(win->name, 0, 20);
@@ -12,10 +12,9 @@ Window *window(char *name, int bg, int fg, int _font) {
 
     win->bg = bg;
     win->fg = fg;
-    win->fsize = _font;
 
-    win->coords.x = 100;
-    win->coords.y = 100;
+    win->coords.x = x;
+    win->coords.y = y;
     win->coords.w = 500;
     win->coords.h = 300;
 
@@ -26,8 +25,12 @@ Window *window(char *name, int bg, int fg, int _font) {
     return win;
 }
 
+Window *window(char *name, int x, int y) {
+    return window(name, DEFAULT_BG, DEFAULT_FG, x, y);
+}
+
 Window *window(char *name) {
-    return window(name, DEFAULT_BG, DEFAULT_FG, DEFAULT_FONT);
+    return window(name, DEFAULT_BG, DEFAULT_FG, 400, 400);
 }
 
 }
@@ -64,6 +67,10 @@ void remove_window_id(int id) {
         move_z_order_down(z);
         ui_obj_count--;
     }
+}
+
+int *get_z_order() {
+    return z_order;
 }
 
 void remove_window(UI::Window *win) {

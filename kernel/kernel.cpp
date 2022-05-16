@@ -256,7 +256,12 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
     UI::Window *win = UI::window("System Settings");
     UI::Checkbox *box = UI::checkbox(win, 10, 10, callback);
     box->draw();
+    win->draw();
     draw_window(win);
+
+    UI::Window *w = UI::window("Test", 100, 100);
+    w->draw();
+    w->draw_object(w, w->coords);
 
     Graphic::blit_changes();
 

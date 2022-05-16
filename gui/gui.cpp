@@ -12,13 +12,17 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
         return;
     }
 
-    for (int z = ui_obj_count - 1; z >= 0; z--) {
+    for (int z = 0; z < ui_obj_count; z++) {
         int id = z_order[z];
 
         UI::Window *win = (UI::Window *)ui_objects[id];
 
         if (!win)
             continue;
+
+        if (!win->to_draw) {
+            continue;
+        }
 
         if (win->coords.x > coords.x) {
             // this window can't be it; the widget is outside the window
@@ -36,18 +40,19 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
             // titlebar clicked
             auto c = win->coords;
             log::info("titlebar clicked: window coords: x: %d y: %d w: %d h: %d", c.x, c.y, c.w, c.h);
-            if (coords.x >= (c.x + c.w - CLOSE_WIN_X) && coords.x <= (c.x + c.w)) {
+            if (coords.x >= (c.x + c.w - (CLOSE_WIN_X)) && coords.x <= (c.x + c.w)) {
                 // TODO close window
                 log::info("Close window clicked\n");
                 remove_window_id(win->id);
                 Graphic::redraw_background_picture(array);
                 draw_all_windows();
-            } else if (coords.x >= (c.x + c.w - (HIDE_WIN_X)) && coords.x <= (c.x + c.w - CLOSE_WIN_X)) {
+            } else if (coords.x >= (c.x + c.w - (HIDE_WIN_X)) && coords.x <= (c.x + c.w - (CLOSE_WIN_X))) {
                 log::info("Hide window clicked\n");
+                remove_window_id(win->id); // TODO make sure window can come back onto z order list
                 win->hide();
                 Graphic::redraw_background_picture(array);
                 draw_all_windows();
-            } else if (coords.x >= c.x && coords.x <= (c.x + c.w - HIDE_WIN_X)) {
+            } else if (coords.x >= c.x && coords.x <= (c.x + c.w - (HIDE_WIN_X))) {
                 if (win->drag()) {
                     // TODO actually drag window
                     Graphic::redraw_background_picture(array);
