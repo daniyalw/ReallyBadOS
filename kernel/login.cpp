@@ -5,9 +5,6 @@
 namespace auth {
 
 void login() {
-    int fpswd = 0x900;
-    int fuid = 0x800;
-    int funame = 0x700;
     char *username;
     char *password;
 
@@ -32,7 +29,6 @@ void login() {
 
         if (ret) {
             printf("Uh oh! Failed to read password file.\n");
-            printf("Error code: 0x%x\n", fpswd);
             printf("Please try again.\n");
             login();
         }
@@ -41,10 +37,12 @@ void login() {
             user = username;
             printf("Successfully logged in!\n");
             return;
+        } else {
+            printf("Uh oh! Passwords do not match. Try again.\n");
+            login();
         }
     } else {
         printf("Uh oh! There seems to be no username of %s.\n", username);
-        printf("Error code: 0x%x\n", funame);
         printf("Please try again.\n");
         login();
     }

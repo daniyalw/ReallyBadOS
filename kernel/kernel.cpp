@@ -20,7 +20,7 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #else
 # define DEBUG(text, ...)
 #endif
-#define GRAPHICS
+//#define GRAPHICS
 #define DIV_BYTES 1048576 // for some reason this comes in useful
 
 #include <cpuid.h>
