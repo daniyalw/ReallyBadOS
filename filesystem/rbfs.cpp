@@ -493,6 +493,7 @@ fs_driver_t vfs_driver = {
 
 // --------------- init ----------------- //
 void init() {
+#if 0
     auto node = mount_fs("disk0", "/", vfs_driver, USER_PERMISSION);
 
     if (node) {
@@ -501,6 +502,9 @@ void init() {
     } else {
         log::error("rbfs: %s: failed to mount disk", __FUNCTION__);
     }
+#else
+    index_disk();
+#endif
 }
 
 }
