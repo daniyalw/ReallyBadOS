@@ -35,7 +35,7 @@ public:
     }
 
     virtual int width() override {
-        return strlen(text) * font_width;
+        return strlen(text) * font_width + padding * 2;
     }
 
     int wrap = 0; // 0 - false; 1 - true

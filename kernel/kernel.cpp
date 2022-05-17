@@ -143,11 +143,10 @@ extern "C" unsigned int __gxx_personality_v0() { return 0; }
 #include "../gui/entry.cpp"
 #include "../gui/list.cpp"
 #include "../gui/checkbox.cpp"
+#include "../gui/layout.cpp"
 
 void callback(UI::Object *obj, UI::Event *event) {
-    auto box = (UI::Checkbox *)obj; // convert it to a Checkbox
-
-    log::info("CHECKBOX: status: %s", (char *)(box->is() ? "checked" : "not checked"));
+    Kernel::shutdown_os();
 }
 
 #endif
@@ -253,15 +252,25 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     Graphic::redraw_background_picture(array);
 
+    UI::Coords coords;
+    int padding = 20;
+
     UI::Window *win = UI::window("System Settings");
-    UI::Checkbox *box = UI::checkbox(win, 10, 10, callback);
+    coords = UI::new_widget_coords(win, padding);
+    UI::Label *l = UI::label(win, coords.x, coords.y, "ReallyBadOS (v0.0.1, copyright Daniyal Warraich)");
+    l->draw();
+    coords = UI::new_widget_coords(win, padding);
+    UI::Label *label = UI::label(win, coords.x, coords.y, "Test Checkbox");
+    coords = UI::new_widget_coords(win, padding);
+    UI::Checkbox *box = UI::checkbox(win, coords.x, coords.y);
+    label->draw();
+    coords = UI::new_widget_coords(win, padding);
+    UI::Button *btn = UI::button(win, coords.x, coords.y, callback, "Shutdown");
+    btn->draw();
     box->draw();
     win->draw();
 
-    UI::Window *w = UI::window("Test", 100, 100);
-    w->draw();
     draw_window(win);
-    w->draw_object(w, w->coords);
 
     Graphic::blit_changes();
 
