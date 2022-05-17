@@ -252,20 +252,13 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     Graphic::redraw_background_picture(array);
 
-    UI::Coords coords;
-    int padding = 20;
-
     UI::Window *win = UI::window("System Settings");
-    coords = UI::new_widget_coords(win, padding);
-    UI::Label *l = UI::label(win, coords.x, coords.y, "ReallyBadOS (v0.0.1, copyright Daniyal Warraich)");
+    UI::Label *l = UI::label(win, 10, 10, "ReallyBadOS");
     l->draw();
-    coords = UI::new_widget_coords(win, padding);
-    UI::Label *label = UI::label(win, coords.x, coords.y, "Test Checkbox");
-    coords = UI::new_widget_coords(win, padding);
-    UI::Checkbox *box = UI::checkbox(win, coords.x, coords.y);
+    UI::Label *label = UI::label(win, 10, 40, "Test Checkbox");
+    UI::Checkbox *box = UI::checkbox(win, 20 + label->width(), 40);
     label->draw();
-    coords = UI::new_widget_coords(win, padding);
-    UI::Button *btn = UI::button(win, coords.x, coords.y, callback, "Shutdown");
+    UI::Button *btn = UI::button(win, 10, 60, callback, "Shutdown");
     btn->draw();
     box->draw();
     win->draw();
