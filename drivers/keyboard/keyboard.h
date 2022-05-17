@@ -5,8 +5,6 @@
 
 #define KEYBOARD_CODE 0x60
 
-bool shifted = 0;
-char * returned;
 unsigned char current_key;
 
 bool terminal_on = false;
@@ -17,7 +15,7 @@ bool scanf_on = false;
 char buffer[1000];
 int total_size_b = 128;
 int buffer_size = 1;
-int entered_len = 0;
+int shifted = 0;
 
 void get_key(unsigned char code);
 bool keyboard_lock();

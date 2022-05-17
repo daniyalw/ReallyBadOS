@@ -46,7 +46,6 @@ void get_key(unsigned char code) {
     char key;
 
     if (code == 0) {
-        returned = "";
         return;
     }
 
@@ -79,7 +78,6 @@ void get_key(unsigned char code) {
         buffer[buffer_size] = key;
         buffer[buffer_size+1] = 0;
         buffer_size++;
-        entered_len++;
         keyboard_unlock();
 
 #ifdef GRAPHICS
