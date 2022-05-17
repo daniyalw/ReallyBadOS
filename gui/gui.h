@@ -8,9 +8,9 @@
 #define DEFAULT_FG 0
 #define DEFAULT_FONT 16
 #define TITLEBAR_HEIGHT font_height + 4
-#define CLOSE_WIN_X TITLEBAR_HEIGHT
+#define CLOSE_WIN_X (TITLEBAR_HEIGHT)
 #define HIDE_WIN_X CLOSE_WIN_X + CLOSE_WIN_X
-#define HIDE_WIN_Y CLOSE_WIN_X
+#define HIDE_WIN_Y (CLOSE_WIN_X)
 
 #define TITLEBAR_ACTIVE_BG Graphic::rgb(0, 0, 255)
 #define TITLEBAR_INACTIVE_BG Graphic::rgb(200, 200, 200)

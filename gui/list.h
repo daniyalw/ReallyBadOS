@@ -5,9 +5,9 @@ namespace UI {
     class List : public UI::Object {
     public:
         virtual void event_handle(UI::Object *object, UI::Event *event) override {
-            log::info("list: event");
+            log::info("GUI: list: event");
             if (event->type == EVENT_MOUSE_LEFT) {
-                log::info("list: left");
+                log::info("GUI: list: left");
                 int y = coords.y + padding + parent->coords.y;
                 int old = selected;
                 selected = -1;
@@ -37,7 +37,7 @@ namespace UI {
                     }
                 }
 
-                log::info("list: selected: %d", selected);
+                log::info("GUI: list: selected: %d", selected);
 
                 if (selected >= 0) {
                     auto _coords = parent->coords;
@@ -62,7 +62,7 @@ namespace UI {
                     // TODO add ability to scroll
                     break;
                 }
-                log::info("Drawing line '%s'", lines[z]);
+                log::info("GUI: Drawing line '%s'", lines[z]);
 
                 draw_string(coords.x + padding + _coords.x, y, fg, lines[z]);
                 y += font_height + padding;

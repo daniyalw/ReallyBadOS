@@ -30,43 +30,41 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
         }
 
         if ((win->coords.x + win->coords.w) < coords.x) {
-            return;
+            continue;
         }
 
-        if (win->coords.y >= coords.y && (win->coords.y - TITLEBAR_HEIGHT) <= coords.y) {
+        if (win->coords.y >= coords.y && (win->coords.y - (TITLEBAR_HEIGHT)) <= coords.y) {
             if (!left) {
-                return;
+                continue;
             }
             // titlebar clicked
             auto c = win->coords;
-            log::info("titlebar clicked: window coords: x: %d y: %d w: %d h: %d", c.x, c.y, c.w, c.h);
+            log::info("GUI: titlebar clicked: window coords: x: %d y: %d w: %d h: %d", c.x, c.y, c.w, c.h);
+
             if (coords.x >= (c.x + c.w - (CLOSE_WIN_X)) && coords.x <= (c.x + c.w)) {
-                // TODO close window
-                log::info("Close window clicked\n");
+                log::info("GUI: Close window clicked\n");
                 remove_window_id(win->id);
                 Graphic::redraw_background_picture(array);
                 draw_all_windows();
             } else if (coords.x >= (c.x + c.w - (HIDE_WIN_X)) && coords.x <= (c.x + c.w - (CLOSE_WIN_X))) {
-                log::info("Hide window clicked\n");
+                log::info("GUI: Hide window clicked\n");
                 remove_window_id(win->id); // TODO make sure window can come back onto z order list
                 win->hide();
                 Graphic::redraw_background_picture(array);
                 draw_all_windows();
             } else if (coords.x >= c.x && coords.x <= (c.x + c.w - (HIDE_WIN_X))) {
-                if (win->drag()) {
-                    // TODO actually drag window
-                    Graphic::redraw_background_picture(array);
-                    draw_all_windows();
-                } else {
-                    win->drag(true);
-                }
+                // TODO figure out whether it is click or hold
+                // for now assume it is a click
+                update_window_z(win->id, 0);
+                Graphic::redraw_background_picture(array);
+                draw_all_windows();
             }
         } else if (win->coords.y > coords.y || (win->coords.y + win->coords.h) < coords.y) {
             // window outside of range
             continue;
         }
 
-        log::info("Hit window %d (%s)", id, win->name);
+        log::info("GUI: Hit window %d (%s)", id, win->name);
 
         for (int b = win->child_count - 1; b >= 0; b--) /* top to bottom */ {
             UI::Object *widget = win->childs[b];
@@ -81,7 +79,7 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
                         if (z_order[z] != id) update_window_z(id, 0);
 
                         for (int c = 0; c < ui_obj_count; c++) {
-                            UI::Object *w = ui_objects[c];
+                            UI::Window *w = (UI::Window *)ui_objects[c];
 
                             for (int i = 0; i < w->child_count; i++) {
                                 UI::Object *wi = w->childs[i];
@@ -94,6 +92,8 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
 
                         widget->active = true;
                         win->childs[b] = widget;
+
+                        update_window_z(win->id, 0);
                     }
 
                     UI::Event *event = create_event();
@@ -107,6 +107,9 @@ void handle_mouse_click(UI::Coords coords, bool right, bool left, bool middle) {
                     strcpy(event->name, "mouse");
 
                     widget->event_handle(widget, event);
+
+                    Graphic::redraw_background_picture(array);
+                    draw_all_windows();
 
                     done = true;
 

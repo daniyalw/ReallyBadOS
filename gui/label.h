@@ -8,7 +8,7 @@ namespace UI {
 class Label : public UI::Object {
 public:
     virtual void event_handle(UI::Object *object, UI::Event *event) override {
-        log::error("Label: received event of type %s\n", event->name);
+        log::error("GUI: label: received event of type %s\n", event->name);
     }
 
     virtual void draw_object(UI::Object *object, UI::Coords _coords) override {

@@ -66,6 +66,8 @@ void remove_window_id(int id) {
     if (z != -1) {
         move_z_order_down(z);
         ui_obj_count--;
+    } else {
+        log::warn("GUI: invalid z found for id %d", id);
     }
 }
 
@@ -93,6 +95,7 @@ void update_window_z(int id, int pos) {
     remove_window_id(id);
     move_z_order_up(pos);
     z_order[pos] = id;
+    ui_obj_count++;
 }
 
 void draw_all_windows() {

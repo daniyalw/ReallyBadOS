@@ -7,7 +7,7 @@ namespace UI {
 
 struct Window : public UI::Object {
     virtual void event_handle(UI::Object *object, UI::Event *event) override {
-        log::info("WINDOW EVENT %s\n", event->name);
+        log::info("GUI: window event %s\n", event->name);
     }
 
     virtual void draw_object(UI::Object *object, UI::Coords __coords) override {
