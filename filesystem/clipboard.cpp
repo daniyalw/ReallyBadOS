@@ -29,7 +29,7 @@ char *clipboard_read() {
         return NULL;
     }
 
-    int ret = fread(buffer, 0, 100, file);
+    int ret = fread(buffer, 1, 100, file);
 
     if (ret) {
         fclose(file);
@@ -49,7 +49,7 @@ int clipboard_write(char *data) {
         return 1;
     }
 
-    int ret = fwrite(data, 0, strlen(data), file);
+    int ret = fwrite(data, 1, strlen(data), file);
 
     fclose(file);
 
