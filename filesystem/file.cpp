@@ -118,6 +118,8 @@ int fwrite(char *buffer, int size, int n, FILE *file) {
         return ret;
     }
 
+    errno = EACCES;
+
     return 1;
 }
 
@@ -143,6 +145,8 @@ int fread(char *buffer, int size, int n, FILE *file) {
 
         return ret;
     }
+
+    errno = EACCES;
 
     return 1;
 }

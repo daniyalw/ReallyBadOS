@@ -522,6 +522,8 @@ void init_fs() {
 
     make_dir("dev", "/");
     make_dir("apps", "/");
+    make_dir("system", "/");
+    make_dir("configs", "/");
 
     log::info("Initialized virtual file system");
 }
