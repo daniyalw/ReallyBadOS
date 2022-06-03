@@ -15,6 +15,9 @@ AS = ${ARCH}-as
 GCC = ${ARCH}-g++
 NM = ${ARCH}-nm
 
+rbfs.o: rbfs.cpp
+	g++ $< -o $@ -std=c++17 -Wno-writable-strings
+
 all:
 	make gdt
 	make interrupts
@@ -25,6 +28,7 @@ all:
 	make textmode
 	make ramdisk
 	make iso
+	make rbfs.o
 	make run
 
 run:
