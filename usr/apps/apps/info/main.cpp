@@ -32,12 +32,12 @@ int main(int argc, char *argv[]) {
     char * weekdays[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
     char * months[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
-    printf("Creation time: %s, %s %d, ", weekdays[time.wd-1], months[time.m-1], time.d);
+    printf("Creation time: %s, %s %d, ", weekdays[time.weekday-1], months[time.month-1], time.day);
 
     if (time.min < 10)
-        printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+        printf("%d:0%d %s\n", time.hour, time.min, (char *)(time.pm ? "PM" : "AM"));
     else
-        printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+        printf("%d:%d %s\n", time.hour, time.min, (char *)(time.pm ? "PM" : "AM"));
 
     /* tags */
     int count = node->tag_count;

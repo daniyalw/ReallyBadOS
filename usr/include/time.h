@@ -5,7 +5,7 @@
 C_HEADER
 
 typedef struct {
-    int sec, min, h, d, m, y, wd;
+    int sec, min, hour, day, month, year, weekday;
     bool pm;
 } time_t;
 

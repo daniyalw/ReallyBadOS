@@ -190,12 +190,12 @@ void print_init_msg() {
 
     printf("%s\n", System::SYSTEM);
 
-    printf("%s, %s %d\n", weekdays[time.wd-1], months[time.m-1], time.d);
+    printf("%s, %s %d\n", weekdays[time.weekday-1], months[time.month-1], time.day);
 
     if (time.min < 10)
-        printf("%d:0%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+        printf("%d:0%d %s\n", time.hour, time.min, (char *)(time.pm ? "PM" : "AM"));
     else
-        printf("%d:%d %s\n", time.h, time.min, (char *)(time.pm ? "PM" : "AM"));
+        printf("%d:%d %s\n", time.hour, time.min, (char *)(time.pm ? "PM" : "AM"));
 }
 
 extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t stack) {

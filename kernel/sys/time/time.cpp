@@ -105,11 +105,11 @@ time_t get_time() {
     time_t t;
     t.sec = second;
     t.min = minute;
-    t.h = hour;
-    t.y = year;
-    t.m = month;
-    t.d = day;
-    t.wd = weekday;
+    t.hour = hour;
+    t.year = year;
+    t.month = month;
+    t.day = day;
+    t.weekday = weekday;
     t.pm = pm_on;
     return t;
 }
