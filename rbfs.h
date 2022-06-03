@@ -17,9 +17,9 @@
 #define PATH_LIMIT 256
 
 typedef struct {
-    int sec, min, h, d, m, y, wd;
+    int sec, min, hour, day, month, year, weekday;
     bool pm;
-} time_t;
+} rbfs_time_t;
 
 typedef struct {
     uint32_t magic; // should always be DISK_MAGIC
@@ -39,7 +39,7 @@ typedef struct {
     int permission; // what permissions does file have
     int sectors; // how many sectors used by the contents of node; if dir, it means 0
     int type; // dir - 0; file - 1
-    time_t ctime;
+    rbfs_time_t ctime;
 } __attribute__((packed)) RBFSNode;
 
 typedef struct {
@@ -51,7 +51,7 @@ typedef struct {
     int type;
     int id;
     int permission;
-    time_t ctime;
+    rbfs_time_t ctime;
 } __attribute__((packed)) RBFSIndex;
 
 RBFSIndex *indexed[1000];

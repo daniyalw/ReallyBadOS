@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <time.h>
 #include "rbfs.h"
 
 char disk_path[256];
@@ -86,10 +87,30 @@ char *find_name(char *path) {
     return name;
 }
 
-time_t default_time() {
-    time_t time;
-    memset(&time, 0, sizeof(time_t));
-    return time;
+rbfs_time_t default_time() {
+    rbfs_time_t _t;
+
+    time_t s, val = 1;
+    tm* t;
+    s = time(NULL);
+    t = localtime(&s);
+
+    _t.day = t->tm_mday;
+    _t.weekday = t->tm_wday;
+    _t.month = t->tm_mon + 1;
+    _t.year = t->tm_year + 1900;
+    _t.hour = t->tm_hour;
+    _t.min = t->tm_min;
+    _t.sec = t->tm_sec;
+
+    if (_t.hour >= 12) {
+        _t.hour -= 12;
+        _t.pm = true;
+    } else {
+        _t.pm = false;
+    }
+
+    return _t;
 }
 
 uint8_t *disk_read(uint8_t *target, uint32_t lba, int sector_count) {
