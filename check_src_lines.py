@@ -18,7 +18,8 @@ for file in list_of_files:
 			continue
 		try:
 			for line in f.read().split('\n'):
-				cpp += 1
+				if line.strip() != "":
+					cpp += 1
 		except UnicodeDecodeError:
 			continue
 		f.close()
@@ -29,7 +30,8 @@ for file in list_of_files:
 			continue
 		try:
 			for line in f.read().split('\n'):
-				asm += 1
+				if line.strip() != "":
+					asm += 1
 		except UnicodeDecodeError:
 			continue
 		f.close()
