@@ -15,6 +15,11 @@
 #define RBFS_PERM_USER 0
 
 typedef struct {
+    int sec, min, hour, day, month, year, weekday;
+    bool pm;
+} __attribute__((packed)) rbfs_time_t;
+
+typedef struct {
     uint32_t magic; // should always be DISK_MAGIC
     uint32_t disk_size; // the size of the disk
     int status; // clean - 0; error - 1
@@ -25,27 +30,21 @@ typedef struct {
 typedef struct {
     uint32_t magic;
     char name[20]; // name without the rest of the path
-    char path[PATH_LIMIT]; // entire path
+    char path[256]; // entire path
     int uid; // user id
     int gid; // group id
     int error; // clean - 0; error - 1
     int permission; // what permissions does file have
     int sectors; // how many sectors used by the contents of node; if dir, it means 0
+    int length; // length of contents
     int type; // dir - 0; file - 1
-    time_t ctime;
+    rbfs_time_t ctime;
 } __attribute__((packed)) RBFSNode;
 
-typedef struct {
-    uint32_t magic;
-    char name[20];
-    char path[PATH_LIMIT];
+struct RBFSIndex : public RBFSNode {
     int sector;
-    int sectors;
-    int type;
     int id;
-    int permission;
-    time_t ctime;
-} __attribute__((packed)) RBFSIndex;
+};
 
 RBFSIndex *indexed[1000];
 int index_count = 0;

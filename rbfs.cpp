@@ -210,18 +210,9 @@ void ustr_from_str(uint8_t *out, char *str, int size) {
 void add_index(RBFSNode *node, int offset) {
     RBFSIndex *index = new RBFSIndex();
 
-    memset(index->name, 0, 20);
-    memset(index->path, 0, PATH_LIMIT);
-
-    strcpy(index->name, node->name);
-    strcpy(index->path, node->path);
-
-    index->type = node->type;
+    memcpy(index, node, sizeof(RBFSNode));
     index->sector = offset;
-    index->sectors = node->sectors;
-    index->magic = RBFS_DISK_MAGIC;
     index->id = index_count;
-    index->permission = node->permission;
 
     indexed[index_count] = index;
     index_count++;
@@ -230,19 +221,9 @@ void add_index(RBFSNode *node, int offset) {
 void add_index(RBFSNode node, int offset) {
     RBFSIndex *index = new RBFSIndex();
 
-    memset(index->name, 0, 20);
-    memset(index->path, 0, PATH_LIMIT);
-
-    strcpy(index->name, node.name);
-    strcpy(index->path, node.path);
-
-    index->type = node.type;
+    memcpy(index, &node, sizeof(RBFSNode));
     index->sector = offset;
-    index->sectors = node.sectors;
-    index->magic = RBFS_DISK_MAGIC;
     index->id = index_count;
-    index->permission = node.permission;
-    index->ctime = node.ctime;
 
     indexed[index_count] = index;
     index_count++;
@@ -656,6 +637,34 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(argv[2], "file") == 0) {
             create_file(argv[3], "default");
         }
+    } else if (strcmp(op, "-i") == 0) {
+        if (argc < 3) {
+            printf("Not enough parameters.\n");
+            cleanup();
+            return 1;
+        }
+
+        auto node = rbfs_open(argv[2]);
+
+        if (!node) {
+            printf("File to stat not found.\n");
+            cleanup();
+            return 1;
+        }
+
+        char * weekdays[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        char * months[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+        printf("Name: %s\n", node->name);
+        printf("Path: %s\n", node->path);
+        printf("Size on disk: %d bytes (%d KB)\n", node->length, node->length/1024);
+        printf("Type of file: %s\n", (char *)(node->type ? "file" : "directory"));
+        printf("Creation time: ");
+        printf("%s, %s %d ", weekdays[node->ctime.weekday-1], months[node->ctime.month-1], node->ctime.day);
+        if (node->ctime.min < 10)
+            printf("%d:0%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
+        else
+            printf("%d:%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
     }
 
     cleanup();

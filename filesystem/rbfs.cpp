@@ -4,6 +4,36 @@
 
 namespace rbfs {
 
+rbfs_time_t convert_time(time_t t) {
+    rbfs_time_t time;
+    time.sec = t.sec;
+    time.min = t.min;
+    time.hour = t.hour;
+    time.day = t.day;
+    time.month = t.month;
+    time.year = t.year;
+    time.weekday = t.weekday;
+    time.pm = t.pm;
+    return time;
+}
+
+time_t convert_time(rbfs_time_t t) {
+    time_t time;
+    time.sec = t.sec;
+    time.min = t.min;
+    time.hour = t.hour;
+    time.day = t.day;
+    time.month = t.month;
+    time.year = t.year;
+    time.weekday = t.weekday;
+    time.pm = t.pm;
+    return time;
+}
+
+rbfs_time_t now() {
+    return convert_time(Time::get_time());
+}
+
 void format() {
     for (int z = 0; z < index_count; z++) {
         free(indexed[z]);
@@ -56,19 +86,9 @@ void ustr_from_str(uint8_t *out, char *str, int size) {
 void add_index(RBFSNode *node, int offset) {
     RBFSIndex *index = new RBFSIndex();
 
-    memset(index->name, 0, 20);
-    memset(index->path, 0, PATH_LIMIT);
-
-    strcpy(index->name, node->name);
-    strcpy(index->path, node->path);
-
-    index->type = node->type;
+    memcpy(index, node, sizeof(RBFSNode));
     index->sector = offset;
-    index->sectors = node->sectors;
-    index->magic = RBFS_DISK_MAGIC;
     index->id = index_count;
-    index->permission = node->permission;
-    index->ctime = node->ctime;
 
     indexed[index_count] = index;
     index_count++;
@@ -77,19 +97,9 @@ void add_index(RBFSNode *node, int offset) {
 void add_index(RBFSNode node, int offset) {
     RBFSIndex *index = new RBFSIndex();
 
-    memset(index->name, 0, 20);
-    memset(index->path, 0, PATH_LIMIT);
-
-    strcpy(index->name, node.name);
-    strcpy(index->path, node.path);
-
-    index->type = node.type;
+    memcpy(index, &node, sizeof(RBFSNode));
     index->sector = offset;
-    index->sectors = node.sectors;
-    index->magic = RBFS_DISK_MAGIC;
     index->id = index_count;
-    index->permission = node.permission;
-    index->ctime = node.ctime;
 
     indexed[index_count] = index;
     index_count++;
@@ -208,7 +218,8 @@ int add_node(char *path, int type, int perm, char *contents) {
     node.error = RBFS_CLEAN;
     node.magic = RBFS_DISK_MAGIC;
     node.sectors = strlen(contents)/512 + 1;
-    node.ctime = Time::get_time();
+    node.ctime = now();
+    node.length = strlen(contents);
 
     uint8_t _super[512];
     memset(_super, 0, 512);
@@ -455,7 +466,7 @@ int vfs_mkfile(fs_node_t *node) {
     auto index = open(path);
 
     if (index) {
-        node->ctime = index->ctime;
+        node->ctime = convert_time(index->ctime);
         // the file is on disk, just need to tell vfs
         return 0;
     }

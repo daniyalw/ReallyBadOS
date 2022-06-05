@@ -19,7 +19,7 @@
 typedef struct {
     int sec, min, hour, day, month, year, weekday;
     bool pm;
-} rbfs_time_t;
+} __attribute__((packed)) rbfs_time_t;
 
 typedef struct {
     uint32_t magic; // should always be DISK_MAGIC
@@ -38,21 +38,15 @@ typedef struct {
     int error; // clean - 0; error - 1
     int permission; // what permissions does file have
     int sectors; // how many sectors used by the contents of node; if dir, it means 0
+    int length; // length of contents
     int type; // dir - 0; file - 1
     rbfs_time_t ctime;
 } __attribute__((packed)) RBFSNode;
 
-typedef struct {
-    uint32_t magic;
-    char name[20];
-    char path[256];
+struct RBFSIndex : public RBFSNode {
     int sector;
-    int sectors;
-    int type;
     int id;
-    int permission;
-    rbfs_time_t ctime;
-} __attribute__((packed)) RBFSIndex;
+};
 
 RBFSIndex *indexed[1000];
 int index_count = 0;
