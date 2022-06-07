@@ -697,10 +697,28 @@ int main(int argc, char *argv[]) {
         printf("Type of file: %s\n", (char *)(node->type ? "file" : "directory"));
         printf("Creation time: ");
         printf("%s, %s %d ", weekdays[node->ctime.weekday-1], months[node->ctime.month-1], node->ctime.day);
+
         if (node->ctime.min < 10)
             printf("%d:0%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
         else
             printf("%d:%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
+
+        if (strcmp(argv[2], "/") == 0) {
+            printf("\nDisk data: \n");
+            // print extra disk data
+            uint8_t *_super = (uint8_t *)malloc(512);
+            memset(_super, 0, 512);
+            disk_read(_super, RBFS_BEG, 1);
+
+            RBFSSuperblock *super = (RBFSSuperblock *)_super;
+
+            printf("Total files: %d\n", super->files);
+            printf("Total disk space: %d bytes (%d MB)\n", super->disk_size, super->disk_size/(1024 * 1024));
+            printf("Total used space: %d bytes (%d MB)\n", super->first_free * 512, (super->first_free * 512)/(1024 * 1024));
+            printf("Total free space: %d bytes (%d MB)\n", (super->disk_size - super->first_free * 512), (super->disk_size - super->first_free * 512)/(1024 * 1024));
+
+            free(super);
+        }
     } else if (strcmp(op, "-d") == 0 || strcmp(op, "--delete") == 0) {
         if (argc < 3) {
             printf("Not enough parameters.\n");
