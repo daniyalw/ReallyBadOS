@@ -409,9 +409,18 @@ void delete_node(RBFSIndex *index) {
     sectors_down(offset, sectors + 1);
 
     for (int z = index->id; z < index_count; z++) {
+        if (z == (index_count - 1)) {
+            break;
+        }
+
         indexed[z] = indexed[z + 1];
+    }
+
+    index_count--;
+
+    for (int z = 0; z < index_count; z++) {
         auto i = indexed[z];
-        i--;
+        i->id--;
         indexed[z] = i;
     }
 
