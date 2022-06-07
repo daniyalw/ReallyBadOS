@@ -149,6 +149,9 @@ void format() {
 
     index_count = 0;
 
+    fseek(disk, 0, SEEK_END);
+    long size = ftell(disk);
+
     uint8_t b[512];
     disk_read(b, RBFS_BEG, 1);
 
@@ -156,7 +159,7 @@ void format() {
 
     super->magic = RBFS_DISK_MAGIC;
     super->first_free = RBFS_BEG + 1;
-    super->disk_size = 15 * 1048576;
+    super->disk_size = (int)size;
     super->status = 0;
     super->files = 0;
 
