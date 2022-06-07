@@ -564,6 +564,7 @@ int main(int argc, char *argv[]) {
 
     if (strcmp(op, "-f") == 0) {
         format();
+        printf("Formatted disk.\n");
     } else if (strcmp(op, "-r") == 0) {
         char *fname = argv[2];
         char out[100];
@@ -633,10 +634,26 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
+        int ret = 2;
+
         if (strcmp(argv[2], "folder") == 0) {
-            create_folder(argv[3]);
+            ret = create_folder(argv[3]);
         } else if (strcmp(argv[2], "file") == 0) {
-            create_file(argv[3], "default");
+            ret = create_file(argv[3], "default");
+        }
+
+        switch (ret) {
+            case 0:
+                printf("Creation of '%s' successful.\n", argv[3]);
+                break;
+
+            case 1:
+                printf("Failed to create '%s'.\n", argv[3]);
+                break;
+
+            default:
+                printf("Unknown error occured.\n");
+                break;
         }
     } else if (strcmp(op, "-i") == 0) {
         if (argc < 3) {
