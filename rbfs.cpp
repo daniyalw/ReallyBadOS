@@ -580,10 +580,10 @@ int main(int argc, char *argv[]) {
 
     char *op = argv[1];
 
-    if (strcmp(op, "-f") == 0) {
+    if (strcmp(op, "-f") == 0 || strcmp(op, "--format") == 0) {
         format();
         printf("Formatted disk.\n");
-    } else if (strcmp(op, "-r") == 0) {
+    } else if (strcmp(op, "-r") == 0 || strcmp(op, "--read") == 0) {
         char *fname = argv[2];
         char out[100];
         memset(out, 0, 100);
@@ -605,13 +605,13 @@ int main(int argc, char *argv[]) {
         }
 
         printf("%s\n", out);
-    } else if (strcmp(op, "-l") == 0) {
+    } else if (strcmp(op, "-l") == 0 || strcmp(op, "--list") == 0) {
         if (argc > 2) {
             list_dir(argv[2]);
         } else {
             list_dir("/");
         }
-    } else if (strcmp(op, "-w") == 0) {
+    } else if (strcmp(op, "-w") == 0 || strcmp(op, "--write") == 0) {
         auto node = rbfs_open(argv[2]);
 
         if (!node) {
@@ -644,7 +644,7 @@ int main(int argc, char *argv[]) {
         }
 
         printf("Wrote to file.\n");
-    } else if (strcmp(op, "-c") == 0) {
+    } else if (strcmp(op, "-c") == 0 || strcmp(op, "--create") == 0) {
         // TODO fix
         if (argc <= 3) {
             printf("Not enough parameters.\n");
@@ -673,7 +673,7 @@ int main(int argc, char *argv[]) {
                 printf("Unknown error occured.\n");
                 break;
         }
-    } else if (strcmp(op, "-i") == 0) {
+    } else if (strcmp(op, "-i") == 0 || strcmp(op, "--info")) {
         if (argc < 3) {
             printf("Not enough parameters.\n");
             cleanup();
@@ -701,7 +701,7 @@ int main(int argc, char *argv[]) {
             printf("%d:0%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
         else
             printf("%d:%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
-    } else if (strcmp(op, "-d") == 0) {
+    } else if (strcmp(op, "-d") == 0 || strcmp(op, "--delete") == 0) {
         if (argc < 3) {
             printf("Not enough parameters.\n");
             cleanup();
