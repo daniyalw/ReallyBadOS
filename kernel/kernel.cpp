@@ -299,12 +299,6 @@ extern "C" void kernel_main(multiboot_info_t *mbd, unsigned int magic, uint32_t 
 
     print_init_msg();
 
-    rbfs::init();
-    rbfs::create_folder("/");
-    rbfs::create_folder("/users");
-    rbfs::create_folder("/users/guest");
-    rbfs::create_file("/users/guest/auth", "guest");
-
     while (true) {
         printf("Enter 1 to login, 2 to signup, 3 to change password: ");
         char *option = scanf();

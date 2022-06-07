@@ -366,7 +366,7 @@ int create_file(char *path, char *contents) {
 }
 
 int create_folder(char *path) {
-    return add_node(path, RBFS_DIR, 0, NULL);
+    return add_node(path, RBFS_DIR, 0, "");
 }
 
 int create_file_auth(char *path, char *contents) {
@@ -613,6 +613,7 @@ int main(int argc, char *argv[]) {
 
         for (int z = 3; z < argc; z++) {
             strcat(contents, argv[z]);
+            strcat(contents, " ");
         }
 
         int ret = rbfs_write(contents, 0, len, node);
