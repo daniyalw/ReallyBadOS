@@ -407,6 +407,15 @@ void delete_node(RBFSIndex *index) {
     int offset = index->sector;
     int sectors = index->sectors;
     sectors_down(offset, sectors + 1);
+
+    for (int z = index->id; z < index_count; z++) {
+        indexed[z] = indexed[z + 1];
+        auto i = indexed[z];
+        i--;
+        indexed[z] = i;
+    }
+
+    delete index;
 }
 
 int read(char *out, int offset, int size, RBFSIndex *index) {

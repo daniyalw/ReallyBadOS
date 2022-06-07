@@ -511,6 +511,24 @@ void delete_node(RBFSIndex *index) {
     int offset = index->sector;
     int sectors = index->sectors;
     sectors_down(offset, sectors + 1);
+
+    for (int z = index->id; z < index_count; z++) {
+        if (z == (index_count - 1)) {
+            break;
+        }
+
+        indexed[z] = indexed[z + 1];
+    }
+
+    index_count--;
+
+    for (int z = 0; z < index_count; z++) {
+        auto i = indexed[z];
+        i->id--;
+        indexed[z] = i;
+    }
+
+    delete index;
 }
 
 int rbfs_read(char *out, int offset, int size, RBFSIndex *index) {
@@ -683,6 +701,24 @@ int main(int argc, char *argv[]) {
             printf("%d:0%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
         else
             printf("%d:%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
+    } else if (strcmp(op, "-d") == 0) {
+        if (argc < 3) {
+            printf("Not enough parameters.\n");
+            cleanup();
+            return 1;
+        }
+
+        auto node = rbfs_open(argv[2]);
+
+        if (!node) {
+            printf("Failed to find file.\n");
+            cleanup();
+            return 1;
+        }
+
+        delete_node(node);
+
+        printf("Deleted node.\n");
     }
 
     cleanup();
