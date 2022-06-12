@@ -565,7 +565,20 @@ void cleanup() {
 
 int main(int argc, char *argv[]) {
     memset(disk_path, 0, 256);
-    strcpy(disk_path, "out.img");
+
+    if (argc == 1) {
+        show_usage();
+        return 1;
+    }
+
+    int opts = 0;
+
+    if (strcmp(argv[1], "--disk") == 0) {
+        opts = 2;
+        strcpy(disk_path, argv[2]);
+    } else {
+        strcpy(disk_path, "out.img");
+    }
 
     disk = fopen(disk_path, "rb+");
 
@@ -574,20 +587,15 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if (argc == 1) {
-        show_usage();
-        return 1;
-    }
-
     index_disk();
 
-    char *op = argv[1];
+    char *op = argv[1 + opts];
 
     if (strcmp(op, "-f") == 0 || strcmp(op, "--format") == 0) {
         format();
         printf("Formatted disk.\n");
     } else if (strcmp(op, "-r") == 0 || strcmp(op, "--read") == 0) {
-        char *fname = argv[2];
+        char *fname = argv[2 + opts];
         char out[100];
         memset(out, 0, 100);
 
@@ -609,13 +617,13 @@ int main(int argc, char *argv[]) {
 
         printf("%s\n", out);
     } else if (strcmp(op, "-l") == 0 || strcmp(op, "--list") == 0) {
-        if (argc > 2) {
-            list_dir(argv[2]);
+        if (argc > (2 + opts)) {
+            list_dir(argv[2 + opts]);
         } else {
             list_dir("/");
         }
     } else if (strcmp(op, "-w") == 0 || strcmp(op, "--write") == 0) {
-        auto node = rbfs_open(argv[2]);
+        auto node = rbfs_open(argv[2 + opts]);
 
         if (!node) {
             printf("Failed to find file.\n");
@@ -626,7 +634,7 @@ int main(int argc, char *argv[]) {
         int len = 0;
 
         for (int z = 3; z < argc; z++) {
-            len += strlen(argv[z]);
+            len += strlen(argv[z + opts]);
             len++;
         }
 
@@ -634,7 +642,7 @@ int main(int argc, char *argv[]) {
         memset(contents, 0, len);
 
         for (int z = 3; z < argc; z++) {
-            strcat(contents, argv[z]);
+            strcat(contents, argv[z + opts]);
             strcat(contents, " ");
         }
 
@@ -657,19 +665,19 @@ int main(int argc, char *argv[]) {
 
         int ret = 2;
 
-        if (strcmp(argv[2], "folder") == 0) {
-            ret = create_folder(argv[3]);
-        } else if (strcmp(argv[2], "file") == 0) {
-            ret = create_file(argv[3], "default");
+        if (strcmp(argv[2 + opts], "folder") == 0) {
+            ret = create_folder(argv[3 + opts]);
+        } else if (strcmp(argv[2 + opts], "file") == 0) {
+            ret = create_file(argv[3 + opts], "default");
         }
 
         switch (ret) {
             case 0:
-                printf("Creation of '%s' successful.\n", argv[3]);
+                printf("Creation of '%s' successful.\n", argv[3 + opts]);
                 break;
 
             case 1:
-                printf("Failed to create '%s'.\n", argv[3]);
+                printf("Failed to create '%s'.\n", argv[3 + opts]);
                 break;
 
             default:
@@ -683,7 +691,7 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
-        auto node = rbfs_open(argv[2]);
+        auto node = rbfs_open(argv[2 + opts]);
 
         if (!node) {
             printf("File to stat not found.\n");
@@ -706,7 +714,7 @@ int main(int argc, char *argv[]) {
         else
             printf("%d:%d %s\n", node->ctime.hour, node->ctime.min, (char *)(node->ctime.pm ? "PM" : "AM"));
 
-        if (strcmp(argv[2], "/") == 0) {
+        if (strcmp(argv[2 + opts], "/") == 0) {
             printf("\nDisk data: \n");
             // print extra disk data
             uint8_t *_super = (uint8_t *)malloc(512);
@@ -729,7 +737,7 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
-        auto node = rbfs_open(argv[2]);
+        auto node = rbfs_open(argv[2 + opts]);
 
         if (!node) {
             printf("Failed to find file.\n");
