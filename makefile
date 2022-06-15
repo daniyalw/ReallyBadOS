@@ -1,6 +1,6 @@
 boot = boot/loader.s
 INCLUDES = -Istdlib -Ifilesystem -Idrivers -Ikernel -I.
-MEM = 2G
+MEM = 500M
 COMPILER_FLAGS = -m32 -nostdlib -ffreestanding -Wno-write-strings -std=c++20 -mno-red-zone -fpermissive -lgcc -fno-rtti
 QEMU_FLAGS = -soundhw pcspk -m ${MEM} -serial stdio -rtc base=localtime -drive format=raw,file=out.img,index=0,media=disk,id=nvm \
 			 -accel tcg -netdev user,id=u1 -device rtl8139,netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.dat \
