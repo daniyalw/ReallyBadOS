@@ -11,4 +11,4 @@ See building on the [main page](https://daniyalw.github.io/ReallyBadOS#building)
 
 ## Disclaimer
 Bad code can be found everywhere. To stay safe, stay away.
-For that reason alone, I quit this project.
+For that reason alone, I quit this project. But I learned a lot.
